@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -47,6 +48,8 @@ public class LocationService extends Service implements LocationListener {
     private String provider;
 
     private static String CHANNEL_ID = "techie_tracker";
+    private PowerManager powerManager;
+    private PowerManager.WakeLock wakeLock;
 
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
@@ -84,6 +87,10 @@ public class LocationService extends Service implements LocationListener {
         Log.i("TRACKER","Service Started");
         createNotificationChannel();
         showNotification();
+        powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "TechieTracker::LocationService");
+        wakeLock.acquire();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, false);
@@ -97,13 +104,14 @@ public class LocationService extends Service implements LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationManager.requestLocationUpdates(provider, 400, 1, this);
+        locationManager.requestLocationUpdates(provider, 100, .5f, this);
 
     }
 
     @Override
     public void onDestroy() {
         locationManager.removeUpdates(this);
+        wakeLock.release();
         super.onDestroy();
     }
 
