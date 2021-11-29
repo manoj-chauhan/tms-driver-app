@@ -9,8 +9,11 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -54,7 +57,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv = (TextView) findViewById(R.id.loc);
-        getApplicationContext().startForegroundService(new Intent( this, LocationService.class ) );
+        Intent intent = new Intent(this, LocationService.class);
+        intent.setData(Uri.parse("package:com.techie.tracker"));
+        intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        getApplicationContext().startForegroundService(intent);
+
     }
 
 }

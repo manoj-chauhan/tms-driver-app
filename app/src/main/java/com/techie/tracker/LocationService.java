@@ -85,6 +85,9 @@ public class LocationService extends Service implements LocationListener {
     public void onCreate() {
         super.onCreate();
         Log.i("TRACKER","Service Started");
+        PowerManager oPowerManager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+        String packageName = getApplicationContext().getPackageName();
+        Log.i("PowerMode: ", "IsIgnoringBatteryOptimisation:::::: " + oPowerManager.isIgnoringBatteryOptimizations(packageName));
         createNotificationChannel();
         showNotification();
         powerManager = (PowerManager) getSystemService(POWER_SERVICE);
@@ -180,6 +183,6 @@ public class LocationService extends Service implements LocationListener {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         Log.i("TRACKER", "Location: " + lat + "," + lng);
-//        publishCoordinates(lat, lng);
+        publishCoordinates(lat, lng);
     }
 }
