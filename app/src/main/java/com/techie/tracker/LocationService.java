@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -40,7 +41,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class LocationService extends Service implements LocationListener {
 
@@ -182,7 +185,16 @@ public class LocationService extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
+
+        DateTimeFormatter formater = DateTimeFormatter.ISO_LOCAL_TIME;
+        String msg = "Time: " + LocalDateTime.now().format(formater) + "   Location: " + lat + "," + lng;
+
         Log.i("TRACKER", "Location: " + lat + "," + lng);
+
+        Intent intent = new Intent("location-update");
+        intent.putExtra("message", msg);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
         publishCoordinates(lat, lng);
     }
 }
