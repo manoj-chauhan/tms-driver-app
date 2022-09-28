@@ -124,9 +124,10 @@ public class LocationService extends Service implements LocationListener {
     private void publishCoordinates(Double lat, Double lng){
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
-            String URL = "http://35.85.135.13/record/geo_coordinates";
+            String URL = "http://35.154.239.61:81/record/geo_coordinates";
             JSONObject jsonBody = new JSONObject();
-            jsonBody.put("coordinates", lat + "," + lng);
+            jsonBody.put("latitude", lat);
+            jsonBody.put("longitude", lng);
             jsonBody.put("time", LocalDateTime.now());
             final String requestBody = jsonBody.toString();
 
