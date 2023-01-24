@@ -24,7 +24,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.recyclersample.R
+import com.samrish.driver.R
 import com.example.recyclersample.data.Flower
 
 class FlowersAdapter(private val onClick: (Flower) -> Unit) :

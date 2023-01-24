@@ -22,7 +22,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.example.recyclersample.R
+import com.samrish.driver.R
 import com.example.recyclersample.flowerList.FLOWER_ID
 
 class FlowerDetailActivity : AppCompatActivity() {

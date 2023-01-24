@@ -17,7 +17,7 @@
 package com.example.recyclersample.data
 
 import android.content.res.Resources
-import com.example.recyclersample.R
+import com.samrish.driver.R
 
 /* Returns initial list of flowers. */
 fun flowerList(resources: Resources): List<Flower> {

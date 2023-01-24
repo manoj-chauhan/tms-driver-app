@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.recyclersample.flowerList
+package com.samrish.driver
 
 import android.app.Activity
 import android.content.Intent
@@ -30,6 +30,10 @@ import com.samrish.driver.R
 import com.example.recyclersample.addFlower.FLOWER_DESCRIPTION
 import com.example.recyclersample.addFlower.FLOWER_NAME
 import com.example.recyclersample.data.Flower
+import com.example.recyclersample.flowerList.FlowersAdapter
+import com.example.recyclersample.flowerList.FlowersListViewModel
+import com.example.recyclersample.flowerList.FlowersListViewModelFactory
+import com.example.recyclersample.flowerList.HeaderAdapter
 
 const val FLOWER_ID = "flower id"
 
