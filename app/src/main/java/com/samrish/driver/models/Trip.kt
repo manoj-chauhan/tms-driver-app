@@ -1,3 +1,3 @@
-package com.samrish.driver
+package com.samrish.driver.models
 
 class Trip(var name: String?, var code: String?) {}

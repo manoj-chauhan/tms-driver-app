@@ -1,4 +1,4 @@
-package com.samrish.driver
+package com.samrish.driver.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +10,8 @@ import androidx.appcompat.widget.AppCompatEditText
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.samrish.driver.R
+import com.samrish.driver.services.SessionStorage
 import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {

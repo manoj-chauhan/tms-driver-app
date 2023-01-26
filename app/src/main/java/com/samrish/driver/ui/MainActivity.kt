@@ -1,4 +1,4 @@
-package com.samrish.driver
+package com.samrish.driver.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.toolbox.Volley
+import com.samrish.driver.R
+import com.samrish.driver.services.SessionStorage
+import com.samrish.driver.services.TripListRequest
 
 class MainActivity : AppCompatActivity() {
 

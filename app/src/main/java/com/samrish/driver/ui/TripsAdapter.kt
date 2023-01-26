@@ -1,10 +1,12 @@
-package com.samrish.driver
+package com.samrish.driver.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.samrish.driver.R
+import com.samrish.driver.models.Trip
 import java.util.*
 
 class TripsAdapter(trips:List<Trip>) : RecyclerView.Adapter<TripsAdapter.TripViewHolder>() {
