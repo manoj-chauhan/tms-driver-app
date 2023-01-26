@@ -29,9 +29,6 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if ("" == SessionStorage().getAccessToken(this)) {
-            goToLogin()
-        }
         val bundle: Bundle? = intent.extras
         if (bundle != null) {
             currentTripCode = bundle.getString("TRIP_CODE")
@@ -47,7 +44,15 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         endButton?.setOnClickListener(this)
         cancelButton?.setOnClickListener(this)
 
+
+    }
+
+    override fun onStart() {
+        if ("" == SessionStorage().getAccessToken(this)) {
+            goToLogin()
+        }
         getTripDetail()
+        super.onStart()
     }
 
     private fun getTripDetail() {

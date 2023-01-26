@@ -29,12 +29,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_trip_list)
+    }
+
+    override fun onStart() {
+
         if ("" == SessionStorage().getAccessToken(this)) {
             goToLogin()
         }
-        setContentView(R.layout.activity_trip_list)
+        super.onResume()
         tripList = findViewById<RecyclerView>(R.id.trip_list)
         getTrips()
+        super.onStart()
     }
 
     private fun getTrips() {
@@ -50,7 +56,10 @@ class MainActivity : AppCompatActivity() {
         val stringRequest = TripListRequest(url, hdrs, { response ->
             tripList?.adapter = TripsAdapter(response) { trip: Trip -> onTripSelected(trip) }
         }, { error ->
-            Log.i("TripList", "Request Failed with Error: $error")
+            run {
+                tripList?.adapter = null
+                Log.i("TripList", "Request Failed with Error: $error")
+            }
         })
         queue.add(stringRequest)
     }
