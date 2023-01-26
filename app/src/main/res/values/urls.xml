@@ -1,3 +1,4 @@
 <resources>
     <string name="url_login">http://192.168.1.103:8888/auth/login</string>
+    <string name="url_trips_list">http://192.168.1.103:8888/trips</string>
 </resources>

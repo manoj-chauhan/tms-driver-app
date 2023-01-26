@@ -6,15 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
-import kotlin.collections.ArrayList
 
-class TripsAdapter() : RecyclerView.Adapter<TripsAdapter.TripViewHolder>() {
+class TripsAdapter(trips:List<Trip>) : RecyclerView.Adapter<TripsAdapter.TripViewHolder>() {
 
-    private var tripList: ArrayList<Trip> = ArrayList()
+    private var tripList: List<Trip> = ArrayList()
 
     init {
-        tripList.add(Trip("A","1"));
-        tripList.add(Trip("B","1"));
+        this.tripList = trips
     }
 
     class TripViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -34,7 +32,7 @@ class TripsAdapter() : RecyclerView.Adapter<TripsAdapter.TripViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
-        val flower = tripList[position]
+        val flower = this.tripList[position]
         holder.bind(flower)
     }
 
