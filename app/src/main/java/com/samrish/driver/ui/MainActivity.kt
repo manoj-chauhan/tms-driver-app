@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
+import com.samrish.driver.models.Trip
 import com.samrish.driver.services.SessionStorage
 import com.samrish.driver.services.TripListRequest
 
@@ -17,6 +18,13 @@ class MainActivity : AppCompatActivity() {
     private fun goToLogin() {
         val changePage = Intent(this.applicationContext, LoginActivity::class.java)
         startActivity(changePage)
+    }
+
+
+    private fun onTripSelected(trip: Trip) {
+        val intent = Intent(this, TripDetailActivity()::class.java)
+        intent.putExtra("TRIP_CODE", trip.code)
+        startActivity(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val stringRequest = TripListRequest(url, hdrs, { response ->
-            tripList?.adapter = TripsAdapter(response)
+            tripList?.adapter = TripsAdapter(response) { trip: Trip -> onTripSelected(trip) }
         }, { error ->
             Log.i("TripList", "Request Failed with Error: $error")
         })

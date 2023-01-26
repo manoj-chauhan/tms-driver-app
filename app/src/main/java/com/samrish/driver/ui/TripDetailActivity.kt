@@ -5,15 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.services.SessionStorage
 import com.samrish.driver.services.TripDetailRequest
-import com.samrish.driver.services.TripListRequest
 
 class TripDetailActivity : AppCompatActivity() {
 
+    var currentTripCode: String? = null
 
     private fun goToLogin() {
         val changePage = Intent(this.applicationContext, LoginActivity::class.java)
@@ -25,13 +24,17 @@ class TripDetailActivity : AppCompatActivity() {
         if ("" == SessionStorage().getAccessToken(this)) {
             goToLogin()
         }
+        val bundle: Bundle? = intent.extras
+        if (bundle != null) {
+            currentTripCode = bundle.getString("TRIP_CODE")
+        }
         setContentView(R.layout.activity_trip_detail)
         getTripDetail()
     }
 
     private fun getTripDetail() {
         val queue = Volley.newRequestQueue(this)
-        val url = resources.getString(R.string.url_trips_detail) + "34987"
+        val url = resources.getString(R.string.url_trips_detail) + currentTripCode
 
         val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
         val authHeader = SessionStorage().getAccessToken(this)
