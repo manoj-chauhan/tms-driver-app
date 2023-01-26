@@ -22,7 +22,7 @@ class TripListRequest(url: String,
         val mutableList = mutableListOf<Trip>()
         for (i in 0 until trips.length()){
             var t: JSONObject = trips.getJSONObject(i)
-            var tr: Trip = Trip(t.get("tripName") as String?, t.get("tripCode") as String?)
+            var tr: Trip = Trip(t.get("tripName") as String?, t.get("tripCode") as String?, t.get("status") as Int?)
             mutableList.add(tr)
         }
         return mutableList

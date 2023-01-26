@@ -20,6 +20,7 @@ class TripsAdapter(trips:List<Trip>, private val onItemClick: (Trip) -> Unit) : 
     class TripViewHolder(itemView: View, val onItemClick: (Trip) -> Unit) : RecyclerView.ViewHolder(itemView) {
         private val tripNameView: TextView = itemView.findViewById(R.id.trip_card_name)
         private val tripCodeView: TextView = itemView.findViewById(R.id.trip_card_code)
+        private val tripStatusView: TextView = itemView.findViewById(R.id.trip_card_status)
         private var currentTrip: Trip? = null
 
         init {
@@ -34,6 +35,14 @@ class TripsAdapter(trips:List<Trip>, private val onItemClick: (Trip) -> Unit) : 
             currentTrip = trip
             tripNameView.text = trip.name
             tripCodeView.text = trip.code
+            tripStatusView.text = when (trip.status) {
+                0 -> "NOT STARTED"
+                1 -> "CHECKED_IN"
+                2 -> "DEPARTED"
+                3 -> "ENDED"
+                4 -> "CANCELLED"
+                else -> "ERROR"
+            }
         }
     }
 
