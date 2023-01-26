@@ -6,7 +6,7 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        applicationId "com.example.recyclersample"
+        applicationId "com.samrish.driver"
         minSdkVersion 21
         targetSdkVersion 33
         versionCode 1
