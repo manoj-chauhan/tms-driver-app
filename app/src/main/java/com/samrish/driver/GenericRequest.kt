@@ -8,7 +8,7 @@ import com.android.volley.toolbox.HttpHeaderParser
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
 
-class TripsRequest<T>(
+abstract class GenericRequest<T>(
     url: String,
     private val headers: MutableMap<String, String>,
     private val listener: Response.Listener<T>,
@@ -23,12 +23,11 @@ class TripsRequest<T>(
         listener.onResponse(response)
     }
 
+    abstract fun transformResponse(response: NetworkResponse?):T
+
     override fun parseNetworkResponse(response: NetworkResponse?): Response<T> {
         return try {
-            val responseBody = String(
-                response?.data ?: ByteArray(0),
-                Charset.forName(HttpHeaderParser.parseCharset(response?.headers)))
-            Response.success(responseBody as T, HttpHeaderParser.parseCacheHeaders(response))
+            Response.success(transformResponse(response), HttpHeaderParser.parseCacheHeaders(response))
         } catch (e: UnsupportedEncodingException) {
             Response.error(ParseError(e))
         }
