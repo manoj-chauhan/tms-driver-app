@@ -32,8 +32,7 @@ class TripsAdapter(trips:List<Trip>) : RecyclerView.Adapter<TripsAdapter.TripVie
     }
 
     override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
-        val flower = this.tripList[position]
-        holder.bind(flower)
+        holder.bind(this.tripList[position])
     }
 
     override fun getItemCount(): Int {

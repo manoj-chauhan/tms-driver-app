@@ -16,10 +16,6 @@ class TripsRequest<T>(
 ) : Request<T>(Method.GET, url, errorListener) {
 
     override fun getHeaders(): MutableMap<String, String>{
-//        var hdrs = super.getHeaders();
-//        if (headers != null) {
-//            hdrs.putAll(headers)
-//        }
         return headers;
     }
 

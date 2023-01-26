@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.toolbox.Volley
+import org.json.JSONArray
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,7 +39,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         val stringRequest = TripsRequest<String>(url, hdrs, { response ->
-            Log.i("TripList", "Response --> $response")
+            var trips = JSONArray(response)
+
+            val mutableList = mutableListOf<Trip>()
+            for (i in 0 until trips.length()){
+                var t:JSONObject = trips.getJSONObject(i)
+                var tr:Trip = Trip(t.get("tripName") as String?, t.get("tripCode") as String?)
+                mutableList.add(tr)
+            }
+            tripList?.adapter = TripsAdapter(mutableList)
+
         }, { error ->
             Log.i("TripList", "Request Failed with Error: $error")
         })
