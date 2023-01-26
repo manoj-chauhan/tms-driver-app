@@ -38,7 +38,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         jsonRequest.put("password", password)
 
         val stringRequest = JsonObjectRequest(Request.Method.POST, url, jsonRequest, {
-                response -> Log.i("Login", "Response: $response")
+                response -> run {
+                    SessionStorage().saveAccessToken(this, response.getString("authToken"))
+                }
             }, {
                 error -> Log.i("Login", "Request Failed with Error: $error")
             }
@@ -46,6 +48,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest)
+        Log.i("AuthStorage", "Token:" + SessionStorage().getAccessToken(this))
     }
 
 }
