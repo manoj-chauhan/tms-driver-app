@@ -8,21 +8,27 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.nio.charset.Charset
 
-class TripListRequest(url: String,
-                      headers: MutableMap<String, String>,
-                      listener: Response.Listener<List<Trip>>,
-                      errorListener: Response.ErrorListener
-) : GenericRequest<List<Trip>>(url, headers, listener, errorListener) {
+class TripListRequest(
+    url: String,
+    headers: MutableMap<String, String>,
+    listener: Response.Listener<List<Trip>>,
+    errorListener: Response.ErrorListener
+) : GenericRequest<List<Trip>>(Method.GET, url, headers, listener, errorListener) {
     override fun transformResponse(response: NetworkResponse?): List<Trip> {
         val responseBody = String(
             response?.data ?: ByteArray(0),
-            Charset.forName(HttpHeaderParser.parseCharset(response?.headers)))
+            Charset.forName(HttpHeaderParser.parseCharset(response?.headers))
+        )
 
         var trips = JSONArray(responseBody)
         val mutableList = mutableListOf<Trip>()
-        for (i in 0 until trips.length()){
+        for (i in 0 until trips.length()) {
             var t: JSONObject = trips.getJSONObject(i)
-            var tr: Trip = Trip(t.get("tripName") as String?, t.get("tripCode") as String?, t.get("status") as Int?)
+            var tr: Trip = Trip(
+                t.get("tripName") as String?,
+                t.get("tripCode") as String?,
+                t.get("status") as Int?
+            )
             mutableList.add(tr)
         }
         return mutableList

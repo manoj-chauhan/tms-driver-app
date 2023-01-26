@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.Trip
 import com.samrish.driver.services.SessionStorage
+import com.samrish.driver.services.TripCheckInRequest
 import com.samrish.driver.services.TripDetailRequest
 
 class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
@@ -74,6 +75,27 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         queue.add(stringRequest)
     }
 
+    private fun checkIn() {
+        val queue = Volley.newRequestQueue(this)
+        val url = resources.getString(R.string.url_trip_check_in)
+
+        val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+        val authHeader = SessionStorage().getAccessToken(this)
+        if(authHeader != null) {
+            hdrs?.put("Authorization", "Bearer $authHeader")
+        }
+
+        val stringRequest = currentTripCode?.let {
+            TripCheckInRequest("AMBI", it, url, hdrs, { response ->
+                Log.i("TripDetail", "Trip Check-In: $response")
+                getTripDetail()
+            }, { error ->
+                Log.i("TripDetail", "Request Failed with Error: $error")
+            })
+        }
+        queue.add(stringRequest)
+    }
+
     private fun showDetails(trip: Trip){
         findViewById<TextView>(R.id.trip_detail_name).text = trip.name
         findViewById<TextView>(R.id.trip_detail_code).text = trip.code
@@ -116,6 +138,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
             when(btn.id){
                 R.id.trip_detail_btn_check_in -> {
                     Log.i("TripDetail", "Check In clicked")
+                    checkIn()
                 }
                 R.id.trip_detail_btn_depart -> {
                     Log.i("TripDetail", "Depart clicked")

@@ -11,7 +11,7 @@ class TripDetailRequest(url: String,
                         headers: MutableMap<String, String>,
                         listener: Response.Listener<Trip>,
                         errorListener: Response.ErrorListener
-) : GenericRequest<Trip>(url, headers, listener, errorListener) {
+) : GenericRequest<Trip>(Method.GET, url, headers, listener, errorListener) {
     override fun transformResponse(response: NetworkResponse?): Trip {
         val responseBody = String(
             response?.data ?: ByteArray(0),

@@ -2,4 +2,8 @@
     <string name="url_login">http://192.168.1.103:8888/auth/login</string>
     <string name="url_trips_list">http://192.168.1.103:8888/trips</string>
     <string name="url_trips_detail">http://192.168.1.103:8888/trips/</string>
+    <string name="url_trip_check_in">http://192.168.1.103:8888/trips/check-in</string>
+    <string name="url_trip_depart">http://192.168.1.103:8888/trips/depart</string>
+    <string name="url_trip_end">http://192.168.1.103:8888/trips/end</string>
+    <string name="url_trip_cancel">http://192.168.1.103:8888/trips/cancel</string>
 </resources>

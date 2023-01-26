@@ -8,11 +8,12 @@ import com.android.volley.toolbox.HttpHeaderParser
 import java.io.UnsupportedEncodingException
 
 abstract class GenericRequest<T>(
+    method:Int,
     url: String,
     private val headers: MutableMap<String, String>,
     private val listener: Response.Listener<T>,
     errorListener: Response.ErrorListener
-) : Request<T>(Method.GET, url, errorListener) {
+) : Request<T>(method, url, errorListener) {
 
     override fun getHeaders(): MutableMap<String, String>{
         return headers;
