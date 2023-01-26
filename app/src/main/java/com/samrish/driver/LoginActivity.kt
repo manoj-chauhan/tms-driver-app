@@ -26,12 +26,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        var username: String = editTextUsername.text.toString()
-        var password: String = editTextPassword.text.toString()
+        val username: String = editTextUsername.text.toString()
+        val password: String = editTextPassword.text.toString()
         Log.i("Login", "Username: $username  Password: $password");
 
         val queue = Volley.newRequestQueue(this)
-        val url = "http://192.168.1.103:8888/auth/login"
+        val url = resources.getString(R.string.url_login)
 
         val jsonRequest:JSONObject = JSONObject()
         jsonRequest.put("username", username)
