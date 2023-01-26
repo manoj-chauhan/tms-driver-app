@@ -7,8 +7,9 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -25,17 +26,21 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        val username: String = editTextUsername.text.toString()
-        val password: String = editTextPassword.text.toString()
+        var username: String = editTextUsername.text.toString()
+        var password: String = editTextPassword.text.toString()
         Log.i("Login", "Username: $username  Password: $password");
 
         val queue = Volley.newRequestQueue(this)
-        val url = "https://www.google.com"
+        val url = "http://192.168.1.103:8888/auth/login"
 
-        val stringRequest = StringRequest(Request.Method.GET, url, {
+        val jsonRequest:JSONObject = JSONObject()
+        jsonRequest.put("username", username)
+        jsonRequest.put("password", password)
+
+        val stringRequest = JsonObjectRequest(Request.Method.POST, url, jsonRequest, {
                 response -> Log.i("Login", "Response: $response")
             }, {
-                Log.i("Login", "Request Failed")
+                error -> Log.i("Login", "Request Failed with Error: $error")
             }
         )
 
