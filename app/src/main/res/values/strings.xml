@@ -15,7 +15,7 @@
 -->
 
 <resources>
-    <string name="app_name">RecyclerView Sample</string>
+    <string name="app_name">Samrish</string>
     <string name="add_flower">Add Flower</string>
 
     <string name="flower1_name">Rose</string>
