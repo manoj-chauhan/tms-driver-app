@@ -1,5 +1,6 @@
 package com.samrish.driver
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var editTextUsername: AppCompatEditText;
     private lateinit var editTextPassword: AppCompatEditText;
+
+    private fun goToMain () {
+        val changePage = Intent(this.applicationContext, MainActivity::class.java)
+        changePage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(changePage)
+        finish()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +48,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         val stringRequest = JsonObjectRequest(Request.Method.POST, url, jsonRequest, {
                 response -> run {
                     SessionStorage().saveAccessToken(this, response.getString("authToken"))
+                    goToMain()
                 }
             }, {
                 error -> Log.i("Login", "Request Failed with Error: $error")

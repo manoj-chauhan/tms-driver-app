@@ -10,13 +10,14 @@
         android:label="@string/app_name"
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity"
+        <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:exported="true" android:name=".LoginActivity" />
         <activity android:exported="true" android:name="com.example.recyclersample.addFlower.AddFlowerActivity" />
         <activity android:exported="true" android:name="com.example.recyclersample.flowerDetail.FlowerDetailActivity" />
     </application>
