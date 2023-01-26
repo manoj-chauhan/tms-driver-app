@@ -18,8 +18,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         editTextUsername = findViewById(R.id.login_input_username)
         editTextPassword = findViewById(R.id.login_input_password);
 
-        var buttonLogin: AppCompatButton = findViewById(R.id.login_btn_login);
-        buttonLogin.setOnClickListener(this);
+        findViewById<AppCompatButton>(R.id.login_btn_login).setOnClickListener(this);
     }
 
     override fun onClick(p0: View?) {
