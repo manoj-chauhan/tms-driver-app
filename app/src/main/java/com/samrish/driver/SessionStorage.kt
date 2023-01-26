@@ -11,7 +11,7 @@ class SessionStorage {
         val sharedPreference =  context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
         editor.putString(authTokenKey, token)
-        editor.commit()
+        editor.apply()
     }
     fun getAccessToken(context:Context): String? {
         return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getString(authTokenKey, "")

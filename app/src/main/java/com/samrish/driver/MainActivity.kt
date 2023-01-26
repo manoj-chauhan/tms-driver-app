@@ -3,6 +3,7 @@ package com.samrish.driver
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,10 +14,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_trip_list)
-
         if("" == SessionStorage().getAccessToken(this)) {
             goToLogin()
         }
+        setContentView(R.layout.activity_trip_list)
+        var tripList = findViewById<RecyclerView>(R.id.trip_list)
+        tripList.adapter = TripsAdapter()
     }
 }
