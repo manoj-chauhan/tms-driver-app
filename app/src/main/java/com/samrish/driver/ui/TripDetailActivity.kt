@@ -13,7 +13,7 @@ import com.samrish.driver.models.Trip
 import com.samrish.driver.services.SessionStorage
 import com.samrish.driver.services.TripDetailRequest
 
-class TripDetailActivity : AppCompatActivity() {
+class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private var checkInButton: AppCompatButton? = null
     private var departButton: AppCompatButton? = null
@@ -41,6 +41,12 @@ class TripDetailActivity : AppCompatActivity() {
         departButton = findViewById<AppCompatButton>(R.id.trip_detail_btn_depart)
         endButton = findViewById<AppCompatButton>(R.id.trip_detail_btn_end)
         cancelButton = findViewById<AppCompatButton>(R.id.trip_detail_btn_cancel)
+
+        checkInButton?.setOnClickListener(this)
+        departButton?.setOnClickListener(this)
+        endButton?.setOnClickListener(this)
+        cancelButton?.setOnClickListener(this)
+
         getTripDetail()
     }
 
@@ -100,15 +106,22 @@ class TripDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun generateStatusString(status: Int): String{
-        return when (status) {
-            0 -> "NOT STARTED"
-            1 -> "CHECKED_IN"
-            2 -> "DEPARTED"
-            3 -> "ENDED"
-            4 -> "CANCELLED"
-            else -> "ERROR"
+    override fun onClick(btn: View?) {
+        if (btn != null) {
+            when(btn.id){
+                R.id.trip_detail_btn_check_in -> {
+                    Log.i("TripDetail", "Check In clicked")
+                }
+                R.id.trip_detail_btn_depart -> {
+                    Log.i("TripDetail", "Depart clicked")
+                }
+                R.id.trip_detail_btn_end -> {
+                    Log.i("TripDetail", "End clicked")
+                }
+                R.id.trip_detail_btn_cancel -> {
+                    Log.i("TripDetail", "Cancel clicked")
+                }
+            }
         }
     }
-
 }
