@@ -32,4 +32,5 @@ ext {
     coreKtxVersion = '1.9.0'
     constraintLayoutVersion = '2.1.4'
     activityVersion = '1.6.1'
+    volleyVersion = '1.2.1'
 }

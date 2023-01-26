@@ -48,5 +48,5 @@ dependencies {
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.liveDataVersion"
 
-    implementation("com.android.volley:volley:1.2.1")
+    implementation("com.android.volley:volley:$rootProject.volleyVersion")
 }
