@@ -10,9 +10,7 @@ import androidx.appcompat.widget.AppCompatButton
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.Trip
-import com.samrish.driver.services.SessionStorage
-import com.samrish.driver.services.TripCheckInRequest
-import com.samrish.driver.services.TripDetailRequest
+import com.samrish.driver.services.*
 
 class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -95,6 +93,66 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
         queue.add(stringRequest)
     }
+    private fun depart() {
+        val queue = Volley.newRequestQueue(this)
+        val url = resources.getString(R.string.url_trip_depart)
+
+        val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+        val authHeader = SessionStorage().getAccessToken(this)
+        if(authHeader != null) {
+            hdrs?.put("Authorization", "Bearer $authHeader")
+        }
+
+        val stringRequest = currentTripCode?.let {
+            TripDepartRequest(it, url, hdrs, { response ->
+                Log.i("TripDetail", "Trip Depart: $response")
+                getTripDetail()
+            }, { error ->
+                Log.i("TripDetail", "Request Failed with Error: $error")
+            })
+        }
+        queue.add(stringRequest)
+    }
+    private fun end() {
+        val queue = Volley.newRequestQueue(this)
+        val url = resources.getString(R.string.url_trip_end)
+
+        val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+        val authHeader = SessionStorage().getAccessToken(this)
+        if(authHeader != null) {
+            hdrs?.put("Authorization", "Bearer $authHeader")
+        }
+
+        val stringRequest = currentTripCode?.let {
+            TripEndRequest(it, url, hdrs, { response ->
+                Log.i("TripDetail", "Trip End: $response")
+                getTripDetail()
+            }, { error ->
+                Log.i("TripDetail", "Request Failed with Error: $error")
+            })
+        }
+        queue.add(stringRequest)
+    }
+    private fun cancel() {
+        val queue = Volley.newRequestQueue(this)
+        val url = resources.getString(R.string.url_trip_cancel)
+
+        val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+        val authHeader = SessionStorage().getAccessToken(this)
+        if(authHeader != null) {
+            hdrs?.put("Authorization", "Bearer $authHeader")
+        }
+
+        val stringRequest = currentTripCode?.let {
+            TripCancelRequest(it, url, hdrs, { response ->
+                Log.i("TripDetail", "Trip Cancel: $response")
+                getTripDetail()
+            }, { error ->
+                Log.i("TripDetail", "Request Failed with Error: $error")
+            })
+        }
+        queue.add(stringRequest)
+    }
 
     private fun showDetails(trip: Trip){
         findViewById<TextView>(R.id.trip_detail_name).text = trip.name
@@ -142,12 +200,15 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 R.id.trip_detail_btn_depart -> {
                     Log.i("TripDetail", "Depart clicked")
+                    depart()
                 }
                 R.id.trip_detail_btn_end -> {
                     Log.i("TripDetail", "End clicked")
+                    end()
                 }
                 R.id.trip_detail_btn_cancel -> {
                     Log.i("TripDetail", "Cancel clicked")
+                    cancel()
                 }
             }
         }
