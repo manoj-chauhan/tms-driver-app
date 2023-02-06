@@ -4,7 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.*
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.Trip
@@ -59,6 +61,17 @@ class MainActivity : AppCompatActivity() {
             run {
                 tripList?.adapter = null
                 Log.i("TripList", "Request Failed with Error: $error")
+                if (error is TimeoutError || error is NoConnectionError) {
+                    Toast.makeText(applicationContext, "Couldn't Connect!", Toast.LENGTH_LONG).show();
+                } else if (error is AuthFailureError) {
+                    goToLogin();
+                } else if (error is ServerError) {
+                    Toast.makeText(applicationContext, "Server error!", Toast.LENGTH_LONG).show();
+                } else if (error is NetworkError) {
+                    Toast.makeText(applicationContext, "Network error", Toast.LENGTH_LONG).show();
+                } else if (error is ParseError) {
+                    Toast.makeText(applicationContext, "Unable to parse response", Toast.LENGTH_LONG).show();
+                }
             }
         })
         queue.add(stringRequest)

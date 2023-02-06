@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import com.android.volley.Request
@@ -50,10 +51,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         val stringRequest = JsonObjectRequest(Request.Method.POST, url, jsonRequest, {
                 response -> run {
                     SessionStorage().saveAccessToken(this, response.getString("authToken"))
+                    Toast.makeText(applicationContext,"Login Successful!",Toast.LENGTH_LONG).show();
                     goToMain()
                 }
             }, {
-                error -> Log.i("Login", "Request Failed with Error: $error")
+                error -> run {
+                    Log.i("Login", "Request Failed with Error: $error")
+                    Toast.makeText(applicationContext,"Login Failed!",Toast.LENGTH_LONG).show();
+                }
             }
         )
 
