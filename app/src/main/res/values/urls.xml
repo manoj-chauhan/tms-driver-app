@@ -8,4 +8,5 @@
     <string name="url_trip_depart">&baseUrl;/trips/depart</string>
     <string name="url_trip_end">&baseUrl;/trips/end</string>
     <string name="url_trip_cancel">&baseUrl;/trips/cancel</string>
+    <string name="url_device_registration">&baseUrl;/device</string>
 </resources>

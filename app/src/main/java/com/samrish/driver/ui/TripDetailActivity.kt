@@ -206,7 +206,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    fun handleError(error: VolleyError) {
+    private fun handleError(error: VolleyError) {
         Log.i("TripDetail", "Request Failed with Error: $error")
         if (error is TimeoutError || error is NoConnectionError) {
             Toast.makeText(applicationContext, "Couldn't Connect!", Toast.LENGTH_LONG).show();
