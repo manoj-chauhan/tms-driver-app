@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
+import com.android.volley.*
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.Trip
@@ -67,9 +69,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         val stringRequest = TripDetailRequest(url, hdrs, { response ->
             Log.i("TripDetail", "Trip Detail: $response")
             showDetails(response)
-        }, { error ->
-            Log.i("TripDetail", "Request Failed with Error: $error")
-        })
+        }, { error -> handleError(error) })
         queue.add(stringRequest)
     }
 
@@ -87,9 +87,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
             TripCheckInRequest("AMBI", it, url, hdrs, { response ->
                 Log.i("TripDetail", "Trip Check-In: $response")
                 getTripDetail()
-            }, { error ->
-                Log.i("TripDetail", "Request Failed with Error: $error")
-            })
+            }, { error -> handleError(error) })
         }
         queue.add(stringRequest)
     }
@@ -107,9 +105,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
             TripDepartRequest(it, url, hdrs, { response ->
                 Log.i("TripDetail", "Trip Depart: $response")
                 getTripDetail()
-            }, { error ->
-                Log.i("TripDetail", "Request Failed with Error: $error")
-            })
+            }, { error -> handleError(error) })
         }
         queue.add(stringRequest)
     }
@@ -127,9 +123,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
             TripEndRequest(it, url, hdrs, { response ->
                 Log.i("TripDetail", "Trip End: $response")
                 getTripDetail()
-            }, { error ->
-                Log.i("TripDetail", "Request Failed with Error: $error")
-            })
+            }, { error -> handleError(error) })
         }
         queue.add(stringRequest)
     }
@@ -147,9 +141,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
             TripCancelRequest(it, url, hdrs, { response ->
                 Log.i("TripDetail", "Trip Cancel: $response")
                 getTripDetail()
-            }, { error ->
-                Log.i("TripDetail", "Request Failed with Error: $error")
-            })
+            }, { error -> handleError(error) })
         }
         queue.add(stringRequest)
     }
@@ -211,6 +203,21 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
                     cancel()
                 }
             }
+        }
+    }
+
+    fun handleError(error: VolleyError) {
+        Log.i("TripDetail", "Request Failed with Error: $error")
+        if (error is TimeoutError || error is NoConnectionError) {
+            Toast.makeText(applicationContext, "Couldn't Connect!", Toast.LENGTH_LONG).show();
+        } else if (error is AuthFailureError) {
+            goToLogin();
+        } else if (error is ServerError) {
+            Toast.makeText(applicationContext, "Server error!", Toast.LENGTH_LONG).show();
+        } else if (error is NetworkError) {
+            Toast.makeText(applicationContext, "Network error", Toast.LENGTH_LONG).show();
+        } else if (error is ParseError) {
+            Toast.makeText(applicationContext, "Unable to parse response", Toast.LENGTH_LONG).show();
         }
     }
 }
