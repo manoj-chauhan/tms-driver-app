@@ -1,18 +1,21 @@
 package com.samrish.driver.ui
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
+import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.Trip
+import com.samrish.driver.services.LocationService
 import com.samrish.driver.services.SessionStorage
 import com.samrish.driver.services.TripListRequest
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,6 +36,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trip_list)
+        val intent = Intent(this, LocationService::class.java)
+        intent.data = Uri.parse("package:com.techie.tracker")
+        intent.action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+        applicationContext.startForegroundService(intent)
+
     }
 
     override fun onStart() {
