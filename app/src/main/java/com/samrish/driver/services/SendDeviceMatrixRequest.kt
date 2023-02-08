@@ -8,25 +8,22 @@ import java.nio.charset.Charset
 import java.time.LocalDateTime
 
 class SendDeviceMatrixRequest(deviceIdentifier: String,
-                              latitude: String,
-                              longitude: String,
-                              time: LocalDateTime,
+                              latitude: Double,
+                              longitude: Double,
                               url: String,
                               headers: MutableMap<String, String>,
                               listener: Response.Listener<String>,
                               errorListener: Response.ErrorListener
 ) : GenericRequest<String>(Method.POST, url, headers, listener, errorListener) {
 
-    private var deviceIdentifier: String? = null
-    private var latitude: String? = null
-    private var longitude: String? = null
-    private var time: LocalDateTime? = null
+    private var deviceIdentifier: String
+    private var latitude: Double
+    private var longitude: Double
 
     init {
         this.deviceIdentifier = deviceIdentifier
         this.latitude = latitude
         this.longitude = longitude
-        this.time = time
     }
 
     override fun transformResponse(response: NetworkResponse?): String {

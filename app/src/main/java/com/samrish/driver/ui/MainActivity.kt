@@ -16,7 +16,6 @@ import com.samrish.driver.services.LocationService
 import com.samrish.driver.services.SessionStorage
 import com.samrish.driver.services.TripListRequest
 
-
 class MainActivity : AppCompatActivity() {
 
     private var tripList: RecyclerView? = null
