@@ -35,14 +35,7 @@ class TripsAdapter(trips:List<Trip>, private val onItemClick: (Trip) -> Unit) : 
             currentTrip = trip
             tripNameView.text = trip.name
             tripCodeView.text = trip.code
-            tripStatusView.text = when (trip.status) {
-                0 -> "NOT STARTED"
-                1 -> "CHECKED_IN"
-                2 -> "DEPARTED"
-                3 -> "ENDED"
-                4 -> "CANCELLED"
-                else -> "ERROR"
-            }
+            tripStatusView.text = trip.status
         }
     }
 

@@ -3,6 +3,7 @@ package com.samrish.driver.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -16,12 +17,13 @@ import com.samrish.driver.services.*
 
 class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
 
+    private var startButton: AppCompatButton? = null
     private var checkInButton: AppCompatButton? = null
     private var departButton: AppCompatButton? = null
     private var endButton: AppCompatButton? = null
     private var cancelButton: AppCompatButton? = null
 
-    var currentTripCode: String? = null
+    var currentTripCode: String = ""
 
     private fun goToLogin() {
         val changePage = Intent(this.applicationContext, LoginActivity::class.java)
@@ -32,14 +34,16 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         val bundle: Bundle? = intent.extras
         if (bundle != null) {
-            currentTripCode = bundle.getString("TRIP_CODE")
+            currentTripCode = bundle.getString("TRIP_CODE").toString()
         }
         setContentView(R.layout.activity_trip_detail)
+        startButton = findViewById<AppCompatButton>(R.id.trip_detail_btn_start)
         checkInButton = findViewById<AppCompatButton>(R.id.trip_detail_btn_check_in)
         departButton = findViewById<AppCompatButton>(R.id.trip_detail_btn_depart)
         endButton = findViewById<AppCompatButton>(R.id.trip_detail_btn_end)
         cancelButton = findViewById<AppCompatButton>(R.id.trip_detail_btn_cancel)
 
+        startButton?.setOnClickListener(this)
         checkInButton?.setOnClickListener(this)
         departButton?.setOnClickListener(this)
         endButton?.setOnClickListener(this)
@@ -63,7 +67,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
         val authHeader = SessionStorage().getAccessToken(this)
         if(authHeader != null) {
-            hdrs?.put("Authorization", "Bearer $authHeader")
+            hdrs["Authorization"] = "Bearer $authHeader"
         }
 
         val stringRequest = TripDetailRequest(url, hdrs, { response ->
@@ -91,6 +95,23 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
         queue.add(stringRequest)
     }
+
+    private fun start(tripCode: String) {
+        val queue = Volley.newRequestQueue(this)
+        val url = resources.getString(R.string.url_trip_start)
+
+        val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+        val authHeader = SessionStorage().getAccessToken(this)
+        if(authHeader != null) {
+            hdrs?.put("Authorization", "Bearer $authHeader")
+        }
+        val deviceIdentifier = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        val stringRequest = TripStartRequest(tripCode, deviceIdentifier, url, hdrs, { response ->
+                Log.i("TripDetail", "Trip Check-In: $response")
+                getTripDetail()
+            }, { error -> handleError(error) })
+        queue.add(stringRequest)
+    }
     private fun depart() {
         val queue = Volley.newRequestQueue(this)
         val url = resources.getString(R.string.url_trip_depart)
@@ -98,7 +119,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
         val authHeader = SessionStorage().getAccessToken(this)
         if(authHeader != null) {
-            hdrs?.put("Authorization", "Bearer $authHeader")
+            hdrs["Authorization"] = "Bearer $authHeader"
         }
 
         val stringRequest = currentTripCode?.let {
@@ -116,7 +137,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
         val authHeader = SessionStorage().getAccessToken(this)
         if(authHeader != null) {
-            hdrs?.put("Authorization", "Bearer $authHeader")
+            hdrs["Authorization"] = "Bearer $authHeader"
         }
 
         val stringRequest = currentTripCode?.let {
@@ -134,7 +155,7 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
         val authHeader = SessionStorage().getAccessToken(this)
         if(authHeader != null) {
-            hdrs?.put("Authorization", "Bearer $authHeader")
+            hdrs["Authorization"] = "Bearer $authHeader"
         }
 
         val stringRequest = currentTripCode?.let {
@@ -150,31 +171,42 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
         findViewById<TextView>(R.id.trip_detail_name).text = trip.name
         findViewById<TextView>(R.id.trip_detail_code).text = trip.code
         when(trip.status) {
-            0 -> {
+            "NOT_STARTED" -> {
                 findViewById<TextView>(R.id.trip_detail_status).text = "NOT STARTED"
+                startButton?.visibility = View.VISIBLE
+                checkInButton?.visibility = View.GONE
+                departButton?.visibility = View.GONE
+                endButton?.visibility = View.GONE
+                cancelButton?.visibility = View.VISIBLE
+            }
+            "STARTED" -> {
+                findViewById<TextView>(R.id.trip_detail_status).text = "STARTED"
+                startButton?.visibility = View.GONE
                 checkInButton?.visibility = View.VISIBLE
                 departButton?.visibility = View.GONE
                 endButton?.visibility = View.GONE
                 cancelButton?.visibility = View.VISIBLE
             }
-            1 -> {
+            "CHECKED_IN" -> {
                 findViewById<TextView>(R.id.trip_detail_status).text = "CHECKED-IN"
+                startButton?.visibility = View.GONE
                 checkInButton?.visibility = View.GONE
                 departButton?.visibility = View.VISIBLE
                 endButton?.visibility = View.VISIBLE
                 cancelButton?.visibility = View.VISIBLE
             }
-            2 -> {
-                findViewById<TextView>(R.id.trip_detail_status).text = "DEPARTED"
+            "IN_TRANSIT" -> {
+                findViewById<TextView>(R.id.trip_detail_status).text = "IN_TRANSIT"
+                startButton?.visibility = View.GONE
                 checkInButton?.visibility = View.VISIBLE
                 departButton?.visibility = View.GONE
                 endButton?.visibility = View.VISIBLE
                 cancelButton?.visibility = View.VISIBLE
             }
-            3 -> {
+            "ENDED" -> {
                 findViewById<TextView>(R.id.trip_detail_status).text = "ENDED"
             }
-            4 -> {
+            "CANCELLED" -> {
                 findViewById<TextView>(R.id.trip_detail_status).text = "CANCELLED"
             }
             else -> {
@@ -186,6 +218,10 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(btn: View?) {
         if (btn != null) {
             when(btn.id){
+                R.id.trip_detail_btn_start -> {
+                    Log.i("TripDetail", "Start clicked")
+                    start(currentTripCode)
+                }
                 R.id.trip_detail_btn_check_in -> {
                     Log.i("TripDetail", "Check In clicked")
                     checkIn()

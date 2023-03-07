@@ -27,7 +27,7 @@ class TripListRequest(
             var tr: Trip = Trip(
                 t.get("tripName") as String?,
                 t.get("tripCode") as String?,
-                t.get("status") as Int?
+                t.get("status") as String?
             )
             mutableList.add(tr)
         }
