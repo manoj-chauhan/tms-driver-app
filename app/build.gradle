@@ -30,6 +30,7 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     namespace 'com.samrish.driver'
+    buildToolsVersion '33.0.0'
 
 }
 
@@ -50,4 +51,17 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.liveDataVersion"
 
     implementation("com.android.volley:volley:$rootProject.volleyVersion")
+
+    // Kotlin
+    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.nav_version"
+
+    // Feature module Support
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$rootProject.nav_version"
+
+    // Testing Navigation
+    androidTestImplementation "androidx.navigation:navigation-testing:$rootProject.nav_version"
+
+    // Jetpack Compose Integration
+    implementation "androidx.navigation:navigation-compose:$rootProject.nav_version"
 }
