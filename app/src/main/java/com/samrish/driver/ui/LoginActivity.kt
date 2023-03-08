@@ -13,7 +13,6 @@ import com.android.volley.*
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
-import com.samrish.driver.models.Trip
 import com.samrish.driver.services.RegisterDeviceRequest
 import com.samrish.driver.services.SessionStorage
 import org.json.JSONObject
