@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.samrish.driver.R
@@ -21,7 +22,14 @@ class LandingActivity : AppCompatActivity() {
             when(it.itemId) {
                 R.id.tab_assignments -> {
                     var hostController = fragContainerView.findNavController() as NavHostController
-                    hostController.navigate(R.id.exampleFragment)
+                    hostController.navigate(
+                        R.id.exampleFragment,
+                        null,
+                        NavOptions.Builder().setLaunchSingleTop(true).setPopUpTo(
+                            R.id.exampleFragment,
+                            inclusive = true,
+                            saveState = true).build()
+                    )
                 }
                 R.id.tab_history -> {
                     var hostController = fragContainerView.findNavController() as NavHostController
