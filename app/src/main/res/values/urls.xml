@@ -2,7 +2,7 @@
 <!DOCTYPE resources [<!ENTITY baseUrl "https://api.samrish.com">]>
 <resources>
     <string name="url_login">&baseUrl;/auth/login</string>
-    <string name="url_trips_list">&baseUrl;/trips</string>
+    <string name="url_trips_list">&baseUrl;/trips/assigned-to-driver</string>
     <string name="url_trips_detail">&baseUrl;/trips/</string>
     <string name="url_trip_start">&baseUrl;/trips/start</string>
     <string name="url_trip_check_in">&baseUrl;/trips/check-in</string>
