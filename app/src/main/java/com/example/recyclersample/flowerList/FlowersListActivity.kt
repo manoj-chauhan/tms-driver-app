@@ -78,6 +78,7 @@ class FlowersListActivity : AppCompatActivity() {
         startActivityForResult(intent, newFlowerActivityRequestCode)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
         super.onActivityResult(requestCode, resultCode, intentData)
 
