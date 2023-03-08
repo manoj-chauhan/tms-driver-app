@@ -7,6 +7,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavHostController
 import androidx.navigation.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.samrish.driver.R
 
 class LandingActivity : AppCompatActivity() {
@@ -14,14 +15,23 @@ class LandingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_landing)
-        val btn  = findViewById<AppCompatButton>(R.id.test_btn)
+        val bottomNavigationView  = findViewById<BottomNavigationView>(R.id.bottom_tab_view)
         val fragContainerView  = findViewById<FragmentContainerView>(R.id.nav_host_fragment)
-        Log.i("Samrish", "Button $btn")
-        btn?.setOnClickListener {
-            var hostController = fragContainerView.findNavController() as NavHostController
-            Log.i("Samrish", "On Button Clicked $hostController")
-            hostController.navigate(R.id.action_exampleFragment_to_example2Fragment)
-        };
+        bottomNavigationView.setOnItemSelectedListener {
+            when(it.itemId) {
+                R.id.tab_assignments -> {
+                    var hostController = fragContainerView.findNavController() as NavHostController
+                    hostController.navigate(R.id.exampleFragment)
+                }
+                R.id.tab_history -> {
+                    var hostController = fragContainerView.findNavController() as NavHostController
+                    hostController.navigate(R.id.example2Fragment)
+                }
+                else -> {
+                    Log.i("Samrish", "Nothing")
+                }
+            }
+            true
+        }
     }
-
 }
