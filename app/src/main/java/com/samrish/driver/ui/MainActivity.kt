@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_landing)
+        setContentView(R.layout.activity_main)
         val bottomNavigationView  = findViewById<BottomNavigationView>(R.id.bottom_tab_view)
         val fragContainerView  = findViewById<FragmentContainerView>(R.id.nav_host_fragment)
         bottomNavigationView.setOnItemSelectedListener {

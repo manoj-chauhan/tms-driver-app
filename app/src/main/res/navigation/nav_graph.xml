@@ -5,7 +5,7 @@
     app:startDestination="@id/exampleFragment">
     <fragment
         android:id="@+id/exampleFragment"
-        android:name="com.samrish.driver.ui.fragments.ExampleFragment"
+        android:name="com.samrish.driver.ui.fragments.CurrentAssignmentsFragment"
         android:label="ExampleFragment" >
         <action
             android:id="@+id/action_exampleFragment_to_example2Fragment"
@@ -13,6 +13,6 @@
     </fragment>
     <fragment
         android:id="@+id/example2Fragment"
-        android:name="com.samrish.driver.ui.fragments.Example2Fragment"
+        android:name="com.samrish.driver.ui.fragments.HistoryFragment"
         android:label="Example2Fragment" />
 </navigation>
