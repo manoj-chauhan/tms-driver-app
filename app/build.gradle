@@ -55,6 +55,7 @@ dependencies {
     // Kotlin
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$rootProject.nav_version"
+//    implementation "androidx.navigation:navigation-safe-args-gradle-plugin:$rootProject.nav_version"
 
     // Feature module Support
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$rootProject.nav_version"

@@ -6,5 +6,13 @@
     <fragment
         android:id="@+id/exampleFragment"
         android:name="com.samrish.driver.ui.fragments.ExampleFragment"
-        android:label="ExampleFragment" />
+        android:label="ExampleFragment" >
+        <action
+            android:id="@+id/action_exampleFragment_to_example2Fragment"
+            app:destination="@id/example2Fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/example2Fragment"
+        android:name="com.samrish.driver.ui.fragments.Example2Fragment"
+        android:label="Example2Fragment" />
 </navigation>
