@@ -1,6 +1,5 @@
 package com.samrish.driver.ui.fragments
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -9,14 +8,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import com.android.volley.*
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.Trip
 import com.samrish.driver.services.*
 
-class TripDetailFragment : Fragment(R.layout.activity_trip_detail), View.OnClickListener {
+class TripDetailFragment : Fragment(R.layout.fragment_trip_detail), View.OnClickListener {
 
     private var startButton: AppCompatButton? = null
     private var checkInButton: AppCompatButton? = null
