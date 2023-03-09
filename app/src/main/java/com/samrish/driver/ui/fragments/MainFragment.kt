@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
@@ -16,25 +17,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        goToCurrentAssignments()
         val bottomNavigationView  = view.findViewById<BottomNavigationView>(R.id.bottom_tab_view)
-        val fragContainerView  = view.findViewById<FragmentContainerView>(R.id.nav_host_fragment)
         bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.tab_assignments -> {
-                    val hostController = fragContainerView.findNavController() as NavHostController
-                    hostController.navigate(
-                        R.id.currentAssignmentsFragment,
-                        null,
-                        NavOptions.Builder().setLaunchSingleTop(true).setPopUpTo(
-                            R.id.currentAssignmentsFragment,
-                            inclusive = true,
-                            saveState = true).build()
-                    )
+                   goToCurrentAssignments()
                 }
                 R.id.tab_history -> {
-                    val hostController = fragContainerView.findNavController() as NavHostController
-                    hostController.navigate(R.id.example2Fragment)
+                    goToHistory()
                 }
                 else -> {
                     Log.i("Samrish", "Nothing")
@@ -43,4 +34,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             true
         }
     }
+
+    private fun goToCurrentAssignments() {
+        val ft: FragmentTransaction = (host as AppCompatActivity).supportFragmentManager.beginTransaction()
+        ft.replace(R.id.nav_host_fragment, CurrentAssignmentsFragment(), "CurrentAssignmentsFragment")
+        ft.commitAllowingStateLoss()
+    }
+
+    private fun goToHistory() {
+        val ft: FragmentTransaction = (host as AppCompatActivity).supportFragmentManager.beginTransaction()
+        ft.replace(R.id.nav_host_fragment, HistoryFragment(), "HistoryFragment")
+        ft.commitAllowingStateLoss()
+    }
+
 }
