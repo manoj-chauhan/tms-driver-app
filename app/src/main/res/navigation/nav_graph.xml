@@ -18,5 +18,11 @@
     <fragment
         android:id="@+id/tripDetailFragment2"
         android:name="com.samrish.driver.ui.fragments.TripDetailFragment"
-        android:label="TripDetailFragment" />
+        android:label="TripDetailFragment" >
+        <action
+            android:id="@+id/navigateToLogin"
+            app:destination="@id/loginFragment2"
+            app:popUpTo="@id/mainFragment2"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>
