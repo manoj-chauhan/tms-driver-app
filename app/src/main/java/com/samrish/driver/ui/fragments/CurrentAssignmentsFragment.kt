@@ -20,7 +20,6 @@ import com.samrish.driver.models.Trip
 import com.samrish.driver.services.LocationService
 import com.samrish.driver.services.SessionStorage
 import com.samrish.driver.services.TripListRequest
-import com.samrish.driver.ui.TripDetailActivity
 import com.samrish.driver.ui.TripsAdapter
 
 class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignments) {
@@ -35,7 +34,7 @@ class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignment
     }
 
     private fun onTripSelected(trip: Trip) {
-        val intent = Intent(this.context, TripDetailActivity()::class.java)
+        val intent = Intent(this.context, TripDetailFragment()::class.java)
         intent.putExtra("TRIP_CODE", trip.code)
         startActivity(intent)
     }
