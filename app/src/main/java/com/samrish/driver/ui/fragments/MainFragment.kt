@@ -37,13 +37,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun goToCurrentAssignments() {
         val ft: FragmentTransaction = (host as AppCompatActivity).supportFragmentManager.beginTransaction()
-        ft.replace(R.id.nav_host_fragment, CurrentAssignmentsFragment(), "CurrentAssignmentsFragment")
+        ft.replace(R.id.tab_host_fragment, CurrentAssignmentsFragment(), "CurrentAssignmentsFragment")
         ft.commitAllowingStateLoss()
     }
 
     private fun goToHistory() {
         val ft: FragmentTransaction = (host as AppCompatActivity).supportFragmentManager.beginTransaction()
-        ft.replace(R.id.nav_host_fragment, HistoryFragment(), "HistoryFragment")
+        ft.replace(R.id.tab_host_fragment, HistoryFragment(), "HistoryFragment")
         ft.commitAllowingStateLoss()
     }
 

@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavHostController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.Volley
@@ -29,19 +30,19 @@ class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignment
     private var tripList: RecyclerView? = null
 
     private fun goToLogin() {
-        val navHostFragment = (host as AppCompatActivity).findViewById<FragmentContainerView>(R.id.nav_host_fragment)
-        var hostController = navHostFragment.findNavController() as NavHostController
-        hostController.navigate(R.id.loginFragment)
+//        val navHostFragment = (host as AppCompatActivity).findViewById<FragmentContainerView>(R.id.nav_host_fragment)
+//        var hostController = navHostFragment.findNavController() as NavHostController
+//        hostController.navigate(R.id.loginFragment)
     }
 
     private fun goToTripDetail(tripCode: String) {
-        val ft: FragmentTransaction = (host as AppCompatActivity).supportFragmentManager.beginTransaction()
-        val frag = TripDetailFragment()
         var extras = Bundle()
         extras.putString("TRIP_CODE", tripCode)
-        frag.arguments = extras
-        ft.add(R.id.main_view, frag, "TripDetailFragment")
-        ft.commit()
+
+        val fragContainerView  = (host as AppCompatActivity).findViewById<FragmentContainerView>(R.id.nav_host_frag)
+        var hostController = fragContainerView.findNavController() as NavHostController
+        hostController.navigate(R.id.navigateToTripDetail,extras)
+
     }
 
 

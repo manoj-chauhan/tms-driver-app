@@ -28,9 +28,9 @@ class LoginFragment : Fragment(R.layout.fragment_login), View.OnClickListener {
     private lateinit var editTextPassword: AppCompatEditText
 
     private fun goToMain() {
-        val ft: FragmentTransaction = (host as AppCompatActivity).supportFragmentManager.beginTransaction()
-        ft.replace(R.id.main_view, MainFragment(), "MainFragment")
-        ft.commitAllowingStateLoss()
+//        val ft: FragmentTransaction = (host as AppCompatActivity).supportFragmentManager.beginTransaction()
+//        ft.replace(R.id.main_view, MainFragment(), "MainFragment")
+//        ft.commitAllowingStateLoss()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

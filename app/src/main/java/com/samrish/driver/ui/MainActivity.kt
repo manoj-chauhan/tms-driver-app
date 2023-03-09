@@ -27,15 +27,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToLogin() {
-        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.main_view, LoginFragment(), "LoginFragment")
-        ft.commitAllowingStateLoss()
+//        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+//        ft.replace(R.id.main_view, LoginFragment(), "LoginFragment")
+//        ft.commitAllowingStateLoss()
     }
 
     private fun goToMain() {
-        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.main_view, MainFragment(), "MainFragment")
-        ft.commitAllowingStateLoss()
+//        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+//        ft.replace(R.id.main_view, MainFragment(), "MainFragment")
+//        ft.commitAllowingStateLoss()
     }
 
 }
