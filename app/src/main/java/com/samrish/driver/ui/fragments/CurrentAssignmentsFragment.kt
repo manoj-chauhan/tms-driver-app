@@ -52,7 +52,6 @@ class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignment
         if ("" == this.context?.let { SessionStorage().getAccessToken(it) }) {
             goToLogin()
         }
-        super.onResume()
         tripList = view?.findViewById<RecyclerView>(R.id.trip_list)
         getTrips()
 
@@ -65,7 +64,7 @@ class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignment
         val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
         val authHeader = this.context?.let { SessionStorage().getAccessToken(it) }
         if(authHeader != null) {
-            hdrs?.put("Authorization", "Bearer $authHeader")
+            hdrs["Authorization"] = "Bearer $authHeader"
         }
 
         val stringRequest = TripListRequest(url, hdrs, { response ->

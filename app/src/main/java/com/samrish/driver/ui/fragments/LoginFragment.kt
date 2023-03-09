@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavHostController
 import androidx.navigation.findNavController
 import com.android.volley.Request
@@ -27,9 +28,9 @@ class LoginFragment : Fragment(R.layout.fragment_login), View.OnClickListener {
     private lateinit var editTextPassword: AppCompatEditText
 
     private fun goToMain() {
-        val navHostFragment = (host as AppCompatActivity).findViewById<FragmentContainerView>(R.id.nav_host_fragment)
-        val hostController = navHostFragment.findNavController() as NavHostController
-        hostController.navigate(R.id.currentAssignmentsFragment)
+        val ft: FragmentTransaction = (host as AppCompatActivity).supportFragmentManager.beginTransaction()
+        ft.replace(R.id.main_view, MainFragment(), "MainFragment")
+        ft.commitAllowingStateLoss()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

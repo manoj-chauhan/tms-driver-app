@@ -14,6 +14,6 @@ class SessionStorage {
         editor.apply()
     }
     fun getAccessToken(context:Context): String? {
-        return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getString(authTokenKey, "")
+        return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getString(authTokenKey, null)
     }
 }
