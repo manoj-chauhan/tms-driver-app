@@ -26,8 +26,8 @@ class TripDetailActivity : AppCompatActivity(), View.OnClickListener {
     var currentTripCode: String = ""
 
     private fun goToLogin() {
-        val changePage = Intent(this.applicationContext, LoginActivity::class.java)
-        startActivity(changePage)
+//        val changePage = Intent(this.applicationContext, LoginActivity::class.java)
+//        startActivity(changePage)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

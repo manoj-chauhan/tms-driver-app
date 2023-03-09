@@ -7,7 +7,11 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
+import androidx.navigation.NavHostController
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.Volley
@@ -16,18 +20,18 @@ import com.samrish.driver.models.Trip
 import com.samrish.driver.services.LocationService
 import com.samrish.driver.services.SessionStorage
 import com.samrish.driver.services.TripListRequest
-import com.samrish.driver.ui.LoginActivity
 import com.samrish.driver.ui.TripDetailActivity
 import com.samrish.driver.ui.TripsAdapter
 
-class CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignments) {
+class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignments) {
 
 
     private var tripList: RecyclerView? = null
 
     private fun goToLogin() {
-        val changePage = Intent(this.context, LoginActivity::class.java)
-        startActivity(changePage)
+        val navHostFragment = (host as AppCompatActivity).findViewById<FragmentContainerView>(R.id.nav_host_fragment)
+        var hostController = navHostFragment.findNavController() as NavHostController
+        hostController.navigate(R.id.loginFragment)
     }
 
     private fun onTripSelected(trip: Trip) {

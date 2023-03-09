@@ -22,10 +22,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.tab_assignments -> {
                     var hostController = fragContainerView.findNavController() as NavHostController
                     hostController.navigate(
-                        R.id.exampleFragment,
+                        R.id.currentAssignmentsFragment,
                         null,
                         NavOptions.Builder().setLaunchSingleTop(true).setPopUpTo(
-                            R.id.exampleFragment,
+                            R.id.currentAssignmentsFragment,
                             inclusive = true,
                             saveState = true).build()
                     )
