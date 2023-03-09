@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavHostController
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -33,10 +34,22 @@ class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignment
         hostController.navigate(R.id.loginFragment)
     }
 
+    private fun goToTripDetail(tripCode: String) {
+        val ft: FragmentTransaction = (host as AppCompatActivity).supportFragmentManager.beginTransaction()
+        val frag = TripDetailFragment()
+        var extras = Bundle()
+        extras.putString("TRIP_CODE", tripCode)
+        frag.arguments = extras
+        ft.add(R.id.main_view, frag, "TripDetailFragment")
+        ft.commit()
+    }
+
+
     private fun onTripSelected(trip: Trip) {
-        val intent = Intent(this.context, TripDetailFragment()::class.java)
-        intent.putExtra("TRIP_CODE", trip.code)
-        startActivity(intent)
+        trip?.code?.let { goToTripDetail(it) }
+//        val intent = Intent(this.context, TripDetailFragment()::class.java)
+//        intent.putExtra("TRIP_CODE", trip.code)
+//        startActivity(intent)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -33,7 +33,7 @@ class TripDetailFragment : Fragment(R.layout.activity_trip_detail), View.OnClick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        currentTripCode = savedInstanceState?.getString("TRIP_CODE").toString()
+        currentTripCode = arguments?.getString("TRIP_CODE").toString()
         startButton = view.findViewById<AppCompatButton>(R.id.trip_detail_btn_start)
         checkInButton = view.findViewById<AppCompatButton>(R.id.trip_detail_btn_check_in)
         departButton = view.findViewById<AppCompatButton>(R.id.trip_detail_btn_depart)
