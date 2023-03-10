@@ -28,6 +28,10 @@ class LoginFragment : Fragment(R.layout.fragment_login), View.OnClickListener {
     private lateinit var editTextPassword: AppCompatEditText
 
     private fun goToMain() {
+        val fragContainerView  = (host as AppCompatActivity).findViewById<FragmentContainerView>(R.id.nav_host_frag)
+        var hostController = fragContainerView.findNavController() as NavHostController
+        hostController.navigate(R.id.action_loginFragment2_to_mainFragment2)
+
 //        val ft: FragmentTransaction = (host as AppCompatActivity).supportFragmentManager.beginTransaction()
 //        ft.replace(R.id.main_view, MainFragment(), "MainFragment")
 //        ft.commitAllowingStateLoss()
