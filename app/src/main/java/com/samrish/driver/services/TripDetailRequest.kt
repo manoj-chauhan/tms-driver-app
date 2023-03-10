@@ -18,6 +18,6 @@ class TripDetailRequest(url: String,
             Charset.forName(HttpHeaderParser.parseCharset(response?.headers)))
 
         var t = JSONObject(responseBody)
-        return Trip(t.get("tripName") as String?, t.get("tripCode") as String?, t.get("status") as String?)
+        return Trip(t.get("tripName") as String, t.get("tripCode") as String, t.get("status") as String)
     }
 }

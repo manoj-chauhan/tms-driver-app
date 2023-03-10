@@ -25,9 +25,9 @@ class TripListRequest(
         for (i in 0 until trips.length()) {
             var t: JSONObject = trips.getJSONObject(i)
             var tr: Trip = Trip(
-                t.get("tripName") as String?,
-                t.get("tripCode") as String?,
-                t.get("status") as String?
+                t.get("tripName") as String,
+                t.get("tripCode") as String,
+                t.get("status") as String
             )
             mutableList.add(tr)
         }

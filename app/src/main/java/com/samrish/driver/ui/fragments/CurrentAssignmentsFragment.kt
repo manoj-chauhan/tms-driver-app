@@ -1,33 +1,41 @@
 package com.samrish.driver.ui.fragments
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavHostController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.Trip
-import com.samrish.driver.services.LocationService
 import com.samrish.driver.services.SessionStorage
 import com.samrish.driver.services.TripListRequest
-import com.samrish.driver.ui.TripsAdapter
 
-class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignments) {
+class  CurrentAssignmentsFragment: Fragment() {
 
 
     private var tripList: RecyclerView? = null
+    private  var tList = mutableStateListOf<Trip>()
 
     private fun goToLogin() {
 //        val navHostFragment = (host as AppCompatActivity).findViewById<FragmentContainerView>(R.id.nav_host_fragment)
@@ -53,23 +61,36 @@ class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignment
 //        startActivity(intent)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val intent = Intent(this.context, LocationService::class.java)
-        intent.data = Uri.parse("package:com.techie.tracker")
-        intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-        context?.startForegroundService(intent)
-    }
-
     override fun onStart() {
         if ("" == this.context?.let { SessionStorage().getAccessToken(it) }) {
             goToLogin()
+        }else {
+            getTrips()
         }
-        tripList = view?.findViewById<RecyclerView>(R.id.trip_list)
-        getTrips()
-
         super.onStart()
     }
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return ComposeView(requireContext()).apply {
+            // Dispose the Composition when viewLifecycleOwner is destroyed
+            setViewCompositionStrategy(
+                ViewCompositionStrategy.DisposeOnLifecycleDestroyed(viewLifecycleOwner)
+            )
+
+            setContent {
+                AssignmentList(
+                    tripList = tList
+                )
+            }
+        }
+    }
+
+
     private fun getTrips() {
         val queue = Volley.newRequestQueue(this.context)
         val url = resources.getString(R.string.url_trips_list)
@@ -81,7 +102,8 @@ class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignment
         }
 
         val stringRequest = TripListRequest(url, hdrs, { response ->
-            tripList?.adapter = TripsAdapter(response) { trip: Trip -> onTripSelected(trip) }
+            tList.addAll(response)
+//            tripList?.adapter = TripsAdapter(response) { trip: Trip -> onTripSelected(trip) }
         }, { error ->
             run {
                 tripList?.adapter = null
@@ -101,4 +123,61 @@ class  CurrentAssignmentsFragment: Fragment(R.layout.fragment_current_assignment
         })
         queue.add(stringRequest)
     }
+}
+
+@Composable
+fun Assignment(trip: Trip) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "3465464"
+                )
+                Text(
+                    text = "25 Jun 23 03:00",
+                    color = Color.Gray
+                )
+                Text(
+                    text = "STARTED",
+                    color = Color.Green
+                )
+            }
+            Row() {
+                Text(
+                    text = trip.name
+                )
+
+            }
+
+        }
+    }
+}
+
+
+@Composable
+fun AssignmentList(tripList: List<Trip>) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        tripList.forEach { trip -> Assignment(trip) }
+    }
+}
+
+@Preview
+@Composable
+fun AssignmentListPreview() {
+    AssignmentList(tripList = listOf(
+        Trip("BH4-BH5-BH6","34456456", "STARTED"),
+        Trip("BH4-BH5-BH6","34456457", "NOT STARTED"),
+    ))
 }
