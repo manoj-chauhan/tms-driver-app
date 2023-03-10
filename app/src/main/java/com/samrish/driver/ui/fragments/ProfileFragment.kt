@@ -33,19 +33,19 @@ class ProfileFragment : Fragment() {
             )
 
             setContent {
-                PersonalDetail()
+                 TripList(tripList = listOf("BH4-BH5-BH6", "BH4-BH5-BH6", "BH4-BH5-BH6", "BH4-BH5-BH6"))
             }
         }
     }
 }
 
+
 @Composable
-fun PersonalDetail() {
-    Card(modifier = Modifier.padding(20.dp)) {
-        Column(modifier = Modifier.padding(20.dp)) {
+fun PersonalDetail(trip: String) {
+    Card(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Manoj Chauhan",
-                modifier = Modifier.padding(10.dp),
+                text = trip,
                 color = Color(0xFFE90202)
             )
         }
@@ -53,8 +53,15 @@ fun PersonalDetail() {
 }
 
 
+@Composable
+fun TripList(tripList: List<String>) {
+    Column {
+        tripList.forEach { trip -> PersonalDetail(trip) }
+    }
+}
+
 @Preview
 @Composable
-fun PersonalDetailPreview() {
-    PersonalDetail()
+fun TripListPreview() {
+    TripList(tripList = listOf("BH4-BH5-BH6", "BH4-BH5-BH6", "BH4-BH5-BH6", "BH4-BH5-BH6"))
 }
