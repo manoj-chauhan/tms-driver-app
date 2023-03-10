@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
@@ -84,7 +85,10 @@ class  CurrentAssignmentsFragment: Fragment() {
 
             setContent {
                 AssignmentList(
-                    tripList = tList
+                    tripList = tList,
+                    onAssignmentClick = {
+                        onTripSelected(it)
+                    }
                 )
             }
         }
@@ -126,11 +130,14 @@ class  CurrentAssignmentsFragment: Fragment() {
 }
 
 @Composable
-fun Assignment(trip: Trip) {
+fun Assignment(trip: Trip, onClick: (trip: Trip) -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
+            .clickable {
+                onClick(trip)
+            }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -154,7 +161,6 @@ fun Assignment(trip: Trip) {
                 Text(
                     text = trip.name
                 )
-
             }
 
         }
@@ -163,13 +169,13 @@ fun Assignment(trip: Trip) {
 
 
 @Composable
-fun AssignmentList(tripList: List<Trip>) {
+fun AssignmentList(tripList: List<Trip>, onAssignmentClick: (trip: Trip) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        tripList.forEach { trip -> Assignment(trip) }
+        tripList.forEach { trip -> Assignment(trip, onAssignmentClick) }
     }
 }
 
@@ -179,5 +185,5 @@ fun AssignmentListPreview() {
     AssignmentList(tripList = listOf(
         Trip("BH4-BH5-BH6","34456456", "STARTED"),
         Trip("BH4-BH5-BH6","34456457", "NOT STARTED"),
-    ))
+    ), onAssignmentClick = {})
 }
