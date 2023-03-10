@@ -36,4 +36,8 @@
             app:popUpTo="@id/mainFragment2"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment2"
+        android:name="com.samrish.driver.ui.fragments.ProfileFragment"
+        android:label="ProfileFragment" />
 </navigation>
