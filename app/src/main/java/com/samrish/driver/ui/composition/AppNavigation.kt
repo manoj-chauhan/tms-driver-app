@@ -27,7 +27,7 @@ fun AppNavigationHost(
         composable(
             "login"
         ) {
-            Login()
+            Login(navController = navController)
         }
     }
 }
