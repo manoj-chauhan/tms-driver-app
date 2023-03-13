@@ -14,17 +14,24 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.samrish.driver.models.Trip
+import com.samrish.driver.services.SessionStorage
 
 
 @Composable
 fun AppNavigationHost(
     navController: NavHostController
 ) {
-    val activity = (LocalContext.current as Activity)
     var selectedAssignmentCode by remember {
         mutableStateOf("")
     }
-    NavHost(navController = navController, startDestination = "login") {
+
+    var startScreen:String = "login"
+
+    SessionStorage().getAccessToken(LocalContext.current)?.let {
+        startScreen = "home"
+    }
+
+    NavHost(navController = navController, startDestination = startScreen) {
         composable("home") {
             TabScreen(
                 navController = navController,

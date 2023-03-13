@@ -1,5 +1,6 @@
 package com.samrish.driver.ui.composition
 
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +28,12 @@ fun AssignmentDetail(
     );
 
     x.value?.let {
-        Text(text = "${it.name} (${it.code}) ${it.status}")
+        Card() {
+            Text(text = "($it.code}")
+            Text(text = "${it.name}")
+            Text(text = "${it.status}")
+
+        }
     }
 
 }
