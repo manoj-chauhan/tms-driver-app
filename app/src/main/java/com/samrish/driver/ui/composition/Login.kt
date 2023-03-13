@@ -1,13 +1,11 @@
 package com.samrish.driver.ui.composition
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -23,12 +21,12 @@ fun Login(
         Box(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .height(200.dp)
+                .height(400.dp)
                 .fillMaxWidth()
         ) {
             Text(
                 modifier = Modifier.align(Alignment.Center),
-                text = "DRISHTO",
+                text = "EcomExpress",
                 fontSize = 60.sp,
                 color = Color.White
             )
@@ -44,18 +42,23 @@ fun Login(
             var password by remember {
                 mutableStateOf("")
             }
-            Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                Column() {
+            Box(
+                modifier=Modifier.fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(modifier = Modifier.padding(48.dp).fillMaxWidth(),) {
                     TextField(
+                        modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(),
                         label = { Text(text = "Username") },
                         value = username, onValueChange = { username = it }
                     )
                     TextField(
+                        modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(),
                         label = { Text(text = "Password") },
                         value = password, onValueChange = { password = it }
                     )
                     Button(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp).fillMaxWidth(),
                         onClick = {
                             navController.navigate(
                                 "home",
@@ -63,7 +66,7 @@ fun Login(
                             )
                         }
                     ) {
-                        Text(text = "Click Me")
+                        Text(text = "Login")
                     }
                 }
             }
