@@ -12,11 +12,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.samrish.driver.models.Trip
 import getTrips
 
 @Composable
-fun Assignments() {
+fun Assignments(
+    navController: NavHostController
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -27,11 +30,14 @@ fun Assignments() {
         }
 
         getTrips(LocalContext.current, onTripsFetched = {
+            tripList.clear()
             tripList.addAll(it)
         })
         AssignmentList(
             tripList = tripList,
-            onAssignmentClick = {}
+            onAssignmentClick = {
+                navController.navigate("assignments/detail")
+            }
         )
         Text(text = "")
     }

@@ -22,19 +22,28 @@ fun AppNavigationHost(
     val activity = (LocalContext.current as Activity)
     NavHost(navController = navController, startDestination = "login") {
         composable("home") {
-            TabScreen()
+            TabScreen(
+                navController = navController
+            )
         }
         composable(
             "login"
         ) {
             Login(navController = navController)
         }
+        composable(
+            "assignments/detail"
+        ) {
+            AssignmentDetail()
+        }
     }
 }
 
 
 @Composable
-fun TabScreen() {
+fun TabScreen(
+    navController: NavHostController
+) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -44,7 +53,9 @@ fun TabScreen() {
 
         when(selectedTab) {
             1 -> {
-                Assignments()
+                Assignments(
+                    navController = navController
+                )
             }
             2 -> {
                 History()
