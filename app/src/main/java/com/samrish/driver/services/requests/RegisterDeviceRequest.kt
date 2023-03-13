@@ -1,4 +1,4 @@
-package com.samrish.driver.services
+package com.samrish.driver.services.requests
 
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
@@ -6,17 +6,20 @@ import com.android.volley.toolbox.HttpHeaderParser
 import org.json.JSONObject
 import java.nio.charset.Charset
 
-class TripEndRequest(tripCode: String,
-                     url: String,
-                     headers: MutableMap<String, String>,
-                     listener: Response.Listener<String>,
-                     errorListener: Response.ErrorListener
+class RegisterDeviceRequest(deviceIdentifier: String,
+                            deviceName: String,
+                            url: String,
+                            headers: MutableMap<String, String>,
+                            listener: Response.Listener<String>,
+                            errorListener: Response.ErrorListener
 ) : GenericRequest<String>(Method.POST, url, headers, listener, errorListener) {
 
-    private var tripCode: String? = null
+    private var deviceIdentifier: String? = null
+    private var deviceName: String? = null
 
     init {
-        this.tripCode = tripCode
+        this.deviceIdentifier = deviceIdentifier
+        this.deviceName = deviceName
     }
 
     override fun transformResponse(response: NetworkResponse?): String {
@@ -31,7 +34,9 @@ class TripEndRequest(tripCode: String,
 
     override fun getBody(): ByteArray? {
         var body: JSONObject = JSONObject()
-        body.put("tripCode", tripCode)
+        body.put("deviceIdentifier", deviceIdentifier)
+        body.put("deviceName", deviceName)
+        body.put("typeCode", "ANDROID")
         return body.toString().encodeToByteArray()
     }
 }

@@ -1,25 +1,29 @@
-package com.samrish.driver.services
+package com.samrish.driver.services.requests
 
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
 import org.json.JSONObject
 import java.nio.charset.Charset
+import java.time.LocalDateTime
 
-class RegisterDeviceRequest(deviceIdentifier: String,
-                            deviceName: String,
-                            url: String,
-                            headers: MutableMap<String, String>,
-                            listener: Response.Listener<String>,
-                            errorListener: Response.ErrorListener
+class SendDeviceMatrixRequest(deviceIdentifier: String,
+                              latitude: Double,
+                              longitude: Double,
+                              url: String,
+                              headers: MutableMap<String, String>,
+                              listener: Response.Listener<String>,
+                              errorListener: Response.ErrorListener
 ) : GenericRequest<String>(Method.POST, url, headers, listener, errorListener) {
 
-    private var deviceIdentifier: String? = null
-    private var deviceName: String? = null
+    private var deviceIdentifier: String
+    private var latitude: Double
+    private var longitude: Double
 
     init {
         this.deviceIdentifier = deviceIdentifier
-        this.deviceName = deviceName
+        this.latitude = latitude
+        this.longitude = longitude
     }
 
     override fun transformResponse(response: NetworkResponse?): String {
@@ -35,8 +39,9 @@ class RegisterDeviceRequest(deviceIdentifier: String,
     override fun getBody(): ByteArray? {
         var body: JSONObject = JSONObject()
         body.put("deviceIdentifier", deviceIdentifier)
-        body.put("deviceName", deviceName)
-        body.put("typeCode", "ANDROID")
+        body.put("latitude", this.latitude)
+        body.put("longitude", this.longitude)
+        body.put("time", LocalDateTime.now())
         return body.toString().encodeToByteArray()
     }
 }

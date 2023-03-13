@@ -1,4 +1,4 @@
-package com.samrish.driver.services
+package com.samrish.driver.services.requests
 
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
@@ -6,11 +6,11 @@ import com.android.volley.toolbox.HttpHeaderParser
 import org.json.JSONObject
 import java.nio.charset.Charset
 
-class TripCancelRequest(tripCode: String,
-                        url: String,
-                        headers: MutableMap<String, String>,
-                        listener: Response.Listener<String>,
-                        errorListener: Response.ErrorListener
+class TripEndRequest(tripCode: String,
+                     url: String,
+                     headers: MutableMap<String, String>,
+                     listener: Response.Listener<String>,
+                     errorListener: Response.ErrorListener
 ) : GenericRequest<String>(Method.POST, url, headers, listener, errorListener) {
 
     private var tripCode: String? = null

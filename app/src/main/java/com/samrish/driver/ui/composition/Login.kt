@@ -1,16 +1,20 @@
 package com.samrish.driver.ui.composition
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
-import androidx.navigation.NavOptionsBuilder
+import attemptLogin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,27 +46,56 @@ fun Login(
             var password by remember {
                 mutableStateOf("")
             }
+
+            var context = LocalContext.current
+
+            fun onLoginSuccess() {
+                Log.i("Login", "Login Successful")
+                navController.navigate(
+                    "home",
+                    NavOptions.Builder().setLaunchSingleTop(true).build()
+                )
+            }
+
+            fun onLoginFailure() {
+                Log.i("Login", "Login Failure")
+                Toast.makeText(context, "Login Failed!", Toast.LENGTH_LONG).show()
+            }
+
             Box(
-                modifier=Modifier.fillMaxHeight(),
+                modifier = Modifier.fillMaxHeight(),
                 contentAlignment = Alignment.Center
             ) {
-                Column(modifier = Modifier.padding(48.dp).fillMaxWidth(),) {
+                Column(modifier = Modifier
+                    .padding(48.dp)
+                    .fillMaxWidth()
+                ) {
                     TextField(
-                        modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(),
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .fillMaxWidth(),
                         label = { Text(text = "Username") },
                         value = username, onValueChange = { username = it }
                     )
                     TextField(
-                        modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(),
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .fillMaxWidth(),
                         label = { Text(text = "Password") },
                         value = password, onValueChange = { password = it }
                     )
                     Button(
-                        modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp).fillMaxWidth(),
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(16.dp)
+                            .fillMaxWidth(),
                         onClick = {
-                            navController.navigate(
-                                "home",
-                                NavOptions.Builder().setLaunchSingleTop(true).build()
+                            attemptLogin(
+                                context,
+                                username,
+                                password,
+                                { onLoginSuccess() },
+                                { onLoginFailure() }
                             )
                         }
                     ) {
