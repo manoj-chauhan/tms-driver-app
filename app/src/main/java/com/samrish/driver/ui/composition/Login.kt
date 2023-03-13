@@ -53,7 +53,7 @@ fun Login(
                 Log.i("Login", "Login Successful")
                 navController.navigate(
                     "home",
-                    NavOptions.Builder().setLaunchSingleTop(true).build()
+                    NavOptions.Builder().setPopUpTo("login", true).build()
                 )
             }
 
