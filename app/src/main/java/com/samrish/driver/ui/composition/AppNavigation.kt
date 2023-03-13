@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.samrish.driver.models.Trip
 
 
 @Composable
@@ -20,10 +21,17 @@ fun AppNavigationHost(
     navController: NavHostController
 ) {
     val activity = (LocalContext.current as Activity)
+    var selectedAssignmentCode by remember {
+        mutableStateOf("")
+    }
     NavHost(navController = navController, startDestination = "login") {
         composable("home") {
             TabScreen(
-                navController = navController
+                navController = navController,
+                onAssignmentSelected = {
+                    selectedAssignmentCode = it.code
+                    navController.navigate("assignments/detail")
+                }
             )
         }
         composable(
@@ -34,7 +42,9 @@ fun AppNavigationHost(
         composable(
             "assignments/detail"
         ) {
-            AssignmentDetail()
+            AssignmentDetail(
+                assignmentCode = selectedAssignmentCode
+            )
         }
     }
 }
@@ -42,7 +52,8 @@ fun AppNavigationHost(
 
 @Composable
 fun TabScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    onAssignmentSelected: (assignment: Trip) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -54,7 +65,8 @@ fun TabScreen(
         when(selectedTab) {
             1 -> {
                 Assignments(
-                    navController = navController
+                    navController = navController,
+                    onAssignmentSelected = onAssignmentSelected
                 )
             }
             2 -> {

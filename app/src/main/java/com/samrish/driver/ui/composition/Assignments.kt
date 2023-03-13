@@ -18,7 +18,8 @@ import getTrips
 
 @Composable
 fun Assignments(
-    navController: NavHostController
+    navController: NavHostController,
+    onAssignmentSelected: (assignment: Trip) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -36,7 +37,7 @@ fun Assignments(
         AssignmentList(
             tripList = tripList,
             onAssignmentClick = {
-                navController.navigate("assignments/detail")
+                onAssignmentSelected(it)
             }
         )
         Text(text = "")
