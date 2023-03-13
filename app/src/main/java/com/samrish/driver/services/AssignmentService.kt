@@ -1,4 +1,5 @@
 import android.content.Context
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import com.android.volley.*
@@ -6,9 +7,9 @@ import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.Trip
 import com.samrish.driver.services.SessionStorage
-import com.samrish.driver.services.requests.TripListRequest
+import com.samrish.driver.services.requests.*
 
-fun getTrips(context: Context, onTripsFetched:(trips: List<Trip>)->Unit) {
+fun getTrips(context: Context, onTripsFetched: (trips: List<Trip>) -> Unit) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trips_list)
 
@@ -39,4 +40,132 @@ fun getTrips(context: Context, onTripsFetched:(trips: List<Trip>)->Unit) {
             }
         })
     queue.add(stringRequest)
+}
+
+fun getTripDetail(context: Context, tripCode: String) {
+    val queue = Volley.newRequestQueue(context)
+    val url = context.resources.getString(R.string.url_trips_detail) + tripCode
+
+    val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+    context.applicationContext?.let {
+        val authHeader = SessionStorage().getAccessToken(it)
+        authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
+
+        val stringRequest = TripDetailRequest(url, hdrs, { response ->
+            Log.i("TripDetail", "Trip Detail: $response")
+//            showDetails(response)
+        }, { error -> handleError(context, error) })
+        queue.add(stringRequest)
+    }
+}
+
+fun checkIn(context: Context, tripCode: String) {
+    val queue = Volley.newRequestQueue(context)
+    val url = context.resources.getString(R.string.url_trip_check_in)
+
+    val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+    context.applicationContext.let {
+        val authHeader = it?.let { it1 -> SessionStorage().getAccessToken(it1) }
+        authHeader.let { hdrs["Authorization"] = "Bearer $authHeader" }
+
+        val stringRequest = TripCheckInRequest("AMBI", tripCode, url, hdrs, { response ->
+            Log.i("TripDetail", "Trip Check-In: $response")
+            getTripDetail(context, tripCode)
+        }, { error -> handleError(context, error) })
+        queue.add(stringRequest)
+    }
+}
+
+fun start(context: Context, tripCode: String) {
+    val queue = Volley.newRequestQueue(context)
+    val url = context.resources.getString(R.string.url_trip_start)
+
+    val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+    context.applicationContext?.let {
+        val authHeader = it.let { it1 -> SessionStorage().getAccessToken(it1) }
+        authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
+        val deviceIdentifier =
+            Settings.Secure.getString(it.contentResolver, Settings.Secure.ANDROID_ID)
+        val stringRequest =
+            TripStartRequest(tripCode, deviceIdentifier, url, hdrs, { response ->
+                Log.i("TripDetail", "Trip Check-In: $response")
+                getTripDetail(context, tripCode)
+            }, { error -> handleError(context, error) })
+        queue.add(stringRequest)
+    }
+}
+
+fun depart(context: Context, tripCode: String) {
+    val queue = Volley.newRequestQueue(context)
+    val url = context.resources.getString(R.string.url_trip_depart)
+
+    val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+    val authHeader = context.let { SessionStorage().getAccessToken(it.applicationContext) }
+    authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
+
+    val stringRequest = TripDepartRequest(tripCode, url, hdrs, { response ->
+        Log.i("TripDetail", "Trip Depart: $response")
+        getTripDetail(context, tripCode)
+    }, { error -> handleError(context, error) })
+    queue.add(stringRequest)
+}
+
+fun end(context: Context, tripCode: String) {
+    val queue = Volley.newRequestQueue(context)
+    val url = context.resources.getString(R.string.url_trip_end)
+
+    val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+    val authHeader = context.let { SessionStorage().getAccessToken(it.applicationContext) }
+    authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
+
+    val stringRequest = TripEndRequest(tripCode, url, hdrs, { response ->
+        Log.i("TripDetail", "Trip End: $response")
+        getTripDetail(context, tripCode)
+    }, { error -> handleError(context, error) })
+    queue.add(stringRequest)
+}
+
+fun cancel(context: Context, tripCode: String) {
+    val queue = Volley.newRequestQueue(context)
+    val url = context.resources.getString(R.string.url_trip_cancel)
+
+    val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+    val authHeader = context.let { SessionStorage().getAccessToken(it.applicationContext) }
+    authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
+
+    val stringRequest = TripCancelRequest(tripCode, url, hdrs, { response ->
+        Log.i("TripDetail", "Trip Cancel: $response")
+        getTripDetail(context, tripCode)
+    }, { error -> handleError(context, error) })
+    queue.add(stringRequest)
+}
+
+
+fun handleError(context: Context, error: VolleyError) {
+    Log.i("TripDetail", "Request Failed with Error: $error")
+    when (error) {
+        is TimeoutError, is NoConnectionError -> {
+            context.applicationContext?.let {
+                Toast.makeText(it, "Couldn't Connect!", Toast.LENGTH_LONG).show();
+            }
+        }
+        is AuthFailureError -> {
+//            goToLogin();
+        }
+        is ServerError -> {
+            context.applicationContext?.let {
+                Toast.makeText(it, "Server error!", Toast.LENGTH_LONG).show();
+            }
+        }
+        is NetworkError -> {
+            context.applicationContext?.let {
+                Toast.makeText(it, "Network error", Toast.LENGTH_LONG).show();
+            }
+        }
+        is ParseError -> {
+            context.applicationContext?.let {
+                Toast.makeText(it, "Unable to parse response", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 }
