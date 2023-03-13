@@ -1,34 +1,46 @@
 package com.samrish.driver.ui.composition
 
-import androidx.compose.foundation.background
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samrish.driver.models.Trip
+import getTrips
 
 @Composable
 fun Assignments() {
     Box(
         modifier = Modifier
-            .background(Color.Blue)
             .fillMaxSize()
     ) {
-        AssignmentList(tripList = listOf(
-            Trip("BH4-BH5-BH6","34456456", "STARTED"),
-            Trip("BH4-BH5-BH6","34456457", "NOT STARTED"),
-        ), onAssignmentClick = {})
+
+        var tripList = remember {
+            mutableStateListOf<Trip>()
+        }
+
+        getTrips(LocalContext.current, onTripsFetched = {
+            tripList.addAll(it)
+        })
+        AssignmentList(
+            tripList = tripList,
+            onAssignmentClick = {}
+        )
+        Text(text = "")
     }
+
 }
 
 @Composable
 fun AssignmentList(tripList: List<Trip>, onAssignmentClick: (trip: Trip) -> Unit) {
+    Log.i("Assignments", "Just before display  $tripList")
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,7 +94,7 @@ fun Assignment(trip: Trip, onClick: (trip: Trip) -> Unit) {
 @Composable
 fun AssignmentListPreview() {
     AssignmentList(tripList = listOf(
-        Trip("BH4-BH5-BH6","34456456", "STARTED"),
-        Trip("BH4-BH5-BH6","34456457", "NOT STARTED"),
+        Trip("BH4-BH5-BH6", "34456456", "STARTED"),
+        Trip("BH4-BH5-BH6", "34456457", "NOT STARTED"),
     ), onAssignmentClick = {})
 }
