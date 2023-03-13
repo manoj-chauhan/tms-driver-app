@@ -1,11 +1,14 @@
 package com.samrish.driver.ui.composition
 
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.samrish.driver.models.Trip
 
 import getTripDetail
@@ -16,7 +19,7 @@ fun AssignmentDetail(
 ) {
 
     var x = remember {
-        mutableStateOf<Trip?>(null)
+        mutableStateOf<Trip?>(Trip("","",""))
     }
 
     getTripDetail(
@@ -26,13 +29,13 @@ fun AssignmentDetail(
             x.value = it
         }
     );
-
-    x.value?.let {
-        Card() {
-            Text(text = "($it.code}")
-            Text(text = "${it.name}")
-            Text(text = "${it.status}")
-
+    Row( modifier = Modifier
+        .padding(16.dp)
+        .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Text(modifier = Modifier.padding(16.dp), text = "${x.value?.code}")
+            Text(modifier = Modifier.padding(16.dp), text = "${x.value?.name}")
+            Text(modifier = Modifier.padding(16.dp), text = "${x.value?.status}")
         }
     }
 
