@@ -2,7 +2,10 @@ package com.samrish.driver.ui.composition
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.samrish.driver.models.Trip
 
 import getTripDetail
 
@@ -10,6 +13,21 @@ import getTripDetail
 fun AssignmentDetail(
     assignmentCode:String
 ) {
-    getTripDetail(LocalContext.current, assignmentCode);
-    Text(text = "AssignmentDetail $assignmentCode")
+
+    var x = remember {
+        mutableStateOf<Trip?>(null)
+    }
+
+    getTripDetail(
+        context = LocalContext.current,
+        tripCode = assignmentCode,
+        onTripDetailFetched = {
+            x.value = it
+        }
+    );
+
+    x.value?.let {
+        Text(text = "${it.name} (${it.code}) ${it.status}")
+    }
+
 }

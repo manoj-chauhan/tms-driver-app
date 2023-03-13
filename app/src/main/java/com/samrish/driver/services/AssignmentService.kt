@@ -42,7 +42,7 @@ fun getTrips(context: Context, onTripsFetched: (trips: List<Trip>) -> Unit) {
     queue.add(stringRequest)
 }
 
-fun getTripDetail(context: Context, tripCode: String) {
+fun getTripDetail(context: Context, tripCode: String, onTripDetailFetched: (trip: Trip) -> Unit) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trips_detail) + tripCode
 
@@ -53,7 +53,7 @@ fun getTripDetail(context: Context, tripCode: String) {
 
         val stringRequest = TripDetailRequest(url, hdrs, { response ->
             Log.i("TripDetail", "Trip Detail: $response")
-//            showDetails(response)
+            onTripDetailFetched(response)
         }, { error -> handleError(context, error) })
         queue.add(stringRequest)
     }
@@ -70,7 +70,7 @@ fun checkIn(context: Context, tripCode: String) {
 
         val stringRequest = TripCheckInRequest("AMBI", tripCode, url, hdrs, { response ->
             Log.i("TripDetail", "Trip Check-In: $response")
-            getTripDetail(context, tripCode)
+//            getTripDetail(context, tripCode)
         }, { error -> handleError(context, error) })
         queue.add(stringRequest)
     }
@@ -89,7 +89,7 @@ fun start(context: Context, tripCode: String) {
         val stringRequest =
             TripStartRequest(tripCode, deviceIdentifier, url, hdrs, { response ->
                 Log.i("TripDetail", "Trip Check-In: $response")
-                getTripDetail(context, tripCode)
+//                getTripDetail(context, tripCode)
             }, { error -> handleError(context, error) })
         queue.add(stringRequest)
     }
@@ -105,7 +105,7 @@ fun depart(context: Context, tripCode: String) {
 
     val stringRequest = TripDepartRequest(tripCode, url, hdrs, { response ->
         Log.i("TripDetail", "Trip Depart: $response")
-        getTripDetail(context, tripCode)
+//        getTripDetail(context, tripCode)
     }, { error -> handleError(context, error) })
     queue.add(stringRequest)
 }
@@ -120,7 +120,7 @@ fun end(context: Context, tripCode: String) {
 
     val stringRequest = TripEndRequest(tripCode, url, hdrs, { response ->
         Log.i("TripDetail", "Trip End: $response")
-        getTripDetail(context, tripCode)
+//        getTripDetail(context, tripCode)
     }, { error -> handleError(context, error) })
     queue.add(stringRequest)
 }
@@ -135,7 +135,7 @@ fun cancel(context: Context, tripCode: String) {
 
     val stringRequest = TripCancelRequest(tripCode, url, hdrs, { response ->
         Log.i("TripDetail", "Trip Cancel: $response")
-        getTripDetail(context, tripCode)
+//        getTripDetail(context, tripCode)
     }, { error -> handleError(context, error) })
     queue.add(stringRequest)
 }
