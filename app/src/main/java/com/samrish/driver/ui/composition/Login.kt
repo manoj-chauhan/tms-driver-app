@@ -30,7 +30,7 @@ fun Login(
         ) {
             Text(
                 modifier = Modifier.align(Alignment.Center),
-                text = "EcomExpress",
+                text = "DRISHTO",
                 fontSize = 60.sp,
                 color = Color.White
             )

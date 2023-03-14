@@ -32,8 +32,8 @@ class LocationService : Service(), LocationListener {
     private var wakeLock: WakeLock? = null
 
     private fun createNotificationChannel() {
-            val name: CharSequence = "Default"
-            val description = "Common Channel"
+            val name: CharSequence = "Location Sharing"
+            val description = "Location sharing notification"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
             channel.description = description
@@ -44,11 +44,11 @@ class LocationService : Service(), LocationListener {
     private fun showNotification() {
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, CHANNEL_ID)
 //            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("My notification")
-            .setContentText("Much longer text that cannot fit one line...")
+            .setContentTitle("DRISHTO")
+            .setContentText("You are sharing your location")
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText("Much longer text that cannot fit one line...")
+                    .bigText("You are sharing your location using Drishto")
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         val notificationManager = NotificationManagerCompat.from(this)
@@ -174,6 +174,6 @@ class LocationService : Service(), LocationListener {
     }
 
     companion object {
-        private const val CHANNEL_ID = "techie_tracker"
+        private const val CHANNEL_ID = "main"
     }
 }
