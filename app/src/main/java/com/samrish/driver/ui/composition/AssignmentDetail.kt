@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.samrish.driver.models.Trip
 
 import getTripDetail
+import start
 
 @Composable
 fun AssignmentDetail(
@@ -35,7 +36,7 @@ fun AssignmentDetail(
             .padding(16.dp)
             .fillMaxSize()
     ) {
-
+        val context = LocalContext.current
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -60,7 +61,15 @@ fun AssignmentDetail(
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Button(onClick = { /*TODO*/ }, content = { Text(text = "Start") })
+                        Button(onClick = {
+                            x.value?.let {
+                                start(context, it.code)
+                            }
+                        },
+                            content = {
+                                Text(text = "Start")
+                            }
+                        )
                         Button(onClick = { /*TODO*/ }, content = { Text(text = "Cancel") })
                         Button(onClick = { /*TODO*/ }, content = { Text(text = "End") })
                     }
