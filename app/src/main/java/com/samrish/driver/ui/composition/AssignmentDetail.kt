@@ -10,7 +10,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import cancel
+import checkIn
 import com.samrish.driver.models.Trip
+import depart
+import end
 
 import getTripDetail
 import start
@@ -61,23 +65,60 @@ fun AssignmentDetail(
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Button(onClick = {
-                            x.value?.let {
-                                start(context, it.code)
-                            }
-                        },
+                        Button(
+                            onClick = {
+                                x.value?.let {
+                                    start(context, it.code)
+                                }
+                            },
                             content = {
                                 Text(text = "Start")
                             }
                         )
-                        Button(onClick = { /*TODO*/ }, content = { Text(text = "Cancel") })
-                        Button(onClick = { /*TODO*/ }, content = { Text(text = "End") })
+                        Button(
+                            onClick = {
+                                x.value?.let {
+                                    cancel(context, it.code)
+                                }
+                            },
+                            content = {
+                                Text(text = "Cancel")
+                            }
+                        )
+                        Button(
+                            onClick = {
+                                x.value?.let {
+                                    end(context, it.code)
+                                }
+                            },
+                            content = {
+                                Text(text = "End")
+                            }
+                        )
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Button(onClick = { /*TODO*/ }, content = { Text(text = "Check-In") })
-                        Button(onClick = { /*TODO*/ }, content = { Text(text = "Depart") })
+                        Button(
+                            onClick = {
+                                x.value?.let {
+                                    checkIn(context, it.code)
+                                }
+                            },
+                            content = {
+                                Text(text = "Check-In")
+                            }
+                        )
+                        Button(
+                            onClick = {
+                                x.value?.let {
+                                    depart(context, it.code)
+                                }
+                            },
+                            content = {
+                                Text(text = "Depart")
+                            }
+                        )
                     }
                 }
             }
