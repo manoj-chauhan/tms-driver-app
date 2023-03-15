@@ -24,7 +24,7 @@ fun AssignmentDetail(
     assignmentCode: String
 ) {
 
-    var x = remember {
+    val x = remember {
         mutableStateOf<Trip?>(Trip("", "", "", null, null, null))
     }
 
@@ -35,16 +35,16 @@ fun AssignmentDetail(
             x.value = it
         }
     );
+
     Column(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxSize()
     ) {
         val context = LocalContext.current
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.fillMaxWidth() ,
+
         ) {
             Card(
                 modifier = Modifier.fillMaxWidth()
@@ -62,6 +62,30 @@ fun AssignmentDetail(
                         Text(modifier = Modifier.padding(16.dp), text = "${x.value?.name}")
                         Text(modifier = Modifier.padding(16.dp), text = "${x.value?.status}")
                     }
+
+                    val assignedDriver = (x.value as Trip).assignedDriver
+                    val assignedVehicle = (x.value as Trip).assignedVehicle
+                    val schedules = (x.value as Trip).schedules
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(modifier = Modifier.padding(16.dp), text = "${assignedDriver?.driverName}")
+                        Text(modifier = Modifier.padding(16.dp), text = "${assignedVehicle?.vehicleNumber}(${assignedVehicle?.typeName})")
+                    }
+
+                    schedules?.forEach { sch ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(modifier = Modifier.padding(16.dp), text = "${sch?.placeCode}")
+                            Text(modifier = Modifier.padding(16.dp), text = "${sch?.sta}")
+                            Text(modifier = Modifier.padding(16.dp), text = "${sch?.std}")
+                        }
+                    }
+
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
