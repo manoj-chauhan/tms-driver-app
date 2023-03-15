@@ -38,116 +38,127 @@ fun AssignmentDetail(
 
     Column(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(8.dp)
             .fillMaxSize()
     ) {
         val context = LocalContext.current
-        Column(
-            modifier = Modifier.fillMaxWidth() ,
 
+        Card(
+            modifier = Modifier.padding(8.dp).fillMaxWidth()
         ) {
-            Card(
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Text(modifier = Modifier.padding(16.dp), text = "${x.value?.code}")
+                    Text(modifier = Modifier.padding(16.dp), text = "${x.value?.name}")
+                    Text(modifier = Modifier.padding(16.dp), text = "${x.value?.status}")
+                }
+
+                val assignedDriver = (x.value as Trip).assignedDriver
+                val assignedVehicle = (x.value as Trip).assignedVehicle
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        modifier = Modifier.padding(16.dp),
+                        text = "${assignedDriver?.driverName}"
+                    )
+                    Text(
+                        modifier = Modifier.padding(16.dp),
+                        text = "${assignedVehicle?.vehicleNumber}(${assignedVehicle?.typeName})"
+                    )
+                }
+            }
+        }
+        Card(
+            modifier = Modifier.padding(8.dp).fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+            ) {
+
+                val schedules = (x.value as Trip).schedules
+
+                schedules?.forEach { sch ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(modifier = Modifier.padding(16.dp), text = "${x.value?.code}")
-                        Text(modifier = Modifier.padding(16.dp), text = "${x.value?.name}")
-                        Text(modifier = Modifier.padding(16.dp), text = "${x.value?.status}")
-                    }
-
-                    val assignedDriver = (x.value as Trip).assignedDriver
-                    val assignedVehicle = (x.value as Trip).assignedVehicle
-                    val schedules = (x.value as Trip).schedules
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(modifier = Modifier.padding(16.dp), text = "${assignedDriver?.driverName}")
-                        Text(modifier = Modifier.padding(16.dp), text = "${assignedVehicle?.vehicleNumber}(${assignedVehicle?.typeName})")
-                    }
-
-                    schedules?.forEach { sch ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(modifier = Modifier.padding(16.dp), text = "${sch?.placeCode}")
-                            Text(modifier = Modifier.padding(16.dp), text = "${sch?.sta}")
-                            Text(modifier = Modifier.padding(16.dp), text = "${sch?.std}")
-                        }
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Button(
-                            onClick = {
-                                x.value?.let {
-                                    start(context, it.code)
-                                }
-                            },
-                            content = {
-                                Text(text = "Start")
-                            }
-                        )
-                        Button(
-                            onClick = {
-                                x.value?.let {
-                                    cancel(context, it.code)
-                                }
-                            },
-                            content = {
-                                Text(text = "Cancel")
-                            }
-                        )
-                        Button(
-                            onClick = {
-                                x.value?.let {
-                                    end(context, it.code)
-                                }
-                            },
-                            content = {
-                                Text(text = "End")
-                            }
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Button(
-                            onClick = {
-                                x.value?.let {
-                                    checkIn(context, it.code)
-                                }
-                            },
-                            content = {
-                                Text(text = "Check-In")
-                            }
-                        )
-                        Button(
-                            onClick = {
-                                x.value?.let {
-                                    depart(context, it.code)
-                                }
-                            },
-                            content = {
-                                Text(text = "Depart")
-                            }
-                        )
+                        Text(modifier = Modifier.padding(16.dp), text = "${sch?.placeCode}")
+                        Text(modifier = Modifier.padding(16.dp), text = "${sch?.sta}")
+                        Text(modifier = Modifier.padding(16.dp), text = "${sch?.std}")
                     }
                 }
             }
-
         }
 
+        Row(
+            modifier = Modifier.padding(8.dp).fillMaxWidth()
+        ) {
+            Button(
+                onClick = {
+                    x.value?.let {
+                        start(context, it.code)
+                    }
+                },
+                content = {
+                    Text(text = "Start")
+                }
+            )
+            Button(
+                onClick = {
+                    x.value?.let {
+                        cancel(context, it.code)
+                    }
+                },
+                content = {
+                    Text(text = "Cancel")
+                }
+            )
+            Button(
+                onClick = {
+                    x.value?.let {
+                        end(context, it.code)
+                    }
+                },
+                content = {
+                    Text(text = "End")
+                }
+            )
+        }
+        Row(
+            modifier = Modifier.padding(8.dp).fillMaxWidth()
+        ) {
+            Button(
+                onClick = {
+                    x.value?.let {
+                        checkIn(context, it.code)
+                    }
+                },
+                content = {
+                    Text(text = "Check-In")
+                }
+            )
+            Button(
+                onClick = {
+                    x.value?.let {
+                        depart(context, it.code)
+                    }
+                },
+                content = {
+                    Text(text = "Depart")
+                }
+            )
+        }
     }
 }
