@@ -25,7 +25,7 @@ fun AssignmentDetail(
 ) {
 
     var x = remember {
-        mutableStateOf<Trip?>(Trip("", "", ""))
+        mutableStateOf<Trip?>(Trip("", "", "", null, null, null))
     }
 
     getTripDetail(

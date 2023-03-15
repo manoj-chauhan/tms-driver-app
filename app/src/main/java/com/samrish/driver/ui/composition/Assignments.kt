@@ -101,7 +101,7 @@ fun Assignment(trip: Trip, onClick: (trip: Trip) -> Unit) {
 @Composable
 fun AssignmentListPreview() {
     AssignmentList(tripList = listOf(
-        Trip("BH4-BH5-BH6", "34456456", "STARTED"),
-        Trip("BH4-BH5-BH6", "34456457", "NOT STARTED"),
+        Trip("BH4-BH5-BH6", "34456456", "STARTED", null, null, null),
+        Trip("BH4-BH5-BH6", "34456457", "NOT STARTED", null, null, null),
     ), onAssignmentClick = {})
 }
