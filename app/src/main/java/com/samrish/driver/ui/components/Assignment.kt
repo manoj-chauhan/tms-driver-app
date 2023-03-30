@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samrish.driver.models.Trip
 
@@ -49,3 +50,11 @@ fun Assignment(trip: Trip, onClick: (trip: Trip) -> Unit) {
     }
 }
 
+@Preview
+@Composable
+fun AssignmentPreview() {
+    Assignment(
+        trip = Trip("BH4-BH5-BH6", "34456456", "STARTED", null, null, null),
+        onClick = {}
+    )
+}
