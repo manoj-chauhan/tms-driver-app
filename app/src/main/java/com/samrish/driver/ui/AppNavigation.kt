@@ -70,7 +70,7 @@ fun TabScreen(
 
         when(selectedTab) {
             1 -> {
-                Assignments(
+                AssignmentsScreen(
                     navController = navController,
                     onAssignmentSelected = onAssignmentSelected
                 )
