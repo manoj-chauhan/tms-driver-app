@@ -48,7 +48,7 @@ fun AppNavigationHost(
         composable(
             "assignments/detail"
         ) {
-            AssignmentDetail(
+            AssignmentDetailScreen(
                 assignmentCode = selectedAssignmentCode
             )
         }

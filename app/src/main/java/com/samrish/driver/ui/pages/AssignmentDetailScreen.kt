@@ -18,7 +18,7 @@ import getTripDetail
 import start
 
 @Composable
-fun AssignmentDetail(
+fun AssignmentDetailScreen(
     assignmentCode: String
 ) {
 
