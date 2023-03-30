@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.samrish.driver.services.LocationService
-import com.samrish.driver.ui.composition.DrishtoApp
+import com.samrish.driver.ui.pages.DrishtoApp
 
 
 class MainActivity : ComponentActivity() {

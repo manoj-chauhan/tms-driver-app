@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.composition
+package com.samrish.driver.ui.pages
 
 import android.util.Log
 import androidx.compose.foundation.clickable

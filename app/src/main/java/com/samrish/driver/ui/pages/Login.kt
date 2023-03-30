@@ -1,6 +1,5 @@
-package com.samrish.driver.ui.composition
+package com.samrish.driver.ui.pages
 
-import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*

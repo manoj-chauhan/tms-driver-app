@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.composition
+package com.samrish.driver.ui.pages
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
