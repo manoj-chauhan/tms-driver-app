@@ -84,62 +84,70 @@ fun AssignmentDetailScreen(
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
-            Button(
-                onClick = {
-                    x.value?.let {
-                        start(context, it.code)
+            x.value?.let {
+                for(action in it.actions) {
+                    if (action == "START") {
+                        Button(
+                            onClick = {
+                                x.value?.let {
+                                    start(context, it.code)
+                                }
+                            },
+                            content = {
+                                Text(text = "Start")
+                            }
+                        )
                     }
-                },
-                content = {
-                    Text(text = "Start")
-                }
-            )
-            Button(
-                onClick = {
-                    x.value?.let {
-                        cancel(context, it.code)
+                    if (action == "CANCEL") {
+                        Button(
+                            onClick = {
+                                x.value?.let {
+                                    cancel(context, it.code)
+                                }
+                            },
+                            content = {
+                                Text(text = "Cancel")
+                            }
+                        )
                     }
-                },
-                content = {
-                    Text(text = "Cancel")
-                }
-            )
-            Button(
-                onClick = {
-                    x.value?.let {
-                        end(context, it.code)
+                    if (action == "END") {
+                        Button(
+                            onClick = {
+                                x.value?.let {
+                                    end(context, it.code)
+                                }
+                            },
+                            content = {
+                                Text(text = "End")
+                            }
+                        )
                     }
-                },
-                content = {
-                    Text(text = "End")
-                }
-            )
-        }
-        Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-        ) {
-            Button(
-                onClick = {
-                    x.value?.let {
-                        checkIn(context, it.code)
+                    if (action == "CHECKIN") {
+                        Button(
+                            onClick = {
+                                x.value?.let {
+                                    checkIn(context, it.code)
+                                }
+                            },
+                            content = {
+                                Text(text = "Check-In")
+                            }
+                        )
                     }
-                },
-                content = {
-                    Text(text = "Check-In")
-                }
-            )
-            Button(
-                onClick = {
-                    x.value?.let {
-                        depart(context, it.code)
+                    if (action == "DEPART") {
+                        Button(
+                            onClick = {
+                                x.value?.let {
+                                    depart(context, it.code)
+                                }
+                            },
+                            content = {
+                                Text(text = "Depart")
+                            }
+                        )
                     }
-                },
-                content = {
-                    Text(text = "Depart")
                 }
-            )
+            }
         }
     }
 }
