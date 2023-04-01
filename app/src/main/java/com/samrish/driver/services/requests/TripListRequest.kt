@@ -54,10 +54,17 @@ class TripListRequest(
                 )
             }
 
+            var actions = mutableListOf<String>();
+            val actionList = t.getJSONArray("availableActions");
+            for (i in 0 until actionList.length()) {
+                actions.add(actionList.get(i) as String)
+            }
+
             mutableList.add(Trip(
                 t.get("tripName") as String,
                 t.get("tripCode") as String,
                 t.get("status") as String,
+                actions,
                 assignedDriver,
                 assignedVehicle
             ))

@@ -23,7 +23,7 @@ fun AssignmentDetailScreen(
 ) {
 
     val x = remember {
-        mutableStateOf<Trip?>(Trip("", "", "", null, null))
+        mutableStateOf<Trip?>(Trip("", "", "", listOf(),null, null))
     }
 
     getTripDetail(

@@ -4,6 +4,7 @@ class Trip(
     var name: String,
     var code: String,
     var status: String,
+    var actions: List<String>,
     var assignedDriver: AssignedDriver?,
     var assignedVehicle: AssignedVehicle?
     )
