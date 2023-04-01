@@ -22,15 +22,26 @@ fun AssignmentDetailScreen(
     assignmentCode: String
 ) {
 
-    val x = remember {
-        mutableStateOf<Trip?>(Trip("", "", "", listOf(),null, null))
+    val tripDetail = remember {
+        mutableStateOf<Trip?>(Trip("", "", "", listOf(), null, null))
     }
+    val isStartEnabled = remember { mutableStateOf(false); }
+    val isCheckInEnabled = remember { mutableStateOf(false); }
+    val isDepartEnabled = remember { mutableStateOf(false); }
+    val isCancelEnabled = remember { mutableStateOf(false); }
+    val isEndEnabled = remember { mutableStateOf(false); }
+
 
     getTripDetail(
         context = LocalContext.current,
         tripCode = assignmentCode,
         onTripDetailFetched = {
-            x.value = it
+            tripDetail.value = it
+            isStartEnabled.value = it.actions.contains("START")
+            isCheckInEnabled.value = it.actions.contains("CHECKIN")
+            isDepartEnabled.value = it.actions.contains("DEPART")
+            isCancelEnabled.value = it.actions.contains("CANCEL")
+            isEndEnabled.value = it.actions.contains("END")
         }
     );
 
@@ -55,13 +66,13 @@ fun AssignmentDetailScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(modifier = Modifier.padding(16.dp), text = "${x.value?.code}")
-                    Text(modifier = Modifier.padding(16.dp), text = "${x.value?.name}")
-                    Text(modifier = Modifier.padding(16.dp), text = "${x.value?.status}")
+                    Text(modifier = Modifier.padding(16.dp), text = "${tripDetail.value?.code}")
+                    Text(modifier = Modifier.padding(16.dp), text = "${tripDetail.value?.name}")
+                    Text(modifier = Modifier.padding(16.dp), text = "${tripDetail.value?.status}")
                 }
 
-                val assignedDriver = (x.value as Trip).assignedDriver
-                val assignedVehicle = (x.value as Trip).assignedVehicle
+                val assignedDriver = (tripDetail.value as Trip).assignedDriver
+                val assignedVehicle = (tripDetail.value as Trip).assignedVehicle
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -84,69 +95,66 @@ fun AssignmentDetailScreen(
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
-            x.value?.let {
-                for(action in it.actions) {
-                    if (action == "START") {
-                        Button(
-                            onClick = {
-                                x.value?.let {
-                                    start(context, it.code)
-                                }
-                            },
-                            content = {
-                                Text(text = "Start")
-                            }
-                        )
+            if (isStartEnabled.value) {
+                Button(
+                    onClick = {
+                        tripDetail.value?.let {
+                            start(context, it.code)
+                        }
+                    },
+                    content = {
+                        Text(text = "Start")
                     }
-                    if (action == "CANCEL") {
-                        Button(
-                            onClick = {
-                                x.value?.let {
-                                    cancel(context, it.code)
-                                }
-                            },
-                            content = {
-                                Text(text = "Cancel")
-                            }
-                        )
+                )
+            }
+            if (isCancelEnabled.value) {
+                Button(
+                    onClick = {
+                        tripDetail.value?.let {
+                            cancel(context, it.code)
+                        }
+                    },
+                    content = {
+                        Text(text = "Cancel")
                     }
-                    if (action == "END") {
-                        Button(
-                            onClick = {
-                                x.value?.let {
-                                    end(context, it.code)
-                                }
-                            },
-                            content = {
-                                Text(text = "End")
-                            }
-                        )
+                )
+            }
+            if (isEndEnabled.value) {
+                Button(
+                    onClick = {
+                        tripDetail.value?.let {
+                            end(context, it.code)
+                        }
+                    },
+                    content = {
+                        Text(text = "End")
                     }
-                    if (action == "CHECKIN") {
-                        Button(
-                            onClick = {
-                                x.value?.let {
-                                    checkIn(context, it.code)
-                                }
-                            },
-                            content = {
-                                Text(text = "Check-In")
-                            }
-                        )
+                )
+            }
+            if (isCheckInEnabled.value) {
+                Button(
+                    onClick = {
+                        tripDetail.value?.let {
+                            checkIn(context, it.code)
+                        }
+                    },
+                    content = {
+                        Text(text = "Check-In")
                     }
-                    if (action == "DEPART") {
-                        Button(
-                            onClick = {
-                                x.value?.let {
-                                    depart(context, it.code)
-                                }
-                            },
-                            content = {
-                                Text(text = "Depart")
-                            }
-                        )
+                )
+            }
+            if (isDepartEnabled.value) {
+                Button(
+                    onClick = {
+                        tripDetail.value?.let {
+                            depart(context, it.code)
+                        }
+                    },
+                    content = {
+                        Text(text = "Depart")
                     }
-                }
+                )
+
             }
         }
     }
