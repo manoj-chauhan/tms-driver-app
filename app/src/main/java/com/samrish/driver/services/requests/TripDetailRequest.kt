@@ -5,7 +5,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
 import com.samrish.driver.models.AssignedDriver
 import com.samrish.driver.models.AssignedVehicle
-import com.samrish.driver.models.Schedule
 import com.samrish.driver.models.Trip
 import org.json.JSONArray
 import org.json.JSONObject
@@ -25,30 +24,29 @@ class TripDetailRequest(
 
         val t = JSONObject(responseBody)
 
-        val vehicle = t["vehicleAssignment"] as JSONObject
-        val driver = t["driverAssignment"] as JSONObject
 
-        val assignedVehicle = AssignedVehicle(
-            vehicle["vehicleNumber"] as String,
-            "MiniTruck"
-        )
-        val assignedDriver = AssignedDriver(
-            driver["driverId"] as Int,
-            driver["driverName"] as String
-        )
+        var vehicle: JSONObject? = null;
+        if (t.has("vehicleAssignment")) {
+            vehicle = t.getJSONObject("vehicleAssignment");
+        }
+        var driver: JSONObject? = null;
+        if (t.has("driverAssignment")) {
+            driver = t.getJSONObject("driverAssignment");
+        }
 
-        val schs = t["schedules"] as JSONArray
-        val schedules = mutableListOf<Schedule>()
+        var assignedVehicle: AssignedVehicle? = null;
+        var assignedDriver: AssignedDriver? = null;
 
-        for (i in 0 until schs.length()) {
-            val s = schs.get(i) as JSONObject
-            schedules.add(
-                Schedule(
-                    s["placeCode"] as String,
-                    s["order"] as Int,
-                    s["scheduledArrivalTime"] as String,
-                    s["scheduledDepartureTime"] as String
-                )
+        vehicle?.let {
+            assignedVehicle = AssignedVehicle(
+                (it as JSONObject)["vehicleNumber"] as String,
+                "MiniTruck"
+            )
+        }
+        driver?.let {
+            assignedDriver = AssignedDriver(
+                (it as JSONObject)["driverId"] as Int,
+                (it as JSONObject)["driverName"] as String
             )
         }
         return Trip(
