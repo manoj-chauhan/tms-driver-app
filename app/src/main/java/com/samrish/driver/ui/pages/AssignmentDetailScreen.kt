@@ -23,7 +23,7 @@ fun AssignmentDetailScreen(
 ) {
 
     val x = remember {
-        mutableStateOf<Trip?>(Trip("", "", "", null, null, null))
+        mutableStateOf<Trip?>(Trip("", "", "", null, null))
     }
 
     getTripDetail(
@@ -75,31 +75,6 @@ fun AssignmentDetailScreen(
                         modifier = Modifier.padding(16.dp),
                         text = "${assignedVehicle?.vehicleNumber}(${assignedVehicle?.typeName})"
                     )
-                }
-            }
-        }
-        Card(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-            ) {
-
-                val schedules = (x.value as Trip).schedules
-
-                schedules?.forEach { sch ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(modifier = Modifier.padding(16.dp), text = "${sch?.placeCode}")
-                        Text(modifier = Modifier.padding(16.dp), text = "${sch?.sta}")
-                        Text(modifier = Modifier.padding(16.dp), text = "${sch?.std}")
-                    }
                 }
             }
         }

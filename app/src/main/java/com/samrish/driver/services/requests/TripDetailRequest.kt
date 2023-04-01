@@ -56,8 +56,7 @@ class TripDetailRequest(
             t.get("tripCode") as String,
             t.get("status") as String,
             assignedDriver,
-            assignedVehicle,
-            schedules
+            assignedVehicle
         )
     }
 }

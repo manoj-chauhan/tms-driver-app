@@ -28,39 +28,38 @@ class TripListRequest(
         val mutableList = mutableListOf<Trip>()
         for (i in 0 until trips.length()) {
             val t: JSONObject = trips.getJSONObject(i)
-            val vehicle = t["vehicleAssignment"] as JSONObject
-            val driver = t["driverAssignment"] as JSONObject
 
-            val assignedVehicle = AssignedVehicle(
-                vehicle["vehicleNumber"] as String,
-                "MiniTruck"
-            )
-            val assignedDriver = AssignedDriver(
-                driver["driverId"] as Int,
-                driver["driverName"] as String
-            )
+            var vehicle: JSONObject? = null;
+            if(t.has("vehicleAssignment")){
+                vehicle = t.getJSONObject("vehicleAssignment");
+            }
+            var driver: JSONObject? = null;
+            if(t.has("driverAssignment")){
+                driver = t.getJSONObject("driverAssignment");
+            }
 
-            val schs = t["schedules"] as JSONArray
-            val schedules = mutableListOf<Schedule>()
+            var assignedVehicle: AssignedVehicle? = null;
+            var assignedDriver: AssignedDriver? = null;
 
-            for (i in 0 until schs.length()) {
-                val s = schs.get(i) as JSONObject
-                schedules.add(
-                    Schedule(
-                        s["placeCode"] as String,
-                        s["order"] as Int,
-                        s["scheduledArrivalTime"] as String,
-                        s["scheduledDepartureTime"] as String
-                    )
+            vehicle?.let {
+                assignedVehicle = AssignedVehicle(
+                    (it as JSONObject)["vehicleNumber"] as String,
+                    "MiniTruck"
                 )
             }
+            driver?.let {
+                assignedDriver = AssignedDriver(
+                    (it as JSONObject)["driverId"] as Int,
+                    (it as JSONObject)["driverName"] as String
+                )
+            }
+
             mutableList.add(Trip(
                 t.get("tripName") as String,
                 t.get("tripCode") as String,
                 t.get("status") as String,
                 assignedDriver,
-                assignedVehicle,
-                schedules
+                assignedVehicle
             ))
 
         }

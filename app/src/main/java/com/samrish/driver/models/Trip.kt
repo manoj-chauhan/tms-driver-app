@@ -5,8 +5,7 @@ class Trip(
     var code: String,
     var status: String,
     var assignedDriver: AssignedDriver?,
-    var assignedVehicle: AssignedVehicle?,
-    var schedules: List<Schedule>?
+    var assignedVehicle: AssignedVehicle?
     )
 class AssignedDriver(
     var driverId: Int,
@@ -15,10 +14,4 @@ class AssignedDriver(
 class AssignedVehicle(
     var vehicleNumber: String,
     var typeName: String
-)
-class Schedule(
-    var placeCode: String,
-    var order: Int,
-    var sta: String,
-    var std: String
 )
