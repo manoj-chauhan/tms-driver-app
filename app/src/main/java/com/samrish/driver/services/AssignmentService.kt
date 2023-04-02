@@ -1,3 +1,5 @@
+package com.samrish.driver.services
+
 import android.content.Context
 import android.provider.Settings
 import android.util.Log
@@ -5,8 +7,8 @@ import android.widget.Toast
 import com.android.volley.*
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
+import com.samrish.driver.models.Schedule
 import com.samrish.driver.models.Trip
-import com.samrish.driver.services.SessionStorage
 import com.samrish.driver.services.requests.*
 
 fun getTrips(context: Context, onTripsFetched: (trips: List<Trip>) -> Unit) {
@@ -58,6 +60,23 @@ fun getTripDetail(context: Context, tripCode: String, onTripDetailFetched: (trip
         queue.add(stringRequest)
     }
 }
+fun getTripSchedule(context: Context, tripCode: String, onTripScheduleFetched: (schedule: List<Schedule>) -> Unit) {
+    val queue = Volley.newRequestQueue(context)
+    val url = context.resources.getString(R.string.url_trip_schedules) + tripCode + "/schedule"
+
+    val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+    context.applicationContext?.let {
+        val authHeader = SessionStorage().getAccessToken(it)
+        authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
+
+        val stringRequest = TripScheduleRequest(url, hdrs, { response ->
+            Log.i("TripDetail", "Trip Schedule: $response")
+            onTripScheduleFetched(response)
+        }, { error -> handleError(context, error) })
+        queue.add(stringRequest)
+    }
+}
+
 
 fun checkIn(context: Context, tripCode: String) {
     val queue = Volley.newRequestQueue(context)
@@ -70,7 +89,7 @@ fun checkIn(context: Context, tripCode: String) {
 
         val stringRequest = TripCheckInRequest("AMBI", tripCode, url, hdrs, { response ->
             Log.i("TripDetail", "Trip Check-In: $response")
-//            getTripDetail(context, tripCode)
+//            com.samrish.driver.services.getTripDetail(context, tripCode)
         }, { error -> handleError(context, error) })
         queue.add(stringRequest)
     }
@@ -89,7 +108,7 @@ fun start(context: Context, tripCode: String) {
         val stringRequest =
             TripStartRequest(tripCode, deviceIdentifier, url, hdrs, { response ->
                 Log.i("TripDetail", "Trip Check-In: $response")
-//                getTripDetail(context, tripCode)
+//                com.samrish.driver.services.getTripDetail(context, tripCode)
             }, { error -> handleError(context, error) })
         queue.add(stringRequest)
     }
@@ -105,7 +124,7 @@ fun depart(context: Context, tripCode: String) {
 
     val stringRequest = TripDepartRequest(tripCode, url, hdrs, { response ->
         Log.i("TripDetail", "Trip Depart: $response")
-//        getTripDetail(context, tripCode)
+//        com.samrish.driver.services.getTripDetail(context, tripCode)
     }, { error -> handleError(context, error) })
     queue.add(stringRequest)
 }
@@ -120,7 +139,7 @@ fun end(context: Context, tripCode: String) {
 
     val stringRequest = TripEndRequest(tripCode, url, hdrs, { response ->
         Log.i("TripDetail", "Trip End: $response")
-//        getTripDetail(context, tripCode)
+//        com.samrish.driver.services.getTripDetail(context, tripCode)
     }, { error -> handleError(context, error) })
     queue.add(stringRequest)
 }
@@ -135,11 +154,10 @@ fun cancel(context: Context, tripCode: String) {
 
     val stringRequest = TripCancelRequest(tripCode, url, hdrs, { response ->
         Log.i("TripDetail", "Trip Cancel: $response")
-//        getTripDetail(context, tripCode)
+//        com.samrish.driver.services.getTripDetail(context, tripCode)
     }, { error -> handleError(context, error) })
     queue.add(stringRequest)
 }
-
 
 fun handleError(context: Context, error: VolleyError) {
     Log.i("TripDetail", "Request Failed with Error: $error")

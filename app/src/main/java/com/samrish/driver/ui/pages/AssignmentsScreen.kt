@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.samrish.driver.models.Trip
 import com.samrish.driver.ui.components.AssignmentList
-import getTrips
+import com.samrish.driver.services.getTrips
 
 @Composable
 fun AssignmentsScreen(
@@ -23,7 +23,7 @@ fun AssignmentsScreen(
             .fillMaxSize()
     ) {
 
-        var tripList = remember {
+        val tripList = remember {
             mutableStateListOf<Trip>()
         }
 

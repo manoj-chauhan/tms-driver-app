@@ -4,6 +4,7 @@
     <string name="url_login">&baseUrl;/auth/login</string>
     <string name="url_trips_list">&baseUrl;/trips/assigned-to-driver</string>
     <string name="url_trips_detail">&baseUrl;/trips/</string>
+    <string name="url_trip_schedules">&baseUrl;/trips/</string>
     <string name="url_trip_start">&baseUrl;/trips/start</string>
     <string name="url_trip_check_in">&baseUrl;/trips/check-in</string>
     <string name="url_trip_depart">&baseUrl;/trips/depart</string>

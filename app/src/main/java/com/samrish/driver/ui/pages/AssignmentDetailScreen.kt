@@ -8,14 +8,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import cancel
-import checkIn
+import com.samrish.driver.models.Schedule
 import com.samrish.driver.models.Trip
-import depart
-import end
-
-import getTripDetail
-import start
+import com.samrish.driver.services.*
+import com.samrish.driver.ui.components.TripSchedule
 
 @Composable
 fun AssignmentDetailScreen(
@@ -24,6 +20,9 @@ fun AssignmentDetailScreen(
 
     val tripDetail = remember {
         mutableStateOf<Trip?>(Trip("", "", "", listOf(), null, null))
+    }
+    var tripSchedule = remember {
+        mutableStateListOf<Schedule>()
     }
     val isStartEnabled = remember { mutableStateOf(false); }
     val isCheckInEnabled = remember { mutableStateOf(false); }
@@ -44,6 +43,15 @@ fun AssignmentDetailScreen(
             isEndEnabled.value = it.actions.contains("END")
         }
     );
+
+    getTripSchedule(
+     context = LocalContext.current,
+     tripCode = assignmentCode,
+     onTripScheduleFetched = {
+         tripSchedule.clear()
+         tripSchedule.addAll(it)
+     }
+    )
 
     Column(
         modifier = Modifier
@@ -87,6 +95,7 @@ fun AssignmentDetailScreen(
                         text = "${assignedVehicle?.vehicleNumber}(${assignedVehicle?.typeName})"
                     )
                 }
+                TripSchedule(schedules = tripSchedule)
             }
         }
 
