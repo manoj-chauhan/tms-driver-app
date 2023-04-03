@@ -36,13 +36,8 @@ import com.samrish.driver.models.Schedule
 @Composable
 fun CheckInDialog(
     schedules: List<Schedule>,
-    value: String,
-    setShowDialog: (Boolean) -> Unit,
-    setValue: (String) -> Unit
+    setShowDialog: (Boolean) -> Unit
 ) {
-
-    val txtFieldError = remember { mutableStateOf("") }
-    val txtField = remember { mutableStateOf(value) }
 
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
@@ -62,7 +57,9 @@ fun CheckInDialog(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(50.dp),
-                            onClick = {},
+                            onClick = {
+                                      setShowDialog(false)
+                            },
                             shape = RoundedCornerShape(50.dp)
                         ) {
                             Text(text = "Done")

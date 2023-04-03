@@ -1,5 +1,6 @@
 package com.samrish.driver.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -11,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.samrish.driver.models.Schedule
 import com.samrish.driver.models.Trip
 import com.samrish.driver.services.*
+import com.samrish.driver.ui.components.CheckInDialog
 import com.samrish.driver.ui.components.TripSchedule
 
 @Composable
@@ -30,6 +32,7 @@ fun AssignmentDetailScreen(
     val isCancelEnabled = remember { mutableStateOf(false); }
     val isEndEnabled = remember { mutableStateOf(false); }
 
+    val isCheckInDialogVisible = remember { mutableStateOf(false); }
 
     getTripDetail(
         context = LocalContext.current,
@@ -144,7 +147,8 @@ fun AssignmentDetailScreen(
                 Button(
                     onClick = {
                         tripDetail.value?.let {
-                            checkIn(context, it.code)
+                            isCheckInDialogVisible.value = true
+//                            checkIn(context, it.code)
                         }
                     },
                     content = {
@@ -165,6 +169,15 @@ fun AssignmentDetailScreen(
                 )
 
             }
+        }
+        if (isCheckInDialogVisible.value) {
+            CheckInDialog(
+                schedules = tripSchedule,
+                setShowDialog = {
+                    Log.i("Dialog", "Dialog dismissed")
+                    isCheckInDialogVisible.value = it
+                }
+            )
         }
     }
 }
