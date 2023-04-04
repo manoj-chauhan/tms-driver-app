@@ -1,15 +1,8 @@
 package com.samrish.driver.ui.components
 
-import android.R
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -17,15 +10,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.samrish.driver.models.Schedule
+import com.samrish.driver.services.checkIn
 
 
 // Reference: https://medium.com/@manojbhadane/android-custom-dialog-using-jetpack-compose-954d83e55af7
@@ -35,6 +25,7 @@ import com.samrish.driver.models.Schedule
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckInDialog(
+    tripCode: String,
     schedules: List<Schedule>,
     setShowDialog: (Boolean) -> Unit
 ) {
@@ -45,12 +36,38 @@ fun CheckInDialog(
             color = Color.White
         ) {
             Box(
+                modifier = Modifier.padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Column() {
-                        for (schedule in schedules) {
-                            Text(text = schedule.placeName + "(" + schedule.placeCode + ")")
+                    val (selectedLocation, onLocationSelected) = remember { mutableStateOf(schedules[0].placeCode) }
+
+                    schedules.forEach { sch ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).selectable(
+                                // this method is called when
+                                // radio button is selected.
+                                selected = (sch.placeCode == selectedLocation),
+                                // below method is called on
+                                // clicking of radio button.
+                                onClick = { onLocationSelected(sch.placeCode) }
+                            )
+                        ) {
+
+                            RadioButton(
+                                selected = (sch.placeCode == selectedLocation) ,modifier = Modifier.padding(all = Dp(value = 8F)),
+                                onClick = {
+                                    onLocationSelected(sch.placeCode)
+                                }
+                            )
+                            Text(
+                                text = sch.placeName + "(" + sch.placeCode + ")",
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
                         }
+                    }
+
+                    val context = LocalContext.current
 
                     Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                         Button(
@@ -58,6 +75,9 @@ fun CheckInDialog(
                                 .fillMaxWidth()
                                 .height(50.dp),
                             onClick = {
+                                    checkIn(context = context,
+                                        tripCode = tripCode,
+                                        placeCode = selectedLocation)
                                       setShowDialog(false)
                             },
                             shape = RoundedCornerShape(50.dp)

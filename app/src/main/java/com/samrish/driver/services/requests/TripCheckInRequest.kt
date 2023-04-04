@@ -34,7 +34,7 @@ class TripCheckInRequest(placeCode: String,
 
     override fun getBody(): ByteArray? {
         var body: JSONObject = JSONObject()
-        body.put("locationCode", placeCode)
+        body.put("placeCode", placeCode)
         body.put("tripCode", tripCode)
         return body.toString().encodeToByteArray()
     }

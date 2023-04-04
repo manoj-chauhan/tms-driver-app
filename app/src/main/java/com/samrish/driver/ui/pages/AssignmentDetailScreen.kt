@@ -172,7 +172,9 @@ fun AssignmentDetailScreen(
         }
         if (isCheckInDialogVisible.value) {
             CheckInDialog(
-                schedules = tripSchedule,
+                tripCode = tripDetail.value!!.code,
+                schedules = tripSchedule.distinctBy { it.placeCode
+                },
                 setShowDialog = {
                     Log.i("Dialog", "Dialog dismissed")
                     isCheckInDialogVisible.value = it

@@ -78,7 +78,7 @@ fun getTripSchedule(context: Context, tripCode: String, onTripScheduleFetched: (
 }
 
 
-fun checkIn(context: Context, tripCode: String) {
+fun checkIn(context: Context, tripCode: String, placeCode: String) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trip_check_in)
 
@@ -87,7 +87,7 @@ fun checkIn(context: Context, tripCode: String) {
         val authHeader = it?.let { it1 -> SessionStorage().getAccessToken(it1) }
         authHeader.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
-        val stringRequest = TripCheckInRequest("AMBI", tripCode, url, hdrs, { response ->
+        val stringRequest = TripCheckInRequest(placeCode, tripCode, url, hdrs, { response ->
             Log.i("TripDetail", "Trip Check-In: $response")
 //            com.samrish.driver.services.getTripDetail(context, tripCode)
         }, { error -> handleError(context, error) })
