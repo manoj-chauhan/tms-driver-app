@@ -52,6 +52,11 @@ fun AppNavigationHost(
                 assignmentCode = selectedAssignmentCode
             )
         }
+        composable(
+            "profile"
+        ) {
+            ProfileScreen()
+        }
     }
 }
 
