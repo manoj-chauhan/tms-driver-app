@@ -1,3 +1,5 @@
+package com.samrish.driver.services
+
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
@@ -7,7 +9,6 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
-import com.samrish.driver.services.SessionStorage
 import com.samrish.driver.services.requests.RegisterDeviceRequest
 import org.json.JSONObject
 
@@ -55,6 +56,12 @@ fun attemptLogin(
                         hdrs,
                         { _ ->
                             Log.i("Device", "Device registered successfully!")
+                            fetchDriverProfile(
+                                context = it,
+                                onProfileFetched = {
+                                        profile -> SessionStorage().saveAccessDriverId(it, profile.driverId)
+                                }
+                            )
                             onLoginSuccess()
                         },
                         { _ ->

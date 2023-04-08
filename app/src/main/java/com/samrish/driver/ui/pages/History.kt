@@ -5,26 +5,48 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.samrish.driver.models.OldAssignment
+import com.samrish.driver.models.Trip
+import com.samrish.driver.services.SessionStorage
+import com.samrish.driver.services.getOldAssignments
 
 @Composable
 fun History() {
+    val context = LocalContext.current
+    val driverId = SessionStorage().getDriverId(context)
+
+    val oldAssignmentList = remember {
+        mutableStateListOf<OldAssignment>()
+    }
+
+    getOldAssignments(
+        context = context,
+        driverId = driverId,
+        onTripsFetched = {
+            oldAssignmentList.clear()
+            oldAssignmentList.addAll(it)
+        }
+    )
     Box(
         modifier = Modifier
             .background(Color.Red)
             .fillMaxSize()
     ) {
-        TripList(tripList = listOf("BH4-BH5-BH6", "BH4-BH5-BH6", "BH4-BH5-BH6", "BH4-BH5-BH6"))
+        TripList(oldAssignmentList = oldAssignmentList)
     }
 }
 
 
 @Composable
-fun TripDetail(trip: String) {
+fun TripDetail(oldAssignment: OldAssignment) {
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -37,20 +59,26 @@ fun TripDetail(trip: String) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "3465464"
+                    text = oldAssignment.tripCode + " (" + oldAssignment.tripName + ")"
                 )
                 Text(
-                    text = "25 Jun 23 03:00",
+                    text = oldAssignment.assignedAt,
                     color = Color.Gray
                 )
-                Text(
-                    text = "STARTED",
-                    color = Color.Green
-                )
+//                oldAssignment.assignedTill?.let {
+//                    Text(
+//                        text = it,
+//                        color = Color.Gray
+//                    )
+//                }
             }
-            Row() {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
-                    text = trip
+                    text = oldAssignment.vendorName
                 )
 
             }
@@ -61,18 +89,12 @@ fun TripDetail(trip: String) {
 
 
 @Composable
-fun TripList(tripList: List<String>) {
+fun TripList(oldAssignmentList: List<OldAssignment>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        tripList.forEach { trip -> TripDetail(trip) }
+        oldAssignmentList.forEach { oldAssignment -> TripDetail(oldAssignment) }
     }
-}
-
-@Preview
-@Composable
-fun TripListPreview() {
-    TripList(tripList = listOf("BH4-BH5-BH6", "BH4-BH5-BH6", "BH4-BH5-BH6", "BH4-BH5-BH6"))
 }
