@@ -1,6 +1,7 @@
 package com.samrish.driver.services
 
 import android.content.Context
+import android.content.SharedPreferences
 
 class SessionStorage {
 
@@ -15,5 +16,11 @@ class SessionStorage {
     }
     fun getAccessToken(context:Context): String? {
         return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getString(authTokenKey, null)
+    }
+
+    fun clearSession(context: Context) {
+        var editor = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).edit();
+        editor.clear();
+        editor.apply();
     }
 }
