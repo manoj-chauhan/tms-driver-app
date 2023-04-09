@@ -38,7 +38,6 @@ fun History() {
     )
     Box(
         modifier = Modifier
-            .background(Color.Red)
             .fillMaxSize()
     ) {
         TripList(oldAssignmentList = oldAssignmentList)
