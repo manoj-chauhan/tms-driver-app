@@ -2,7 +2,6 @@ package com.samrish.driver.ui
 
 import android.content.Intent
 import android.content.IntentSender
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -17,8 +16,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.samrish.driver.R
-import com.samrish.driver.ui.pages.DrishtoApp
-import com.samrish.driver.ui.pages.Login
+import com.samrish.driver.services.authenticate
 
 class LoginActivity : ComponentActivity() {
 
@@ -79,13 +77,17 @@ class LoginActivity : ComponentActivity() {
                 // Got an ID token from Google. Use it to authenticate
                 // with Firebase.
                 val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+
                 auth.signInWithCredential(firebaseCredential)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             // Sign in success, update UI with the signed-in user's information
                             val user = auth.currentUser
+                            user?.getIdToken(true)?.addOnSuccessListener {
+                                it.token?.let { token -> updateUI(token) }
+                            }
                             Log.d(TAG, "signInWithCredential:success")
-//                            updateUI(user)
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -98,6 +100,15 @@ class LoginActivity : ComponentActivity() {
                 Log.d(TAG, "No ID token!")
             }
         }
+    }
+
+    private fun updateUI(firebaseIdToken:String) {
+        authenticate(this, firebaseIdToken, {
+            val myIntent = Intent(this, MainActivity::class.java)
+            startActivity(myIntent)
+        }, {
+
+        })
     }
 
 }

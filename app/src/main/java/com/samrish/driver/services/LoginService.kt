@@ -12,6 +12,76 @@ import com.samrish.driver.R
 import com.samrish.driver.services.requests.RegisterDeviceRequest
 import org.json.JSONObject
 
+
+fun authenticate(
+    context: Context,
+    firebaseIdToken: String,
+    onLoginSuccess: ()->Unit,
+    onLoginFailure:()->Unit
+) {
+    val queue = Volley.newRequestQueue(context)
+    val url = context.resources.getString(R.string.url_authenticate) + "?firebaseIdToken="+firebaseIdToken
+
+    context.applicationContext?.let {
+        val stringRequest =
+            JsonObjectRequest(Request.Method.GET, url, null, { response ->
+                run {
+                    SessionStorage().saveAccessToken(
+                        it,
+                        response.getString("authToken")
+                    )
+                    Toast.makeText(context, "Login Successful!", Toast.LENGTH_LONG).show()
+
+                    val deviceName = Build.MANUFACTURER + " " + Build.MODEL
+                    val deviceIdentifier =
+                        Settings.Secure.getString(it.contentResolver, Settings.Secure.ANDROID_ID)
+
+                    val devRegUrl = context.resources.getString(R.string.url_device_registration)
+
+                    val hdrs = mutableMapOf<String, String>()
+                    val authHeader = SessionStorage().getAccessToken(it)
+                    if (authHeader != null) {
+                        hdrs["Authorization"] = "Bearer $authHeader"
+                    }
+
+                    val deviceRegRequest = RegisterDeviceRequest(
+                        deviceIdentifier,
+                        deviceName,
+                        devRegUrl,
+                        hdrs,
+                        { _ ->
+                            Log.i("Device", "Device registered successfully!")
+                            fetchDriverProfile(
+                                context = it,
+                                onProfileFetched = {
+                                        profile -> SessionStorage().saveAccessDriverId(it, profile.driverId)
+                                }
+                            )
+                            onLoginSuccess()
+                        },
+                        { _ ->
+                            Log.i("Device", "Device registered successfully!")
+                            onLoginFailure()
+                        })
+                    queue.add(deviceRegRequest)
+                }
+            }, { error ->
+                run {
+                    Log.i("Login", "Request Failed with Error: $error")
+                    Toast.makeText(it, "Login Failed!", Toast.LENGTH_LONG).show()
+                }
+            }
+            )
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest)
+        Log.i(
+            "AuthStorage",
+            "Token:" + SessionStorage().getAccessToken(it)
+        )
+    }
+}
+
 fun attemptLogin(
     context: Context,
     username: String,

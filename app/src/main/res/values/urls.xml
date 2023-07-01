@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [<!ENTITY baseUrl "https://api.samrish.com">]>
+<!DOCTYPE resources [<!ENTITY baseUrl "https://api.test.drishto.com">]>
 <resources>
+    <string name="url_authenticate">&baseUrl;/auth/connect</string>
     <string name="url_login">&baseUrl;/auth/login</string>
     <string name="url_trips_list">&baseUrl;/trips/assigned-to-driver</string>
     <string name="url_old_assignments_list">&baseUrl;/drivers</string>
