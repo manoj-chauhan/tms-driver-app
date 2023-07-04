@@ -2,9 +2,11 @@ package com.samrish.driver.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.samrish.driver.services.LocationService
+import com.samrish.driver.services.getUserProfile
 import com.samrish.driver.ui.pages.DrishtoApp
 
 
@@ -15,6 +17,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             DrishtoApp()
         }
+
+        getUserProfile(this) { profile -> {
+            Log.i("profile", profile.toString() )
+        } }
     }
 
     override fun onStart() {
