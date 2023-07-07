@@ -30,11 +30,6 @@ fun authenticate(
                         it,
                         response.getString("authToken")
                     )
-                    getUserProfile(context) { profile ->
-                        run {
-                            Log.i("profile", profile.toString())
-                        }
-                    }
                     Toast.makeText(context, "Login Successful!", Toast.LENGTH_LONG).show()
 
                     val deviceName = Build.MANUFACTURER + " " + Build.MODEL

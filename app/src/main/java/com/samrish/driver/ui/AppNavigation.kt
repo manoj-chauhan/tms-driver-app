@@ -1,5 +1,6 @@
 package com.samrish.driver.ui.pages
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.NavigationBar
@@ -14,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.samrish.driver.models.Trip
 import com.samrish.driver.services.SessionStorage
+import com.samrish.driver.ui.MainActivity
 
 
 @Composable
@@ -27,8 +29,14 @@ fun AppNavigationHost(
     var startScreen:String = "login"
 
     SessionStorage().getAccessToken(LocalContext.current)?.let {
-        startScreen = "home"
+        startScreen = "companies"
     }
+
+    if(startScreen == "login") {
+        val myIntent = Intent(LocalContext.current, MainActivity::class.java)
+        LocalContext.current.startActivity(myIntent)
+    }
+
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("home") {
@@ -41,9 +49,14 @@ fun AppNavigationHost(
             )
         }
         composable(
-            "login"
+            "companies"
         ) {
-            Login(navController = navController)
+            CompanySelection()
+        }
+        composable(
+                "login"
+                ) {
+            com.samrish.driver.ui.pages.Login(navController = navController)
         }
         composable(
             "assignments/detail"

@@ -106,6 +106,7 @@ class LoginActivity : ComponentActivity() {
         authenticate(this, firebaseIdToken, {
             val myIntent = Intent(this, MainActivity::class.java)
             startActivity(myIntent)
+            finish()
         }, {
 
         })
