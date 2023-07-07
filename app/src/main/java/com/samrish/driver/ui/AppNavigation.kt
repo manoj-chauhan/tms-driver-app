@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.pages
+package com.samrish.driver.ui
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Box
@@ -15,7 +15,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.samrish.driver.models.Trip
 import com.samrish.driver.services.SessionStorage
-import com.samrish.driver.ui.MainActivity
+import com.samrish.driver.ui.pages.AssignmentDetailScreen
+import com.samrish.driver.ui.pages.AssignmentsScreen
+import com.samrish.driver.ui.pages.CompanySelection
+import com.samrish.driver.ui.pages.History
+import com.samrish.driver.ui.pages.Login
+import com.samrish.driver.ui.pages.ProfileScreen
 
 
 @Composable
@@ -56,7 +61,7 @@ fun AppNavigationHost(
         composable(
                 "login"
                 ) {
-            com.samrish.driver.ui.pages.Login(navController = navController)
+            Login(navController = navController)
         }
         composable(
             "assignments/detail"
