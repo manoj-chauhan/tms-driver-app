@@ -38,7 +38,7 @@ fun AppNavigationHost(
     }
 
     if(startScreen == "login") {
-        val myIntent = Intent(LocalContext.current, MainActivity::class.java)
+        val myIntent = Intent(LocalContext.current, LoginActivity::class.java)
         LocalContext.current.startActivity(myIntent)
     }
 

@@ -26,35 +26,9 @@ class UserProfileRequest(
             id = t.getInt("id"),
             name = t.getString("name"),
             authProvider = t.optString("primaryContact",""),
-            userName = t.optString("secondaryContact", ""),
-            companies = parseCompany(t.getJSONArray("companiesList"))
+            userName = t.optString("secondaryContact", "")
         )
 
     }
-
-    private fun parseCompany(companies: JSONArray): List<Company> {
-
-        val mutableList = mutableListOf<Company>()
-
-        for (i in 0 until companies.length()) {
-            val comp = companies.getJSONObject(i)
-            mutableList.add(Company(
-                id = comp.optInt("companyId",0),
-                code = comp.getString("companyCode"),
-                name = comp.getString("companyName"),
-                roles = parseRoles(comp.getJSONArray("roles"))
-            ))
-        }
-        return mutableList
-    }
-
-    private fun parseRoles(roles: JSONArray): List<String> {
-        val mutableList = mutableListOf<String>()
-        for (i in 0 until roles.length()) {
-            mutableList.add(roles.getString(i))
-        }
-        return mutableList
-    }
-
 
 }

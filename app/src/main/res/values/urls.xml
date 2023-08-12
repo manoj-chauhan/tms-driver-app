@@ -7,6 +7,7 @@
     <string name="url_old_assignments_list">&baseUrl;/drivers</string>
     <string name="url_trips_detail">&baseUrl;/trips/</string>
     <string name="url_user_profile">&baseUrl;/user/profile</string>
+    <string name="url_user_companies">&baseUrl;/company</string>
     <string name="url_profile">&baseUrl;/drivers/me</string>
     <string name="url_trip_schedules">&baseUrl;/trips/</string>
     <string name="url_trip_start">&baseUrl;/trips/start</string>

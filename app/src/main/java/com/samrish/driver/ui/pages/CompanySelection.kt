@@ -4,24 +4,36 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.samrish.driver.services.getUserProfile
+import com.samrish.driver.models.Company
+import com.samrish.driver.services.getCompanies
+import com.samrish.driver.ui.components.CompanyList
 
 @Composable
 fun CompanySelection() {
     val context = LocalContext.current
-    getUserProfile(context) { profile ->
-        run {
-            Log.i("profile", profile.toString())
-        }
+
+    val companies = remember {
+        mutableStateListOf<Company>()
     }
 
-    Box(
+    getCompanies(
+        context = context,
+        onCompaniesFetched = {
+            companies.clear()
+            companies.addAll(it)
+        }
+    )
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         Text(text = "Select Company")
+        CompanyList(companyList = companies, {})
     }
 }
 
