@@ -21,7 +21,9 @@ fun CompanyList(companyList: List<Company>, onCompanySelected: (trip: Company) -
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        companyList.forEach { company -> Text(company.name) }
+        companyList.forEach {
+                company -> CompanyListItem(company=company, onClick=onCompanySelected)
+        }
     }
 }
 

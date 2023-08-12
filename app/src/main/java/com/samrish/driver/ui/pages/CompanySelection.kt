@@ -33,7 +33,9 @@ fun CompanySelection() {
             .fillMaxSize()
     ) {
         Text(text = "Select Company")
-        CompanyList(companyList = companies, {})
+        CompanyList(companyList = companies) {
+            Log.i("Company Selection", "---> " + it.name)
+        }
     }
 }
 
