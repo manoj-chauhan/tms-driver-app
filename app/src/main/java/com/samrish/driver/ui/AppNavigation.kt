@@ -56,7 +56,12 @@ fun AppNavigationHost(
         composable(
             "companies"
         ) {
-            CompanySelection()
+            CompanySelection(
+                navController = navController,
+                onCompanySelected = {
+                    navController.navigate("home")
+                }
+            )
         }
         composable(
                 "login"
