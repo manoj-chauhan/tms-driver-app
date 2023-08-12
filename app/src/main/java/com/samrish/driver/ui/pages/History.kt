@@ -12,17 +12,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samrish.driver.models.OldAssignment
-import com.samrish.driver.models.Trip
-import com.samrish.driver.services.SessionStorage
+import com.samrish.driver.services.getDriverId
 import com.samrish.driver.services.getOldAssignments
 
 @Composable
 fun History() {
     val context = LocalContext.current
-    val driverId = SessionStorage().getDriverId(context)
+    val driverId = getDriverId(context)
 
     val oldAssignmentList = remember {
         mutableStateListOf<OldAssignment>()

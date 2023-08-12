@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.samrish.driver.models.Company
 import com.samrish.driver.services.getCompanies
+import com.samrish.driver.services.saveSelectedCompanyId
 import com.samrish.driver.ui.components.CompanyList
 
 @Composable
@@ -35,6 +36,7 @@ fun CompanySelection() {
         Text(text = "Select Company")
         CompanyList(companyList = companies) {
             Log.i("Company Selection", "---> " + it.name)
+            saveSelectedCompanyId(context, it.id)
         }
     }
 }

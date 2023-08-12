@@ -26,7 +26,7 @@ fun authenticate(
         val stringRequest =
             JsonObjectRequest(Request.Method.GET, url, null, { response ->
                 run {
-                    SessionStorage().saveAccessToken(
+                    saveAccessToken(
                         it,
                         response.getString("authToken")
                     )
@@ -39,7 +39,7 @@ fun authenticate(
                     val devRegUrl = context.resources.getString(R.string.url_device_registration)
 
                     val hdrs = mutableMapOf<String, String>()
-                    val authHeader = SessionStorage().getAccessToken(it)
+                    val authHeader = getAccessToken(it)
                     if (authHeader != null) {
                         hdrs["Authorization"] = "Bearer $authHeader"
                     }
@@ -54,7 +54,7 @@ fun authenticate(
                             fetchDriverProfile(
                                 context = it,
                                 onProfileFetched = {
-                                        profile -> SessionStorage().saveAccessDriverId(it, profile.driverId)
+                                        profile -> saveAccessDriverId(it, profile.driverId)
                                 }
                             )
 
@@ -78,7 +78,7 @@ fun authenticate(
         queue.add(stringRequest)
         Log.i(
             "AuthStorage",
-            "Token:" + SessionStorage().getAccessToken(it)
+            "Token:" + getAccessToken(it)
         )
     }
 }
@@ -102,7 +102,7 @@ fun attemptLogin(
         val stringRequest =
             JsonObjectRequest(Request.Method.POST, url, jsonRequest, { response ->
                 run {
-                    SessionStorage().saveAccessToken(
+                    saveAccessToken(
                         it,
                         response.getString("authToken")
                     )
@@ -115,7 +115,7 @@ fun attemptLogin(
                     val devRegUrl = context.resources.getString(R.string.url_device_registration)
 
                     val hdrs = mutableMapOf<String, String>()
-                    val authHeader = SessionStorage().getAccessToken(it)
+                    val authHeader = getAccessToken(it)
                     if (authHeader != null) {
                         hdrs["Authorization"] = "Bearer $authHeader"
                     }
@@ -130,7 +130,7 @@ fun attemptLogin(
                             fetchDriverProfile(
                                 context = it,
                                 onProfileFetched = {
-                                        profile -> SessionStorage().saveAccessDriverId(it, profile.driverId)
+                                        profile -> saveAccessDriverId(it, profile.driverId)
                                 }
                             )
                             onLoginSuccess()
@@ -153,7 +153,7 @@ fun attemptLogin(
         queue.add(stringRequest)
         Log.i(
             "AuthStorage",
-            "Token:" + SessionStorage().getAccessToken(it)
+            "Token:" + getAccessToken(it)
         )
     }
 

@@ -31,8 +31,8 @@ fun CompanyList(companyList: List<Company>, onCompanySelected: (trip: Company) -
 @Composable
 fun CompanyListPreview() {
     CompanyList(companyList = listOf(
-        Company("Apple Inc.", "APPL", "34 St. Peter Road, California, USA"),
-        Company("Microsoft Corp.", "MICR", "34 St. Peter Road, California, USA"),
+        Company(1, "Apple Inc.", "APPL", "34 St. Peter Road, California, USA"),
+        Company(2, "Microsoft Corp.", "MICR", "34 St. Peter Road, California, USA"),
     ), onCompanySelected = {})
 }
 

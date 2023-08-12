@@ -17,7 +17,7 @@ fun fetchDriverProfile(
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_profile)
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-    val authHeader = context.let { SessionStorage().getAccessToken(it.applicationContext) }
+    val authHeader = getAccessToken(context.applicationContext)
     authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
     val stringRequest = context.applicationContext?.let { ctx ->
@@ -42,7 +42,7 @@ fun getUserProfile(
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_user_profile)
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-    val authHeader = context.let { SessionStorage().getAccessToken(it.applicationContext) }
+    val authHeader = getAccessToken(context.applicationContext)
     authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
     val stringRequest = context.applicationContext?.let { ctx ->
@@ -68,7 +68,7 @@ fun getCompanies(
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_user_companies)
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-    val authHeader = context.let { SessionStorage().getAccessToken(it.applicationContext) }
+    val authHeader = getAccessToken(context.applicationContext)
     authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
     val stringRequest = context.applicationContext?.let { ctx ->

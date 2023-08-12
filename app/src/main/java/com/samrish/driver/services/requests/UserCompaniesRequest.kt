@@ -29,6 +29,7 @@ class UserCompaniesRequest(
             val t: JSONObject = trips.getJSONObject(i)
             mutableList.add(
                 Company(
+                    t.get("id") as Int,
                     t.get("name") as String,
                     t.get("code") as String,
                     t.get("address") as String

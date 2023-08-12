@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import com.samrish.driver.models.Profile
-import com.samrish.driver.services.SessionStorage
+import com.samrish.driver.services.clearSession
 import com.samrish.driver.services.fetchDriverProfile
 
 @Composable
@@ -59,7 +59,7 @@ fun ProfileScreen(
                     Button(
                         onClick = {
                             Log.i("Logout", "Logout Successful")
-                            SessionStorage().clearSession(context)
+                            clearSession(context)
                             navController.navigate(
                                 "login",
                                 NavOptions.Builder().setPopUpTo("home", true).build()

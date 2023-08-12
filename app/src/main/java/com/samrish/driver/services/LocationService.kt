@@ -112,7 +112,7 @@ class LocationService : Service(), LocationListener {
         val url = resources.getString(com.samrish.driver.R.string.url_device_matrix)
 
         val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-        val authHeader = SessionStorage().getAccessToken(this)
+        val authHeader = getAccessToken(this)
         if(authHeader != null) {
             hdrs?.put("Authorization", "Bearer $authHeader")
         }

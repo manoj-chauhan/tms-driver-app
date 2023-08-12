@@ -38,7 +38,7 @@ fun CompanyListItem(company: Company, onClick: (company: Company) -> Unit) {
 @Composable
 fun CompanyListItemPreview() {
     CompanyListItem(
-        company = Company("Apple Inc.", "APPL", "23 St. Peter's Marg, California, USA"),
+        company = Company(1, "Apple Inc.", "APPL", "23 St. Peter's Marg, California, USA"),
         onClick = {}
     )
 }

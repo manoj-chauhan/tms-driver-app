@@ -1,38 +1,58 @@
 package com.samrish.driver.services
 
+import android.R.attr.key
 import android.content.Context
+import android.content.SharedPreferences
 
-class SessionStorage {
 
-    private val authStorage = "AUTHENTICATION"
-    private val authTokenKey = "AUTH_TOKEN"
-    private val driverIdKey = "DRIVER_ID"
+private val authStorage = "AUTHENTICATION"
+private val authTokenKey = "AUTH_TOKEN"
+private val driverIdKey = "DRIVER_ID"
+private val companyIdKey = "COMPANY_ID"
 
-    fun saveAccessToken(context:Context, token:String) {
-        val sharedPreference =  context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
-        val editor = sharedPreference.edit()
-        editor.putString(authTokenKey, token)
-        editor.apply()
-    }
+fun saveAccessToken(context: Context, token: String) {
+    val sharedPreference = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
+    val editor = sharedPreference.edit()
+    editor.putString(authTokenKey, token)
+    editor.apply()
+}
 
-    fun saveAccessDriverId(context:Context, driverId: Int) {
-        val sharedPreference =  context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
-        val editor = sharedPreference.edit()
-        editor.putInt(driverIdKey, driverId)
-        editor.apply()
-    }
+fun saveAccessDriverId(context: Context, driverId: Int) {
+    val sharedPreference = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
+    val editor = sharedPreference.edit()
+    editor.putInt(driverIdKey, driverId)
+    editor.apply()
+}
 
-    fun getAccessToken(context:Context): String? {
-        return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getString(authTokenKey, null)
-    }
+fun getAccessToken(context: Context): String? {
+    return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
+        .getString(authTokenKey, null)
+}
 
-    fun getDriverId(context:Context): Int {
-        return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getInt(driverIdKey, 0)
-    }
+fun getDriverId(context: Context): Int {
+    return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getInt(driverIdKey, 0)
+}
 
-    fun clearSession(context: Context) {
-        var editor = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).edit();
-        editor.clear();
-        editor.apply();
-    }
+fun saveSelectedCompanyId(context: Context, companyId: Int) {
+    val sharedPreference = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
+    val editor = sharedPreference.edit()
+    editor.putInt(companyIdKey, companyId)
+    editor.apply()
+}
+
+fun getSelectedCompanyId(context: Context): Int {
+    return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getInt(companyIdKey, -1)
+}
+
+fun removeCompanySelection(context: Context) {
+    val editor: SharedPreferences.Editor =
+        context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).edit()
+    editor.remove(companyIdKey)
+    editor.apply()
+}
+
+fun clearSession(context: Context) {
+    var editor = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).edit()
+    editor.clear()
+    editor.apply()
 }

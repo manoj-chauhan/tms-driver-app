@@ -17,7 +17,7 @@ fun getTrips(context: Context, onTripsFetched: (trips: List<Trip>) -> Unit) {
     val url = context.resources.getString(R.string.url_trips_list)
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-    val authHeader = context.let { SessionStorage().getAccessToken(it) }
+    val authHeader = getAccessToken(context)
     if (authHeader != null) {
         hdrs["Authorization"] = "Bearer $authHeader"
     }
@@ -50,7 +50,7 @@ fun getOldAssignments(context: Context, driverId: Int , onTripsFetched: (trips: 
     val url = context.resources.getString(R.string.url_old_assignments_list) + "/" + driverId + "/assignmentHistory/?pageno=0"
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-    val authHeader = context.let { SessionStorage().getAccessToken(it) }
+    val authHeader = getAccessToken(context)
     if (authHeader != null) {
         hdrs["Authorization"] = "Bearer $authHeader"
     }
@@ -84,7 +84,7 @@ fun getTripDetail(context: Context, tripCode: String, onTripDetailFetched: (trip
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     context.applicationContext?.let {
-        val authHeader = SessionStorage().getAccessToken(it)
+        val authHeader = getAccessToken(it)
         authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
         val stringRequest = TripDetailRequest(url, hdrs, { response ->
@@ -100,7 +100,7 @@ fun getTripSchedule(context: Context, tripCode: String, onTripScheduleFetched: (
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     context.applicationContext?.let {
-        val authHeader = SessionStorage().getAccessToken(it)
+        val authHeader = getAccessToken(it)
         authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
         val stringRequest = TripScheduleRequest(url, hdrs, { response ->
@@ -118,7 +118,7 @@ fun checkIn(context: Context, tripCode: String, placeCode: String) {
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     context.applicationContext.let {
-        val authHeader = it?.let { it1 -> SessionStorage().getAccessToken(it1) }
+        val authHeader = it?.let { it1 -> getAccessToken(it1) }
         authHeader.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
         val stringRequest = TripCheckInRequest(placeCode, tripCode, url, hdrs, { response ->
@@ -135,7 +135,7 @@ fun start(context: Context, tripCode: String) {
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     context.applicationContext?.let {
-        val authHeader = it.let { it1 -> SessionStorage().getAccessToken(it1) }
+        val authHeader = getAccessToken(it)
         authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
         val deviceIdentifier =
             Settings.Secure.getString(it.contentResolver, Settings.Secure.ANDROID_ID)
@@ -153,7 +153,7 @@ fun depart(context: Context, tripCode: String) {
     val url = context.resources.getString(R.string.url_trip_depart)
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-    val authHeader = context.let { SessionStorage().getAccessToken(it.applicationContext) }
+    val authHeader = getAccessToken(context.applicationContext)
     authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
     val stringRequest = TripDepartRequest(tripCode, url, hdrs, { response ->
@@ -168,7 +168,7 @@ fun end(context: Context, tripCode: String) {
     val url = context.resources.getString(R.string.url_trip_end)
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-    val authHeader = context.let { SessionStorage().getAccessToken(it.applicationContext) }
+    val authHeader = getAccessToken(context.applicationContext)
     authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
     val stringRequest = TripEndRequest(tripCode, url, hdrs, { response ->
@@ -183,7 +183,7 @@ fun cancel(context: Context, tripCode: String) {
     val url = context.resources.getString(R.string.url_trip_cancel)
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-    val authHeader = context.let { SessionStorage().getAccessToken(it.applicationContext) }
+    val authHeader = getAccessToken(context.applicationContext)
     authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
     val stringRequest = TripCancelRequest(tripCode, url, hdrs, { response ->

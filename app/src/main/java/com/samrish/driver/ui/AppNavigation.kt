@@ -14,7 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.samrish.driver.models.Trip
-import com.samrish.driver.services.SessionStorage
+import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.AssignmentsScreen
 import com.samrish.driver.ui.pages.CompanySelection
@@ -33,7 +33,7 @@ fun AppNavigationHost(
 
     var startScreen:String = "login"
 
-    SessionStorage().getAccessToken(LocalContext.current)?.let {
+    getAccessToken(LocalContext.current)?.let {
         startScreen = "companies"
     }
 
