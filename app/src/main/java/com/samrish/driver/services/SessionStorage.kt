@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 private val authStorage = "AUTHENTICATION"
 private val authTokenKey = "AUTH_TOKEN"
 private val driverIdKey = "DRIVER_ID"
+private val companyCodeKey = "COMPANY_CODE"
 private val companyIdKey = "COMPANY_ID"
 
 fun saveAccessToken(context: Context, token: String) {
@@ -33,11 +34,16 @@ fun getDriverId(context: Context): Int {
     return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getInt(driverIdKey, 0)
 }
 
-fun saveSelectedCompanyId(context: Context, companyId: Int) {
+fun saveSelectedCompany(context: Context, companyCode: String, companyId: Int) {
     val sharedPreference = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
     val editor = sharedPreference.edit()
     editor.putInt(companyIdKey, companyId)
+    editor.putString(companyCodeKey, companyCode)
     editor.apply()
+}
+
+fun getSelectedCompanyCode(context: Context): String? {
+    return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getString(companyCodeKey, null)
 }
 
 fun getSelectedCompanyId(context: Context): Int {
@@ -47,6 +53,7 @@ fun getSelectedCompanyId(context: Context): Int {
 fun removeCompanySelection(context: Context) {
     val editor: SharedPreferences.Editor =
         context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).edit()
+    editor.remove(companyCodeKey)
     editor.remove(companyIdKey)
     editor.apply()
 }
