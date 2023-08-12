@@ -6,6 +6,7 @@ import com.samrish.driver.R
 import com.samrish.driver.models.Company
 import com.samrish.driver.models.Profile
 import com.samrish.driver.models.UserProfile
+import com.samrish.driver.services.requests.CompanyDetailRequest
 import com.samrish.driver.services.requests.ProfileRequest
 import com.samrish.driver.services.requests.UserCompaniesRequest
 import com.samrish.driver.services.requests.UserProfileRequest
@@ -85,4 +86,28 @@ fun getCompanies(
     }
     queue.add(stringRequest)
 }
+fun getCompanyDetail(
+    context: Context,
+    companyCode: String,
+    onCompanyDetailFetched: (company: Company)->Unit
+) {
+    val queue = Volley.newRequestQueue(context)
+    val url = context.resources.getString(R.string.url_user_companies) + "/" + companyCode
+    val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+    val authHeader = getAccessToken(context.applicationContext)
+    authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
 
+    val stringRequest = context.applicationContext?.let { ctx ->
+        CompanyDetailRequest(
+            url = url,
+            headers = hdrs,
+            listener = {
+                onCompanyDetailFetched(it)
+            },
+            errorListener = {
+                    error -> handleError(ctx, error)
+            }
+        )
+    }
+    queue.add(stringRequest)
+}
