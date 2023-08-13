@@ -20,11 +20,9 @@ class ProfileRequest(
         )
         val t = JSONObject(responseBody)
         return Profile(
-            driverId = t.getInt("id"),
-            driverName = t.getString("name"),
-            primaryContact = t.getString("primaryContact"),
-            secondaryContact = t.getString("secondaryContact"),
-            createdById = t.getInt("createdBy")
+            id = t.getInt("id"),
+            name = t.getString("name"),
+            username = t.getString("username")
         )
     }
 }

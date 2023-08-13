@@ -47,13 +47,10 @@ fun ProfileScreen(
                     .padding(16.dp)
             ) {
                 Row() {
-                    Text(text = it.driverName)
+                    Text(text = it.name)
                 }
                 Row() {
-                    Text(text = it.primaryContact)
-                }
-                Row() {
-                    Text(text = it.secondaryContact)
+                    Text(text = it.username)
                 }
                 Row() {
                     Button(

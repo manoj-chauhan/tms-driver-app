@@ -19,7 +19,10 @@ fun fetchDriverProfile(
     val url = context.resources.getString(R.string.url_profile)
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     val authHeader = getAccessToken(context.applicationContext)
-    authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
+    authHeader?.let {
+        hdrs["Authorization"] = "Bearer $authHeader"
+        hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+    }
 
     val stringRequest = context.applicationContext?.let { ctx ->
         ProfileRequest(

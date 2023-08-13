@@ -54,7 +54,7 @@ fun authenticate(
                             fetchDriverProfile(
                                 context = it,
                                 onProfileFetched = {
-                                        profile -> saveAccessDriverId(it, profile.driverId)
+                                        profile -> saveAccessDriverId(it, profile.id)
                                 }
                             )
 
@@ -130,7 +130,7 @@ fun attemptLogin(
                             fetchDriverProfile(
                                 context = it,
                                 onProfileFetched = {
-                                        profile -> saveAccessDriverId(it, profile.driverId)
+                                        profile -> saveAccessDriverId(it, profile.id)
                                 }
                             )
                             onLoginSuccess()
