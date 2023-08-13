@@ -18,8 +18,10 @@ fun getTrips(context: Context, onTripsFetched: (trips: List<Trip>) -> Unit) {
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     val authHeader = getAccessToken(context)
-    if (authHeader != null) {
+
+    authHeader?.let {
         hdrs["Authorization"] = "Bearer $authHeader"
+        hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
     }
 
     val stringRequest = TripListRequest(url, hdrs, { response ->
@@ -51,9 +53,12 @@ fun getOldAssignments(context: Context, driverId: Int , onTripsFetched: (trips: 
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     val authHeader = getAccessToken(context)
-    if (authHeader != null) {
+
+    authHeader?.let {
         hdrs["Authorization"] = "Bearer $authHeader"
+        hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
     }
+
 
     val stringRequest = OldAssignmentListRequest(url, hdrs, { response ->
         onTripsFetched(response)
@@ -84,8 +89,10 @@ fun getTripDetail(context: Context, tripCode: String, onTripDetailFetched: (trip
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     context.applicationContext?.let {
-        val authHeader = getAccessToken(it)
-        authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
+        getAccessToken(it)?.let {
+            hdrs["Authorization"] = "Bearer $it"
+            hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+        }
 
         val stringRequest = TripDetailRequest(url, hdrs, { response ->
             Log.i("TripDetail", "Trip Detail: $response")
@@ -184,7 +191,11 @@ fun cancel(context: Context, tripCode: String) {
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     val authHeader = getAccessToken(context.applicationContext)
-    authHeader?.let { hdrs["Authorization"] = "Bearer $authHeader" }
+
+    authHeader?.let {
+        hdrs["Authorization"] = "Bearer $authHeader"
+        hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+    }
 
     val stringRequest = TripCancelRequest(tripCode, url, hdrs, { response ->
         Log.i("TripDetail", "Trip Cancel: $response")
