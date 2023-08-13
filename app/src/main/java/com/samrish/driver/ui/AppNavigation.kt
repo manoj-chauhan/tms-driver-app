@@ -14,11 +14,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.samrish.driver.models.Company
 import com.samrish.driver.models.Trip
 import com.samrish.driver.services.getAccessToken
-import com.samrish.driver.services.getCompanyDetail
-import com.samrish.driver.services.getSelectedCompanyCode
+import com.samrish.driver.ui.components.CompanyDetail
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.AssignmentsScreen
 import com.samrish.driver.ui.pages.CompanySelection
@@ -93,32 +91,17 @@ fun TabScreen(
     navController: NavHostController,
     onAssignmentSelected: (assignment: Trip) -> Unit
 ) {
-    var selectedTab by remember {
-        mutableStateOf(1)
-    }
-
-    var selectedCompany by remember {
-        mutableStateOf<Company?>(null);
-    }
-
-    getCompanyDetail(
-        context = LocalContext.current,
-        companyCode = getSelectedCompanyCode(LocalContext.current)!!,
-        onCompanyDetailFetched = {
-            selectedCompany = it
-        }
-    )
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+        var selectedTab by remember {
+            mutableStateOf(1)
+        }
 
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-
-            selectedCompany?.let { Text(text = it.name) }
-
+            CompanyDetail()
             when (selectedTab) {
                 1 -> {
                     AssignmentsScreen(
