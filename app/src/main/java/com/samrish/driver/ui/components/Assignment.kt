@@ -29,14 +29,14 @@ fun Assignment(trip: Trip, onClick: (trip: Trip) -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "3465464"
+                    text = trip.code
                 )
                 Text(
                     text = "25 Jun 23 03:00",
                     color = Color.Gray
                 )
                 Text(
-                    text = "STARTED",
+                    text = trip.status,
                     color = Color.Green
                 )
             }
