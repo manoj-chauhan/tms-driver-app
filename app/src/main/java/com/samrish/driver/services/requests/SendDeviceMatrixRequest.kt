@@ -6,6 +6,7 @@ import com.android.volley.toolbox.HttpHeaderParser
 import org.json.JSONObject
 import java.nio.charset.Charset
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class SendDeviceMatrixRequest(deviceIdentifier: String,
                               latitude: Double,
@@ -41,7 +42,7 @@ class SendDeviceMatrixRequest(deviceIdentifier: String,
         body.put("deviceIdentifier", deviceIdentifier)
         body.put("latitude", this.latitude)
         body.put("longitude", this.longitude)
-        body.put("time", LocalDateTime.now())
+        body.put("time", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now()))
         return body.toString().encodeToByteArray()
     }
 }
