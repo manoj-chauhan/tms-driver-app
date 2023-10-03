@@ -16,5 +16,6 @@
     <string name="url_trip_end">&baseUrl;/trips/end</string>
     <string name="url_trip_cancel">&baseUrl;/trips/cancel</string>
     <string name="url_device_registration">&baseUrl;/device</string>
+    <string name="url_vehicle_list">&baseUrl;/vehicle</string>
     <string name="url_device_matrix">&baseUrl;/matrix</string>
 </resources>

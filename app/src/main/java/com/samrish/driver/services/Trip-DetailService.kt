@@ -1,25 +1,29 @@
 package com.samrish.driver.services
-
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
+import android.util.Log
 import com.android.volley.toolbox.Volley
+import com.samrish.driver.R
+import com.samrish.driver.services.requests.VehicleListRequest
 
 fun click(context: Context) {
 
-    val url = "https://test.drishto.com/login"
-    val intent = Intent()
-        .setAction(Intent.ACTION_VIEW)
-        .setData(Uri.parse(url))
+    val queue = Volley.newRequestQueue(context)
+    val url = context.resources.getString(R.string.url_vehicle_list) + "?pageno=0"+ "&filter="
 
-    context.startActivity(intent)
+    val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
+    val authHeader = getAccessToken(context)
+
+    authHeader?.let {
+        hdrs["Authorization"] = "Bearer $it"
+        hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+    }
+
+    val stringRequest = VehicleListRequest(url, hdrs, { response ->
+                Log.i("TripDetail", "Trip Schedule: $response")
+    },
+        { error ->
+
+        })
+    queue.add(stringRequest)
 
 }
