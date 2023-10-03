@@ -1,7 +1,15 @@
 package com.samrish.driver.ui.components
 
-import android.graphics.Paint.Style
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -11,39 +19,39 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.UiComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
-import com.samrish.driver.services.start
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import com.samrish.driver.services.click
 
 class test_file_trips_detail : ComponentActivity(){
 
@@ -52,7 +60,9 @@ class test_file_trips_detail : ComponentActivity(){
         setContent {
             val painter = painterResource(id = R.drawable.signal)
             design(painter)
+
         }
+
     }
 }
 
@@ -69,7 +79,10 @@ fun design(
                 .fillMaxWidth()
                 .height(100.dp)
                 .padding(PaddingValues(start = 25.dp, top = 30.dp, end = 12.dp, bottom = 20.dp))){
-                Text(text = "ABC Transport Co.", style = TextStyle(color = Color.Black, fontSize = 23.sp,) )
+                Text(text = "ABC Transport Co.", style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 23.sp
+                ) )
             }
 
 //            Box(modifier = Modifier.fillMaxSize().background(Color.Gray)){
@@ -85,12 +98,12 @@ fun design(
                         .fillMaxWidth()
                         .height(60.dp)
                         .padding(start = 25.dp, top = 30.dp, end = 12.dp)){
-                        Text(text = "CURRENT ASSIGNMENT", style = TextStyle(color = Color.Gray, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold))
+                        Text(text = "CURRENT ASSIGNMENT", style = TextStyle(color = Color.Gray, fontSize = 21.sp, fontWeight = FontWeight.Bold))
 
                     }
                     Box(modifier = Modifier
                         .fillMaxWidth()
-                        .height(90.dp)
+                        .height(80.dp)
                         .padding(start = 25.dp, top = 30.dp, end = 12.dp)){
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -108,7 +121,7 @@ fun design(
                         .padding(start = 25.dp, top = 30.dp, end = 12.dp),
                         contentAlignment= Alignment.Center)
                     {
-                        Column (modifier = Modifier.fillMaxWidth(),){
+                        Column(modifier = Modifier.fillMaxWidth()){
                             Box(modifier = Modifier.fillMaxWidth(),contentAlignment= Alignment.Center){
                                 Image(painter = painter, contentDescription = null,
                                     Modifier
@@ -138,6 +151,7 @@ fun design(
                         .fillMaxWidth()
                         .height(60.dp))
                     {
+                        val context = LocalContext.current
                         Row(modifier= Modifier
                             .fillMaxWidth()
                             .background(Color.White), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
@@ -145,16 +159,19 @@ fun design(
                                 colors = ButtonDefaults.buttonColors(
                                     Color.LightGray
                                 ),
-                                onClick = { /*TODO*/ }
+                                onClick = {
+                                    Toast.makeText(context, "Schedule Selected", Toast.LENGTH_SHORT).show()
+                                    Log.i("toast","new") }
                             ) {
                                 Text(text = "Schedule", style = TextStyle(color = Color.Black))
-                                
+
                             }
                             Button(
                                 colors = ButtonDefaults.buttonColors(
                                     Color.LightGray
                                 ),
-                                onClick = { /*TODO*/ }) {
+                                onClick = { Toast.makeText(context, "Documents Selected", Toast.LENGTH_SHORT).show()
+                                    Log.i("toast","new")}) {
                                 Text(text = "Documents",style = TextStyle(color = Color.Black))
 
                             }
@@ -163,7 +180,7 @@ fun design(
 
                     }
 
-                    Box(modifier = Modifier.height(70.dp),contentAlignment = Alignment.Center){
+                    Box(modifier = Modifier.height(50.dp),contentAlignment = Alignment.Center){
                         Row(modifier= Modifier
                             .fillMaxWidth()
                             .background(Color.White), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.Bottom
@@ -206,21 +223,25 @@ fun design(
                             }
                         }
                     }
-                    
+
                     Box(modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight()
+//                        .fillMaxHeight()
                         .padding(start = 25.dp, top = 30.dp, end = 12.dp, bottom = 30.dp),
                         contentAlignment = Alignment.BottomStart
 
                     )
                     {
+                        val context = LocalContext.current
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Button(colors = ButtonDefaults.buttonColors(
                                 Color.Red
                             ),
-                                onClick = { /*TODO*/ }) {
-                                Text(text = "Check IN ")
+                                onClick = {
+                                    Toast.makeText(context, "Schedule Selected", Toast.LENGTH_LONG).show()
+                                    Log.i("toast","new")
+                                }) {
+                                Text(text = "Check In ")
                             }
                             Button(colors = ButtonDefaults.buttonColors(
                                 Color.Red
@@ -231,16 +252,15 @@ fun design(
                             Button(colors = ButtonDefaults.buttonColors(
                                 Color.Red
                             ),
-                                onClick = { /*TODO*/ }) {
+                                onClick = { click(context) }) {
                                 Text(text = "End ")
                             }
-                            
+
                         }
                     }
                 }
             }
     }
-
 }
 
 
