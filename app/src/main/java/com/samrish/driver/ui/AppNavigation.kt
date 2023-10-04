@@ -23,6 +23,7 @@ import com.samrish.driver.ui.pages.CompanySelection
 import com.samrish.driver.ui.pages.History
 import com.samrish.driver.ui.pages.Login
 import com.samrish.driver.ui.pages.ProfileScreen
+import com.samrish.driver.ui.pages.TripListPrint
 
 
 @Composable
@@ -58,12 +59,14 @@ fun AppNavigationHost(
         composable(
             "companies"
         ) {
-            CompanySelection(
-                navController = navController,
-                onCompanySelected = {
-                    navController.navigate("home")
-                }
-            )
+//            CompanySelection(
+//                navController = navController,
+//                onCompanySelected = {
+//                    navController.navigate("home")
+//                }
+//            )
+
+            TripListPrint()
         }
         composable(
                 "login"

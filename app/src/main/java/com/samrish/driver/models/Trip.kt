@@ -16,3 +16,7 @@ class AssignedVehicle(
     var vehicleNumber: String,
     var typeName: String
 )
+
+class generatedCode(
+    var assignmentCode: String
+)
