@@ -36,7 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.samrish.driver.R
 import com.samrish.driver.models.Trip
+import com.samrish.driver.models.VehicleAssignment
 import com.samrish.driver.services.getTrips
+import com.samrish.driver.services.vehicleDetails
 import com.samrish.driver.ui.components.GeneratedCodeDialog
 
 class TripList : ComponentActivity() {
@@ -52,20 +54,33 @@ class TripList : ComponentActivity() {
 @Composable
 fun TripListPrint() {
 
-    val isCheckInDialogVisible = remember { mutableStateOf(false); }
-
-
-    val tripList = remember {
-        mutableStateListOf<Trip>()
+    val context = LocalContext.current
+    val vehicleAssignment = remember {
+        mutableStateOf<VehicleAssignment>(VehicleAssignment(0,"",0,"",0,"","", 0,"","",""))
     }
 
-    getTrips(LocalContext.current, onTripsFetched = {
-        tripList.clear()
-        tripList.addAll(it)
+    vehicleDetails(context, onVehicleDetailFetched = {
+        vehicleAssignment.value = it
+        Log.d("TAG", "TripListPrint: $it")
     })
+
+    val isCheckInDialogVisible = remember { mutableStateOf(false); }
+
+//
+//    val tripList = remember {
+//        mutableStateListOf<Trip>()
+//    }
+//
+//    getTrips(LocalContext.current, onTripsFetched = {
+//        tripList.clear()
+//        tripList.addAll(it)
+//    Log.d("TAG", "TripListPrint: $it")
+//    })
     Column(modifier = Modifier.fillMaxSize()) {
             val context = LocalContext.current
-        Row (modifier = Modifier.fillMaxWidth().padding(13.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
+        Row (modifier = Modifier
+            .fillMaxWidth()
+            .padding(13.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
 
             Text(
                 text = "Assigned Trip",
@@ -75,15 +90,13 @@ fun TripListPrint() {
                     fontWeight = FontWeight.ExtraBold
                 )
             )
-            Button(onClick = { isCheckInDialogVisible.value = true}) {
-                Text(text = "Generate Code")
-            }
         }
+
+        VehicleAssignmentDetail(vehicleAssignment.value)
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
                 .padding(13.dp)
         ) {
             Card(
@@ -202,13 +215,15 @@ fun TripListPrint() {
             }
         }
 
+
+
+
+
     }
 
-    if(isCheckInDialogVisible.value)
-        GeneratedCodeDialog(
-        setShowDialog = {
-            Log.i("Dialog", "Dialog dismissed")
-        })
+
+
+
 }
 
 
