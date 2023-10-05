@@ -19,80 +19,91 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samrish.driver.models.VehicleAssignment
+import com.samrish.driver.services.vehicleDetails
 import com.samrish.driver.ui.components.GeneratedCodeDialog
 import java.time.LocalDateTime
 
 @Composable
-fun VehicleAssignmentDetail(assignment: VehicleAssignment) {
+fun VehicleAssignmentDetail() {
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
+    var isApiCalled = remember { mutableStateOf(false); }
 
-        Card(
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+    val context = LocalContext.current
 
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "${assignment.vehicleNumber}")
-                    Text(text = "${assignment.brand} ${assignment.model} (${assignment.fuelType}) ${assignment.vehicleSize}ft")
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Assigned by ${assignment.assignerName}, ${assignment.companyName}")
-                }
-                Row() {
-                    Text(text = "Assigned At ${assignment.assignedAt}")
-                }
-            }
-        }
-        Row(
+    var vehicleAssignment = remember { mutableStateOf<VehicleAssignment>(VehicleAssignment(0,"",0,"","","",0,"","",""),) }
+
+    vehicleDetails(context, onVehicleDetailFetched = {
+        vehicleAssignment.value = it
+        isApiCalled.value = true
+    })
+
+    if(isApiCalled.value) {
+
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, bottom = 16.dp)
         ) {
-            Button(onClick = {
-                isCheckInDialogVisible.value = true
-            }) {
-                Text(text = "Generate Code")
+
+            Card(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "${vehicleAssignment.value.vehicleNumber}")
+                        Text(text = "${vehicleAssignment.value.brand} ${vehicleAssignment.value.model} (${vehicleAssignment.value.fuelType}) ${vehicleAssignment.value.vehicleSize}ft")
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Assigned by ${vehicleAssignment.value.assignerName}, ${vehicleAssignment.value.companyName}")
+                    }
+                    Row() {
+                        Text(text = "Assigned At ${vehicleAssignment.value.assignedAt}")
+                    }
+                }
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, bottom = 16.dp)
+            ) {
+                Button(onClick = {
+                    isCheckInDialogVisible.value = true
+                }) {
+                    Text(text = "Generate Code")
+                }
+            }
+
         }
 
+        if (isCheckInDialogVisible.value)
+            GeneratedCodeDialog(
+                setShowDialog = {
+                    Log.i("Dialog", "Dialog dismissed")
+                })
     }
-
-    if(isCheckInDialogVisible.value)
-        GeneratedCodeDialog(
-            setShowDialog = {
-                Log.i("Dialog", "Dialog dismissed")
-            })
 }
-
 
 @Preview(showBackground = true)
 @Composable
 fun VehicleAssignmentDetailPreview() {
-    val assignment = VehicleAssignment(
-        1, "DL4353456", 2, "ABC Transport Co.", 3,
-        "Ankit Verma", "23 July 2023 12:33", 23, "ACE", "TATA",
-        "Diesel"
-    )
-    VehicleAssignmentDetail(assignment)
+
+    VehicleAssignmentDetail()
 }

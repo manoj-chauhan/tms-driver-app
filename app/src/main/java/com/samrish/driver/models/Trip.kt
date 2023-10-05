@@ -20,3 +20,15 @@ class AssignedVehicle(
 class generatedCode(
     var assignmentCode: String
 )
+
+class TripsAssigned(
+    var tripCode: String,
+    var tripName:String,
+    var status: String,
+    var label: String,
+    var companyName: String,
+    var companyCode: String,
+    var operatorCompanyName: String,
+    var operatorCompanyCode: String,
+    var tripDate: String
+)

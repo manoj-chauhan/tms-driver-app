@@ -1,7 +1,9 @@
 package com.samrish.driver.ui.components
 
 import android.content.Context
+import android.graphics.Paint.Style
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -13,12 +15,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.Trip
 import com.samrish.driver.models.generatedCode
+import com.samrish.driver.services.checkIn
+import com.samrish.driver.services.end
 import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.services.handleError
 import com.samrish.driver.services.requests.CodeGeneratorRequest
@@ -31,15 +37,13 @@ fun GeneratedCodeDialog(
 ) {
 
     val tripDetail = remember {
-        mutableStateOf<generatedCode?>(generatedCode(""))
+        mutableStateOf<generatedCode>(generatedCode(""))
     }
 
     val context = LocalContext.current
 
     generateCode(context, onGenerateCodeFetch={
-        Log.d("IT", "GeneratedCodeDialog: ${it.assignmentCode}")
         tripDetail.value = generatedCode(it.assignmentCode);
-        Log.d("TAG", "GeneratedCodeDialog: ${tripDetail.value?.assignmentCode}")
     })
     Dialog(onDismissRequest = { setShowDialog(false) }) {
 
@@ -47,18 +51,31 @@ fun GeneratedCodeDialog(
             shape = RoundedCornerShape(16.dp),
             color = Color.White
         ) {
-            Box(modifier = Modifier
-                .height(100.dp)
-                .fillMaxWidth()){
-                Row(modifier = Modifier
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Spacer(modifier = Modifier.padding(16.dp))
+                    Text(text = "The Assignment Code is ")
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(text = "${tripDetail.value.assignmentCode}", fontSize = 22.sp)
+                }
+
+
+
+                Box(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                       ){
-                        Text(text = "The Assignment Code is ${tripDetail.value?.assignmentCode}")
+                    .padding(end = 16.dp), contentAlignment = Alignment.BottomEnd) {
+                    Button(
+                        modifier = Modifier.background(Color.Transparent),
+                        onClick = {
+                            setShowDialog(false)
+                        },
+                        shape = RoundedCornerShape(50.dp)
+                    ) {
+                        Text(text = "Done")
                     }
                 }
             }
+
         }
     }
 }
@@ -83,4 +100,16 @@ fun generateCode(context: Context,onGenerateCodeFetch: (code: generatedCode) -> 
         queue.add(stringRequest)
 
     }
+}
+
+
+@Preview
+@Composable
+fun GeneratedCodeDialogPreview(){
+
+    GeneratedCodeDialog(
+        setShowDialog = {
+            Log.i("Dialog", "Dialog dismissed")
+        })
+
 }

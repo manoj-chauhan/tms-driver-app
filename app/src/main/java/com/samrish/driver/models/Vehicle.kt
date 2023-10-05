@@ -5,7 +5,6 @@ class VehicleAssignment (
     var vehicleNumber : String,
     var companyId : Int,
     var companyName : String,
-    var assignerId : Int,
     var assignerName : String,
     var assignedAt : String,
     var vehicleSize : Int,

@@ -29,7 +29,6 @@ class VehicleAssignedRequest (
             vehicleNumber = assignmentJSON.getString("vehicleNumber"),
             companyId = assignmentJSON.getInt("companyId"),
             companyName = assignmentJSON.getString("companyName"),
-            assignerId = assignmentJSON.getInt("assignerId"),
             assignerName = assignmentJSON.getString("assignerName"),
             assignedAt = assignmentJSON.getString("assignedAt"),
             vehicleSize = assignmentJSON.getInt("vehicleSize"),
