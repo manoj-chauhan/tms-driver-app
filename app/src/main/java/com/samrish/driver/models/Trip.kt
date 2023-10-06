@@ -32,3 +32,13 @@ class TripsAssigned(
     var operatorCompanyCode: String,
     var tripDate: String
 )
+class VehicleList(
+    var vehicleId: Int,
+    var vehicleNumber: String,
+    var size:Int,
+    var brand:String,
+    var model: String,
+    var createdBy: Int,
+    var status: String,
+    var fuelType: String
+)

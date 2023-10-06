@@ -11,12 +11,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.samrish.driver.R
 import com.samrish.driver.models.Trip
 import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.ui.components.CompanyDetail
+import com.samrish.driver.ui.components.design
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.AssignmentsScreen
 import com.samrish.driver.ui.pages.CompanySelection
@@ -48,13 +51,16 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("home") {
-            TabScreen(
-                navController = navController,
-                onAssignmentSelected = {
-                    selectedAssignmentCode = it.code
-                    navController.navigate("assignments/detail")
-                }
-            )
+            val painter = painterResource(id = R.drawable.signal)
+            design(painter = painter)
+
+//            TabScreen(
+//                navController = navController,
+//                onAssignmentSelected = {
+//                    selectedAssignmentCode = it.code
+//                    navController.navigate("assignments/detail")
+//                }
+//            )
         }
         composable(
             "companies"
