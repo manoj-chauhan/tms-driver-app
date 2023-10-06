@@ -1,6 +1,5 @@
 package com.samrish.driver.ui.pages
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,8 +23,8 @@ import com.samrish.driver.models.TripsAssigned
 import com.samrish.driver.services.getAssignedTrips
 
 @Composable
-fun TripListPrint(navController: NavHostController,
-                  onTripSelected: (assignment: TripsAssigned) -> Unit) {
+fun HomeScreen(navController: NavHostController,
+               onTripSelected: (assignment: TripsAssigned) -> Unit) {
     val context = LocalContext.current
 
     var tripList = remember {

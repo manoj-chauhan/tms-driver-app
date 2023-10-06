@@ -21,7 +21,7 @@ import com.samrish.driver.models.Trip
 import com.samrish.driver.services.getTripDetail
 
 @Composable
-fun design(
+fun CurrentAssignmentScreen(
     selectedAssignmentCode: String,
     operatorId: Int
 ) {
