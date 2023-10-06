@@ -31,6 +31,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
@@ -51,15 +54,18 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
+import com.samrish.driver.models.Schedule
+import com.samrish.driver.models.Trip
 import com.samrish.driver.services.click
+import com.samrish.driver.services.getTripDetail
 
 class test_file_trips_detail : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val painter = painterResource(id = R.drawable.signal)
-            design(painter)
+//            val painter = painterResource(id = R.drawable.signal)
+//            design(painter)
 
         }
 
@@ -68,8 +74,31 @@ class test_file_trips_detail : ComponentActivity() {
 
 @Composable
 fun design(
-    painter: Painter
+selectedAssignmentCode:String,
+operatorId:Int,
+painter: Painter
 ) {
+    val context = LocalContext.current
+    Log.d("TAG", "design: $selectedAssignmentCode")
+    val tripDetail = remember {
+        mutableStateOf<Trip?>(Trip("", "", "", null, null))
+    }
+    var tripSchedule = remember {
+        mutableStateListOf<Schedule>()
+    }
+
+    val isCheckInDialogVisible = remember { mutableStateOf(false); }
+
+    getTripDetail(
+        context = context,
+        tripCode = selectedAssignmentCode,
+        operatorId = operatorId,
+        onTripDetailFetched = {
+            tripDetail.value = it
+
+        }
+    );
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -129,7 +158,7 @@ fun design(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "98787878",
+                                text = "${tripDetail.value?.code}",
                                 style = TextStyle(
                                     color = Color.Black,
                                     fontSize = 20.sp,
@@ -147,7 +176,7 @@ fun design(
 
                         }
                         Text(
-                            text = "(BH4-AHL-BND-PNB)",
+                            text = "(${tripDetail.value?.name})",
                             style = TextStyle(
                                 color = Color.Gray,
                                 fontSize = 17.sp,
@@ -451,10 +480,10 @@ fun design(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    val painter = painterResource(id = R.drawable.signal)
-    design(painter)
-
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    val painter = painterResource(id = R.drawable.signal)
+//    design(painter)
+//
+//}

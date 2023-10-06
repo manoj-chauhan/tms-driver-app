@@ -37,6 +37,10 @@ fun AppNavigationHost(
         mutableStateOf("")
     }
 
+    var operatorId by remember {
+        mutableStateOf(0)
+    }
+
     var startScreen:String = "login"
 
     getAccessToken(LocalContext.current)?.let {
@@ -52,7 +56,7 @@ fun AppNavigationHost(
     NavHost(navController = navController, startDestination = startScreen) {
         composable("home") {
             val painter = painterResource(id = R.drawable.signal)
-            design(painter = painter)
+            design(selectedAssignmentCode, operatorId, painter)
 
 //            TabScreen(
 //                navController = navController,
@@ -72,7 +76,14 @@ fun AppNavigationHost(
 //                }
 //            )
 
-            TripListPrint()
+            TripListPrint(
+                navController = navController,
+                onTripSelected = {
+                    selectedAssignmentCode = it.tripCode
+                    operatorId = it.operatorCompanyId
+                    navController.navigate("home")
+                }
+            )
         }
         composable(
                 "login"

@@ -4,7 +4,7 @@ class Trip(
     var name: String,
     var code: String,
     var status: String,
-    var actions: List<String>,
+//    var actions: List<String>,
     var assignedDriver: AssignedDriver?,
     var assignedVehicle: AssignedVehicle?
     )
@@ -30,6 +30,7 @@ class TripsAssigned(
     var companyCode: String,
     var operatorCompanyName: String,
     var operatorCompanyCode: String,
+    var operatorCompanyId: Int,
     var tripDate: String
 )
 class VehicleList(

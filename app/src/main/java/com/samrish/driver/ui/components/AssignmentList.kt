@@ -23,12 +23,12 @@ fun AssignmentList(tripList: List<Trip>, onAssignmentClick: (trip: Trip) -> Unit
     }
 }
 
-@Preview
-@Composable
-fun AssignmentListPreview() {
-    AssignmentList(tripList = listOf(
-        Trip("BH4-BH5-BH6", "34456456", "STARTED", listOf(), null, null),
-        Trip("BH4-BH5-BH6", "34456457", "NOT STARTED", listOf(), null, null),
-    ), onAssignmentClick = {})
-}
-
+//@Preview
+//@Composable
+//fun AssignmentListPreview() {
+//    AssignmentList(tripList = listOf(
+//        Trip("BH4-BH5-BH6", "34456456", "STARTED", listOf(), null, null),
+//        Trip("BH4-BH5-BH6", "34456457", "NOT STARTED", listOf(), null, null),
+//    ), onAssignmentClick = {})
+//}
+//

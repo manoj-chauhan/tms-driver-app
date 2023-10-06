@@ -83,7 +83,7 @@ fun getOldAssignments(context: Context, driverId: Int , onTripsFetched: (trips: 
     queue.add(stringRequest)
 }
 
-fun getTripDetail(context: Context, tripCode: String, onTripDetailFetched: (trip: Trip) -> Unit) {
+fun getTripDetail(context: Context, tripCode: String, operatorId:Int,  onTripDetailFetched: (trip: Trip) -> Unit) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trips_detail) + tripCode
 
@@ -91,11 +91,11 @@ fun getTripDetail(context: Context, tripCode: String, onTripDetailFetched: (trip
     context.applicationContext?.let {
         getAccessToken(it)?.let {
             hdrs["Authorization"] = "Bearer $it"
-            hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+            hdrs["Company-Id"] = operatorId.toString()
         }
 
         val stringRequest = TripDetailRequest(url, hdrs, { response ->
-            Log.i("TripDetail", "Trip Detail: $response")
+            Log.i("TripDetail", "Trip New Detail ${tripCode}  is : $response")
             onTripDetailFetched(response)
         }, { error -> handleError(context, error) })
         queue.add(stringRequest)

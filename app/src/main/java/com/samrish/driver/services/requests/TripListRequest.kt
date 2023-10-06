@@ -64,7 +64,7 @@ class TripListRequest(
                 t.get("tripName") as String,
                 t.get("tripCode") as String,
                 t.get("status") as String,
-                actions,
+//                actions,
                 assignedDriver,
                 assignedVehicle
             ))

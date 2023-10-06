@@ -21,7 +21,7 @@ fun AssignmentDetailScreen(
 ) {
 
     val tripDetail = remember {
-        mutableStateOf<Trip?>(Trip("", "", "", listOf(), null, null))
+        mutableStateOf<Trip?>(Trip("", "", "", null, null))
     }
     var tripSchedule = remember {
         mutableStateListOf<Schedule>()
@@ -34,18 +34,18 @@ fun AssignmentDetailScreen(
 
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
 
-    getTripDetail(
-        context = LocalContext.current,
-        tripCode = assignmentCode,
-        onTripDetailFetched = {
-            tripDetail.value = it
-            isStartEnabled.value = it.actions.contains("START")
-            isCheckInEnabled.value = it.actions.contains("CHECKIN")
-            isDepartEnabled.value = it.actions.contains("DEPART")
-            isCancelEnabled.value = it.actions.contains("CANCEL")
-            isEndEnabled.value = it.actions.contains("END")
-        }
-    );
+//    getTripDetail(
+//        context = LocalContext.current,
+//        tripCode = assignmentCode,
+//        onTripDetailFetched = {
+//            tripDetail.value = it
+//            isStartEnabled.value = it.actions.contains("START")
+//            isCheckInEnabled.value = it.actions.contains("CHECKIN")
+//            isDepartEnabled.value = it.actions.contains("DEPART")
+//            isCancelEnabled.value = it.actions.contains("CANCEL")
+//            isEndEnabled.value = it.actions.contains("END")
+//        }
+//    );
 
     getTripSchedule(
      context = LocalContext.current,
