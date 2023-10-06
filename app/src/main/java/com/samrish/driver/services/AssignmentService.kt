@@ -95,7 +95,7 @@ fun getTripDetail(context: Context, tripCode: String, operatorId:Int,  onTripDet
         }
 
         val stringRequest = TripDetailRequest(url, hdrs, { response ->
-            Log.i("TripDetail", "Trip New Detail ${tripCode}  is : $response")
+            Log.i("TripDetail", "Trip New Detail $tripCode  is : $response")
             onTripDetailFetched(response)
         }, { error -> handleError(context, error) })
         queue.add(stringRequest)

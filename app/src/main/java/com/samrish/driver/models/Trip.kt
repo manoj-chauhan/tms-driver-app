@@ -5,9 +5,11 @@ class Trip(
     var code: String,
     var status: String,
 //    var actions: List<String>,
+    var tripDate: String,
+    var operatorName: String,
     var assignedDriver: AssignedDriver?,
-    var assignedVehicle: AssignedVehicle?
-    )
+    var assignedVehicle: AssignedVehicle?,
+)
 class AssignedDriver(
     var driverId: Int,
     var driverName: String

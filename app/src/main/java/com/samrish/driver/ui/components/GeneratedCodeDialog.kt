@@ -67,7 +67,6 @@ fun GeneratedCodeDialog(
                     Button(
                         modifier = Modifier.background(Color.Transparent),
                         onClick = {
-                            setShowDialog(false)
                         },
                         shape = RoundedCornerShape(50.dp)
                     ) {

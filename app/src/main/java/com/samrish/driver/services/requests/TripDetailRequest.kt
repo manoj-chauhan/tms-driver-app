@@ -61,6 +61,8 @@ class TripDetailRequest(
             t.get("tripCode") as String,
             t.get("status") as String,
 //            actions,
+            t.get("tripDate") as String,
+            t.get("operatorName") as String,
             assignedDriver,
             assignedVehicle
         )

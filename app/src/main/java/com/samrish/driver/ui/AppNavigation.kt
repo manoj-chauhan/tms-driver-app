@@ -30,6 +30,7 @@ import com.samrish.driver.ui.pages.TripListPrint
 
 
 @Composable
+//@LooperMode(LooperMode.Mode.PAUSED)
 fun AppNavigationHost(
     navController: NavHostController
 ) {
@@ -55,8 +56,8 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("home") {
-            val painter = painterResource(id = R.drawable.signal)
-            design(selectedAssignmentCode, operatorId, painter)
+//            val painter = painterResource(id = R.drawable.signal)
+                design(selectedAssignmentCode, operatorId)
 
 //            TabScreen(
 //                navController = navController,
@@ -90,13 +91,13 @@ fun AppNavigationHost(
                 ) {
             Login(navController = navController)
         }
-        composable(
-            "assignments/detail"
-        ) {
-            AssignmentDetailScreen(
-                assignmentCode = selectedAssignmentCode
-            )
-        }
+//        composable(
+//            "assignments/detail"
+//        ) {
+//            AssignmentDetailScreen(
+//                assignmentCode = selectedAssignmentCode
+//            )
+//        }
         composable(
             "profile"
         ) {

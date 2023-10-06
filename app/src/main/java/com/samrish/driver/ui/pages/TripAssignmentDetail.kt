@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.samrish.driver.models.TripsAssigned
 @Composable
-fun TripAssignmentDetails(tripList:List<TripsAssigned>, onTripSelected: (trip: TripsAssigned) -> Unit){
+fun TripAssignmentDetails(tripList:List<TripsAssigned>, onTripSelected: (tripToDriverAssigned: TripsAssigned) -> Unit){
 
     tripList.forEach { trip -> AssignmentTrips(trip, onClick=onTripSelected) }
 }
