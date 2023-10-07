@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -53,7 +54,9 @@ fun AppNavigationHost(
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
             CurrentAssignmentScreen(
-                navController = navController
+                navController = navController,
+                selectedAssignment = selectedAssignmentCode,
+                operatorId = operatorId
             )
         }
         composable(
@@ -72,6 +75,7 @@ fun AppNavigationHost(
                 "login"
                 ) {
             Login(navController = navController)
+
         }
 //        composable(
 //            "assignments/detail"

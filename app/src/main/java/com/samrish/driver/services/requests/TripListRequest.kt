@@ -67,8 +67,8 @@ class TripListRequest(
 //                actions,
                 t.get("tripDate") as String,
                 t.get("operatorName") as String,
-                assignedDriver,
-                assignedVehicle,
+                t.get("totalDistanceTravelled") as Double,
+                t.get("totalTimeTravelled") as Int
             ))
 
         }

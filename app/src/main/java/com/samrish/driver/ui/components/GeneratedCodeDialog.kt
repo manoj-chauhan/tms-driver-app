@@ -67,6 +67,10 @@ fun GeneratedCodeDialog(
                     Button(
                         modifier = Modifier.background(Color.Transparent),
                         onClick = {
+//                            generateCode(context, onGenerateCodeFetch={
+//                                tripDetail.value = generatedCode(it.assignmentCode);
+//                            })
+                            setShowDialog(false)
                         },
                         shape = RoundedCornerShape(50.dp)
                     ) {

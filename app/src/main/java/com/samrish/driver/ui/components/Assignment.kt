@@ -50,11 +50,14 @@ fun Assignment(trip: Trip, onClick: (trip: Trip) -> Unit) {
     }
 }
 
-@Preview
-@Composable
-fun AssignmentPreview() {
-    Assignment(
-        trip = Trip("BH4-BH5-BH6", "34456456", "STARTED","","",null, null),
-        onClick = {}
-    )
-}
+//@Preview
+//@Composable
+//fun AssignmentPreview() {
+//    Assignment(
+//        trip = Trip("BH4-BH5-BH6", "34456456", "STARTED","","",0,""),
+//
+//
+//
+//        onClick = {}
+//    )
+//}

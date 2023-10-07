@@ -63,8 +63,8 @@ class TripDetailRequest(
 //            actions,
             t.get("tripDate") as String,
             t.get("operatorName") as String,
-            assignedDriver,
-            assignedVehicle
+            t.get("totalDistanceCovered") as Double,
+            t.get("totalTimeTravelled") as Int
         )
     }
 }
