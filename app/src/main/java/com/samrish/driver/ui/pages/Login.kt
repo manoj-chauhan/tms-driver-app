@@ -50,8 +50,7 @@ fun Login(
 
             fun onLoginSuccess() {
                 Log.i("Login", "Login Successful")
-                navController.navigate(
-                    "home",
+                navController.navigate("Home",
                     NavOptions.Builder().setPopUpTo("login", true).build()
                 )
             }

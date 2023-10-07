@@ -7,8 +7,8 @@ class Trip(
 //    var actions: List<String>,
     var tripDate: String,
     var operatorName: String,
-    var assignedDriver: AssignedDriver?,
-    var assignedVehicle: AssignedVehicle?,
+    var totalDistanceCovered: Double,
+    var totalTimeTravelled: Int
 )
 class AssignedDriver(
     var driverId: Int,
