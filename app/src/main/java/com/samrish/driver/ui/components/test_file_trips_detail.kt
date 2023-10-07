@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -17,33 +18,59 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.samrish.driver.models.Trip
+import com.samrish.driver.models.TripsAssigned
+import com.samrish.driver.services.getAssignedTrips
 import com.samrish.driver.services.getTripDetail
 
 @Composable
-fun CurrentAssignmentScreen(
+fun DemoScreen(
+    navController: NavHostController,
     selectedAssignmentCode: String,
     operatorId: Int
 ) {
-    val context = LocalContext.current
 
-    Log.d("TAG", "design: $selectedAssignmentCode")
+    var tripList = remember {
+        mutableStateListOf<TripsAssigned>()
+    }
+
+    getAssignedTrips(LocalContext.current, onTripsListFetched={
+        tripList.clear()
+        tripList.addAll(it)
+    })
+
+    if(!tripList.isEmpty()){
+        Log.i("Recompose", tripList[0].tripCode)
+    }
+
+}
+
+@Composable
+fun CurrentAssignmentScreen(
+    t: Trip
+) {
+    Log.i("Recompose", "CurrentAssignmentScreen Recomposing")
+
+
+//    Log.d("TAG", "design: $selectedAssignmentCode")
 //    val tripDetail = remember {
 //        mutableStateOf<Trip?>(null)
 //    }
 
-    var tripDetail by remember { mutableStateOf<Trip?>(null) }
-
-    getTripDetail(
-        context = context,
-        tripCode = selectedAssignmentCode,
-        operatorId = operatorId,
-        onTripDetailFetched = {
-//            tripDetail.value = it
-            tripDetail = it;
-        }
-    )
-    tripDetail?.let {
+    var tripDetail by remember {
+        mutableStateOf<Trip>(t)
+    }
+//
+//    getTripDetail(
+//        context = context,
+//        tripCode = selectedAssignmentCode,
+//        operatorId = operatorId,
+//        onTripDetailFetched = {
+////            tripDetail.value = it
+//            tripDetail = it;
+//        }
+//    )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -59,7 +86,7 @@ fun CurrentAssignmentScreen(
         ) {
 
             Text(
-                text = "Hello", style = TextStyle(
+                text = "Hello ", style = TextStyle(
                     color = Color.Black,
                     fontSize = 23.sp
                 )
@@ -67,7 +94,7 @@ fun CurrentAssignmentScreen(
 
 
         }
-    }
+
 
 //    tripDetail?.let {
 //        Box(

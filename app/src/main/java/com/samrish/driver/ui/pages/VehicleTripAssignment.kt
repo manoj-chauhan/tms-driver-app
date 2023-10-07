@@ -30,7 +30,7 @@ import java.time.LocalDateTime
 @Composable
 fun VehicleAssignmentDetail() {
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
-    var isApiCalled = remember { mutableStateOf(false); }
+//    var isApiCalled = remember { mutableStateOf(false); }
 
     val context = LocalContext.current
 
@@ -38,10 +38,10 @@ fun VehicleAssignmentDetail() {
 
     vehicleDetails(context, onVehicleDetailFetched = {
         vehicleAssignment.value = it
-        isApiCalled.value = true
+//        isApiCalled.value = true
     })
 
-    if(isApiCalled.value) {
+//    if(isApiCalled.value) {
 
         Column(
             modifier = Modifier
@@ -99,7 +99,7 @@ fun VehicleAssignmentDetail() {
                     Log.i("Dialog", "Dialog dismissed")
                 })
     }
-}
+//}
 
 @Preview(showBackground = true)
 @Composable

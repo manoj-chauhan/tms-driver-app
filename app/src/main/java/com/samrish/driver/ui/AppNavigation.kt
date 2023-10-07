@@ -17,8 +17,8 @@ import androidx.navigation.compose.composable
 import com.samrish.driver.models.Trip
 import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.ui.components.CompanyDetail
-import com.samrish.driver.ui.components.CurrentAssignmentScreen
 import com.samrish.driver.ui.pages.AssignmentsScreen
+import com.samrish.driver.ui.pages.CurrentAssignmentScreen
 import com.samrish.driver.ui.pages.History
 import com.samrish.driver.ui.pages.Login
 import com.samrish.driver.ui.pages.ProfileScreen
@@ -52,27 +52,13 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
-//            val painter = painterResource(id = R.drawable.signal)
-                CurrentAssignmentScreen(selectedAssignmentCode, operatorId)
-
-//            TabScreen(
-//                navController = navController,
-//                onAssignmentSelected = {
-//                    selectedAssignmentCode = it.code
-//                    navController.navigate("assignments/detail")
-//                }
-//            )
+            CurrentAssignmentScreen(
+                navController = navController
+            )
         }
         composable(
             "home"
         ) {
-//            CompanySelection(
-//                navController = navController,
-//                onCompanySelected = {
-//                    navController.navigate("home")
-//                }
-//            )
-
             HomeScreen(
                 navController = navController,
                 onTripSelected = {
