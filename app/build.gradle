@@ -1,44 +1,40 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.google.gms.google-services'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+//    id 'com.google.devtools.ksp'
+    id 'com.google.gms.google-services'
+}
 
 android {
-    compileSdkVersion 34
 
     defaultConfig {
-        applicationId "com.samrish.driver"
-        minSdkVersion 26
-        targetSdkVersion 34
+        namespace 'com.samrish.driver'
+        compileSdk 34
+        minSdk 26
+        targetSdk 34
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
-    namespace 'com.samrish.driver'
-    buildToolsVersion '33.0.0'
-
     buildFeatures {
         compose true
     }
-
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.2"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 }
 
@@ -52,9 +48,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
 
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
-    implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation "androidx.activity:activity-ktx:$rootProject.activityVersion"
 
@@ -80,7 +74,7 @@ dependencies {
     implementation 'androidx.compose.material:material-icons-core'
     implementation 'androidx.compose.material:material-icons-extended'
     implementation 'androidx.compose.material3:material3-window-size-class'
-    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation 'androidx.activity:activity-compose:1.8.0'
 //    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
     implementation 'androidx.compose.runtime:runtime-livedata'
     implementation 'androidx.compose.runtime:runtime-rxjava2'
