@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -41,6 +42,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3"
     }
+
 }
 
 dependencies {
@@ -52,13 +54,13 @@ dependencies {
     val activityVersion = "1.6.1"
     val volleyVersion = "1.2.1"
     val nav_version = "2.7.4"
+    val room_version = "2.5.2"
 
 
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
     implementation("com.google.firebase:firebase-auth-ktx:22.1.2")
-    implementation("com.google.android.material:material:1.10.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     implementation("androidx.appcompat:appcompat:$appCompatVersion")
@@ -109,5 +111,11 @@ dependencies {
     // alternately - if using Java8, use the following instead of lifecycle-compiler
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycle_version")
 
+    implementation("androidx.room:room-runtime:$room_version")
 
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+
+    ksp("androidx.room:room-compiler:$room_version")
 }
