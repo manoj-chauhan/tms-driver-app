@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name='DriverApp'
-include ':app'
+rootProject.name = "DriverApp"
+include(":app")
