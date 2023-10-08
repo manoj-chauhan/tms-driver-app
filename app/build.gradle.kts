@@ -46,12 +46,8 @@ android {
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
     val lifecycle_version = "2.6.2"
-    val arch_version = "2.2.0"
-    val materialVersion = "1.8.0"
-    val liveDataVersion = "2.5.1"
     val recyclerViewVersion = "1.3.1"
     val appCompatVersion = "1.6.1"
-//  val   coreKtxVersion = '1.10.1'
     val constraintLayoutVersion = "2.1.4"
     val activityVersion = "1.6.1"
     val volleyVersion = "1.2.1"
