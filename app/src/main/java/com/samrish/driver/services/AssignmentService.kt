@@ -101,7 +101,7 @@ fun getTripDetail(context: Context, tripCode: String, operatorId:Int,  onTripDet
         queue.add(stringRequest)
     }
 }
-fun getTripSchedule(context: Context, tripCode: String, onTripScheduleFetched: (schedule: List<Schedule>) -> Unit) {
+fun getTripSchedule(context: Context, tripCode: String,operatorId:Int,  onTripScheduleFetched: (schedule: Schedule) -> Unit) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trip_schedules) + tripCode + "/schedule"
 
@@ -109,11 +109,11 @@ fun getTripSchedule(context: Context, tripCode: String, onTripScheduleFetched: (
     context.applicationContext?.let {
         getAccessToken(it)?.let {
             hdrs["Authorization"] = "Bearer $it"
-            hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+            hdrs["Company-Id"] = operatorId.toString()
         }
 
         val stringRequest = TripScheduleRequest(url, hdrs, { response ->
-            Log.i("TripDetail", "Trip Schedule: $response")
+            Log.i("TripDetail", "Trip Schedule: ${response.locations}")
             onTripScheduleFetched(response)
         }, { error -> handleError(context, error) })
         queue.add(stringRequest)
@@ -121,7 +121,7 @@ fun getTripSchedule(context: Context, tripCode: String, onTripScheduleFetched: (
 }
 
 
-fun checkIn(context: Context, tripCode: String, placeCode: String) {
+fun checkIn(context: Context, tripCode: String, operatorId: Int,placeCode: String) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trip_check_in)
 
@@ -130,7 +130,7 @@ fun checkIn(context: Context, tripCode: String, placeCode: String) {
         val authHeader = it?.let { it1 -> getAccessToken(it1) }
         getAccessToken(it)?.let {
             hdrs["Authorization"] = "Bearer $it"
-            hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+            hdrs["Company-Id"] = operatorId.toString()
         }
 
         val stringRequest = TripCheckInRequest(placeCode, tripCode, url, hdrs, { response ->
@@ -141,7 +141,7 @@ fun checkIn(context: Context, tripCode: String, placeCode: String) {
     }
 }
 
-fun start(context: Context, tripCode: String) {
+fun start(context: Context, tripCode: String, operatorId: Int) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trip_start)
 
@@ -151,7 +151,7 @@ fun start(context: Context, tripCode: String) {
 
         getAccessToken(it)?.let {
             hdrs["Authorization"] = "Bearer $it"
-            hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+            hdrs["Company-Id"] = operatorId.toString()
         }
 
         val deviceIdentifier =
@@ -165,14 +165,14 @@ fun start(context: Context, tripCode: String) {
     }
 }
 
-fun depart(context: Context, tripCode: String) {
+fun depart(context: Context, tripCode: String, operatorId: Int) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trip_depart)
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     getAccessToken(context)?.let {
         hdrs["Authorization"] = "Bearer $it"
-        hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+        hdrs["Company-Id"] = operatorId.toString()
     }
     val stringRequest = TripDepartRequest(tripCode, url, hdrs, { response ->
         Log.i("TripDetail", "Trip Depart: $response")
@@ -181,14 +181,14 @@ fun depart(context: Context, tripCode: String) {
     queue.add(stringRequest)
 }
 
-fun end(context: Context, tripCode: String) {
+fun end(context: Context, tripCode: String, operatorId: Int) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trip_end)
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
     getAccessToken(context)?.let {
         hdrs["Authorization"] = "Bearer $it"
-        hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+        hdrs["Company-Id"] = operatorId.toString()
     }
     val stringRequest = TripEndRequest(tripCode, url, hdrs, { response ->
         Log.i("TripDetail", "Trip End: $response")
@@ -197,7 +197,7 @@ fun end(context: Context, tripCode: String) {
     queue.add(stringRequest)
 }
 
-fun cancel(context: Context, tripCode: String) {
+fun cancel(context: Context, tripCode: String, operatorId: Int) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trip_cancel)
 
@@ -206,7 +206,7 @@ fun cancel(context: Context, tripCode: String) {
 
     authHeader?.let {
         hdrs["Authorization"] = "Bearer $authHeader"
-        hdrs["Company-Id"] = getSelectedCompanyId(context).toString()
+        hdrs["Company-Id"] = operatorId.toString()
     }
 
     val stringRequest = TripCancelRequest(tripCode, url, hdrs, { response ->

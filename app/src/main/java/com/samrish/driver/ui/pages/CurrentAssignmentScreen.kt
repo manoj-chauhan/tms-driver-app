@@ -38,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.samrish.driver.R
 import com.samrish.driver.services.click
+import com.samrish.driver.ui.components.ActiveStatusTrips
 import com.samrish.driver.viewmodels.CurrentAssignmentViewModel
 import com.samrish.driver.viewmodels.TripDetailsViewModel
 
@@ -46,6 +47,7 @@ fun CurrentAssignmentScreen(
     navController: NavHostController,
     selectedAssignment: String,
     operatorId: Int,
+    tripId: Int,
     vm: TripDetailsViewModel = viewModel()
 ) {
 
@@ -404,45 +406,7 @@ fun CurrentAssignmentScreen(
                         }
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .padding(start = 25.dp, top = 30.dp, end = 12.dp, bottom = 30.dp),
-                        contentAlignment = Alignment.BottomStart
-
-                    )
-                    {
-                        var context = LocalContext.current
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Button(colors = ButtonDefaults.buttonColors(
-                                Color.Red
-                            ),
-                                onClick = {
-                                    Toast.makeText(context, "Schedule Selected", Toast.LENGTH_LONG)
-                                        .show()
-                                    Log.i("toast", "new")
-                                }) {
-                                Text(text = "Check In ")
-                            }
-                            Button(colors = ButtonDefaults.buttonColors(
-                                Color.Red
-                            ),
-                                onClick = { /*TODO*/ }) {
-                                Text(text = "Cancel ")
-                            }
-                            Button(colors = ButtonDefaults.buttonColors(
-                                Color.Red
-                            ),
-                                onClick = { click(context) }) {
-                                Text(text = "End ")
-                            }
-
-                        }
-                    }
+                    ActiveStatusTrips(context, tripId, operatorId, selectedAssignment)
                 }
             }
         }

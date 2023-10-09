@@ -39,6 +39,11 @@ fun AppNavigationHost(
         mutableStateOf(0)
     }
 
+    var tripId by remember {
+        mutableStateOf(0)
+    }
+
+
     var startScreen:String = "login"
 
     getAccessToken(LocalContext.current)?.let {
@@ -56,7 +61,8 @@ fun AppNavigationHost(
             CurrentAssignmentScreen(
                 navController = navController,
                 selectedAssignment = selectedAssignmentCode,
-                operatorId = operatorId
+                operatorId = operatorId,
+                tripId = tripId
             )
         }
         composable(
@@ -67,6 +73,7 @@ fun AppNavigationHost(
                 onTripSelected = {
                     selectedAssignmentCode = it.tripCode
                     operatorId = it.operatorCompanyId
+                    tripId = it.tripId
                     navController.navigate("current-assignment-detail")
                 }
             )

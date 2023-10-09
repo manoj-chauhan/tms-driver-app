@@ -20,7 +20,8 @@ data class Trip(
     val tripDate: String,
     val operatorName: String,
     val totalTimeTravelled:Int,
-    val totalDistanceCovered: Double
+    val totalDistanceCovered: Double,
+    val tripId: Int
 )
 
 class TripDetailsViewModel : ViewModel() {
@@ -43,7 +44,7 @@ class TripDetailsViewModel : ViewModel() {
             operatorId = operatorId,
             onTripDetailFetched = {
                 _currentAssignment.update { assignment ->
-                    Trip(it.name, it.code, it.status, it.tripDate, it.operatorName, it.totalTimeTravelled,it.totalDistanceCovered)
+                    Trip(it.name, it.code, it.status, it.tripDate, it.operatorName, it.totalTimeTravelled,it.totalDistanceCovered, it.tripId)
                 }
             }
         )

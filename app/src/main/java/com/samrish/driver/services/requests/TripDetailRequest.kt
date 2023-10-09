@@ -64,7 +64,8 @@ class TripDetailRequest(
             t.get("tripDate") as String,
             t.get("operatorName") as String,
             t.get("totalDistanceCovered") as Double,
-            t.get("totalTimeTravelled") as Int
+            t.get("totalTimeTravelled") as Int,
+            t.get("tripId" )as Int
         )
     }
 }

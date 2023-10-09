@@ -8,7 +8,8 @@ class Trip(
     var tripDate: String,
     var operatorName: String,
     var totalDistanceCovered: Double,
-    var totalTimeTravelled: Int
+    var totalTimeTravelled: Int,
+    var tripId: Int
 )
 class AssignedDriver(
     var driverId: Int,
@@ -33,7 +34,8 @@ class TripsAssigned(
     var operatorCompanyName: String,
     var operatorCompanyCode: String,
     var operatorCompanyId: Int,
-    var tripDate: String
+    var tripDate: String,
+    var tripId: Int
 )
 class VehicleList(
     var vehicleId: Int,
@@ -44,4 +46,8 @@ class VehicleList(
     var createdBy: Int,
     var status: String,
     var fuelType: String
+)
+
+class TripActions(
+    var actions: List<String>
 )
