@@ -26,6 +26,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.Schedule
 import com.samrish.driver.models.TripActions
 import com.samrish.driver.services.cancel
@@ -34,13 +36,14 @@ import com.samrish.driver.services.end
 import com.samrish.driver.services.getTripActions
 import com.samrish.driver.services.getTripSchedule
 import com.samrish.driver.services.start
+import com.samrish.driver.viewmodels.TripNextDestination
+import com.samrish.driver.viewmodels.VehicleAssignmentViewModel
 
 @Composable
-fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: String){
+fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: String, vm: TripNextDestination = viewModel()){
 
-        var tripActions by remember {
-        mutableStateOf<TripActions?>(null)
-    }
+    val assignment by vm.tripNextDestinationActions.collectAsStateWithLifecycle()
+    vm.getTripActions(context = context, tripId = tripId, operatorId = operatorId)
 
         var tripSchedule by remember {
         mutableStateOf<Schedule?>(null)
@@ -57,118 +60,134 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
     val isCancelEnabled = remember { mutableStateOf(false); }
     val isEndEnabled = remember { mutableStateOf(false); }
 
-    getTripActions(
-         context = context,
-         tripId = tripId,
-         operatorId = operatorId,
-         onTripActionsFetched = {
-            Log.d("TAG", "ActiveStatusTrips: $it")
-             tripActions = it
-            isStartEnabled.value = it.actions.contains("START")
-            isCheckInEnabled.value = it.actions.contains("CHECKIN")
-            isDepartEnabled.value = it.actions.contains("DEPART")
-            isCancelEnabled.value = it.actions.contains("CANCEL")
-            isEndEnabled.value = it.actions.contains("END")
-         }
-    )
-
-        getTripSchedule(
-             context = context,
-             tripCode = tripCode,
-             operatorId = operatorId,
-             onTripScheduleFetched = {
-                 tripSchedule = it
-             }
-    )
-
-    if (tripActions != null) {
-        NextDestinationInfo(
-            tripActions!!.nextLocationName,
-            tripActions!!.estimatedTime,
-            tripActions!!.estimatedDistance,
-            tripActions!!.travelledDistance,
-            tripActions!!.travelTime
-        )
+    if (assignment?.actions != null) {
+        println("actions are" + { assignment!!.actions })
+        isStartEnabled.value = assignment!!.actions.contains("START")
+        isCheckInEnabled.value = assignment!!.actions.contains("CHECKIN")
+        isDepartEnabled.value = assignment!!.actions.contains("DEPART")
+        isCancelEnabled.value = assignment!!.actions.contains("CANCEL")
+        isEndEnabled.value = assignment!!.actions.contains("END")
     }
+    Log.d("actions in file", "ActiveStatusTrips: ${assignment?.actions}")
+//    }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(start = 25.dp, top = 30.dp, end = 12.dp, bottom = 30.dp),
-        contentAlignment = Alignment.BottomStart
+//    getTripActions(
+//         context = context,
+//         tripId = tripId,
+//         operatorId = operatorId,
+//         onTripActionsFetched = {
+//            Log.d("TAG", "ActiveStatusTrips: $it")
+//             tripActions = it
+//            isStartEnabled.value = it.actions.contains("START")
+//            isCheckInEnabled.value = it.actions.contains("CHECKIN")
+//            isDepartEnabled.value = it.actions.contains("DEPART")
+//            isCancelEnabled.value = it.actions.contains("CANCEL")
+//            isEndEnabled.value = it.actions.contains("END")
+//         }
+//    )
 
-    )
-    {
+//        getTripSchedule(
+//             context = context,
+//             tripCode = tripCode,
+//             operatorId = operatorId,
+//             onTripScheduleFetched = {
+//                 tripSchedule = it
+//             }
+//    )
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            if (isStartEnabled.value) {
-                Button(colors = ButtonDefaults.buttonColors(
-                Color.Red
-                ),
-                    onClick = {
+
+    assignment?.let{
+
+        NextDestinationInfo(
+            it.nextLocationName,
+            it.estimatedTime,
+            it.estimatedDistance,
+            it.travelledDistance,
+            it.travelTime
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(start = 25.dp, top = 30.dp, end = 12.dp, bottom = 30.dp),
+            contentAlignment = Alignment.BottomStart
+
+        )
+        {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                if (isStartEnabled.value) {
+                    Button(colors = ButtonDefaults.buttonColors(
+                        Color.Red
+                    ),
+                        onClick = {
                             start(context, tripCode, operatorId)
-                    },
-                    content = {
-                        Text(text = "Start")
-                    }
-                )
-            }
+                        },
+                        content = {
+                            Text(text = "Start")
+                        }
+                    )
+                }
 
-            if (isCancelEnabled.value) {
-                Button(
-                    onClick = {
+                if (isCancelEnabled.value) {
+                    Button(
+                        onClick = {
 //                        tripDetail.value?.let {
                             cancel(context, tripCode, operatorId)
 //                        }
-                    },
-                    content = {
-                        Text(text = "Cancel")
-                    }
-                )
-            }
-            if (isEndEnabled.value) {
-                Button(
-                    onClick = {
+                        },
+                        content = {
+                            Text(text = "Cancel")
+                        }
+                    )
+                }
+                if (isEndEnabled.value) {
+                    Button(
+                        onClick = {
 //                        tripDetail.value?.let {
                             end(context, tripCode, operatorId)
 //                        }
-                    },
-                    content = {
-                        Text(text = "End")
-                    }
-                )
-            }
-            if (isCheckInEnabled.value) {
-                Button(
-                    onClick = {
+                        },
+                        content = {
+                            Text(text = "End")
+                        }
+                    )
+                }
+                if (isCheckInEnabled.value) {
+                    Button(
+                        onClick = {
                             isCheckInDialogVisible.value = true
 //                            checkIn(context, tripCode, operatorId)
-                    },
-                    content = {
-                        Text(text = "Check-In")
-                    }
-                )
-            }
-            if (isDepartEnabled.value) {
-                Button(
-                    onClick = {
+                        },
+                        content = {
+                            Text(text = "Check-In")
+                        }
+                    )
+                }
+                if (isDepartEnabled.value) {
+                    Button(
+                        onClick = {
 //                        tripDetail.value?.let {
                             depart(context, tripCode, operatorId)
 //                        }
-                    },
-                    content = {
-                        Text(text = "Depart")
-                    }
-                )
+                        },
+                        content = {
+                            Text(text = "Depart")
+                        }
+                    )
 
+                }
             }
+
         }
 
     }
+
+
 
     if (isCheckInDialogVisible.value) {
             CheckInDialog(
@@ -180,17 +199,5 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
                     isCheckInDialogVisible.value = it
                 }
             )
-
-//        CheckInDialog(
-//            tripCode = tripCode,
-//            operatorId = operatorId,
-//            context = context,
-////            schedules = tripSchedule!!.locations,
-//            setShowDialog = {
-//                Log.i("Dialog", "Dialog dismissed")
-//                isCheckInDialogVisible.value = it
-//            }
-//        )
         }
-//    }
 }
