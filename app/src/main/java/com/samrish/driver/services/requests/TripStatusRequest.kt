@@ -30,16 +30,18 @@ class TripActionsStatusRequest (
         }
 
         var currentLocationName: String? = null
+        var nextLocationName: String? = null
 
         if (t.has("currentLocationName")) {
              currentLocationName = t["currentLocationName"] as? String
         }
-        val nextLocationName: String? = t["nextLocationName"] as? String
-
+        if(t.has("nextLocationName")) {
+            nextLocationName = t["nextLocationName"] as? String
+        }
 
         Log.d("TAG", "transformResponse: $nextLocationName")
         if (currentLocationName != null) {
-
+            println("Hi currrent location")
             return TripActions(actions, null, null, null, null, null, currentLocationName)
         }
 

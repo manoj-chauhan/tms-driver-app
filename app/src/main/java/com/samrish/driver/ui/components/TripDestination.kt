@@ -23,8 +23,20 @@ import com.samrish.driver.models.TripActions
 import com.samrish.driver.models.TripsAssigned
 
 @Composable
-fun NextDestinationInfo(nextLocationName: String?, estimatedDistance: Double?, estimatedTime:Int?, travelledDistance: Double?, travelTime: Int? ){
+fun NextDestinationInfo(nextLocationName: String?, estimatedDistance: Double?, estimatedTime:Int?, travelledDistance: Double?, travelTime: Int?, currentLocation: String? ){
     Log.d("location Name", "NextDestinationInfo: $nextLocationName")
+
+
+    var currentLocationName: String? = null
+    var nextLocation: String? = null
+
+    if (currentLocation != null) {
+        currentLocationName = currentLocation
+    }
+    if(nextLocationName!= null) {
+        nextLocation = nextLocationName
+    }
+
 
     Box(
         modifier = Modifier
@@ -32,20 +44,24 @@ fun NextDestinationInfo(nextLocationName: String?, estimatedDistance: Double?, e
             .padding(start = 25.dp, top = 30.dp, end = 12.dp)
             .height(90.dp), contentAlignment = Alignment.BottomStart
     ) {
+
         Column {
-            Text(
-                text = "Next Destination",
-                style = TextStyle(
-                    color = Color.Gray,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+            if (nextLocation != null) {
+                Text(
+                    text = "Next Destination",
+                    style = TextStyle(
+                        color = Color.Gray,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
-            ) {
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom
+                ) {
 //                Text(
 //                    text = "$nextLocationName",
 //                    modifier = Modifier
@@ -56,61 +72,73 @@ fun NextDestinationInfo(nextLocationName: String?, estimatedDistance: Double?, e
 //                        fontWeight = FontWeight.Bold
 //                    )
 //                )
-                Text(
-                    text = "STA 09:00 hours",
-                    style = TextStyle(
-                        color = Color.Gray,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium
+                    Text(
+                        text = "STA 09:00 hours",
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium
+                        )
                     )
-                )
 
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Text(
+                        text = "Distance ${estimatedDistance}kms",
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                    Text(
+                        text = "Estimated Time ${estimatedTime} hours",
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Text(
+                        text = "Distance Covered ${travelledDistance}kms",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                    Text(
+                        text = "Travelled Time ${travelTime}hrs",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+
+                }
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
-            ) {
+
+            if (currentLocationName != null) {
                 Text(
-                    text = "Distance ${estimatedDistance}kms",
+                    text = "Current Location ${currentLocation}",
                     style = TextStyle(
                         color = Color.Gray,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 )
-                Text(
-                    text = "Estimated Time ${estimatedTime} hours",
-                    style = TextStyle(
-                        color = Color.Gray,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                )
-
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Text(
-                    text = "Distance Covered ${travelledDistance}kms",
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                )
-                Text(
-                    text = "Travelled Time ${travelTime}hrs",
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                )
-
             }
         }
     }

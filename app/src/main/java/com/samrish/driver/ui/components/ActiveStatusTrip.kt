@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -32,6 +33,9 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
 
     val assignment by vm.tripNextDestinationActions.collectAsStateWithLifecycle()
     vm.getTripActions(context = context, tripId = tripId, operatorId = operatorId)
+
+
+    var contextl = LocalContext.current
 
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
 
@@ -84,7 +88,8 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
             it.estimatedDistance,
             it.estimatedTime,
             it.travelledDistance,
-            it.travelTime
+            it.travelTime,
+            it.currentLocation
         )
     }
     assignment?.actions?.let{
@@ -181,7 +186,7 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
 //                    isCheckInDialogVisible.value = it
 //                }
 //            )
-        CallCheckInDialog(tripCode, operatorId, context,
+        CallCheckInDialog(tripCode, operatorId, contextl,
             setShowDialog = {
                     Log.i("Dialog", "Dialog dismissed")
                     isCheckInDialogVisible.value = it

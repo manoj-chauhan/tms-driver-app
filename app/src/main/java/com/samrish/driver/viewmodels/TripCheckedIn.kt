@@ -1,6 +1,7 @@
 package com.samrish.driver.viewmodels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.samrish.driver.models.Locations
 import com.samrish.driver.services.getTripSchedule
@@ -14,7 +15,7 @@ data class Schedule(
     var totalEstimatedDistance: Double,
     var totalTime: Int,
     var totalEstimatedTime: Int,
-    var locations: List<Locations?>,
+    var locations: List<Locations>,
 )
 
 data class Locations(
@@ -35,7 +36,7 @@ class TripCheckedInViewModel : ViewModel() {
 
     // Handle business logic
     fun getTripLocations(context: Context, selectedCode: String, operatorId:Int) {
-
+        Log.d("View Model", "getTripLocations: $operatorId $selectedCode")
         getTripSchedule(
             context = context,
             tripCode = selectedCode,

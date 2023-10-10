@@ -29,11 +29,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.services.checkIn
 import com.samrish.driver.viewmodels.TripCheckedInViewModel
+import kotlin.math.log
 
 @Composable
 fun CallCheckInDialog(tripCode: String, operatorId: Int, context:Context, setShowDialog: (Boolean) -> Unit, vm: TripCheckedInViewModel = viewModel()){
 
-
+    Log.d("Dialog", "CallCheckInDialog: $operatorId")
     val assignment by vm.tripCheckedIn.collectAsStateWithLifecycle()
     vm.getTripLocations(context= context, selectedCode= tripCode, operatorId= operatorId)
 
@@ -85,8 +86,6 @@ fun CallCheckInDialog(tripCode: String, operatorId: Int, context:Context, setSho
                                     )
                                 }
                             }
-
-                            val context = LocalContext.current
 
                             Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                                 Button(

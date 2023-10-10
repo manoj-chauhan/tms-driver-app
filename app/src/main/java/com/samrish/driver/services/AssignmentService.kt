@@ -105,19 +105,20 @@ fun getTripSchedule(context: Context, tripCode: String,operatorId:Int,  onTripSc
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trip_schedules) + tripCode + "/schedule"
 
+    Log.d("api", "getTripSchedule: $operatorId $tripCode")
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-    context.applicationContext?.let {
-        getAccessToken(it)?.let {
-            hdrs["Authorization"] = "Bearer $it"
-            hdrs["Company-Id"] = operatorId.toString()
-        }
+
+    getAccessToken(context)?.let {
+        hdrs["Authorization"] = "Bearer $it"
+        hdrs["Company-Id"] = operatorId.toString()
+    }
 
         val stringRequest = TripScheduleRequest(url, hdrs, { response ->
             Log.i("TripDetail", "Trip Schedule: ${response.locations}")
             onTripScheduleFetched(response)
         }, { error -> handleError(context, error) })
         queue.add(stringRequest)
-    }
+
 }
 
 
@@ -126,19 +127,17 @@ fun checkIn(context: Context, tripCode: String, operatorId: Int,placeCode: Strin
     val url = context.resources.getString(R.string.url_trip_check_in)
 
     val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-    context.applicationContext.let {
-        val authHeader = it?.let { it1 -> getAccessToken(it1) }
-        getAccessToken(it)?.let {
-            hdrs["Authorization"] = "Bearer $it"
-            hdrs["Company-Id"] = operatorId.toString()
-        }
+    getAccessToken(context)?.let {
+        hdrs["Authorization"] = "Bearer $it"
+        hdrs["Company-Id"] = operatorId.toString()
+    }
 
         val stringRequest = TripCheckInRequest(placeCode, tripCode, url, hdrs, { response ->
             Log.i("TripDetail", "Trip Check-In: $response")
 //            com.samrish.driver.services.getTripDetail(context, tripCode)
         }, { error -> handleError(context, error) })
         queue.add(stringRequest)
-    }
+
 }
 
 fun start(context: Context, tripCode: String, operatorId: Int) {
