@@ -29,10 +29,10 @@ class TripActionsStatusRequest(
         return TripActions(
             actions,
             t.get("nextLocationName") as String,
-            t.get("estimatedTime") as Double,
+            t.get("estimatedTime") as Int,
             t.get("estimatedDistance") as Double,
             t.get("travelledDistance") as Double,
-            t.get("travelTime") as Double
+            t.get("travelTime") as Int
         )
     }
 }
