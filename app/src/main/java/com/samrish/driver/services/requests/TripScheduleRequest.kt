@@ -5,6 +5,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
 import com.samrish.driver.models.AssignedDriver
 import com.samrish.driver.models.AssignedVehicle
+import com.samrish.driver.models.Locations
 import com.samrish.driver.models.Schedule
 import com.samrish.driver.models.Trip
 import org.json.JSONArray
@@ -14,36 +15,50 @@ import java.nio.charset.Charset
 class TripScheduleRequest(
     url: String,
     headers: MutableMap<String, String>,
-    listener: Response.Listener<List<Schedule>>,
+    listener: Response.Listener<Schedule>,
     errorListener: Response.ErrorListener
-) : GenericRequest<List<Schedule>>(Method.GET, url, headers, listener, errorListener) {
-    override fun transformResponse(response: NetworkResponse?): List<Schedule> {
+) : GenericRequest<Schedule>(Method.GET, url, headers, listener, errorListener) {
+    override fun transformResponse(response: NetworkResponse?): Schedule {
 
         val responseBody = String(
             response?.data ?: ByteArray(0),
             Charset.forName(HttpHeaderParser.parseCharset(response?.headers))
         )
 
-        val schedules   = JSONArray(responseBody)
-        val mutableList = mutableListOf<Schedule>()
-        for (i in 0 until schedules.length()) {
-            val t: JSONObject = schedules.getJSONObject(i)
+             val t   = JSONObject(responseBody)
+            var locationsArray= mutableListOf<Locations>()
 
-            val placeCode = t.get("placeCode") as String
-            val placeName = t.get("placeName") as String
-            val order = t.get("order") as Int
-            val sta = t.get("scheduledArrivalTime") as String
-            val std = t.get("scheduledDepartureTime") as String
+            var locations: JSONArray? = null;
 
-            mutableList.add(Schedule(
-                placeCode,
-                placeName,
-                order,
-                sta,
-                std
-            ))
+            if (t.has("locations")) {
+                locations = t.getJSONArray("locations");
+            }
 
-        }
-        return mutableList
+            for (i in 0 until locations!!.length()) {
+                val t: JSONObject = locations.getJSONObject(i)
+
+                locationsArray.add(Locations (
+                    t.get("placeCode") as String,
+                    t.get("placeName") as String,
+                    t.get("estDistance") as Double,
+                    t.get("actualDistance") as Double,
+                    t.get("scheduledArrivalTime") as String,
+                    t.get("scheduledDepartureTime") as String
+                    )
+                )
+            }
+            val totalDistance = t.get("totalDistance") as Double
+            val totalEstimatedDistance = t.get("totalEstimatedDistance") as Double
+            val totalTime = t.get("totalTime") as Int
+            val totalEstimatedTime = t.get("totalEstimatedTime") as Int
+
+            return Schedule(
+                totalDistance,
+                totalEstimatedDistance,
+                totalTime,
+                totalEstimatedTime,
+                locationsArray
+            )
+
     }
 }

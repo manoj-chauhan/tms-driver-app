@@ -34,9 +34,9 @@ fun Location(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = schedule.placeName + "(" + schedule.placeCode + ")" )
-        Text(text = schedule.sta)
-        Text(text = schedule.std)
+//        Text(text = schedule.placeName + "(" + schedule.placeCode + ")" )
+//        Text(text = schedule.sta)
+//        Text(text = schedule.std)
     }
 }
 

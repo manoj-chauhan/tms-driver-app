@@ -42,7 +42,8 @@ class TripsAssignedToDriverRequest(
                     t.get ("operatorCompanyName") as String,
                     t.get("operatorCompanyCode") as String,
                     t.get("operatorCompanyId") as Int,
-                    t.get ("tripDate") as String
+                    t.get ("tripDate") as String,
+                    t.get("tripId") as Int
                 )
             )
 
