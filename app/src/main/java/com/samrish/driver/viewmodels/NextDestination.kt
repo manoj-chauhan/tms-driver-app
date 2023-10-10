@@ -13,11 +13,11 @@ import kotlinx.coroutines.flow.update
 
 data class TripActions(
     var actions: List<String>,
-    var nextLocationName : String,
-    var estimatedTime: Int,
-    var estimatedDistance: Double,
-    var travelledDistance: Double,
-    var travelTime: Int
+    var nextLocationName : String?,
+    var estimatedTime: Int?,
+    var estimatedDistance: Double?,
+    var travelledDistance: Double?,
+    var travelTime: Int?
 
 )
 

@@ -26,14 +26,27 @@ class TripActionsStatusRequest(
             actions.add(actionList.get(i) as String)
         }
 
-        return TripActions(
-            actions,
-            t.get("nextLocationName") as String,
-            t.get("estimatedTime") as Int,
-            t.get("estimatedDistance") as Double,
-            t.get("travelledDistance") as Double,
-            t.get("travelTime") as Int
-        )
+//        if (t.get("nextLocationName") == true ) {
+
+            return TripActions(
+                actions,
+                t.get("nextLocationName") as String,
+                t.get("estimatedTime") as Int,
+                t.get("estimatedDistance") as Double,
+                t.get("travelledDistance") as Double,
+                t.get("travelTime") as Int
+            )
+//        }
+
+//            return TripActions(
+//                actions,
+//                null,
+//                null,
+//                null,
+//                null,
+//                null
+//            )
+
     }
 }
 

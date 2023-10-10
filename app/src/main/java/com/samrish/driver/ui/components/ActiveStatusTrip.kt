@@ -45,14 +45,7 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
     val assignment by vm.tripNextDestinationActions.collectAsStateWithLifecycle()
     vm.getTripActions(context = context, tripId = tripId, operatorId = operatorId)
 
-        var tripSchedule by remember {
-        mutableStateOf<Schedule?>(null)
-    }
-
-    val context = LocalContext.current
-
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
-
 
     val isStartEnabled = remember { mutableStateOf(false); }
     val isCheckInEnabled = remember { mutableStateOf(false); }
@@ -68,8 +61,7 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
         isCancelEnabled.value = assignment!!.actions.contains("CANCEL")
         isEndEnabled.value = assignment!!.actions.contains("END")
     }
-    Log.d("actions in file", "ActiveStatusTrips: ${assignment?.actions}")
-//    }
+    //    }
 
 //    getTripActions(
 //         context = context,
@@ -96,16 +88,18 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
 //    )
 
 
-    assignment?.let{
 
-        NextDestinationInfo(
-            it.nextLocationName,
-            it.estimatedTime,
-            it.estimatedDistance,
-            it.travelledDistance,
-            it.travelTime
-        )
-
+//    assignment?.nextLocationName?.let{
+//
+//        NextDestinationInfo(
+//            assignment!!.nextLocationName,
+//            assignment!!.estimatedTime,
+//            assignment!!.estimatedDistance,
+//            assignment!!.travelledDistance,
+//            assignment!!.travelTime
+//        )
+//    }
+    assignment?.actions?.let{
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -190,14 +184,20 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
 
 
     if (isCheckInDialogVisible.value) {
-            CheckInDialog(
-                tripCode = tripCode,
-                operatorId = operatorId,
-                schedules = tripSchedule!!.locations,
-                setShowDialog = {
+//            CheckInDialog(
+//                tripCode = tripCode,
+//                operatorId = operatorId,
+//                schedules = tripSchedule!!.locations,
+//                setShowDialog = {
+//                    Log.i("Dialog", "Dialog dismissed")
+//                    isCheckInDialogVisible.value = it
+//                }
+//            )
+        CallCheckInDialog(tripCode, operatorId, context,
+            setShowDialog = {
                     Log.i("Dialog", "Dialog dismissed")
                     isCheckInDialogVisible.value = it
-                }
-            )
+                })
+//        isCheckInDialogVisible.value = false
         }
 }

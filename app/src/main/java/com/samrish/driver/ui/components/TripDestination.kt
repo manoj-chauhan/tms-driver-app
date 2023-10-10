@@ -64,7 +64,7 @@ fun NextDestinationInfo(nextLocationName: String, estimatedTime: Int, estimatedD
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "Distance 40kms",
+                    text = "Distance ${estimatedDistance}kms",
                     style = TextStyle(
                         color = Color.Gray,
                         fontSize = 13.sp,
@@ -72,7 +72,7 @@ fun NextDestinationInfo(nextLocationName: String, estimatedTime: Int, estimatedD
                     )
                 )
                 Text(
-                    text = "Estimated Time 09:00 hours",
+                    text = "Estimated Time ${estimatedTime} hours",
                     style = TextStyle(
                         color = Color.Gray,
                         fontSize = 13.sp,
@@ -87,7 +87,7 @@ fun NextDestinationInfo(nextLocationName: String, estimatedTime: Int, estimatedD
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "Distance Covered 20kms",
+                    text = "Distance Covered ${travelledDistance}kms",
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 14.sp,
@@ -95,7 +95,7 @@ fun NextDestinationInfo(nextLocationName: String, estimatedTime: Int, estimatedD
                     )
                 )
                 Text(
-                    text = "Travelled Time 2 hours",
+                    text = "Travelled Time ${travelTime}hrs",
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 14.sp,
