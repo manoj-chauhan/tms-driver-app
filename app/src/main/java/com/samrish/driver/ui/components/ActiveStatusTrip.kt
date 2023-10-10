@@ -4,11 +4,9 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -17,27 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.samrish.driver.models.Schedule
-import com.samrish.driver.models.TripActions
 import com.samrish.driver.services.cancel
 import com.samrish.driver.services.depart
 import com.samrish.driver.services.end
-import com.samrish.driver.services.getTripActions
-import com.samrish.driver.services.getTripSchedule
 import com.samrish.driver.services.start
 import com.samrish.driver.viewmodels.TripNextDestination
-import com.samrish.driver.viewmodels.VehicleAssignmentViewModel
 
 @Composable
 fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: String, vm: TripNextDestination = viewModel()){
@@ -89,16 +77,16 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
 
 
 
-//    assignment?.nextLocationName?.let{
-//
-//        NextDestinationInfo(
-//            assignment!!.nextLocationName,
-//            assignment!!.estimatedTime,
-//            assignment!!.estimatedDistance,
-//            assignment!!.travelledDistance,
-//            assignment!!.travelTime
-//        )
-//    }
+    assignment?.let{
+
+        NextDestinationInfo(
+            it.nextLocationName,
+            it.estimatedDistance,
+            it.estimatedTime,
+            it.travelledDistance,
+            it.travelTime
+        )
+    }
     assignment?.actions?.let{
         Box(
             modifier = Modifier
@@ -197,7 +185,8 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
             setShowDialog = {
                     Log.i("Dialog", "Dialog dismissed")
                     isCheckInDialogVisible.value = it
-                })
+                }
+        )
 //        isCheckInDialogVisible.value = false
         }
 }

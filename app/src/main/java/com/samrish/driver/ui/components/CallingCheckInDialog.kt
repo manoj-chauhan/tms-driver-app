@@ -31,7 +31,7 @@ import com.samrish.driver.services.checkIn
 import com.samrish.driver.viewmodels.TripCheckedInViewModel
 
 @Composable
-fun CallCheckInDialog(tripCode: String, operatorId: Int,context:Context,setShowDialog: (Boolean) -> Unit, vm: TripCheckedInViewModel = viewModel()){
+fun CallCheckInDialog(tripCode: String, operatorId: Int, context:Context, setShowDialog: (Boolean) -> Unit, vm: TripCheckedInViewModel = viewModel()){
 
 
     val assignment by vm.tripCheckedIn.collectAsStateWithLifecycle()

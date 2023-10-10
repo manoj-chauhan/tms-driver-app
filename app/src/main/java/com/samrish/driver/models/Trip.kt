@@ -54,6 +54,7 @@ class TripActions(
     var estimatedTime: Int?,
     var estimatedDistance: Double?,
     var travelledDistance: Double?,
-    var travelTime: Int?
+    var travelTime: Int?,
+    var currentLocationName : String?
 
 )

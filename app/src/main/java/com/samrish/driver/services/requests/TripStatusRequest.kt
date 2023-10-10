@@ -1,12 +1,15 @@
 package com.samrish.driver.services.requests
 
+import android.util.Log
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
 import com.samrish.driver.models.TripActions
 import org.json.JSONObject
 import java.nio.charset.Charset
-class TripActionsStatusRequest(
+import kotlin.math.log
+
+class TripActionsStatusRequest (
     url: String,
     headers: MutableMap<String, String>,
     listener: Response.Listener<TripActions>,
@@ -26,27 +29,38 @@ class TripActionsStatusRequest(
             actions.add(actionList.get(i) as String)
         }
 
-//        if (t.get("nextLocationName") == true ) {
+        var currentLocationName: String? = null
 
+        if (t.has("currentLocationName")) {
+             currentLocationName = t["currentLocationName"] as? String
+        }
+        val nextLocationName: String? = t["nextLocationName"] as? String
+
+
+        Log.d("TAG", "transformResponse: $nextLocationName")
+        if (currentLocationName != null) {
+
+            return TripActions(actions, null, null, null, null, null, currentLocationName)
+        }
+
+
+         else if(nextLocationName!= null) {
+            println("HI")
             return TripActions(
                 actions,
-                t.get("nextLocationName") as String,
-                t.get("estimatedTime") as Int,
-                t.get("estimatedDistance") as Double,
-                t.get("travelledDistance") as Double,
-                t.get("travelTime") as Int
+                nextLocationName,
+                t.get("estimatedTime") as Int?,
+                t.get("estimatedDistance") as Double?,
+                t.get("travelledDistance") as Double?,
+                t.get("travelTime") as Int?,
+                null
             )
-//        }
+        }
 
-//            return TripActions(
-//                actions,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null
-//            )
-
+        else
+        {
+            return TripActions(actions, null, null, null, null, null, null)
+        }
     }
 }
 

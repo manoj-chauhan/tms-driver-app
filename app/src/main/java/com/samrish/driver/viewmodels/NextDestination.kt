@@ -17,8 +17,8 @@ data class TripActions(
     var estimatedTime: Int?,
     var estimatedDistance: Double?,
     var travelledDistance: Double?,
-    var travelTime: Int?
-
+    var travelTime: Int?,
+    var currentLocation : String?
 )
 
 
@@ -49,17 +49,53 @@ class TripNextDestination : ViewModel() {
             operatorId = operatorId,
             onTripActionsFetched = {
                 _currentAssignment.update { assignment ->
-                    TripActions(
-                        it.actions,
-                        it.nextLocationName,
-                        it.estimatedTime,
-                        it.estimatedDistance,
-                        it.travelledDistance,
-                        it.travelTime
-                    )
+                    var currentLocationName: String? =""
+                    val nextLocationName: String? = it.nextLocationName
+
+                    if (it.currentLocationName != null) {
+                        currentLocationName = it.currentLocationName
+                         TripActions(it.actions, null, null, null, null, null, currentLocationName)
+
+                    }else if(nextLocationName!= null) {
+                        TripActions(
+                            it.actions,
+                            it.nextLocationName,
+                            it.estimatedTime,
+                            it.estimatedDistance,
+                            it.travelledDistance,
+                            it.travelTime,
+                            null
+                        )
+                    }else
+                     {
+                        TripActions(it.actions, null, null, null, null, null, null)
+                     }
+
                 }
             }
         )
 
     }
 }
+
+//if (currentLocationName != null) {
+//            return TripActions(actions, null, null, null, null, null, currentLocationName)
+//        }
+//
+//
+//         else if(nextLocationName!= null) {
+//            return TripActions(
+//                actions,
+//                nextLocationName,
+//                t.get("estimatedTime") as Int?,
+//                t.get("estimatedDistance") as Double?,
+//                t.get("travelledDistance") as Double?,
+//                t.get("travelTime") as Int?,
+//                null
+//            )
+//        }
+//
+//        else
+//        {
+//            return TripActions(actions, null, null, null, null, null, null)
+//        }
