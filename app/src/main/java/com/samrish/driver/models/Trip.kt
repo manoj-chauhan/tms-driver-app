@@ -49,5 +49,11 @@ class VehicleList(
 )
 
 class TripActions(
-    var actions: List<String>
+    var actions: List<String>,
+    var nextLocationName : String,
+    var estimatedTime: Double,
+    var estimatedDistance: Double,
+    var travelledDistance: Double,
+    var travelTime: Double
+
 )

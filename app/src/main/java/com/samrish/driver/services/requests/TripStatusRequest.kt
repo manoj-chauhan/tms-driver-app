@@ -27,7 +27,18 @@ class TripActionsStatusRequest(
         }
 
         return TripActions(
-            actions
+            actions,
+            t.get("nextLocationName") as String,
+            t.get("estimatedTime") as Double,
+            t.get("estimatedDistance") as Double,
+            t.get("travelledDistance") as Double,
+            t.get("travelTime") as Double
         )
     }
 }
+
+//    var nextLocationName : String,
+//    var estimatedTime: Double,
+//    var estimatedDistance: Double,
+//    var travelledDistance: Double,
+//    var travelTime: Double

@@ -17,9 +17,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.Locations
+import com.samrish.driver.models.Trip
+import com.samrish.driver.services.checkIn
 import com.samrish.driver.viewmodels.TripCheckedInViewModel
 
 
@@ -89,10 +92,12 @@ fun CheckInDialog(
                                 .fillMaxWidth()
                                 .height(50.dp),
                             onClick = {
-//                                    checkIn(context = context,
-//                                        tripCode = tripCode,
-//                                        operatorId = operatorId,
-//                                        placeCode = selectedLocation.)
+                                    if (selectedLocation != null) {
+                                        checkIn(context = context,
+                                            tripCode = tripCode,
+                                            operatorId = operatorId,
+                                            placeCode = selectedLocation)
+                                    }
                                       setShowDialog(false)
                             },
                             shape = RoundedCornerShape(50.dp)

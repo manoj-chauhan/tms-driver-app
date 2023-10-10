@@ -59,7 +59,6 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
          onTripActionsFetched = {
             Log.d("TAG", "ActiveStatusTrips: $it")
              tripActions = it
-
             isStartEnabled.value = it.actions.contains("START")
             isCheckInEnabled.value = it.actions.contains("CHECKIN")
             isDepartEnabled.value = it.actions.contains("DEPART")
@@ -74,7 +73,6 @@ fun ActiveStatusTrips(context: Context,  tripId:Int, operatorId: Int, tripCode: 
              operatorId = operatorId,
              onTripScheduleFetched = {
                  tripSchedule = it
-                 Log.d("TAG", "Trips Schedules are : ${tripSchedule!!.locations}")
              }
     )
 

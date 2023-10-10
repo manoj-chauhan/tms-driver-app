@@ -14,7 +14,7 @@ data class Schedule(
     var totalEstimatedDistance: Double,
     var totalTime: Int,
     var totalEstimatedTime: Int,
-    var locations: List<Locations?>,
+    var locations: List<Locations>,
 )
 
 data class Locations(

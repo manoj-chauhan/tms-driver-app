@@ -21,7 +21,7 @@ import com.samrish.driver.services.requests.TripDetailRequest
             }
 
             val stringRequest = TripActionsStatusRequest(url, hdrs, { response ->
-                Log.i("TripActions", "Trip Actions are : ${response.actions}")
+                Log.i("TripActions", "Trip Actions are : $response")
                 onTripActionsFetched(response)
             }, { error -> handleError(context, error) })
             queue.add(stringRequest)
