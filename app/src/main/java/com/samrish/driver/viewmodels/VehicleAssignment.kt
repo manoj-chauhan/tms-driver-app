@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
 import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.services.vehicleDetails
+import com.squareup.moshi.JsonClass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@JsonClass(generateAdapter = true)
 data class VehicleAssignment(
     val vehicleId: Int,
     val vehicleNumber: String,
@@ -27,8 +30,6 @@ data class VehicleAssignment(
     val model: String,
     val brand: String,
     val fuelType: String
-
-
 )
 
 class VehicleAssignmentViewModel : ViewModel() {
@@ -45,14 +46,14 @@ class VehicleAssignmentViewModel : ViewModel() {
                 Log.e("Fuel", "Token $it")
                 val (request1, response1, result1) = vehicleAssignmentUrl.httpGet()
                     .authentication().bearer(it)
-                    .response()
+                    .responseObject(moshiDeserializerOf(VehicleAssignment::class.java))
 
                 result1.fold(
-                    { _ -> Log.i("Fuel", "Response + ${response1.body().asString("text/plain")}") },
+                    { vehicleAssignment -> Log.i("Fuel", "Response + $vehicleAssignment") },
                     { error ->
                         Log.e(
                             "Fuel",
-                            "Error ${error.response.body().asString("text/plain")}"
+                            "Error $error"
                         )
                     }
                 )

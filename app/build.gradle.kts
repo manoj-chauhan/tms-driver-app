@@ -122,4 +122,7 @@ dependencies {
 
     implementation ("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation ("com.github.kittinunf.fuel:fuel-moshi:2.3.1")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+    implementation("com.squareup.moshi:moshi:1.15.0")
+
 }
