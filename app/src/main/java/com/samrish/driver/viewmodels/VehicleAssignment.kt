@@ -4,10 +4,9 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
-import com.samrish.driver.database.AppDatabase
-import com.samrish.driver.database.User
+import com.github.kittinunf.fuel.httpGet
 import com.samrish.driver.services.vehicleDetails
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,33 +30,25 @@ data class VehicleAssignment(
 
 class VehicleAssignmentViewModel : ViewModel() {
 
-    // Expose screen UI state
     private val _currentAssignment:MutableStateFlow<VehicleAssignment?> = MutableStateFlow(null)
     val currentAssignment: StateFlow<VehicleAssignment?> = _currentAssignment.asStateFlow()
 
-    // Handle business logic
     fun fetchAssignmentDetail(context:Context) {
-
-        viewModelScope.launch {
-
-            val db = AppDatabase.getDatabase(context)
-            val userDao = db.userRepository()
-            userDao.insertUsers(User(1, "Manoj", "Chauhan"))
-            userDao.insertUsers(User(2, "Atul", "Chauhan"))
-            userDao.insertUsers(User(3, "Ankit", "Chauhan"))
-            userDao.insertUsers(User(4, "Krish", "Chauhan"))
-            userDao.insertUsers(User(5, "Vaibhav", "Chauhan"))
-            userDao.insertUsers(User(6, "Dev", "Chauhan"))
-            val userList = userDao.loadUsers()
-            userList.forEach { user -> Log.i("MyDb","Name: "+ user.firstName + " " + user.lastName) }
-
+        Log.i("Fuel", "Going for fuel")
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.i("Fuel", "Requesting using fuel")
+            val (request, response, result) = "https://publicobject.com/helloworld.txt".httpGet().response()
+            result.fold(
+                {_ -> Log.i("Fuel", "Response + ${response.body().asString("text/plain")}")},
+                {error -> Log.e("Fuel", "Error ${error.response.body().asString("text/plain")}")}
+            )
+            Log.e("Fuel", "End of the call")
         }
 
         vehicleDetails(context, onVehicleDetailFetched = {
             _currentAssignment.update { assignment ->
                 VehicleAssignment(it.vehicleId, it.vehicleNumber, it.companyId, it.companyName, it.assignerName,it.assignedAt, it.vehicleSize, it.model, it.brand, it.fuelType )
             }
-//        isApiCalled.value = true
         })
     }
 }
