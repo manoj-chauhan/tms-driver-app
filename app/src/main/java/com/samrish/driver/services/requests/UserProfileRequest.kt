@@ -3,10 +3,7 @@ package com.samrish.driver.services.requests
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
-import com.samrish.driver.models.Company
-import com.samrish.driver.models.Trip
 import com.samrish.driver.models.UserProfile
-import org.json.JSONArray
 import org.json.JSONObject
 import java.nio.charset.Charset
 

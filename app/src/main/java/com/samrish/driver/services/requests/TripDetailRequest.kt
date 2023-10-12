@@ -5,18 +5,17 @@ import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
 import com.samrish.driver.models.AssignedDriver
 import com.samrish.driver.models.AssignedVehicle
-import com.samrish.driver.models.Trip
-import org.json.JSONArray
+import com.samrish.driver.models.CurrentAssignmentDetail
 import org.json.JSONObject
 import java.nio.charset.Charset
 
 class TripDetailRequest(
     url: String,
     headers: MutableMap<String, String>,
-    listener: Response.Listener<Trip>,
+    listener: Response.Listener<CurrentAssignmentDetail>,
     errorListener: Response.ErrorListener
-) : GenericRequest<Trip>(Method.GET, url, headers, listener, errorListener) {
-    override fun transformResponse(response: NetworkResponse?): Trip {
+) : GenericRequest<CurrentAssignmentDetail>(Method.GET, url, headers, listener, errorListener) {
+    override fun transformResponse(response: NetworkResponse?): CurrentAssignmentDetail {
         val responseBody = String(
             response?.data ?: ByteArray(0),
             Charset.forName(HttpHeaderParser.parseCharset(response?.headers))
@@ -56,15 +55,13 @@ class TripDetailRequest(
 //            actions.add(actionList.get(i) as String)
 //        }
 
-        return Trip(
+        return CurrentAssignmentDetail(
             t.get("tripName") as String,
             t.get("tripCode") as String,
             t.get("status") as String,
 //            actions,
             t.get("tripDate") as String,
             t.get("operatorName") as String,
-            t.get("totalDistanceCovered") as Double,
-            t.get("totalTimeTravelled") as Int,
             t.get("tripId" )as Int
         )
     }

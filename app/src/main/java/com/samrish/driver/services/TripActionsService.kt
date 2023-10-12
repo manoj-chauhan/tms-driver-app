@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
-import com.samrish.driver.models.Trip
 import com.samrish.driver.models.TripActions
 import com.samrish.driver.services.requests.TripActionsStatusRequest
 import com.samrish.driver.services.requests.TripDetailRequest

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.samrish.driver.models.Locations
+import com.samrish.driver.models.TripActions
 import com.samrish.driver.services.getTripActions
 import com.samrish.driver.services.getTripSchedule
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,17 +12,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-data class TripActions(
-    var actions: List<String>,
-    var nextLocationName : String?,
-    var estimatedTime: Int?,
-    var estimatedDistance: Double?,
-    var travelledDistance: Double?,
-    var travelTime: Int?,
-    var currentLocation : String?
-)
-
-
+//data class TripActions(
+//    var actions: List<String>,
+//    var nextLocationName : String?,
+//    var estimatedTime: Int?,
+//    var estimatedDistance: Double?,
+//    var travelledDistance: Double?,
+//    var travelTime: Int?,
+//    var currentLocation : String?
+//)
+//
+//
 
 
 class TripNextDestination : ViewModel() {
@@ -43,37 +44,37 @@ class TripNextDestination : ViewModel() {
 //                }
 //            }
 //        )
-        getTripActions(
-            context = context,
-            tripId = tripId,
-            operatorId = operatorId,
-            onTripActionsFetched = {
-                _currentAssignment.update { assignment ->
-                    var currentLocationName: String? =""
-                    val nextLocationName: String? = it.nextLocationName
-
-                    if (it.currentLocationName != null) {
-                        currentLocationName = it.currentLocationName
-                         TripActions(it.actions, null, null, null, null, null, currentLocationName)
-
-                    }else if(nextLocationName!= null) {
-                        TripActions(
-                            it.actions,
-                            it.nextLocationName,
-                            it.estimatedTime,
-                            it.estimatedDistance,
-                            it.travelledDistance,
-                            it.travelTime,
-                            null
-                        )
-                    }else
-                     {
-                        TripActions(it.actions, null, null, null, null, null, null)
-                     }
-
-                }
-            }
-        )
+//        getTripActions(
+//            context = context,
+//            tripId = tripId,
+//            operatorId = operatorId,
+//            onTripActionsFetched = {
+//                _currentAssignment.update { assignment ->
+//                    var currentLocationName: String? =""
+//                    val nextLocationName: String? = it.nextLocationName
+//
+//                    if (it.currentLocationName != null) {
+//                        currentLocationName = it.currentLocationName
+//                         TripActions(it.actions, null, null, null, null, null, currentLocationName)
+//
+//                    }else if(nextLocationName!= null) {
+//                        TripActions(
+//                            it.actions,
+//                            it.nextLocationName,
+//                            it.estimatedTime,
+//                            it.estimatedDistance,
+//                            it.travelledDistance,
+//                            it.travelTime,
+//                            null
+//                        )
+//                    }else
+//                     {
+//                        TripActions(it.actions, null, null, null, null, null, null)
+//                     }
+//
+//                }
+//            }
+//        )
 
     }
 }

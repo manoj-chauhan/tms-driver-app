@@ -55,7 +55,7 @@ fun CurrentAssignmentScreen(
     val context = LocalContext.current
 
     val assignment by vm.currentTripAssignment.collectAsStateWithLifecycle()
-    vm.fetchTripDetails(context = context, selectedAssignment, operatorId)
+    vm.fetchTripDetails(context = context, selectedAssignment, operatorId, tripId)
 
     Box(
         modifier = Modifier
@@ -287,7 +287,7 @@ fun CurrentAssignmentScreen(
                                 )
                                 Box(contentAlignment = Alignment.Center) {
                                     Text(
-                                        text = assignment!!.totalDistanceCovered.toString()+"kms" ,
+                                        text = "0"+"kms" ,
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 16.sp,
@@ -306,7 +306,7 @@ fun CurrentAssignmentScreen(
                                     )
                                 )
                                 Text(
-                                    text = assignment!!.totalTimeTravelled.toString()+" hours",
+                                    text = "0"+" hours",
                                     style = TextStyle(
                                         color = Color.Black,
                                         fontSize = 16.sp,

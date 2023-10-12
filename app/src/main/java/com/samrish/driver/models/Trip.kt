@@ -1,14 +1,12 @@
 package com.samrish.driver.models
 
-class Trip(
+class CurrentAssignmentDetail(
     var name: String,
     var code: String,
     var status: String,
 //    var actions: List<String>,
     var tripDate: String,
     var operatorName: String,
-    var totalDistanceCovered: Double,
-    var totalTimeTravelled: Int,
     var tripId: Int
 )
 class AssignedDriver(

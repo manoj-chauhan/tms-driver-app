@@ -21,10 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
-import com.samrish.driver.models.Trip
 import com.samrish.driver.models.generatedCode
-import com.samrish.driver.services.checkIn
-import com.samrish.driver.services.end
 import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.services.handleError
 import com.samrish.driver.services.requests.CodeGeneratorRequest

@@ -7,13 +7,13 @@ import android.widget.Toast
 import com.android.volley.*
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
+import com.samrish.driver.models.CurrentAssignmentDetail
 import com.samrish.driver.models.OldAssignment
 import com.samrish.driver.models.Schedule
-import com.samrish.driver.models.Trip
 import com.samrish.driver.models.TripsAssigned
 import com.samrish.driver.services.requests.*
 
-fun getTrips(context: Context, onTripsFetched: (trips: List<Trip>) -> Unit) {
+fun getTrips(context: Context, onTripsFetched: (trips: List<CurrentAssignmentDetail>) -> Unit) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trips_list)
 
@@ -83,7 +83,7 @@ fun getOldAssignments(context: Context, driverId: Int , onTripsFetched: (trips: 
     queue.add(stringRequest)
 }
 
-fun getTripDetail(context: Context, tripCode: String, operatorId:Int,  onTripDetailFetched: (trip: Trip) -> Unit) {
+fun getTripDetail(context: Context, tripCode: String, operatorId:Int,  onTripDetailFetched: (trip: CurrentAssignmentDetail) -> Unit) {
     val queue = Volley.newRequestQueue(context)
     val url = context.resources.getString(R.string.url_trips_detail) + tripCode
 

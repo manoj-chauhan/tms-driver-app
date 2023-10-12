@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.samrish.driver.models.Company
-import com.samrish.driver.models.Trip
 import com.samrish.driver.services.getCompanies
 import com.samrish.driver.services.saveSelectedCompany
 import com.samrish.driver.ui.components.CompanyList

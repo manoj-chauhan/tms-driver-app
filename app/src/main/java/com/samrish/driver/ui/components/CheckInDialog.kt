@@ -21,7 +21,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.Locations
-import com.samrish.driver.models.Trip
+//import com.samrish.driver.models.Trip
 import com.samrish.driver.services.checkIn
 import com.samrish.driver.viewmodels.TripCheckedInViewModel
 

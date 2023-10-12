@@ -11,14 +11,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.samrish.driver.models.Trip
+import com.samrish.driver.models.CurrentAssignmentDetail
 import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.ui.components.CompanyDetail
-import com.samrish.driver.ui.pages.AssignmentsScreen
+//import com.samrish.driver.ui.pages.AssignmentsScreen
 import com.samrish.driver.ui.pages.CurrentAssignmentScreen
 import com.samrish.driver.ui.pages.History
 import com.samrish.driver.ui.pages.Login
@@ -103,7 +102,7 @@ fun AppNavigationHost(
 @Composable
 fun TabScreen(
     navController: NavHostController,
-    onAssignmentSelected: (assignment: Trip) -> Unit
+    onAssignmentSelected: (assignment: CurrentAssignmentDetail) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -118,10 +117,10 @@ fun TabScreen(
             CompanyDetail()
             when (selectedTab) {
                 1 -> {
-                    AssignmentsScreen(
-                        navController = navController,
-                        onAssignmentSelected = onAssignmentSelected
-                    )
+//                    AssignmentsScreen(
+//                        navController = navController,
+//                        onAssignmentSelected = onAssignmentSelected
+//                    )
                 }
 
                 2 -> {

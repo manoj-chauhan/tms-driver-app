@@ -6,15 +6,10 @@ import androidx.annotation.RequiresApi
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
-import com.samrish.driver.models.AssignedDriver
-import com.samrish.driver.models.AssignedVehicle
-import com.samrish.driver.models.Schedule
-import com.samrish.driver.models.Trip
 import com.samrish.driver.models.VehicleList
 import org.json.JSONArray
 import org.json.JSONObject
 import java.nio.charset.Charset
-import java.sql.Time
 
 class VehicleListRequest
     (

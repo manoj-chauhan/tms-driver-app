@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,8 +31,13 @@ fun MatrixLog(vm: MatrixLogViewModel = viewModel()) {
             .background(Color.Yellow)
     ) {
         matList?.let {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                matList!!.forEach { record -> MatrixRecord(record) }
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+//                matList!!.forEach { record -> MatrixRecord(record) }
+                items(
+                    matList!!.size
+                ) {
+                    MatrixRecord(matList!![it] )
+                }
             }
         }
     }

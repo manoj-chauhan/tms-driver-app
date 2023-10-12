@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samrish.driver.models.Company
-import com.samrish.driver.models.Trip
 import com.samrish.driver.services.getCompanyDetail
 import com.samrish.driver.services.getSelectedCompanyCode
 

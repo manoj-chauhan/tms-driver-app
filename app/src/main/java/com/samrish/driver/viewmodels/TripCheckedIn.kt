@@ -10,22 +10,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-data class Schedule(
-    var totalDistance: Double,
-    var totalEstimatedDistance: Double,
-    var totalTime: Int,
-    var totalEstimatedTime: Int,
-    var locations: List<Locations>,
-)
-
-data class Locations(
-    var placeCode: String,
-    var placeName: String,
-    var estDistance: Double,
-    var actualDistance: Double,
-    var scheduledArrivalTime: String,
-    var scheduledDepartureTime: String
-)
+//data class Schedule(
+//    var totalDistance: Double,
+//    var totalEstimatedDistance: Double,
+//    var totalTime: Int,
+//    var totalEstimatedTime: Int,
+//    var locations: List<Locations>,
+//)
+//
+//data class Locations(
+//    var placeCode: String,
+//    var placeName: String,
+//    var estDistance: Double,
+//    var actualDistance: Double,
+//    var scheduledArrivalTime: String,
+//    var scheduledDepartureTime: String
+//)
 
 
 class TripCheckedInViewModel : ViewModel() {
