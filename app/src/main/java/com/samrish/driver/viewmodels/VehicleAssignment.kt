@@ -39,10 +39,8 @@ class VehicleAssignmentViewModel : ViewModel() {
     fun fetchAssignmentDetail(context:Context) {
 
         viewModelScope.launch {
-            val db = Room.databaseBuilder(
-                context.applicationContext,
-                AppDatabase::class.java, "AppDatabase"
-            ).build()
+
+            val db = AppDatabase.getDatabase(context)
             val userDao = db.userDao()
             userDao.insertUsers(User(1, "Manoj", "Chauhan"))
             userDao.insertUsers(User(2, "Atul", "Chauhan"))
