@@ -1,7 +1,5 @@
 package com.samrish.driver.ui.pages
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,7 +42,6 @@ fun HomeScreen(navController: NavHostController,
         tripList.addAll(it)
     })
     Column(modifier = Modifier.fillMaxSize()) {
-            val context = LocalContext.current
         Row (modifier = Modifier
             .fillMaxWidth()
             .padding(13.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
