@@ -1,6 +1,7 @@
 package com.samrish.driver.viewmodels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samrish.driver.models.AssignedDriver
@@ -10,12 +11,14 @@ import com.samrish.driver.services.getAssignedTrips
 import com.samrish.driver.services.getTripActions
 import com.samrish.driver.services.getTripDetail
 import com.samrish.driver.services.vehicleDetails
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlin.math.log
 import kotlin.random.Random
 
 
@@ -64,72 +67,94 @@ data class Documents(
 
 data class TripActions(
     var actions: List<String>,
-    var nextLocationName : String?,
+    var nextLocationName: String?,
     var estimatedTime: Int?,
     var estimatedDistance: Double?,
     var travelledDistance: Double?,
     var travelTime: Int?,
-    var currentLocation : String?
+    var currentLocation: String?
 )
+
 class TripDetailsViewModel : ViewModel() {
 
-    private val _currentAssignment:MutableStateFlow<CurrentAssignmentDetail?> = MutableStateFlow(null)
-    val currentTripAssignment: StateFlow<CurrentAssignmentDetail?> = _currentAssignment.asStateFlow()
+    private val _currentAssignment: MutableStateFlow<CurrentAssignmentDetail?> =
+        MutableStateFlow(null)
+    val currentTripAssignment: StateFlow<CurrentAssignmentDetail?> =
+        _currentAssignment.asStateFlow()
 
 
     private val tripNextDestination: MutableStateFlow<TripActions?> = MutableStateFlow(null)
     val tripNextDestinationActions: StateFlow<TripActions?> = tripNextDestination.asStateFlow()
-    fun fetchTripDetails(context:Context, selectedCode: String, operatorId:Int, tripId: Int) {
-        val job1 = viewModelScope.launch {
-            getTripAssignmentDetails(context, selectedCode, operatorId)
-        }
+    fun fetchTripDetails(context: Context, selectedCode: String, operatorId: Int, tripId: Int) {
+         viewModelScope.launch {
 
-        val job2 =  viewModelScope.launch {
-            getTripActions(
-                context = context,
-                tripId = tripId,
-                operatorId = operatorId,
-                onTripActionsFetched = {
-                    tripNextDestination.update { _ ->
-                        var currentLocationName: String? =""
-                        val nextLocationName: String? = it.nextLocationName
+            val service1 = async { getTripAssignmentDetails(context, selectedCode, operatorId) }
 
-                        if (it.currentLocationName != null) {
-                            currentLocationName = it.currentLocationName
-                            TripActions(it.actions, null, null, null, null, null, currentLocationName)
+             val service2 = async {
+                getTripActions(
+                    context = context,
+                    tripId = tripId,
+                    operatorId = operatorId,
+                    onTripActionsFetched = {
+                        tripNextDestination.update { _ ->
+                            var currentLocationName: String? = ""
+                            val nextLocationName: String? = it.nextLocationName
 
-                        }else if(nextLocationName!= null) {
-                            TripActions(
-                                it.actions,
-                                it.nextLocationName,
-                                it.estimatedTime,
-                                it.estimatedDistance,
-                                it.travelledDistance,
-                                it.travelTime,
-                                null
-                            )
-                        }else
-                        {
-                            TripActions(it.actions, null, null, null, null, null, null)
+                            if (it.currentLocationName != null) {
+                                currentLocationName = it.currentLocationName
+                                TripActions(
+                                    it.actions,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    currentLocationName
+                                )
+
+                            } else if (nextLocationName != null) {
+                                TripActions(
+                                    it.actions,
+                                    it.nextLocationName,
+                                    it.estimatedTime,
+                                    it.estimatedDistance,
+                                    it.travelledDistance,
+                                    it.travelTime,
+                                    null
+                                )
+                            } else {
+                                TripActions(it.actions, null, null, null, null, null, null)
+                            }
+
                         }
-
                     }
-                }
-            )
+                )
+            }
+
+            val result1 = service1.await()
+             Log.d("1", "fetchTripDetails: 1")
+            val result2 = service2.await()
+             Log.d("2", "fetchTripDetails: 2")
         }
-
-
 
 
     }
-    private fun getTripAssignmentDetails(context: Context, selectedCode: String, operatorId: Int){
+
+    private fun getTripAssignmentDetails(context: Context, selectedCode: String, operatorId: Int) {
         getTripDetail(
             context = context,
             tripCode = selectedCode,
             operatorId = operatorId,
             onTripDetailFetched = {
                 _currentAssignment.update { assignment ->
-                    CurrentAssignmentDetail(it.name, it.code, it.status, it.tripDate, it.operatorName, it.tripId)
+                    CurrentAssignmentDetail(
+                        it.name,
+                        it.code,
+                        it.status,
+                        it.tripDate,
+                        it.operatorName,
+                        it.tripId
+                    )
                 }
             }
         )
