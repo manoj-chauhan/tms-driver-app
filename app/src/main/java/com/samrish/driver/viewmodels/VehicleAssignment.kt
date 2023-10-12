@@ -49,7 +49,7 @@ class VehicleAssignmentViewModel : ViewModel() {
                     .responseObject(moshiDeserializerOf(VehicleAssignment::class.java))
 
                 result1.fold(
-                    { vehicleAssignment -> Log.i("Fuel", "Response + $vehicleAssignment") },
+                    { vehicleAssignment -> _currentAssignment.update { _ -> vehicleAssignment } },
                     { error ->
                         Log.e(
                             "Fuel",
@@ -60,22 +60,5 @@ class VehicleAssignmentViewModel : ViewModel() {
             }
             Log.e("Fuel", "End of the call")
         }
-
-        vehicleDetails(context, onVehicleDetailFetched = {
-            _currentAssignment.update { assignment ->
-                VehicleAssignment(
-                    it.vehicleId,
-                    it.vehicleNumber,
-                    it.companyId,
-                    it.companyName,
-                    it.assignerName,
-                    it.assignedAt,
-                    it.vehicleSize,
-                    it.model,
-                    it.brand,
-                    it.fuelType
-                )
-            }
-        })
     }
 }
