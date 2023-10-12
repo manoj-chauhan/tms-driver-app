@@ -7,14 +7,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.User
-import com.samrish.driver.services.getTripDetail
 import com.samrish.driver.services.vehicleDetails
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 data class VehicleAssignment(
     val vehicleId : Int,
@@ -43,7 +41,7 @@ class VehicleAssignmentViewModel : ViewModel() {
         viewModelScope.launch {
             val db = Room.databaseBuilder(
                 context.applicationContext,
-                AppDatabase::class.java, "database-name"
+                AppDatabase::class.java, "AppDatabase"
             ).build()
             val userDao = db.userDao()
             userDao.insertUsers(User(1, "Manoj", "Chauhan"))
