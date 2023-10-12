@@ -77,7 +77,7 @@ fun HomeScreen(navController: NavHostController,
     }
 
     if(userLocationVisible.value){
-        UserData()
+        MatrixLog()
     }
 
 }

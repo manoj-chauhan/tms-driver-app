@@ -18,9 +18,21 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.android.volley.*
+import androidx.room.Room
+import com.android.volley.AuthFailureError
+import com.android.volley.NetworkError
+import com.android.volley.NoConnectionError
+import com.android.volley.ParseError
+import com.android.volley.ServerError
+import com.android.volley.TimeoutError
+import com.android.volley.VolleyError
 import com.android.volley.toolbox.Volley
+import com.samrish.driver.database.AppDatabase
+import com.samrish.driver.database.Matrix
 import com.samrish.driver.services.requests.SendDeviceMatrixRequest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -98,7 +110,7 @@ class LocationService : Service(), LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        this.locationManager!!.requestLocationUpdates(provider!!, 100, .5f, this)
+        this.locationManager!!.requestLocationUpdates(provider!!, 100, 0.01f, this)
     }
 
     override fun onDestroy() {
@@ -162,18 +174,26 @@ class LocationService : Service(), LocationListener {
     override fun onLocationChanged(location: Location) {
         val lat = location.latitude
         val lng = location.longitude
-        val formater = DateTimeFormatter.ISO_LOCAL_TIME
+
+        Log.d("Latitude", "onLocationChanged: Latitude $lat $lng")
+        val formater = DateTimeFormatter.ISO_LOCAL_DATE_TIME
         val msg =
             "Time: " + LocalDateTime.now().format(formater) + "   Location: " + lat + "," + lng
         Log.i("TRACKER", "Location: $lat,$lng")
-        sendMatrix(lat, lng)
-//        val intent = Intent("location-update")
-//        intent.putExtra("message", msg)
-//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-//        publishCoordinates(lat, lng)
-    }
 
+        val context: Context = this
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = Room.databaseBuilder(
+                context.applicationContext,
+                AppDatabase::class.java, "drishto"
+            ).build()
+
+            val userLocation = db.matrixRepository()
+            userLocation.insertLocation(Matrix(latitude =  lat, longitude = lng, time= formater.format(LocalDateTime.now())))
+        }
+    }
     companion object {
         private const val CHANNEL_ID = "main"
     }
-}
+    }

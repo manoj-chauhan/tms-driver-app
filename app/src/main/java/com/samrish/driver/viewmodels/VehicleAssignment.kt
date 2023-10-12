@@ -41,7 +41,7 @@ class VehicleAssignmentViewModel : ViewModel() {
         viewModelScope.launch {
 
             val db = AppDatabase.getDatabase(context)
-            val userDao = db.userDao()
+            val userDao = db.userRepository()
             userDao.insertUsers(User(1, "Manoj", "Chauhan"))
             userDao.insertUsers(User(2, "Atul", "Chauhan"))
             userDao.insertUsers(User(3, "Ankit", "Chauhan"))

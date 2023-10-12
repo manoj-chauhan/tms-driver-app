@@ -8,7 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 
 @Dao
-interface UserDao {
+interface UserRepository {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUsers(vararg users: User)
 
@@ -23,5 +23,15 @@ interface UserDao {
 
     @Query("SELECT * from user")
     suspend fun loadUsers(): List<User>
+}
+
+@Dao
+interface MatrixRepository {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLocation(vararg location: Matrix)
+
+    @Query("SELECT * from matrix")
+    suspend fun loadMatrices(): List<Matrix>
+
 }
 
