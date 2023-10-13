@@ -60,7 +60,7 @@ fun AppNavigationHost(
                 navController = navController,
                 selectedAssignment = selectedAssignmentCode,
                 operatorId = operatorId,
-                tripId = tripId
+                tripCode = selectedAssignmentCode
             )
         }
         composable(

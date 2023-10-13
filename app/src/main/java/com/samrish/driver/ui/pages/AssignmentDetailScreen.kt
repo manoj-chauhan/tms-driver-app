@@ -36,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.samrish.driver.R
 import com.samrish.driver.ui.components.ActiveStatusTrips
+import com.samrish.driver.viewmodels.AssignmentDetailViewModel
 import com.samrish.driver.viewmodels.TripDetailsViewModel
 
 @Composable
@@ -43,15 +44,14 @@ fun AssignmentDetailScreen (
     navController: NavHostController,
     selectedAssignment: String,
     operatorId: Int,
-    tripId: Int,
-    vm: TripDetailsViewModel = viewModel()
+    tripCode: String,
+    vm: AssignmentDetailViewModel = viewModel()
 ) {
-
-    val painter = painterResource(id = R.drawable.signal)
     val context = LocalContext.current
+    val painter = painterResource(id = R.drawable.signal)
 
-    val assignment by vm.currentTripAssignment.collectAsStateWithLifecycle()
-    vm.fetchTripDetails(context = context, selectedAssignment, operatorId, tripId)
+    val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
+    vm.fetchAssignmentDetail(context = context, tripCode = tripCode, operatorId = operatorId)
 
     Box(
         modifier = Modifier
@@ -75,7 +75,7 @@ fun AssignmentDetailScreen (
                 ) {
 
                     Text(
-                        text =  assignment!!.operatorName , style = TextStyle(
+                        text =  it.tripDetail.operatorName , style = TextStyle(
                             color = Color.Black,
                             fontSize = 23.sp
                         )
@@ -121,7 +121,7 @@ fun AssignmentDetailScreen (
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = assignment!!.code,
+                                    text = it.tripDetail.tripCode,
                                     style = TextStyle(
                                         color = Color.Black,
                                         fontSize = 20.sp,
@@ -129,7 +129,7 @@ fun AssignmentDetailScreen (
                                     )
                                 )
                                 Text(
-                                    text = assignment!!.tripDate,
+                                    text = it.tripDetail.tripDate,
                                     style = TextStyle(
                                         color = Color.Black,
                                         fontSize = 15.sp,
@@ -139,7 +139,7 @@ fun AssignmentDetailScreen (
 
                             }
                             Text(
-                                text = "("+assignment!!.name+")",
+                                text = "(${it.tripDetail.tripName})",
                                 style = TextStyle(
                                     color = Color.Gray,
                                     fontSize = 17.sp,
@@ -314,7 +314,7 @@ fun AssignmentDetailScreen (
                         }
 
                     }
-                    ActiveStatusTrips(context, tripId, operatorId, selectedAssignment)
+                    ActiveStatusTrips(context, it.tripDetail.tripId, operatorId, selectedAssignment)
                 }
             }
         }
