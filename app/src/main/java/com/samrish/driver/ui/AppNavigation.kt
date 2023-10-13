@@ -17,8 +17,7 @@ import androidx.navigation.compose.composable
 import com.samrish.driver.models.CurrentAssignmentDetail
 import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.ui.components.CompanyDetail
-//import com.samrish.driver.ui.pages.AssignmentsScreen
-import com.samrish.driver.ui.pages.CurrentAssignmentScreen
+import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.History
 import com.samrish.driver.ui.pages.Login
 import com.samrish.driver.ui.pages.ProfileScreen
@@ -57,7 +56,7 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
-            CurrentAssignmentScreen(
+            AssignmentDetailScreen(
                 navController = navController,
                 selectedAssignment = selectedAssignmentCode,
                 operatorId = operatorId,

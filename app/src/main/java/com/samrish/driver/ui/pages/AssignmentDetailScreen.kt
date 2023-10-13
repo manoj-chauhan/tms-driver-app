@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -37,13 +35,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.samrish.driver.R
-import com.samrish.driver.services.click
 import com.samrish.driver.ui.components.ActiveStatusTrips
-import com.samrish.driver.viewmodels.CurrentAssignmentViewModel
 import com.samrish.driver.viewmodels.TripDetailsViewModel
 
 @Composable
-fun CurrentAssignmentScreen(
+fun AssignmentDetailScreen (
     navController: NavHostController,
     selectedAssignment: String,
     operatorId: Int,
@@ -318,8 +314,6 @@ fun CurrentAssignmentScreen(
                         }
 
                     }
-
-
                     ActiveStatusTrips(context, tripId, operatorId, selectedAssignment)
                 }
             }
