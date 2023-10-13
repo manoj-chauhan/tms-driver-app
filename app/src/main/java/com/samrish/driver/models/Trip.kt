@@ -22,19 +22,6 @@ class generatedCode(
     var assignmentCode: String
 )
 
-class TripsAssigned(
-    var tripCode: String,
-    var tripName:String,
-    var status: String,
-    var label: String,
-    var companyName: String,
-    var companyCode: String,
-    var operatorCompanyName: String,
-    var operatorCompanyCode: String,
-    var operatorCompanyId: Int,
-    var tripDate: String,
-    var tripId: Int
-)
 class VehicleList(
     var vehicleId: Int,
     var vehicleNumber: String,

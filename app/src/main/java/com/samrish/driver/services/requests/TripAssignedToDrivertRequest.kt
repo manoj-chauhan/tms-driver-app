@@ -4,7 +4,7 @@ import android.util.Log
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
-import com.samrish.driver.models.TripsAssigned
+import com.samrish.driver.viewmodels.TripsAssigned
 import org.json.JSONArray
 import org.json.JSONObject
 import java.nio.charset.Charset

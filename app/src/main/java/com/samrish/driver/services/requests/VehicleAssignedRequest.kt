@@ -4,7 +4,7 @@ import android.util.Log
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
-import com.samrish.driver.models.VehicleAssignment
+import com.samrish.driver.viewmodels.VehicleAssignment
 import org.json.JSONObject
 import java.nio.charset.Charset
 
@@ -14,7 +14,7 @@ class VehicleAssignedRequest (
     listener: Response.Listener<VehicleAssignment>,
     errorListener: Response.ErrorListener
 ) : GenericRequest<VehicleAssignment>(Method.GET, url, headers, listener, errorListener) {
-    override fun transformResponse(response: NetworkResponse?): VehicleAssignment{
+    override fun transformResponse(response: NetworkResponse?): VehicleAssignment {
 
         val responseBody = String(
             response?.data ?: ByteArray(0),

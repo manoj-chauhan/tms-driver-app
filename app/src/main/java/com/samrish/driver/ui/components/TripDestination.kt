@@ -19,8 +19,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.samrish.driver.models.TripActions
-import com.samrish.driver.models.TripsAssigned
 
 @Composable
 fun NextDestinationInfo(nextLocationName: String?, estimatedDistance: Double?, estimatedTime:Int?, travelledDistance: Double?, travelTime: Int?, currentLocation: String? ){

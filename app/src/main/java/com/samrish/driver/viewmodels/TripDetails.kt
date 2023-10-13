@@ -4,22 +4,15 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.samrish.driver.models.AssignedDriver
-import com.samrish.driver.models.AssignedVehicle
 import com.samrish.driver.models.Locations
-import com.samrish.driver.services.getAssignedTrips
 import com.samrish.driver.services.getTripActions
 import com.samrish.driver.services.getTripDetail
-import com.samrish.driver.services.vehicleDetails
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlin.math.log
-import kotlin.random.Random
 
 
 data class CurrentAssignmentDetail(

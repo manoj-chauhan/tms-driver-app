@@ -15,6 +15,7 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -50,14 +51,24 @@ data class TripsAssigned(
     var tripId: Int
 )
 
+data class CurrentAssignmentData (
+    var userLocationVisible: Boolean,
+    var trips: MutableList<TripsAssigned>,
+    var vehicle: VehicleAssignment
+)
 
-class VehicleAssignmentViewModel : ViewModel() {
 
-    private val _currentAssignment: MutableStateFlow<VehicleAssignment?> = MutableStateFlow(null)
-    val currentAssignment: StateFlow<VehicleAssignment?> = _currentAssignment.asStateFlow()
+class HomeViewModel : ViewModel() {
+
+    private val _currentAssignment: MutableStateFlow<CurrentAssignmentData?> = MutableStateFlow(null)
+    val currentAssignment: StateFlow<CurrentAssignmentData?> = _currentAssignment.asStateFlow()
 
     fun fetchAssignmentDetail(context: Context) {
-        val routine1 = viewModelScope.launch(Dispatchers.IO) {
+
+        val channel1 = Channel<VehicleAssignment>()
+        val channel2 = Channel<MutableList<TripsAssigned>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
             val vehicleAssignmentUrl = context.resources.getString(R.string.url_vehicle_assignment)
             getAccessToken(context)?.let {
                 val (request1, response1, result1) = vehicleAssignmentUrl.httpGet()
@@ -65,17 +76,17 @@ class VehicleAssignmentViewModel : ViewModel() {
                     .responseObject(moshiDeserializerOf(VehicleAssignment::class.java))
 
                 result1.fold(
-                    { vehicleAssignment ->
-                        _currentAssignment.update { _ ->
-                            ////The below code is not supposed to be here, it is placed here just for testing serialisation using Moshi library
-                            val moshi = Moshi.Builder().build()
-                            val adapter: JsonAdapter<VehicleAssignment> =
-                                moshi.adapter(VehicleAssignment::class.java)
-                            val json: String? = adapter.toJson(vehicleAssignment)
-                            Log.i("Fuel", "Generated: $json")
-                            ////The above code is not supposed to be here, it is placed here just for testing serialisation using Moshi library
-                            vehicleAssignment
-                        }
+                    { vehicleAssignment -> channel1.send(vehicleAssignment)
+//                        _currentAssignment.update { _ ->
+//                            ////The below code is not supposed to be here, it is placed here just for testing serialisation using Moshi library
+//                            val moshi = Moshi.Builder().build()
+//                            val adapter: JsonAdapter<VehicleAssignment> =
+//                                moshi.adapter(VehicleAssignment::class.java)
+//                            val json: String? = adapter.toJson(vehicleAssignment)
+//                            Log.i("Fuel", "Generated: $json")
+//                            ////The above code is not supposed to be here, it is placed here just for testing serialisation using Moshi library
+//                            vehicleAssignment
+//                        }
                     },
                     { error ->
                         Log.e(
@@ -87,12 +98,12 @@ class VehicleAssignmentViewModel : ViewModel() {
             }
         }
 
-        val routine2 = viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             val tripAssignmentUrl = context.resources.getString(R.string.url_trips_list)
             getAccessToken(context)?.let {
 
                 val assignedTripType = Types.newParameterizedType(MutableList::class.java, TripsAssigned::class.java)
-                val adapter: JsonAdapter<List<AssignedVehicle>> = Moshi.Builder().build().adapter(assignedTripType)
+                val adapter: JsonAdapter<MutableList<TripsAssigned>> = Moshi.Builder().build().adapter(assignedTripType)
 
 
                 val (request1, response1, result1) = tripAssignmentUrl.httpGet()
@@ -101,7 +112,7 @@ class VehicleAssignmentViewModel : ViewModel() {
 
                 result1.fold(
                     {
-                        tripAssignments -> Log.i("Fuel", "$tripAssignments")
+                        tripAssignments -> channel2.send(tripAssignments)
                     },
                     { error ->
                         Log.e(
@@ -113,12 +124,34 @@ class VehicleAssignmentViewModel : ViewModel() {
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            routine1.join()
-            routine2.join()
+            val vehicleAssignment = channel1.receive();
+            val tripsAssignment = channel2.receive();
+            _currentAssignment.update { old ->
+                CurrentAssignmentData(
+                    old?.userLocationVisible ?: false,
+                    tripsAssignment,
+                    vehicleAssignment
+                )
+            }
+            Log.i("Fuel", "Response1: $vehicleAssignment")
+            Log.i("Fuel", "Response2: $tripsAssignment")
 
             Log.i("Fuel", "All Coroutines Finished!")
         }
 
 
+    }
+
+    fun showLog() {
+        _currentAssignment.update { old ->
+            old?.let {
+                CurrentAssignmentData(
+                    true,
+                    it.trips,
+                    it.vehicle
+                )
+            }
+
+        }
     }
 }

@@ -22,9 +22,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.samrish.driver.models.TripsAssigned
+import com.samrish.driver.viewmodels.TripsAssigned
+
 @Composable
-fun TripAssignmentDetails(tripList:List<TripsAssigned>, onTripSelected: (tripToDriverAssigned: TripsAssigned) -> Unit){
+fun TripAssignmentDetails(tripList:MutableList<TripsAssigned>, onTripSelected: (tripToDriverAssigned: TripsAssigned) -> Unit){
 
     tripList.forEach { trip -> AssignmentTrips(trip, onClick=onTripSelected) }
 }
