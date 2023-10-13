@@ -44,8 +44,8 @@ import com.samrish.driver.services.end
 import com.samrish.driver.services.start
 import com.samrish.driver.ui.components.ActiveStatusTrips
 import com.samrish.driver.ui.components.CallCheckInDialog
+import com.samrish.driver.ui.components.ScheduleDialog
 import com.samrish.driver.viewmodels.AssignmentDetailViewModel
-import com.samrish.driver.viewmodels.TripDetailsViewModel
 
 @Composable
 fun AssignmentDetailScreen (
@@ -69,6 +69,8 @@ fun AssignmentDetailScreen (
         )
     }
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
+    val isScheduleSelected = remember { mutableStateOf(false); }
+
 
     val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
     val isCheckInEnabled = assignment?.activeStatusDetail?.actions?.contains("CHECKIN")
@@ -258,9 +260,7 @@ fun AssignmentDetailScreen (
                                     Color.LightGray
                                 ),
                                 onClick = {
-                                    Toast.makeText(context, "Schedule Selected", Toast.LENGTH_SHORT)
-                                        .show()
-                                    Log.i("toast", "new")
+                                    isScheduleSelected.value = true
                                 }
                             ) {
                                 Text(text = "Schedule", style = TextStyle(color = Color.Black))
@@ -519,6 +519,10 @@ fun AssignmentDetailScreen (
                                 isCheckInDialogVisible.value = it
                             }
                         )
+                    }
+
+                    if( isScheduleSelected.value){
+                        assignment?.loc?.let { it1 -> ScheduleDialog(it1,setShowDialog = {isScheduleSelected.value = it}) }
                     }
                 }
             }
