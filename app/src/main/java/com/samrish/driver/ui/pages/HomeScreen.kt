@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.samrish.driver.ui.components.TripAssignmentDetails
+import com.samrish.driver.ui.components.VehicleAssignmentDetail
 import com.samrish.driver.viewmodels.HomeViewModel
 import com.samrish.driver.viewmodels.TripsAssigned
 

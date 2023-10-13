@@ -1,6 +1,5 @@
-package com.samrish.driver.ui.pages
+package com.samrish.driver.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -62,7 +61,7 @@ fun AssignmentTrips(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned)
                             .width(50.dp)
                     ) {
                         Text(
-                            text = "${trip.tripCode}" ,
+                            text = trip.tripCode,
 
                             style = TextStyle(
                                 color = Color.Black,
@@ -76,7 +75,7 @@ fun AssignmentTrips(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned)
                         modifier = Modifier
                     ) {
                         Text(
-                            text = "${trip.tripDate}",
+                            text = trip.tripDate,
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 12.sp,
@@ -89,7 +88,7 @@ fun AssignmentTrips(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned)
                         modifier = Modifier
                     ) {
                         Text(
-                            text = "${trip.status}",
+                            text = trip.status,
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 12.sp,
@@ -109,7 +108,7 @@ fun AssignmentTrips(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned)
                         modifier = Modifier
                     ) {
                         Text(
-                            text = "${trip.tripName}",
+                            text = trip.tripName,
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 12.sp,
@@ -123,7 +122,7 @@ fun AssignmentTrips(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned)
                         modifier = Modifier
                     ) {
                         Text(
-                            text = "${trip.label }",
+                            text = trip.label,
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 12.sp,
