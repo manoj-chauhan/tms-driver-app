@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.samrish.driver.ui.components.TripAssignmentDetails
-import com.samrish.driver.ui.components.VehicleAssignmentDetail
+import com.samrish.driver.ui.components.AssignedTrip
+import com.samrish.driver.ui.components.AssignedVehicle
 import com.samrish.driver.viewmodels.HomeViewModel
 import com.samrish.driver.viewmodels.TripsAssigned
 
@@ -70,8 +70,9 @@ fun HomeScreen(
             }
         }
         currentAssignmentData?.let {
-            VehicleAssignmentDetail(it.vehicle)
-            TripAssignmentDetails(it.trips, onTripSelected)
+            AssignedVehicle(it.vehicle)
+            it.trips.forEach { trip -> AssignedTrip(trip, onClick=onTripSelected) }
+
             if (it.userLocationVisible) {
                 MatrixLog()
             }

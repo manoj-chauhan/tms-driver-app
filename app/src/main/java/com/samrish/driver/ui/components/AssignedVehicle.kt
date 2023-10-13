@@ -15,12 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.samrish.driver.ui.components.GeneratedCodeDialog
 import com.samrish.driver.viewmodels.VehicleAssignment
 
 
 @Composable
-fun VehicleAssignmentDetail(vehicleAssignment: VehicleAssignment) {
+fun AssignedVehicle(vehicleAssignment: VehicleAssignment) {
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
 
     Column(

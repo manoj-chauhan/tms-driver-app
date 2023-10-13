@@ -24,13 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.samrish.driver.viewmodels.TripsAssigned
 
 @Composable
-fun TripAssignmentDetails(tripList:MutableList<TripsAssigned>, onTripSelected: (tripToDriverAssigned: TripsAssigned) -> Unit){
-
-    tripList.forEach { trip -> AssignmentTrips(trip, onClick=onTripSelected) }
-}
-
-@Composable
-fun AssignmentTrips(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> Unit) {
+fun AssignedTrip(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> Unit) {
 
     Box(
         modifier = Modifier
