@@ -43,6 +43,12 @@ data class TripDetail(
 data class ActiveStatusDetail(
     var driverId : Int,
     var driverName : String,
+    var nextLocationName : String?,
+    var estimatedTime: Int?,
+    var estimatedDistance: Double?,
+    var travelledDistance: Double?,
+    var travelTime: Int?,
+    var currentLocationName : String?,
     var actions : MutableList<String>
 )
 
