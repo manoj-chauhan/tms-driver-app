@@ -44,6 +44,7 @@ fun AssignmentDetailScreen (
     navController: NavHostController,
     selectedAssignment: String,
     operatorId: Int,
+    tripId: Int,
     tripCode: String,
     vm: AssignmentDetailViewModel = viewModel()
 ) {
@@ -51,7 +52,7 @@ fun AssignmentDetailScreen (
     val painter = painterResource(id = R.drawable.signal)
 
     val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
-    vm.fetchAssignmentDetail(context = context, tripCode = tripCode, operatorId = operatorId)
+    vm.fetchAssignmentDetail(context = context, tripId=tripId, tripCode = tripCode, operatorId = operatorId)
 
     Box(
         modifier = Modifier

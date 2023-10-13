@@ -39,8 +39,17 @@ data class TripDetail(
     var tripTime : String,
 )
 
+@JsonClass(generateAdapter = true)
+data class ActiveStatusDetail(
+    var driverId : Int,
+    var driverName : String,
+    var actions : MutableList<String>
+)
+
+
 data class AssignmentDetailData (
-    var tripDetail: TripDetail
+    var tripDetail: TripDetail,
+    var activeStatusDetail: ActiveStatusDetail
 )
 
 class AssignmentDetailViewModel : ViewModel() {
@@ -48,10 +57,10 @@ class AssignmentDetailViewModel : ViewModel() {
     private val _assignmentDetail: MutableStateFlow<AssignmentDetailData?> = MutableStateFlow(null)
     val assignmentDetail: StateFlow<AssignmentDetailData?> = _assignmentDetail.asStateFlow()
 
-    fun fetchAssignmentDetail(context: Context, tripCode:String, operatorId:Int) {
+    fun fetchAssignmentDetail(context: Context, tripId:Int, tripCode:String, operatorId:Int) {
 
         val channel1 = Channel<TripDetail>()
-//        val channel2 = Channel<MutableList<TripsAssigned>>()
+        val channel2 = Channel<ActiveStatusDetail>()
 
         viewModelScope.launch(Dispatchers.IO) {
             val tripDetailUrl = context.resources.getString(R.string.url_trips_detail) + tripCode
@@ -75,44 +84,40 @@ class AssignmentDetailViewModel : ViewModel() {
             }
         }
 
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val tripAssignmentUrl = context.resources.getString(R.string.url_trips_list)
-//            getAccessToken(context)?.let {
-//
-//                val assignedTripType = Types.newParameterizedType(MutableList::class.java, TripsAssigned::class.java)
-//                val adapter: JsonAdapter<MutableList<TripsAssigned>> = Moshi.Builder().build().adapter(assignedTripType)
-//
-//
-//                val (request1, response1, result1) = tripAssignmentUrl.httpGet()
-//                    .authentication().bearer(it)
-//                    .responseObject(moshiDeserializerOf(adapter))
-//
-//                result1.fold(
-//                    {
-//                        tripAssignments -> channel2.send(tripAssignments)
-//                    },
-//                    { error ->
-//                        Log.e(
-//                            "Fuel",
-//                            "Error $error"
-//                        )
-//                    }
-//                )
-//            }
-//        }
-//
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val activeStatusUrl = context.resources.getString(R.string.url_trip_actions) + tripId +"/activeStatus"
+            getAccessToken(context)?.let {
+                val (request1, response1, result1) = activeStatusUrl.httpGet()
+                    .authentication().bearer(it)
+                    .header("Company-Id", operatorId)
+                    .responseObject(moshiDeserializerOf(ActiveStatusDetail::class.java))
+
+                result1.fold(
+                    {
+                            statusDetail -> channel2.send(statusDetail)
+                    },
+                    { error ->
+                        Log.e(
+                            "Fuel",
+                            "Error $error"
+                        )
+                    }
+                )
+            }
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             val tripDetail = channel1.receive();
-//            val tripsAssignment = channel2.receive();
+            val statusDetail = channel2.receive();
             _assignmentDetail.update { _ ->
                 AssignmentDetailData(
-                    tripDetail
+                    tripDetail,
+                    activeStatusDetail = statusDetail
                 )
             }
             Log.i("Fuel", "Response1: $tripDetail")
-//            Log.i("Fuel", "Response2: $tripsAssignment")
-
-            Log.i("Fuel", "All Coroutines Finished!")
+            Log.i("Fuel", "Response2: $statusDetail")
         }
     }
 

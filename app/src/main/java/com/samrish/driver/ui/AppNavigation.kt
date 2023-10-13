@@ -25,7 +25,6 @@ import com.samrish.driver.ui.pages.HomeScreen
 
 
 @Composable
-//@LooperMode(LooperMode.Mode.PAUSED)
 fun AppNavigationHost(
     navController: NavHostController
 ) {
@@ -34,11 +33,11 @@ fun AppNavigationHost(
     }
 
     var operatorId by remember {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
     var tripId by remember {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
 
@@ -60,6 +59,7 @@ fun AppNavigationHost(
                 navController = navController,
                 selectedAssignment = selectedAssignmentCode,
                 operatorId = operatorId,
+                tripId = tripId,
                 tripCode = selectedAssignmentCode
             )
         }
@@ -82,13 +82,6 @@ fun AppNavigationHost(
             Login(navController = navController)
 
         }
-//        composable(
-//            "assignments/detail"
-//        ) {
-//            AssignmentDetailScreen(
-//                assignmentCode = selectedAssignmentCode
-//            )
-//        }
         composable(
             "profile"
         ) {
@@ -97,45 +90,3 @@ fun AppNavigationHost(
     }
 }
 
-
-@Composable
-fun TabScreen(
-    navController: NavHostController,
-    onAssignmentSelected: (assignment: CurrentAssignmentDetail) -> Unit
-) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        var selectedTab by remember {
-            mutableStateOf(1)
-        }
-
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            CompanyDetail()
-            when (selectedTab) {
-                1 -> {
-//                    AssignmentsScreen(
-//                        navController = navController,
-//                        onAssignmentSelected = onAssignmentSelected
-//                    )
-                }
-
-                2 -> {
-                    History()
-                }
-            }
-        }
-        NavigationBar(
-            modifier = Modifier.align(Alignment.BottomEnd)
-        ) {
-            NavigationBarItem(selected = (selectedTab == 1), onClick = {
-                selectedTab = 1
-            }, icon = {}, label = { Text(text = "Assignments") })
-            NavigationBarItem(selected = (selectedTab == 2), onClick = {
-                selectedTab = 2
-            }, icon = {}, label = { Text(text = "History") })
-        }
-    }
-}
