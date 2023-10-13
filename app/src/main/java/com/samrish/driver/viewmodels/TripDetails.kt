@@ -24,13 +24,13 @@ data class CurrentAssignmentDetail(
     var tripId: Int
 )
 
-data class Schedule(
-    var totalDistance: Double,
-    var totalEstimatedDistance: Double,
-    var totalTime: Int,
-    var totalEstimatedTime: Int,
-    var locations: List<Locations>,
-)
+//data class Schedule(
+//    var totalDistance: Double,
+//    var totalEstimatedDistance: Double,
+//    var totalTime: Int,
+//    var totalEstimatedTime: Int,
+//    var locations: List<Locations>,
+//)
 
 data class Locations(
     var placeCode: String,

@@ -36,16 +36,16 @@ class TripCheckedInViewModel : ViewModel() {
 
     // Handle business logic
     fun getTripLocations(context: Context, selectedCode: String, operatorId:Int) {
-        Log.d("View Model", "getTripLocations: $operatorId $selectedCode")
-        getTripSchedule(
-            context = context,
-            tripCode = selectedCode,
-            operatorId = operatorId,
-            onTripScheduleFetched = {
-                _currentAssignment.update { assignment ->
-                    Schedule(it.totalDistance, it.totalEstimatedDistance, it.totalTime, it.totalEstimatedTime, it.locations)
-                }
-            }
-        )
+//        Log.d("View Model", "getTripLocations: $operatorId $selectedCode")
+//        getTripSchedule(
+//            context = context,
+//            tripCode = selectedCode,
+//            operatorId = operatorId,
+//            onTripScheduleFetched = {
+//                _currentAssignment.update { assignment ->
+//                    Schedule(it.totalDistance, it.totalEstimatedDistance, it.totalTime, it.totalEstimatedTime, it.locations)
+//                }
+//            }
+//        )
     }
 }

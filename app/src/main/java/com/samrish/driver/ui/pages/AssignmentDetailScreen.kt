@@ -60,24 +60,21 @@ fun AssignmentDetailScreen (
     val painter = painterResource(id = R.drawable.signal)
 
     val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
-    vm.fetchAssignmentDetail(context = context, tripId=tripId, tripCode = tripCode, operatorId = operatorId)
-
+    if(assignment?.isDataLoaded != true) {
+        vm.fetchAssignmentDetail(
+            context = context,
+            tripId = tripId,
+            tripCode = tripCode,
+            operatorId = operatorId
+        )
+    }
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
 
-    val isStartEnabled = remember { mutableStateOf(false); }
-    val isCheckInEnabled = remember { mutableStateOf(false); }
-    val isDepartEnabled = remember { mutableStateOf(false); }
-    val isCancelEnabled = remember { mutableStateOf(false); }
-    val isEndEnabled = remember { mutableStateOf(false); }
-
-    if (assignment?.activeStatusDetail?.actions != null) {
-        println("actions are" + { assignment?.activeStatusDetail?.actions })
-        isStartEnabled.value = assignment?.activeStatusDetail?.actions!!.contains("START")
-        isCheckInEnabled.value = assignment?.activeStatusDetail?.actions!!.contains("CHECKIN")
-        isDepartEnabled.value = assignment?.activeStatusDetail?.actions!!.contains("DEPART")
-        isCancelEnabled.value = assignment?.activeStatusDetail?.actions!!.contains("CANCEL")
-        isEndEnabled.value = assignment?.activeStatusDetail?.actions!!.contains("END")
-    }
+    val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
+    val isCheckInEnabled = assignment?.activeStatusDetail?.actions?.contains("CHECKIN")
+    val isDepartEnabled = assignment?.activeStatusDetail?.actions?.contains("DEPART")
+    val isCancelEnabled = assignment?.activeStatusDetail?.actions?.contains("CANCEL")
+    val isEndEnabled = assignment?.activeStatusDetail?.actions?.contains("END")
 
     Box(
         modifier = Modifier
@@ -455,7 +452,7 @@ fun AssignmentDetailScreen (
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                if (isStartEnabled.value) {
+                                if (isStartEnabled == true) {
                                     Button(colors = ButtonDefaults.buttonColors(
                                         Color.Red
                                     ),
@@ -468,7 +465,7 @@ fun AssignmentDetailScreen (
                                     )
                                 }
 
-                                if (isCancelEnabled.value) {
+                                if (isCancelEnabled == true) {
                                     Button(
                                         onClick = {
                                             cancel(context, tripCode, operatorId)
@@ -478,7 +475,7 @@ fun AssignmentDetailScreen (
                                         }
                                     )
                                 }
-                                if (isEndEnabled.value) {
+                                if (isEndEnabled == true) {
                                     Button(
                                         onClick = {
                                             end(context, tripCode, operatorId)
@@ -488,7 +485,7 @@ fun AssignmentDetailScreen (
                                         }
                                     )
                                 }
-                                if (isCheckInEnabled.value) {
+                                if (isCheckInEnabled == true) {
                                     Button(
                                         onClick = {
                                             isCheckInDialogVisible.value = true
@@ -498,7 +495,7 @@ fun AssignmentDetailScreen (
                                         }
                                     )
                                 }
-                                if (isDepartEnabled.value) {
+                                if (isDepartEnabled == true) {
                                     Button(
                                         onClick = {
                                             depart(context, tripCode, operatorId)
@@ -514,10 +511,6 @@ fun AssignmentDetailScreen (
                         }
 
                     }
-
-
-
-
 
                     if (isCheckInDialogVisible.value) {
                         CallCheckInDialog(tripCode, operatorId, context,

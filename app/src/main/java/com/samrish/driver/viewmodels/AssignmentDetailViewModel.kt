@@ -49,13 +49,27 @@ data class ActiveStatusDetail(
     var travelledDistance: Double?,
     var travelTime: Int?,
     var currentLocationName : String?,
-    var actions : MutableList<String>
+    var actions : MutableSet<String>
 )
+
+@JsonClass(generateAdapter = true)
+data class Schedule(
+    var locations : List<ScheduleLocation>,
+)
+
+@JsonClass(generateAdapter = true)
+class ScheduleLocation(
+    var placeCode: String,
+    var placeName: String
+)
+
 
 
 data class AssignmentDetailData (
     var tripDetail: TripDetail,
-    var activeStatusDetail: ActiveStatusDetail
+    var activeStatusDetail: ActiveStatusDetail,
+    var loc: Schedule,
+    var isDataLoaded: Boolean = false
 )
 
 class AssignmentDetailViewModel : ViewModel() {
@@ -67,6 +81,8 @@ class AssignmentDetailViewModel : ViewModel() {
 
         val channel1 = Channel<TripDetail>()
         val channel2 = Channel<ActiveStatusDetail>()
+        val channel3 = Channel<Schedule>()
+
 
         viewModelScope.launch(Dispatchers.IO) {
             val tripDetailUrl = context.resources.getString(R.string.url_trips_detail) + tripCode
@@ -90,8 +106,8 @@ class AssignmentDetailViewModel : ViewModel() {
             }
         }
 
-
         viewModelScope.launch(Dispatchers.IO) {
+
             val activeStatusUrl = context.resources.getString(R.string.url_trip_actions) + tripId +"/activeStatus"
             getAccessToken(context)?.let {
                 val (request1, response1, result1) = activeStatusUrl.httpGet()
@@ -113,17 +129,50 @@ class AssignmentDetailViewModel : ViewModel() {
             }
         }
 
+
         viewModelScope.launch(Dispatchers.IO) {
+            val tripScheduleUrl = context.resources.getString(R.string.url_trip_schedules) + tripCode + "/schedule"
+
+            getAccessToken(context)?.let {
+                val (request1, response1, result1) = tripScheduleUrl.httpGet()
+                    .authentication().bearer(it)
+                    .header("Company-Id", operatorId)
+                    .responseObject(moshiDeserializerOf(Schedule::class.java))
+
+                result1.fold(
+                    {
+                            schedule -> channel3.send(schedule)
+                    },
+                    { error ->
+                        Log.e(
+                            "Fuel",
+                            "Error $error"
+                        )
+                    }
+                )
+            }
+        }
+
+
+
+        viewModelScope.launch(Dispatchers.IO) {
+
             val tripDetail = channel1.receive();
             val statusDetail = channel2.receive();
+            val schedule = channel3.receive()
+
             _assignmentDetail.update { _ ->
                 AssignmentDetailData(
-                    tripDetail,
-                    activeStatusDetail = statusDetail
+                     tripDetail,
+                     statusDetail,
+                     schedule,
+                    true
                 )
             }
             Log.i("Fuel", "Response1: $tripDetail")
             Log.i("Fuel", "Response2: $statusDetail")
+            Log.i("Fuel", "Response3: $schedule")
+
         }
     }
 
