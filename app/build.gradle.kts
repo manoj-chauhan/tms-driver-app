@@ -62,7 +62,7 @@ dependencies {
 
     implementation("com.google.firebase:firebase-auth-ktx:22.1.2")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
-
+    debugImplementation ("androidx.compose.ui:ui-tooling-preview:1.0.0")
     implementation("androidx.appcompat:appcompat:$appCompatVersion")
     implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
     implementation("androidx.activity:activity-ktx:$activityVersion")
