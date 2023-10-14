@@ -1,7 +1,6 @@
 package com.samrish.driver.ui.components
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,35 +14,22 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.services.checkIn
+import com.samrish.driver.viewmodels.Schedule
 import com.samrish.driver.viewmodels.TripCheckedInViewModel
-import kotlin.math.log
 
 @Composable
-fun CallCheckInDialog(tripCode: String, operatorId: Int, context:Context, setShowDialog: (Boolean) -> Unit, vm: TripCheckedInViewModel = viewModel()){
+fun CallCheckInDialog(context: Context,tripCode:String,operatorId:Int,locations: Schedule, setShowDialog: (Boolean) -> Unit, vm: TripCheckedInViewModel = viewModel()){
 
-    Log.d("Dialog", "CallCheckInDialog: $operatorId")
-    val assignment by vm.tripCheckedIn.collectAsStateWithLifecycle()
-    vm.getTripLocations(context= context, selectedCode= tripCode, operatorId= operatorId)
-
-
-
-    Log.d("CheckIn", "CallCheckInDialog: ${assignment?.locations}")
-
-
-        assignment?.let {
             Dialog(onDismissRequest = { setShowDialog(false) }) {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
@@ -54,20 +40,16 @@ fun CallCheckInDialog(tripCode: String, operatorId: Int, context:Context, setSho
                         contentAlignment = Alignment.Center
                     ) {
                         Column() {
-                            val (selectedLocation, onLocationSelected) = remember { mutableStateOf(it.locations[0]?.placeCode) }
+                            val (selectedLocation, onLocationSelected) = remember { mutableStateOf(locations.locations[0]?.placeCode) }
 
-                            it.locations.forEach { sch ->
+                            locations.locations.forEach { sch ->
 
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp)
                                         .selectable(
-                                            // this method is called when
-//                                // radio button is selected.
                                             selected = (sch?.placeCode == selectedLocation),
-//                                // below method is called on
-//                                // clicking of radio button.
                                             onClick = { onLocationSelected(sch?.placeCode) }
                                         )
                                 ) {
@@ -110,6 +92,4 @@ fun CallCheckInDialog(tripCode: String, operatorId: Int, context:Context, setSho
                     }
                 }
             }
-
         }
-    }

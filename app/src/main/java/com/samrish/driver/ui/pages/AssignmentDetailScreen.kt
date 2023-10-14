@@ -513,12 +513,14 @@ fun AssignmentDetailScreen (
                     }
 
                     if (isCheckInDialogVisible.value) {
-                        CallCheckInDialog(tripCode, operatorId, context,
-                            setShowDialog = {
-                                Log.i("Dialog", "Dialog dismissed")
-                                isCheckInDialogVisible.value = it
-                            }
-                        )
+                        assignment?.loc?.let {it1->
+                            CallCheckInDialog(context,tripCode,operatorId,it1,
+                                setShowDialog = {
+                                    Log.i("Dialog", "Dialog dismissed")
+                                    isCheckInDialogVisible.value = it
+                                }
+                            )
+                        }
                     }
 
                     if( isScheduleSelected.value){
