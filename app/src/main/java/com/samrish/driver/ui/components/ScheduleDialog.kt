@@ -14,16 +14,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.samrish.driver.ui.pages.MatrixRecord
 import com.samrish.driver.viewmodels.Schedule
 import com.samrish.driver.viewmodels.ScheduleLocation
 
@@ -32,166 +29,106 @@ fun ScheduleDialog(
     location: Schedule,
     setShowDialog: (Boolean) -> Unit
 ) {
-//    Dialog(onDismissRequest = { setShowDialog(false) }) {
-//
-//        Surface(
-//            shape = RoundedCornerShape(16.dp),
-//            color = Color.White
-//        ) {
-//            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-////                matList!!.forEach { record -> MatrixRecord(record) }
-//                items(
-//                    location.locations.size
-//                ) {
-//                    LocationList(location.locations[it] )
-//                }
-//            }
-//        }
-//
-//    }
-}
-
-@Composable
-fun DialogForPreview(
-    setShowDialog: (Boolean) -> Unit
-) {
     Dialog(onDismissRequest = { setShowDialog(false) }) {
 
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = Color.White
         ) {
-//            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-//                items(
-//                    location.locations.size
-//                ) {
-//                    LocationList(location.locations[it] )
-//                }
-//            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
+//                    .height(300.dp)
                     .background(Color.White)
             ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp, end = 8.dp, top = 3.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                Box(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                    Text(text = "Locations", style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+                }
+                LazyColumn(modifier = Modifier.fillMaxWidth().padding(top = 32.dp)) {
+                    items(
+                        location.locations.size
                     ) {
-                        Box(modifier = Modifier.width(23.dp)) {
-                            Text(text = "1")
-                        }
-                        Box(modifier = Modifier.width(30.dp)) {
-                            Text(
-                                text = "TMC", style = TextStyle(
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp)
-                        ) {
-
-                            Text(
-                                text = "Tata Maihindra Company and Pvt. Ltd.", style = TextStyle(
-                                    color = Color.Gray,
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            )
-                        }
-
+                        LocationList(it, location.locations[it])
                     }
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp)
-                    ) {
-                        Column {
-
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 9.dp)
-                            ) {
-                                Text(text = "|")
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 3.dp)
-                            ) {
-                                Text(text = "29.3km")
-                            }
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 9.dp)
-                            ) {
-                                Text(text = "|")
-                            }
-                        }
-
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp, end = 8.dp, top = 3.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Box(modifier = Modifier.width(23.dp)) {
-                            Text(text = "1")
-                        }
-                        Box(modifier = Modifier.width(30.dp)) {
-                            Text(
-                                text = "TMC", style = TextStyle(
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp)
-                        ) {
-
-                            Text(
-                                text = "Tata Maihindra Company and Pvt. Ltd.", style = TextStyle(
-                                    color = Color.Gray,
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            )
-                        }
-
-                    }
-
                 }
             }
-
         }
 
     }
 }
 
 
-@Composable
-fun LocationList(location: ScheduleLocation) {
-    Text(text = "${location.placeCode}")
-}
+    @Composable
+    fun LocationList(i: Int, scheduleLocation: ScheduleLocation) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Box(modifier = Modifier.width(23.dp)) {
+                        Text(text = "${i + 1}")
+                    }
+                    Box(modifier = Modifier.width(30.dp)) {
+                        Text(
+                            text = "TMC", style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp)
+                    ) {
 
-@Preview
-@Composable
-fun DialogFor() {
-    DialogForPreview({ false })
-}
+                        Text(
+                            text = "${scheduleLocation.placeName}", style = TextStyle(
+                                color = Color.Gray,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
+
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                ) {
+                    Column {
+
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 9.dp)
+                        ) {
+                            Text(text = "|")
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 3.dp)
+                        ) {
+                            Text(text = "${scheduleLocation.actualDistance}")
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 9.dp)
+                        ) {
+                            Text(text = "|")
+                        }
+                    }
+
+                }
+
+            }
+
+    }

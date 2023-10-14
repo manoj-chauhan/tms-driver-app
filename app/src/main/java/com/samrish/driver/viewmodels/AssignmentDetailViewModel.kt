@@ -60,7 +60,9 @@ data class Schedule(
 @JsonClass(generateAdapter = true)
 class ScheduleLocation(
     var placeCode: String,
-    var placeName: String
+    var placeName: String,
+    var actualDistance: Double,
+    var order: Int
 )
 
 
