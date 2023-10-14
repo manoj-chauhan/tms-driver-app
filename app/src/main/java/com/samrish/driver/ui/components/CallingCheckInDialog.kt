@@ -28,7 +28,7 @@ import com.samrish.driver.viewmodels.Schedule
 import com.samrish.driver.viewmodels.TripCheckedInViewModel
 
 @Composable
-fun CallCheckInDialog(context: Context,tripCode:String,operatorId:Int,locations: Schedule, setShowDialog: (Boolean) -> Unit, vm: TripCheckedInViewModel = viewModel()){
+fun CallCheckInDialog(context: Context,tripCode:String,operatorId:Int, locations: Schedule, setShowDialog: (Boolean) -> Unit, vm: TripCheckedInViewModel = viewModel()){
 
             Dialog(onDismissRequest = { setShowDialog(false) }) {
                 Surface(

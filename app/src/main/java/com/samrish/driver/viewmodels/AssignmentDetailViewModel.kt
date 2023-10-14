@@ -61,7 +61,7 @@ data class Schedule(
 class ScheduleLocation(
     var placeCode: String,
     var placeName: String,
-    var actualDistance: Double,
+    var estDistance: Double,
     var order: Int
 )
 

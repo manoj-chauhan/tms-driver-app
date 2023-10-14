@@ -38,13 +38,17 @@ fun ScheduleDialog(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-//                    .height(300.dp)
+                    .padding(16.dp)
                     .background(Color.White)
             ) {
-                Box(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp, bottom = 10.dp)) {
                     Text(text = "Locations", style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
                 }
-                LazyColumn(modifier = Modifier.fillMaxWidth().padding(top = 32.dp)) {
+                LazyColumn(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp)) {
                     items(
                         location.locations.size
                     ) {
@@ -72,7 +76,7 @@ fun ScheduleDialog(
                     }
                     Box(modifier = Modifier.width(30.dp)) {
                         Text(
-                            text = "TMC", style = TextStyle(
+                            text = "${scheduleLocation.placeCode}", style = TextStyle(
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Medium
                             )
@@ -95,38 +99,40 @@ fun ScheduleDialog(
 
                 }
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                ) {
-                    Column {
+                if(scheduleLocation.estDistance != 0.0) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp)
+                    ) {
+                        Column {
 
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 9.dp)
-                        ) {
-                            Text(text = "|")
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 3.dp)
-                        ) {
-                            Text(text = "${scheduleLocation.actualDistance}")
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 9.dp)
+                            ) {
+                                Text(text = "|")
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 3.dp)
+                            ) {
+                                Text(text = "${scheduleLocation.estDistance}"+"km")
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 9.dp)
+                            ) {
+                                Text(text = "|")
+                            }
                         }
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 9.dp)
-                        ) {
-                            Text(text = "|")
-                        }
                     }
-
                 }
 
             }
