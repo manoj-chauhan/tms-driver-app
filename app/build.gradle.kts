@@ -66,12 +66,12 @@ dependencies {
     implementation("androidx.appcompat:appcompat:$appCompatVersion")
     implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
     implementation("androidx.activity:activity-ktx:$activityVersion")
-
+    implementation ("com.squareup.moshi:moshi-kotlin:1.12.0")
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:$recyclerViewVersion")
 
     implementation("com.android.volley:volley:$volleyVersion")
-
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")

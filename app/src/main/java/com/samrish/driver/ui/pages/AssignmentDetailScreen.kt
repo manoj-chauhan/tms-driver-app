@@ -41,10 +41,9 @@ import com.samrish.driver.R
 import com.samrish.driver.services.cancel
 import com.samrish.driver.services.depart
 import com.samrish.driver.services.end
-import com.samrish.driver.services.start
-import com.samrish.driver.ui.components.ActiveStatusTrips
 import com.samrish.driver.ui.components.CallCheckInDialog
 import com.samrish.driver.ui.components.ScheduleDialog
+import com.samrish.driver.viewmodels.ActionButtonViewModel
 import com.samrish.driver.viewmodels.AssignmentDetailViewModel
 
 @Composable
@@ -54,7 +53,8 @@ fun AssignmentDetailScreen (
     operatorId: Int,
     tripId: Int,
     tripCode: String,
-    vm: AssignmentDetailViewModel = viewModel()
+    vm: AssignmentDetailViewModel = viewModel(),
+    viewModel: ActionButtonViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val painter = painterResource(id = R.drawable.signal)
@@ -457,7 +457,7 @@ fun AssignmentDetailScreen (
                                         Color.Red
                                     ),
                                         onClick = {
-                                            start(context, tripCode, operatorId)
+                                            viewModel.startTrip( tripCode, operatorId)
                                         },
                                         content = {
                                             Text(text = "Start")
