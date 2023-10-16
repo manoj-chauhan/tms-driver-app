@@ -8,7 +8,6 @@ import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
-import com.samrish.driver.models.AssignedVehicle
 import com.samrish.driver.services.getAccessToken
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass

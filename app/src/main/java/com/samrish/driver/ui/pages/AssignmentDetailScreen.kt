@@ -457,7 +457,7 @@ fun AssignmentDetailScreen (
                                         Color.Red
                                     ),
                                         onClick = {
-                                            viewModel.startTrip( tripCode, operatorId)
+                                            viewModel.startTrip( tripCode, operatorId, context)
                                         },
                                         content = {
                                             Text(text = "Start")
