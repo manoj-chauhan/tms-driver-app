@@ -104,7 +104,7 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                         Icon(
                             imageVector = Icons.Default.Edit, // Use the Edit icon from Icons.Default
                             contentDescription = "Edit Icon",
-                            modifier = Modifier.size(30.dp) // Adjust the size as needed
+                            modifier = Modifier.size(25.dp) // Adjust the size as needed
                         )
                     }
                     Row {

@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.samrish.driver.services.clearSession
 import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.HomeScreen
@@ -153,10 +152,9 @@ fun AppNavigationHost(
     }
 
     if (logout) {
-        val context = LocalContext.current
-        clearSession(context)
-        navController.navigate("login")
-        logout = false
+        val myIntent = Intent(LocalContext.current, LoginActivity::class.java)
+        LocalContext.current.startActivity(myIntent)
+        logout= false
     }
 
 
