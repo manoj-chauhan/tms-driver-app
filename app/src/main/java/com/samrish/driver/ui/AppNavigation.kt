@@ -1,6 +1,7 @@
 package com.samrish.driver.ui
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,7 +36,9 @@ import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.HomeScreen
 import com.samrish.driver.ui.pages.Login
+import com.samrish.driver.ui.pages.MatrixLog
 import com.samrish.driver.ui.pages.ProfileScreen
+import com.samrish.driver.ui.pages.UserProfile
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,30 +50,47 @@ fun AppNavigationHost(
     var expander by remember {
         mutableStateOf(false)
     }
+
+    var locations by remember {
+        mutableStateOf(false)
+    }
+
+    var userProfile by remember {
+        mutableStateOf(false)
+    }
     Scaffold(topBar = {
-        TopAppBar(modifier = Modifier.padding(end= 13.dp),title = { Text(text = "Assigned Trips") }, navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
+        TopAppBar(
+            modifier = Modifier.padding(end = 13.dp),
+            title = { Text(text = "Assigned Trips") },
+            navigationIcon = {
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
+                }
+            },
+            actions = {
+                IconButton(onClick = { expander = true }) {
+                    Icon(imageVector = Icons.Filled.MoreVert, contentDescription = null)
+                }
+
+                DropdownMenu(expanded = expander, onDismissRequest = { expander = false }) {
+                    DropdownMenuItem(text = { Text(text = "User Profile") }, onClick = { userProfile = true },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Person, contentDescription = null)
+                        })
+                    Divider(color = Color.Blue, thickness = 1.dp)
+                    DropdownMenuItem(text = { Text(text = "Locations") },
+                        onClick = { locations = true },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Place, contentDescription = null)
+                        })
+                }
             }
-        }, actions = {
-            IconButton(onClick = { expander = true }) {
-                Icon(imageVector = Icons.Filled.MoreVert, contentDescription = null)
-            }
-            
-            DropdownMenu(expanded = expander, onDismissRequest = { expander = false }) {
-                DropdownMenuItem(text = { Text(text = "User Profile") }, onClick = { /*TODO*/ }, 
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Filled.Person, contentDescription = null) })
-                Divider(color = Color.Blue, thickness = 1.dp)
-                DropdownMenuItem(text = { Text(text = "Locations") }, onClick = { /*TODO*/ },
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Filled.Place, contentDescription = null) })
-            }
-        }
         )
-    }, content = {
-        innnerpadding ->
-        LazyColumn(contentPadding = innnerpadding, verticalArrangement = Arrangement.spacedBy(8.dp)){
+    }, content = { innnerpadding ->
+        LazyColumn(
+            contentPadding = innnerpadding,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
 
         }
     }
@@ -90,15 +110,25 @@ fun AppNavigationHost(
     }
 
 
-    var startScreen:String = "login"
+    var startScreen: String = "login"
 
     getAccessToken(LocalContext.current)?.let {
         startScreen = "home"
     }
 
-    if(startScreen == "login") {
+    if (startScreen == "login") {
         val myIntent = Intent(LocalContext.current, LoginActivity::class.java)
         LocalContext.current.startActivity(myIntent)
+    }
+
+    if (locations) {
+        Log.d("TAG", "AppNavigationHost: ")
+        navController.navigate("locations-screen")
+    }
+
+    if(userProfile){
+        navController.navigate("user-profile")
+        userProfile = false
     }
 
 
@@ -112,6 +142,18 @@ fun AppNavigationHost(
                 tripCode = selectedAssignmentCode
             )
         }
+
+        composable(
+            "locations-screen"
+        ) {
+            MatrixLog()
+        }
+
+
+        composable("user-profile"){
+            UserProfile()
+        }
+
         composable(
             "home"
         ) {
@@ -126,8 +168,8 @@ fun AppNavigationHost(
             )
         }
         composable(
-                "login"
-                ) {
+            "login"
+        ) {
             Login(navController = navController)
 
         }

@@ -47,6 +47,7 @@ android {
 
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
     val lifecycle_version = "2.6.2"
     val recyclerViewVersion = "1.3.1"
     val appCompatVersion = "1.6.1"
