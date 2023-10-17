@@ -124,6 +124,7 @@ fun AppNavigationHost(
     if (locations) {
         Log.d("TAG", "AppNavigationHost: ")
         navController.navigate("locations-screen")
+        locations = false
     }
 
     if(userProfile){
