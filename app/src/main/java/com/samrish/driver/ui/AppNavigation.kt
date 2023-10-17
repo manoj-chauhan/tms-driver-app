@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.samrish.driver.services.clearSession
 import com.samrish.driver.services.getAccessToken
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.HomeScreen
@@ -58,6 +60,23 @@ fun AppNavigationHost(
     var userProfile by remember {
         mutableStateOf(false)
     }
+
+    var logout by remember {
+        mutableStateOf(false)
+    }
+
+    var selectedAssignmentCode by remember {
+        mutableStateOf("")
+    }
+
+    var operatorId by remember {
+        mutableIntStateOf(0)
+    }
+
+    var tripId by remember {
+        mutableIntStateOf(0)
+    }
+
     Scaffold(topBar = {
         TopAppBar(
             modifier = Modifier.padding(end = 13.dp),
@@ -73,7 +92,8 @@ fun AppNavigationHost(
                 }
 
                 DropdownMenu(expanded = expander, onDismissRequest = { expander = false }) {
-                    DropdownMenuItem(text = { Text(text = "User Profile") }, onClick = { userProfile = true },
+                    DropdownMenuItem(text = { Text(text = "User Profile") },
+                        onClick = { userProfile = true },
                         leadingIcon = {
                             Icon(imageVector = Icons.Filled.Person, contentDescription = null)
                         })
@@ -83,6 +103,16 @@ fun AppNavigationHost(
                         leadingIcon = {
                             Icon(imageVector = Icons.Filled.Place, contentDescription = null)
                         })
+
+                    Divider(color = Color.Blue, thickness = 1.dp)
+
+
+                    DropdownMenuItem(text = { Text(text = "Log out") },
+                        onClick = { logout = true },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Logout, contentDescription = null)
+                        })
+
                 }
             }
         )
@@ -97,17 +127,7 @@ fun AppNavigationHost(
 
     )
 
-    var selectedAssignmentCode by remember {
-        mutableStateOf("")
-    }
 
-    var operatorId by remember {
-        mutableIntStateOf(0)
-    }
-
-    var tripId by remember {
-        mutableIntStateOf(0)
-    }
 
 
     var startScreen: String = "login"
@@ -127,9 +147,16 @@ fun AppNavigationHost(
         locations = false
     }
 
-    if(userProfile){
+    if (userProfile) {
         navController.navigate("user-profile")
         userProfile = false
+    }
+
+    if (logout) {
+        val context = LocalContext.current
+        clearSession(context)
+        navController.navigate("login")
+        logout = false
     }
 
 
@@ -151,7 +178,7 @@ fun AppNavigationHost(
         }
 
 
-        composable("user-profile"){
+        composable("user-profile") {
             UserProfile()
         }
 
