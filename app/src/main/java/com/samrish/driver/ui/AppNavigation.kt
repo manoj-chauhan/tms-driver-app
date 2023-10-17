@@ -153,6 +153,7 @@ fun AppNavigationHost(
 
     if (logout) {
         val myIntent = Intent(LocalContext.current, LoginActivity::class.java)
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         LocalContext.current.startActivity(myIntent)
         logout= false
     }
