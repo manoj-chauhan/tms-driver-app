@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,32 +40,32 @@ fun HomeScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(13.dp),
+                .padding(13.dp, top = 36.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
             Text(
-                text = "Assigned Trip",
+                text = " ",
                 style = TextStyle(
                     color = Color.Black,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.ExtraBold
                 )
             )
-
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    Color.LightGray
-                ),
-                onClick = {
-                    vm.showLog()
-                }
-            )
-            {
-                Text(text = "Location", style = TextStyle(color = Color.Black))
-
-            }
+//
+//            Button(
+//                colors = ButtonDefaults.buttonColors(
+//                    Color.LightGray
+//                ),
+//                onClick = {
+//                    vm.showLog()
+//                }
+//            )
+//            {
+//                Text(text = "Location", style = TextStyle(color = Color.Black))
+//
+//            }
         }
         currentAssignmentData?.let {
             AssignedVehicle(it.vehicle)

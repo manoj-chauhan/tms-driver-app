@@ -44,7 +44,7 @@ fun ScheduleDialog(
                 Box(modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp, bottom = 10.dp)) {
-                    Text(text = "Locations", style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+                    Text(text = "Schedules", style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
                 }
                 LazyColumn(modifier = Modifier
                     .fillMaxWidth()
