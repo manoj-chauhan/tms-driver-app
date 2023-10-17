@@ -38,9 +38,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.samrish.driver.R
-import com.samrish.driver.services.cancel
-import com.samrish.driver.services.depart
-import com.samrish.driver.services.end
 import com.samrish.driver.ui.components.CallCheckInDialog
 import com.samrish.driver.ui.components.ScheduleDialog
 import com.samrish.driver.viewmodels.ActionButtonViewModel
@@ -468,7 +465,7 @@ fun AssignmentDetailScreen (
                                 if (isCancelEnabled == true) {
                                     Button(
                                         onClick = {
-                                            cancel(context, tripCode, operatorId)
+                                            viewModel.cancelTrip(context, tripCode, operatorId)
                                         },
                                         content = {
                                             Text(text = "Cancel")
@@ -478,7 +475,7 @@ fun AssignmentDetailScreen (
                                 if (isEndEnabled == true) {
                                     Button(
                                         onClick = {
-                                            end(context, tripCode, operatorId)
+                                            viewModel.endTrip(context, tripCode, operatorId)
                                         },
                                         content = {
                                             Text(text = "End")
@@ -498,7 +495,7 @@ fun AssignmentDetailScreen (
                                 if (isDepartEnabled == true) {
                                     Button(
                                         onClick = {
-                                            depart(context, tripCode, operatorId)
+                                            viewModel.departTrip(context, tripCode, operatorId)
                                         },
                                         content = {
                                             Text(text = "Depart")
