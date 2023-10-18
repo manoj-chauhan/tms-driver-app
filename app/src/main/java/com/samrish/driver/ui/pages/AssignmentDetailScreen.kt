@@ -191,28 +191,45 @@ fun AssignmentDetailScreen (
                                     .fillMaxSize()
                             )
                         }
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(20.dp), contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "Sharing Location",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Medium
+                            if(it.tripDetail.status !="TRIP_CREATED" || it.tripDetail.status !="TRIP_ENDED") {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(20.dp), contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Sharing Location",
+                                        style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Medium
+                                        )
                                     )
-                                )
+                                }
                             }
+//                            if(it.tripDetail.status =="TRIP_CREATED" || it.tripDetail.status =="TRIP_ENDED") {
+//                                Box(
+//                                    modifier = Modifier
+//                                        .fillMaxWidth()
+//                                        .height(20.dp), contentAlignment = Alignment.Center
+//                                ) {
+//                                    Text(
+//                                        text = "Not Sharing Location",
+//                                        style = TextStyle(
+//                                            color = Color.Black,
+//                                            fontSize = 16.sp,
+//                                            fontWeight = FontWeight.Medium
+//                                        )
+//                                    )
+//                                }
+//                            }
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(30.dp), contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "IN TRANSIT",
+                                    text = "${it.tripDetail.status}",
                                     style = TextStyle(
                                         color = Color.Red,
                                         fontSize = 18.sp,

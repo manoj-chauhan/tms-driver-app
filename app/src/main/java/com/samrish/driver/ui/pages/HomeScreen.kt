@@ -1,6 +1,7 @@
 package com.samrish.driver.ui.pages
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,21 +54,25 @@ fun HomeScreen(
                     fontWeight = FontWeight.ExtraBold
                 )
             )
-//            Button(
-//                colors = ButtonDefaults.buttonColors(
-//                    Color.LightGray
-//                ),
-//                onClick = {
-//                    vm.showLog()
-//                }
-//            )
-//            {
-//                Text(text = "Location", style = TextStyle(color = Color.Black))
-//
-//            }
         }
         currentAssignmentData?.let {
             AssignedVehicle(it.vehicle)
+
+            if (it.trips.size == 0 ){
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(13.dp,)
+                    .align(Alignment.CenterHorizontally)) {
+                    Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
+                        Text(text ="No trips assigned!!",style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        ))
+                    }
+
+                }
+            }
             it.trips.forEach { trip -> AssignedTrip(trip, onClick=onTripSelected) }
 
             if (it.userLocationVisible) {
