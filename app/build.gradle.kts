@@ -70,7 +70,6 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:$recyclerViewVersion")
 
     implementation("com.android.volley:volley:$volleyVersion")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
