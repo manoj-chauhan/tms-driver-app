@@ -40,7 +40,6 @@ import androidx.navigation.NavHostController
 import com.samrish.driver.R
 import com.samrish.driver.ui.components.CallCheckInDialog
 import com.samrish.driver.ui.components.ScheduleDialog
-import com.samrish.driver.viewmodels.ActionButtonViewModel
 import com.samrish.driver.viewmodels.AssignmentDetailViewModel
 
 @Composable
@@ -51,7 +50,6 @@ fun AssignmentDetailScreen (
     tripId: Int,
     tripCode: String,
     vm: AssignmentDetailViewModel = viewModel(),
-    viewModel: ActionButtonViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val painter = painterResource(id = R.drawable.signal)
@@ -67,6 +65,7 @@ fun AssignmentDetailScreen (
     }
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
     val isScheduleSelected = remember { mutableStateOf(false); }
+
 
 
     val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
@@ -471,7 +470,7 @@ fun AssignmentDetailScreen (
                                         Color.Red
                                     ),
                                         onClick = {
-                                            viewModel.startTrip( tripCode, operatorId, context)
+                                            vm.startTrip(  context, tripId,tripCode, operatorId)
                                         },
                                         content = {
                                             Text(text = "Start")
@@ -482,7 +481,8 @@ fun AssignmentDetailScreen (
                                 if (isCancelEnabled == true) {
                                     Button(
                                         onClick = {
-                                            viewModel.cancelTrip(context, tripCode, operatorId)
+                                            vm.cancelTrip(context, tripId,tripCode, operatorId)
+
                                         },
                                         content = {
                                             Text(text = "Cancel")
@@ -492,7 +492,8 @@ fun AssignmentDetailScreen (
                                 if (isEndEnabled == true) {
                                     Button(
                                         onClick = {
-                                            viewModel.endTrip(context, tripCode, operatorId)
+                                            vm.endTrip(context, tripId,tripCode, operatorId)
+
                                         },
                                         content = {
                                             Text(text = "End")
@@ -512,7 +513,7 @@ fun AssignmentDetailScreen (
                                 if (isDepartEnabled == true) {
                                     Button(
                                         onClick = {
-                                            viewModel.departTrip(context, tripCode, operatorId)
+                                            vm.departTrip(context, tripId,tripCode, operatorId)
                                         },
                                         content = {
                                             Text(text = "Depart")
@@ -528,22 +529,28 @@ fun AssignmentDetailScreen (
 
                     if (isCheckInDialogVisible.value) {
                         assignment?.loc?.let {it1->
-                            CallCheckInDialog(context,tripCode,operatorId,it1,
+                            CallCheckInDialog(context,tripId,tripCode,operatorId,it1,
                                 setShowDialog = {
                                     Log.i("Dialog", "Dialog dismissed")
                                     isCheckInDialogVisible.value = it
                                 }
                             )
+
                         }
                     }
 
                     if( isScheduleSelected.value){
                         assignment?.loc?.let { it1 -> ScheduleDialog(it1,setShowDialog = {isScheduleSelected.value = it}) }
                     }
+
+
                 }
             }
+
         }
     }
+
+
 
 }
 

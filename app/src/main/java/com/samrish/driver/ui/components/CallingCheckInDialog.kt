@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.samrish.driver.viewmodels.ActionButtonViewModel
-import com.samrish.driver.viewmodels.Schedule
+import com.samrish.driver.models.Schedule
+import com.samrish.driver.viewmodels.AssignmentDetailViewModel
 
 @Composable
-fun CallCheckInDialog(context: Context,tripCode:String,operatorId:Int, locations: Schedule, setShowDialog: (Boolean) -> Unit, viewModel: ActionButtonViewModel = viewModel()){
+fun CallCheckInDialog(context: Context,tripId:Int, tripCode:String, operatorId:Int, locations: Schedule, setShowDialog: (Boolean) -> Unit, vm: AssignmentDetailViewModel = viewModel(),){
 
             Dialog(onDismissRequest = { setShowDialog(false) }) {
                 Surface(
@@ -75,7 +75,8 @@ fun CallCheckInDialog(context: Context,tripCode:String,operatorId:Int, locations
                                         .height(50.dp),
                                     onClick = {
                                         if (selectedLocation != null) {
-                                            viewModel.checkInTrip(context = context,
+                                            vm.checkInTrip(context = context,
+                                                tripId = tripId,
                                                 tripCode = tripCode,
                                                 operatorId = operatorId,
                                                 placeCode = selectedLocation)
