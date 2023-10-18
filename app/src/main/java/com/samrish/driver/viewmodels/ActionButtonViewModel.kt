@@ -14,7 +14,6 @@ import com.samrish.driver.services.getAccessToken
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -70,7 +69,7 @@ class ActionButtonViewModel(application: Application) : AndroidViewModel(applica
             try {
                 val checkInRequest = TripCheckInRequest(placeCode, tripCode)
 
-                val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+                val moshi = Moshi.Builder().build()
                 val jsonAdapter: JsonAdapter<TripCheckInRequest> =
                     moshi.adapter(TripCheckInRequest::class.java)
                 val requestBody = jsonAdapter.toJson(checkInRequest)
@@ -94,7 +93,7 @@ class ActionButtonViewModel(application: Application) : AndroidViewModel(applica
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val departRequest = TripRequest(tripCode, operatorId)
-                val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+                val moshi = Moshi.Builder().build()
                 val jsonAdapter: JsonAdapter<TripRequest> = moshi.adapter(TripRequest::class.java)
                 val requestBody = jsonAdapter.toJson(departRequest)
 
@@ -118,7 +117,7 @@ class ActionButtonViewModel(application: Application) : AndroidViewModel(applica
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val cancelRequest = TripRequest(tripCode, operatorId)
-                val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+                val moshi = Moshi.Builder().build()
                 val jsonAdapter: JsonAdapter<TripRequest> = moshi.adapter(TripRequest::class.java)
                 val requestBody = jsonAdapter.toJson(cancelRequest)
 
@@ -141,7 +140,7 @@ class ActionButtonViewModel(application: Application) : AndroidViewModel(applica
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val endRequest = TripRequest(tripCode, operatorId)
-                val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+                val moshi = Moshi.Builder().build()
                 val jsonAdapter: JsonAdapter<TripRequest> = moshi.adapter(TripRequest::class.java)
                 val requestBody = jsonAdapter.toJson(endRequest)
 
