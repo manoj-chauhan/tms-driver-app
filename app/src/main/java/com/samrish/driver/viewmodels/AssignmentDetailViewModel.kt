@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.kittinunf.fuel.core.FuelManager
@@ -257,8 +258,13 @@ class AssignmentDetailViewModel (application: Application) : AndroidViewModel(ap
                         .response()
                 }
 
-                fetchAssignmentDetail(context,tripId, tripCode, operatorId)
+                Toast.makeText(
+                    context,
+                    "TRIP ENDED",
+                    Toast.LENGTH_SHORT
+                ).show()
 
+                fetchAssignmentDetail(context,tripId, tripCode, operatorId)
             } catch(e:Exception){
 
             }
