@@ -47,12 +47,11 @@ android {
 
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
     val lifecycle_version = "2.6.2"
     val recyclerViewVersion = "1.3.1"
     val appCompatVersion = "1.6.1"
     val constraintLayoutVersion = "2.1.4"
-    val activityVersion = "1.6.1"
+    val activityVersion = "1.8.0"
     val volleyVersion = "1.2.1"
     val nav_version = "2.7.4"
     val room_version = "2.5.2"
@@ -63,16 +62,14 @@ dependencies {
 
     implementation("com.google.firebase:firebase-auth-ktx:22.1.2")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
-    debugImplementation ("androidx.compose.ui:ui-tooling-preview:1.0.0")
+    debugImplementation ("androidx.compose.ui:ui-tooling-preview:1.5.3")
     implementation("androidx.appcompat:appcompat:$appCompatVersion")
     implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
     implementation("androidx.activity:activity-ktx:$activityVersion")
-    implementation ("com.squareup.moshi:moshi-kotlin:1.12.0")
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:$recyclerViewVersion")
 
     implementation("com.android.volley:volley:$volleyVersion")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
