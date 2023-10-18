@@ -541,12 +541,9 @@ fun AssignmentDetailScreen (
 
                         }
                     }
-
                     if( isScheduleSelected.value){
                         assignment?.loc?.let { it1 -> ScheduleDialog(it1,setShowDialog = {isScheduleSelected.value = it}) }
                     }
-
-
                 }
             }
 
