@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -38,7 +36,6 @@ import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.HomeScreen
 import com.samrish.driver.ui.pages.Login
 import com.samrish.driver.ui.pages.MatrixLog
-import com.samrish.driver.ui.pages.ProfileScreen
 import com.samrish.driver.ui.pages.UserProfile
 
 
@@ -92,22 +89,18 @@ fun AppNavigationHost(
 
                 DropdownMenu(expanded = expander, onDismissRequest = { expander = false }) {
                     DropdownMenuItem(text = { Text(text = "User Profile") },
-                        onClick = { userProfile = true },
+                        onClick = { userProfile = true; expander = false },
                         leadingIcon = {
                             Icon(imageVector = Icons.Filled.Person, contentDescription = null)
                         })
-                    Divider(color = Color.Blue, thickness = 1.dp)
                     DropdownMenuItem(text = { Text(text = "Locations") },
-                        onClick = { locations = true },
+                        onClick = { locations = true; expander = false },
                         leadingIcon = {
                             Icon(imageVector = Icons.Filled.Place, contentDescription = null)
                         })
 
-                    Divider(color = Color.Blue, thickness = 1.dp)
-
-
                     DropdownMenuItem(text = { Text(text = "Log out") },
-                        onClick = { logout = true },
+                        onClick = { logout = true; expander = false },
                         leadingIcon = {
                             Icon(imageVector = Icons.Filled.Logout, contentDescription = null)
                         })
@@ -199,11 +192,6 @@ fun AppNavigationHost(
         ) {
             Login(navController = navController)
 
-        }
-        composable(
-            "profile"
-        ) {
-            ProfileScreen(navController)
         }
     }
 }

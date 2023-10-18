@@ -40,7 +40,6 @@ import androidx.navigation.NavHostController
 import com.samrish.driver.R
 import com.samrish.driver.ui.components.CallCheckInDialog
 import com.samrish.driver.ui.components.ScheduleDialog
-import com.samrish.driver.viewmodels.ActionButtonViewModel
 import com.samrish.driver.viewmodels.AssignmentDetailViewModel
 
 @Composable
@@ -51,7 +50,6 @@ fun AssignmentDetailScreen (
     tripId: Int,
     tripCode: String,
     vm: AssignmentDetailViewModel = viewModel(),
-    viewModel: ActionButtonViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val painter = painterResource(id = R.drawable.signal)
@@ -67,6 +65,7 @@ fun AssignmentDetailScreen (
     }
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
     val isScheduleSelected = remember { mutableStateOf(false); }
+
 
 
     val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
@@ -191,12 +190,14 @@ fun AssignmentDetailScreen (
                                     .fillMaxSize()
                             )
                         }
-                            if(it.tripDetail.status !="TRIP_CREATED" || it.tripDetail.status !="TRIP_ENDED") {
+
+
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(20.dp), contentAlignment = Alignment.Center
                                 ) {
+                                    if(it.tripDetail.status =="TRIP_STARTED" || it.tripDetail.status =="TRIP_CHECKED_IN" || it.tripDetail.status =="TRIP_IN_TRANSIT") {
                                     Text(
                                         text = "Sharing Location",
                                         style = TextStyle(
@@ -206,23 +207,18 @@ fun AssignmentDetailScreen (
                                         )
                                     )
                                 }
+                                    else {
+                                        Text(
+                                            text = "Not Sharing Location",
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 16.sp,
+                                                fontWeight = FontWeight.Medium
+                                            )
+                                        )
+                                    }
                             }
-//                            if(it.tripDetail.status =="TRIP_CREATED" || it.tripDetail.status =="TRIP_ENDED") {
-//                                Box(
-//                                    modifier = Modifier
-//                                        .fillMaxWidth()
-//                                        .height(20.dp), contentAlignment = Alignment.Center
-//                                ) {
-//                                    Text(
-//                                        text = "Not Sharing Location",
-//                                        style = TextStyle(
-//                                            color = Color.Black,
-//                                            fontSize = 16.sp,
-//                                            fontWeight = FontWeight.Medium
-//                                        )
-//                                    )
-//                                }
-//                            }
+
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -450,100 +446,114 @@ fun AssignmentDetailScreen (
                         }
                     }
 
-
-                    assignment?.activeStatusDetail?.actions.let{
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight()
-                                .padding(start = 25.dp, top = 30.dp, end = 12.dp, bottom = 30.dp),
-                            contentAlignment = Alignment.BottomStart
-
-                        )
-                        {
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                if (isStartEnabled == true) {
-                                    Button(colors = ButtonDefaults.buttonColors(
-                                        Color.Red
+                    if(it.tripDetail.status !="TRIP_ENDED") {
+                        assignment?.activeStatusDetail?.actions.let {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                                    .padding(
+                                        start = 25.dp,
+                                        top = 30.dp,
+                                        end = 12.dp,
+                                        bottom = 30.dp
                                     ),
-                                        onClick = {
-                                            viewModel.startTrip( tripCode, operatorId, context)
-                                        },
-                                        content = {
-                                            Text(text = "Start")
-                                        }
-                                    )
+                                contentAlignment = Alignment.BottomStart
+
+                            )
+                            {
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                ) {
+                                    if (isStartEnabled == true) {
+                                        Button(colors = ButtonDefaults.buttonColors(
+                                            Color.Red
+                                        ),
+                                            onClick = {
+                                                vm.startTrip(context, tripId, tripCode, operatorId)
+                                            },
+                                            content = {
+                                                Text(text = "Start")
+                                            }
+                                        )
+                                    }
+
+                                    if (isCancelEnabled == true) {
+                                        Button(
+                                            onClick = {
+                                                vm.cancelTrip(context, tripId, tripCode, operatorId)
+
+                                            },
+                                            content = {
+                                                Text(text = "Cancel")
+                                            }
+                                        )
+                                    }
+                                    if (isEndEnabled == true) {
+                                        Button(
+                                            onClick = {
+                                                vm.endTrip(context, tripId, tripCode, operatorId)
+
+                                            },
+                                            content = {
+                                                Text(text = "End")
+                                            }
+                                        )
+                                    }
+                                    if (isCheckInEnabled == true) {
+                                        Button(
+                                            onClick = {
+                                                isCheckInDialogVisible.value = true
+                                            },
+                                            content = {
+                                                Text(text = "Check-In")
+                                            }
+                                        )
+                                    }
+                                    if (isDepartEnabled == true) {
+                                        Button(
+                                            onClick = {
+                                                vm.departTrip(context, tripId, tripCode, operatorId)
+                                            },
+                                            content = {
+                                                Text(text = "Depart")
+                                            }
+                                        )
+
+                                    }
                                 }
 
-                                if (isCancelEnabled == true) {
-                                    Button(
-                                        onClick = {
-                                            viewModel.cancelTrip(context, tripCode, operatorId)
-                                        },
-                                        content = {
-                                            Text(text = "Cancel")
-                                        }
-                                    )
-                                }
-                                if (isEndEnabled == true) {
-                                    Button(
-                                        onClick = {
-                                            viewModel.endTrip(context, tripCode, operatorId)
-                                        },
-                                        content = {
-                                            Text(text = "End")
-                                        }
-                                    )
-                                }
-                                if (isCheckInEnabled == true) {
-                                    Button(
-                                        onClick = {
-                                            isCheckInDialogVisible.value = true
-                                        },
-                                        content = {
-                                            Text(text = "Check-In")
-                                        }
-                                    )
-                                }
-                                if (isDepartEnabled == true) {
-                                    Button(
-                                        onClick = {
-                                            viewModel.departTrip(context, tripCode, operatorId)
-                                        },
-                                        content = {
-                                            Text(text = "Depart")
-                                        }
-                                    )
-
-                                }
                             }
 
                         }
-
                     }
 
                     if (isCheckInDialogVisible.value) {
                         assignment?.loc?.let {it1->
-                            CallCheckInDialog(context,tripCode,operatorId,it1,
+                            CallCheckInDialog(context,tripId,tripCode,operatorId,it1,
                                 setShowDialog = {
                                     Log.i("Dialog", "Dialog dismissed")
                                     isCheckInDialogVisible.value = it
                                 }
                             )
+
                         }
                     }
 
                     if( isScheduleSelected.value){
                         assignment?.loc?.let { it1 -> ScheduleDialog(it1,setShowDialog = {isScheduleSelected.value = it}) }
                     }
+
+
                 }
             }
+
         }
     }
+
+
 
 }
 

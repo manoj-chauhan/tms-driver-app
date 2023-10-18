@@ -50,9 +50,9 @@ dependencies {
     val lifecycle_version = "2.6.2"
     val recyclerViewVersion = "1.3.1"
     val appCompatVersion = "1.6.1"
+    val volleyVersion = "1.2.1"
     val constraintLayoutVersion = "2.1.4"
     val activityVersion = "1.8.0"
-    val volleyVersion = "1.2.1"
     val nav_version = "2.7.4"
     val room_version = "2.5.2"
 
@@ -69,13 +69,13 @@ dependencies {
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:$recyclerViewVersion")
 
-    implementation("com.android.volley:volley:$volleyVersion")
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
 
     // Feature module Support
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
+    implementation("com.android.volley:volley:$volleyVersion")
 
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:$nav_version")

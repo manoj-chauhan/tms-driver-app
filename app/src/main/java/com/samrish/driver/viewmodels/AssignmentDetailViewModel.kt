@@ -1,15 +1,28 @@
 package com.samrish.driver.viewmodels
 
+import android.app.Application
 import android.content.Context
+import android.provider.Settings
 import android.util.Log
-import androidx.lifecycle.ViewModel
+import android.widget.Toast
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
+import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
+import com.samrish.driver.models.ActiveStatusDetail
+import com.samrish.driver.models.AssignmentDetailData
+import com.samrish.driver.models.Schedule
+import com.samrish.driver.models.TripCheckInRequest
+import com.samrish.driver.models.TripDetail
+import com.samrish.driver.models.TripRequest
+import com.samrish.driver.models.TripStartRequest
 import com.samrish.driver.services.getAccessToken
-import com.squareup.moshi.JsonClass
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,63 +31,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@JsonClass(generateAdapter = true)
-data class TripDetail(
-    var status : String,
-    var tripId : Int,
-    var tripCode : String,
-    var tripName : String,
-    var createdBy : String,
-    var createdAt : String,
-    var updatedBy : String,
-    var lastUpdatedAt : String,
-    var companyId : Int,
-    var companyName : String,
-    var operatorId : Int,
-    var operatorName : String,
-    var approvalStatus : String,
-    var label : String,
-    var routeId : Int,
-    var tripDate : String,
-    var tripTime : String,
-)
 
-@JsonClass(generateAdapter = true)
-data class ActiveStatusDetail(
-    var driverId : Int,
-    var driverName : String,
-    var nextLocationName : String?,
-    var estimatedTime: Int?,
-    var estimatedDistance: Double?,
-    var travelledDistance: Double?,
-    var travelTime: Int?,
-    var currentLocationName : String?,
-    var actions : MutableSet<String>
-)
-
-@JsonClass(generateAdapter = true)
-data class Schedule(
-    var locations : List<ScheduleLocation>,
-)
-
-@JsonClass(generateAdapter = true)
-class ScheduleLocation(
-    var placeCode: String,
-    var placeName: String,
-    var estDistance: Double,
-    var order: Int
-)
-
-
-
-data class AssignmentDetailData (
-    var tripDetail: TripDetail,
-    var activeStatusDetail: ActiveStatusDetail,
-    var loc: Schedule,
-    var isDataLoaded: Boolean = false
-)
-
-class AssignmentDetailViewModel : ViewModel() {
+class AssignmentDetailViewModel (application: Application) : AndroidViewModel(application) {
 
     private val _assignmentDetail: MutableStateFlow<AssignmentDetailData?> = MutableStateFlow(null)
     val assignmentDetail: StateFlow<AssignmentDetailData?> = _assignmentDetail.asStateFlow()
@@ -177,5 +135,139 @@ class AssignmentDetailViewModel : ViewModel() {
 
         }
     }
+    fun startTrip(context: Context,tripId:Int, tripCode: String, operatorId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val deviceIdentifier = Settings.Secure.getString(
+                    getApplication<Application>().contentResolver, Settings.Secure.ANDROID_ID
+                )
 
+                val request = TripStartRequest(deviceIdentifier, tripCode)
+
+                val moshi = Moshi.Builder().build()
+                val jsonAdapter: JsonAdapter<TripStartRequest> =
+                    moshi.adapter(TripStartRequest::class.java)
+                val requestBody: String = jsonAdapter.toJson(request)
+
+
+                val url = context.resources.getString(R.string.url_trip_start)
+                getAccessToken(context)?.let {
+                    val fuelManager = FuelManager()
+                    val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
+                        .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
+                        .response()
+                }
+                fetchAssignmentDetail(context,tripId, tripCode, operatorId)
+
+            } catch (e: Exception) {
+            }
+        }
+    }
+
+    fun checkInTrip(context: Context,tripId:Int, tripCode: String, operatorId: Int, placeCode: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val checkInRequest = TripCheckInRequest(placeCode, tripCode)
+
+                val moshi = Moshi.Builder().build()
+                val jsonAdapter: JsonAdapter<TripCheckInRequest> =
+                    moshi.adapter(TripCheckInRequest::class.java)
+                val requestBody = jsonAdapter.toJson(checkInRequest)
+
+                val url = context.resources.getString(R.string.url_trip_check_in)
+
+                getAccessToken(context)?.let {
+                    val fuelManager = FuelManager()
+                    val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
+                        .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
+                        .response()
+                }
+                fetchAssignmentDetail(context,tripId, tripCode, operatorId)
+
+
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+    fun departTrip(context: Context,tripId:Int, tripCode: String, operatorId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val departRequest = TripRequest(tripCode, operatorId)
+                val moshi = Moshi.Builder().build()
+                val jsonAdapter: JsonAdapter<TripRequest> = moshi.adapter(TripRequest::class.java)
+                val requestBody = jsonAdapter.toJson(departRequest)
+
+
+                val url = context.resources.getString(R.string.url_trip_depart)
+
+                getAccessToken(context)?.let {
+                    val fuelManager = FuelManager()
+                    val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
+                        .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
+                        .response()
+                }
+                fetchAssignmentDetail(context,tripId, tripCode, operatorId)
+
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+    fun cancelTrip(context: Context,tripId:Int, tripCode: String, operatorId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val cancelRequest = TripRequest(tripCode, operatorId)
+                val moshi = Moshi.Builder().build()
+                val jsonAdapter: JsonAdapter<TripRequest> = moshi.adapter(TripRequest::class.java)
+                val requestBody = jsonAdapter.toJson(cancelRequest)
+
+                val url = context.resources.getString(R.string.url_trip_cancel)
+
+                getAccessToken(context)?.let {
+                    val fuelManager = FuelManager()
+                    val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
+                        .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
+                        .response()
+                }
+                fetchAssignmentDetail(context,tripId, tripCode, operatorId)
+
+
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+    fun endTrip(context: Context,tripId:Int, tripCode: String, operatorId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val endRequest = TripRequest(tripCode, operatorId)
+                val moshi = Moshi.Builder().build()
+                val jsonAdapter: JsonAdapter<TripRequest> = moshi.adapter(TripRequest::class.java)
+                val requestBody = jsonAdapter.toJson(endRequest)
+
+                val url = context.resources.getString(R.string.url_trip_end)
+
+                getAccessToken(context)?.let {
+                    val fuelManager = FuelManager()
+                    val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
+                        .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
+                        .response()
+                }
+
+                Toast.makeText(
+                    context,
+                    "TRIP ENDED",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                fetchAssignmentDetail(context,tripId, tripCode, operatorId)
+            } catch(e:Exception){
+
+            }
+        }
+    }
 }

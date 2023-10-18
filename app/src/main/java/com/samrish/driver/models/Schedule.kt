@@ -1,20 +1,16 @@
-package com.samrish.driver.models;
+package com.samrish.driver.models
 
-import org.json.JSONArray
+import com.squareup.moshi.JsonClass
 
-class Schedule(
-    var totalDistance : Double,
-    var totalEstimatedDistance: Double,
-    var totalTime: Int,
-    var totalEstimatedTime: Int,
-    var locations : List<Locations>,
+@JsonClass(generateAdapter = true)
+data class Schedule(
+    var locations : List<ScheduleLocation>,
 )
 
-class Locations(
+@JsonClass(generateAdapter = true)
+class ScheduleLocation(
     var placeCode: String,
     var placeName: String,
     var estDistance: Double,
-    var actualDistance: Double,
-    var scheduledArrivalTime: String,
-    var scheduledDepartureTime: String
+    var order: Int
 )

@@ -21,8 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.samrish.driver.viewmodels.Schedule
-import com.samrish.driver.viewmodels.ScheduleLocation
+import com.samrish.driver.models.Schedule
+import com.samrish.driver.models.ScheduleLocation
 
 @Composable
 fun ScheduleDialog(
