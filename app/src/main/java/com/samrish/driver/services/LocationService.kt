@@ -110,7 +110,7 @@ class LocationService : Service(), LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        this.locationManager!!.requestLocationUpdates(provider!!, 0, 0f, this)
+        this.locationManager!!.requestLocationUpdates(provider!!, 0, 0.01f, this)
     }
 
     override fun onDestroy() {
@@ -178,7 +178,7 @@ class LocationService : Service(), LocationListener {
         Log.d("Latitude", "onLocationChanged: Latitude $lat $lng")
         val formater = DateTimeFormatter.ISO_LOCAL_DATE_TIME
         val msg =
-            "Time: " + LocalDateTime.now().format(formater) + "   Location: " + lat + "," + lng
+            "Time: " + LocalDateTime.now().format(formater) + "   Location: " + lat +    "," + lng
         Log.i("TRACKER", "Location: $lat,$lng")
 
         val context: Context = this
@@ -190,8 +190,8 @@ class LocationService : Service(), LocationListener {
             ).build()
 
             val userLocation = db.matrixRepository()
-            sendMatrix(lat, lng)
             userLocation.insertLocation(Matrix(latitude =  lat, longitude = lng, time= formater.format(LocalDateTime.now())))
+            sendMatrix(lat, lng)
         }
     }
     companion object {
