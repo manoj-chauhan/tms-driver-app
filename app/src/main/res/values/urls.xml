@@ -22,5 +22,7 @@
     <string name="url_vehicle_assignment">&baseUrl;/vehicleDrivers</string>
     <string name="url_trip_actions">&baseUrl;/trips/</string>
     <string name="url_trip_document">&baseUrl;/trips/document/</string>
+    <string name="url_download_document">&baseUrl;/file/</string>
+
 
 </resources>

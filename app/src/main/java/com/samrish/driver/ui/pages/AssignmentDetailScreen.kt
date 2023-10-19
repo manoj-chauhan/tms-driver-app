@@ -552,7 +552,7 @@ fun AssignmentDetailScreen (
                         assignment?.documents.let{
                             document->
                             if (document != null) {
-                                DocumentsDialog(document, setShowDialog = {
+                                DocumentsDialog(operatorId,document, setShowDialog = {
                                     isDocumentSelected.value = it
                                 })
                             }
