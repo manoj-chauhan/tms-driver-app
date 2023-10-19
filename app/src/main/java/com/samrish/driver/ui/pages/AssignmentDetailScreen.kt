@@ -1,7 +1,6 @@
 package com.samrish.driver.ui.pages
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -65,6 +64,7 @@ fun AssignmentDetailScreen (
     }
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
     val isScheduleSelected = remember { mutableStateOf(false); }
+    val isDocumentSelected = remember { mutableStateOf(false); }
 
 
 
@@ -281,13 +281,7 @@ fun AssignmentDetailScreen (
                                     Color.LightGray
                                 ),
                                 onClick = {
-                                    Toast.makeText(
-                                        context,
-                                        "Documents Selected",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
-                                    Log.i("toast", "new")
+                                    isDocumentSelected.value = true
                                 }) {
                                 Text(text = "Documents", style = TextStyle(color = Color.Black))
 
@@ -551,6 +545,17 @@ fun AssignmentDetailScreen (
                                 }
                             )
 
+                        }
+                    }
+
+                    if(isDocumentSelected.value){
+                        assignment?.documents.let{
+                            document->
+                            if (document != null) {
+                                DocumentsDialog(document, setShowDialog = {
+                                    isDocumentSelected.value = it
+                                })
+                            }
                         }
                     }
                     if( isScheduleSelected.value){

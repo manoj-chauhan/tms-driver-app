@@ -10,11 +10,13 @@ import androidx.lifecycle.viewModelScope
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
+import com.github.kittinunf.fuel.core.response
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
 import com.samrish.driver.models.ActiveStatusDetail
 import com.samrish.driver.models.AssignmentDetailData
+import com.samrish.driver.models.Documents
 import com.samrish.driver.models.Schedule
 import com.samrish.driver.models.TripCheckInRequest
 import com.samrish.driver.models.TripDetail
@@ -23,6 +25,7 @@ import com.samrish.driver.models.TripStartRequest
 import com.samrish.driver.services.getAccessToken
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,9 +42,40 @@ class AssignmentDetailViewModel (application: Application) : AndroidViewModel(ap
 
     fun fetchAssignmentDetail(context: Context, tripId:Int, tripCode:String, operatorId:Int) {
 
+        Log.i("","$tripId")
+
         val channel1 = Channel<TripDetail>()
         val channel2 = Channel<ActiveStatusDetail>()
         val channel3 = Channel<Schedule>()
+        val channel4= Channel<MutableList<Documents>>()
+
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val documentsurl = context.resources.getString(R.string.url_trip_document) + tripId
+
+            val  documentList = Types.newParameterizedType(MutableList::class.java, Documents::class.java)
+            val documents: JsonAdapter<MutableList<Documents>> = Moshi.Builder().build().adapter( documentList)
+            
+            getAccessToken(context)?.let {
+                val (request1, response1, result) = documentsurl.httpGet()
+                    .authentication().bearer(it)
+                    .header("Company-Id", operatorId)
+                    .response(moshiDeserializerOf(documents))
+
+                Log.d("TAG", "fetchAssignmentDetail: $request1")
+                result.fold(
+                    {
+                            documentsDetail -> channel4.send(documentsDetail)
+                    },
+                    { error ->
+                        Log.e(
+                            "Fuel",
+                            "Error $error"
+                        )
+                    }
+                )
+            }
+        }
 
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -120,19 +154,21 @@ class AssignmentDetailViewModel (application: Application) : AndroidViewModel(ap
             val tripDetail = channel1.receive();
             val statusDetail = channel2.receive();
             val schedule = channel3.receive()
+            val documents = channel4.receive()
+
 
             _assignmentDetail.update { _ ->
                 AssignmentDetailData(
                      tripDetail,
                      statusDetail,
                      schedule,
+                     documents,
                     true
                 )
             }
             Log.i("Fuel", "Response1: $tripDetail")
             Log.i("Fuel", "Response2: $statusDetail")
             Log.i("Fuel", "Response3: $schedule")
-
         }
     }
     fun startTrip(context: Context,tripId:Int, tripCode: String, operatorId: Int) {
@@ -269,5 +305,9 @@ class AssignmentDetailViewModel (application: Application) : AndroidViewModel(ap
 
             }
         }
+    }
+
+    fun documents(context: Context, tripId: Int){
+
     }
 }

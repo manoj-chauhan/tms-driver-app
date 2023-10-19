@@ -4,5 +4,6 @@ data class AssignmentDetailData (
     var tripDetail: TripDetail,
     var activeStatusDetail: ActiveStatusDetail,
     var loc: Schedule,
+    var documents: MutableList<Documents>,
     var isDataLoaded: Boolean = false
 )

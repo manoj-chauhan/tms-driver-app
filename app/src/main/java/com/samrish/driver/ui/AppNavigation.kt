@@ -1,11 +1,11 @@
 package com.samrish.driver.ui
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
@@ -61,6 +61,10 @@ fun AppNavigationHost(
         mutableStateOf(false)
     }
 
+    var history by remember {
+        mutableStateOf(false)
+    }
+
     var selectedAssignmentCode by remember {
         mutableStateOf("")
     }
@@ -93,10 +97,17 @@ fun AppNavigationHost(
                         leadingIcon = {
                             Icon(imageVector = Icons.Filled.Person, contentDescription = null)
                         })
+
                     DropdownMenuItem(text = { Text(text = "Locations") },
                         onClick = { locations = true; expander = false },
                         leadingIcon = {
                             Icon(imageVector = Icons.Filled.Place, contentDescription = null)
+                        })
+
+                    DropdownMenuItem(text = { Text(text = "History") },
+                        onClick = { history = true; expander = false },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.History, contentDescription = null)
                         })
 
                     DropdownMenuItem(text = { Text(text = "Log out") },
@@ -104,6 +115,7 @@ fun AppNavigationHost(
                         leadingIcon = {
                             Icon(imageVector = Icons.Filled.Logout, contentDescription = null)
                         })
+
 
                 }
             }
@@ -119,9 +131,6 @@ fun AppNavigationHost(
 
     )
 
-
-
-
     var startScreen: String = "login"
 
     getAccessToken(LocalContext.current)?.let {
@@ -134,7 +143,6 @@ fun AppNavigationHost(
     }
 
     if (locations) {
-        Log.d("TAG", "AppNavigationHost: ")
         navController.navigate("locations-screen")
         locations = false
     }
@@ -142,6 +150,10 @@ fun AppNavigationHost(
     if (userProfile) {
         navController.navigate("user-profile")
         userProfile = false
+    }
+
+    if(history){
+        history = false
     }
 
     if (logout) {
