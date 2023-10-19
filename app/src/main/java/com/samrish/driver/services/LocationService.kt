@@ -110,7 +110,7 @@ class LocationService : Service(), LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        this.locationManager!!.requestLocationUpdates(provider!!, 100, 0.01f, this)
+        this.locationManager!!.requestLocationUpdates(provider!!, 0, 0f, this)
     }
 
     override fun onDestroy() {
@@ -190,6 +190,7 @@ class LocationService : Service(), LocationListener {
             ).build()
 
             val userLocation = db.matrixRepository()
+            sendMatrix(lat, lng)
             userLocation.insertLocation(Matrix(latitude =  lat, longitude = lng, time= formater.format(LocalDateTime.now())))
         }
     }

@@ -336,7 +336,9 @@ fun AssignmentDetailScreen (
                                         )
                                     )
                                     Text(
-                                        text = "${assignment?.activeStatusDetail?.travelTime}" + " hours",
+                                        text = "${assignment?.activeStatusDetail?.travelTime?.div(
+                                            60
+                                        )}" + " hours",
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 16.sp,
@@ -354,12 +356,11 @@ fun AssignmentDetailScreen (
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 25.dp, top = 30.dp, end = 12.dp)
-                            .height(90.dp), contentAlignment = Alignment.BottomStart
+                            .height(100.dp), contentAlignment = Alignment.BottomStart
                     ) {
 
                         Column {
                             if (assignment?.activeStatusDetail!!.nextLocationName != null) {
-                                Log.d("TAG", "LOcation Box: ${assignment?.activeStatusDetail!!.nextLocationName}")
                                 Text(
                                     text = "Next Destination",
                                     style = TextStyle(
@@ -368,7 +369,14 @@ fun AssignmentDetailScreen (
                                         fontWeight = FontWeight.Bold
                                     )
                                 )
-
+                                Text(
+                                    text = "${assignment?.activeStatusDetail?.nextLocationName}",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
 
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -376,7 +384,7 @@ fun AssignmentDetailScreen (
                                     verticalAlignment = Alignment.Bottom
                                 ) {
                                     Text(
-                                        text = "STA 09:00 hours",
+                                        text = "STA 09:00 hours (hc)",
                                         style = TextStyle(
                                             color = Color.Gray,
                                             fontSize = 13.sp,
@@ -399,7 +407,9 @@ fun AssignmentDetailScreen (
                                         )
                                     )
                                     Text(
-                                        text = "Estimated Time ${assignment?.activeStatusDetail?.estimatedTime} hours",
+                                        text = "Estimated Time ${assignment?.activeStatusDetail?.estimatedTime?.div(
+                                            60
+                                        )} hours",
                                         style = TextStyle(
                                             color = Color.Gray,
                                             fontSize = 13.sp,
@@ -422,7 +432,9 @@ fun AssignmentDetailScreen (
                                         )
                                     )
                                     Text(
-                                        text = "Travelled Time ${assignment?.activeStatusDetail?.travelTime}hrs",
+                                        text = "Travelled Time ${assignment?.activeStatusDetail?.travelTime?.div(
+                                            60
+                                        )}hrs",
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 14.sp,

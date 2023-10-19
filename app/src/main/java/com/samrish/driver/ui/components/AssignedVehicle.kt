@@ -16,12 +16,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.samrish.driver.viewmodels.VehicleAssignment
+import java.text.SimpleDateFormat
 
 
 @Composable
 fun AssignedVehicle(vehicleAssignment: VehicleAssignment) {
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
 
+    val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
+    val outputFormat = SimpleDateFormat("dd MMMM, yyyy HH:mm a")
+
+
+    val parsedDate = remember(vehicleAssignment.assignedAt) { inputFormat.parse(vehicleAssignment.assignedAt) }
+    val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -73,7 +80,7 @@ fun AssignedVehicle(vehicleAssignment: VehicleAssignment) {
                     Text(text = "Assigned by ${vehicleAssignment.assignerName}, ${vehicleAssignment.companyName}")
                 }
                 Row() {
-                    Text(text = "Assigned At ${vehicleAssignment.assignedAt}")
+                    Text(text = "Assigned at ${formattedDate}")
                 }
             }
         }
