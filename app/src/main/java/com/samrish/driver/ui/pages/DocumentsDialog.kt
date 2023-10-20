@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -56,20 +55,13 @@ fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>, setShowDial
                                 .fillMaxWidth()
                                 .fillMaxHeight(0.1f),
                             horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.Bottom
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(text = "No Documents Found!!")
                         }
                     }
                     Spacer(modifier = Modifier.padding(8.dp))
                     document.forEach { document -> DocumentsList(operatorId,context,document = document) }
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-
-                        Button(onClick = { /*TODO*/ }) {
-                            Text(text = "Upload")
-                        }
-                    }
                 }
 
             }
