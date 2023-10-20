@@ -40,6 +40,7 @@ import com.samrish.driver.R
 import com.samrish.driver.ui.components.CallCheckInDialog
 import com.samrish.driver.ui.components.ScheduleDialog
 import com.samrish.driver.viewmodels.AssignmentDetailViewModel
+import java.text.SimpleDateFormat
 
 @Composable
 fun AssignmentDetailScreen (
@@ -66,6 +67,8 @@ fun AssignmentDetailScreen (
     val isScheduleSelected = remember { mutableStateOf(false); }
     val isDocumentSelected = remember { mutableStateOf(false); }
 
+    val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
+    val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
 
 
     val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
@@ -81,6 +84,8 @@ fun AssignmentDetailScreen (
     ) {
         Column {
             assignment?.let {
+                val parsedDate = remember(it.tripDetail.tripDateTime) { inputFormat.parse(it.tripDetail.tripDateTime) }
+                val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -139,7 +144,8 @@ fun AssignmentDetailScreen (
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.Bottom
                             ) {
                                 Text(
                                     text = it.tripDetail.tripCode,
@@ -150,7 +156,7 @@ fun AssignmentDetailScreen (
                                     )
                                 )
                                 Text(
-                                    text = it.tripDetail.tripDate,
+                                    text = formattedDate,
                                     style = TextStyle(
                                         color = Color.Black,
                                         fontSize = 15.sp,
@@ -238,7 +244,7 @@ fun AssignmentDetailScreen (
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "Departed from AHL at 12:30 hrs",
+                                    text = "Departed from AHL at 12:30 hr ",
                                     style = TextStyle(
                                         color = Color.Gray,
                                         fontSize = 18.sp,
@@ -311,7 +317,7 @@ fun AssignmentDetailScreen (
                                     )
                                     Box(contentAlignment = Alignment.Center) {
                                         Text(
-                                            text = "${assignment?.activeStatusDetail?.travelledDistance}" + "kms",
+                                            text = "${assignment?.activeStatusDetail?.travelledDistance}" + "km",
                                             style = TextStyle(
                                                 color = Color.Black,
                                                 fontSize = 16.sp,
@@ -332,7 +338,7 @@ fun AssignmentDetailScreen (
                                     Text(
                                         text = "${assignment?.activeStatusDetail?.travelTime?.div(
                                             60
-                                        )}" + " hours",
+                                        )}" + " hr " + "${assignment?.activeStatusDetail?.travelTime}"+" min",
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 16.sp,
@@ -393,7 +399,7 @@ fun AssignmentDetailScreen (
                                     verticalAlignment = Alignment.Bottom
                                 ) {
                                     Text(
-                                        text = "Distance ${assignment?.activeStatusDetail?.estimatedDistance}kms",
+                                        text = "Distance ${assignment?.activeStatusDetail?.estimatedDistance}km",
                                         style = TextStyle(
                                             color = Color.Gray,
                                             fontSize = 13.sp,
@@ -403,14 +409,13 @@ fun AssignmentDetailScreen (
                                     Text(
                                         text = "Estimated Time ${assignment?.activeStatusDetail?.estimatedTime?.div(
                                             60
-                                        )} hours",
+                                        )}hr " + "${assignment?.activeStatusDetail?.estimatedTime}"+ "min",
                                         style = TextStyle(
                                             color = Color.Gray,
                                             fontSize = 13.sp,
                                             fontWeight = FontWeight.Medium
                                         )
                                     )
-
                                 }
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -418,7 +423,7 @@ fun AssignmentDetailScreen (
                                     verticalAlignment = Alignment.Bottom
                                 ) {
                                     Text(
-                                        text = "Distance Covered ${assignment?.activeStatusDetail?.travelledDistance}kms",
+                                        text = "Distance Covered ${assignment?.activeStatusDetail?.travelledDistance}km",
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 14.sp,
@@ -428,7 +433,7 @@ fun AssignmentDetailScreen (
                                     Text(
                                         text = "Travelled Time ${assignment?.activeStatusDetail?.travelTime?.div(
                                             60
-                                        )}hrs",
+                                        )}hr " +"${assignment?.activeStatusDetail?.travelTime}" + "min",
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 14.sp,

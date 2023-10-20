@@ -19,6 +19,5 @@ data class TripDetail(
     var approvalStatus : String,
     var label : String,
     var routeId : Int,
-    var tripDate : String,
-    var tripTime : String,
+    var tripDateTime : String,
 )

@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,9 +50,26 @@ fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>, setShowDial
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(text = "Documents", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold))
+                    if(document.size == 0 ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.1f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            Text(text = "No Documents Found!!")
+                        }
+                    }
                     Spacer(modifier = Modifier.padding(8.dp))
                     document.forEach { document -> DocumentsList(operatorId,context,document = document) }
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
 
+                        Button(onClick = { /*TODO*/ }) {
+                            Text(text = "Upload")
+                        }
+                    }
                 }
 
             }
