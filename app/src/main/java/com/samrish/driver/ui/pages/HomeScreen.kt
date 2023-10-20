@@ -56,6 +56,7 @@ fun HomeScreen(
             )
         }
         currentAssignmentData?.let {
+            LocationPermissionScreen()
             AssignedVehicle(it.vehicle)
 
             if (it.trips.size == 0 ){
