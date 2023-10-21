@@ -33,6 +33,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.samrish.driver.services.clearSession
 import com.samrish.driver.services.getAccessToken
+import com.samrish.driver.ui.components.HistoryScreen
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.HomeScreen
 import com.samrish.driver.ui.pages.Login
@@ -154,6 +155,7 @@ fun AppNavigationHost(
     }
 
     if(history){
+        navController.navigate("history")
         history = false
     }
 
@@ -183,6 +185,9 @@ fun AppNavigationHost(
             MatrixLog()
         }
 
+        composable("history"){
+            HistoryScreen()
+        }
 
         composable("user-profile") {
             UserProfile()
