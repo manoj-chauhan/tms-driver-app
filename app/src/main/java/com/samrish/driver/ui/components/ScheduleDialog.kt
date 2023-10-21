@@ -74,7 +74,7 @@ fun ScheduleDialog(
                     Box(modifier = Modifier.width(23.dp)) {
                         Text(text = "${i + 1}")
                     }
-                    Box(modifier = Modifier.width(30.dp)) {
+                    Box(modifier = Modifier.width(50.dp)) {
                         Text(
                             text = "${scheduleLocation.placeCode}", style = TextStyle(
                                 fontSize = 13.sp,

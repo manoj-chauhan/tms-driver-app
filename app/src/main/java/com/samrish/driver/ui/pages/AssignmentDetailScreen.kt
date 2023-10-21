@@ -38,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.samrish.driver.R
 import com.samrish.driver.ui.components.CallCheckInDialog
+import com.samrish.driver.ui.components.DocumentsDialog
 import com.samrish.driver.ui.components.ScheduleDialog
 import com.samrish.driver.viewmodels.AssignmentDetailViewModel
 import java.text.SimpleDateFormat
