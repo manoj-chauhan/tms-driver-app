@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
@@ -84,9 +83,9 @@ fun AppNavigationHost(
             modifier = Modifier.padding(end = 13.dp),
             title = { Text(text = "Assigned Trips") },
             navigationIcon = {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
-                }
+//                IconButton(onClick = { /*TODO*/ }) {
+//                    Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
+//                }
             },
             actions = {
                 IconButton(onClick = { expander = true }) {

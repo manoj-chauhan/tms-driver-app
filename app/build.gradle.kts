@@ -46,6 +46,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.firebase:firebase-messaging-ktx:23.3.0")
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
     val lifecycle_version = "2.6.2"
     val recyclerViewVersion = "1.3.1"

@@ -2,8 +2,11 @@ package com.samrish.driver.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 import com.samrish.driver.services.LocationService
 
 
@@ -14,6 +17,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             DrishtoApp()
         }
+
+        FirebaseApp.initializeApp(this)
+        // Retrieve FCM token
+        FirebaseMessaging.getInstance().token
+            .addOnSuccessListener { token ->
+                Log.d("FCM Token", token)
+    }
 
     }
 
