@@ -156,7 +156,7 @@ class HomeViewModel : ViewModel() {
 
     private fun sendNotification(s: String, s1: String) {
         val targetToken =
-                "eEwtmXJjSIu77DY9nZaHYn:APA91bFO5Q0xHmLqmin49co57RwgogMG0AqHxXzL0kRodtfDlbfT3vfLthUBcOY1f3QQAo2hgmNmmNEzU4jtUHZ-wlebmR0jCUMGOU0ujhCqLtTK2OgMbCdPs9kXlasHawMb_YFDId4z "
+                "d43ZjN44SOaUMr8kbuemwQ:APA91bFDa15slBdwxTbKC6tEOJ0LfYW8Cr_eoHJz3ycB51oWuPHMOskvu_NAcTlpkElfgy1wex8oh6pDnjNRYp6jJvH6tEPLANRdDXYpNf23NnnP5WcJy-D0vuGXUM8v-DR9GQDoTiMy"
 
         try {
             val url = URL("https://fcm.googleapis.com/fcm/send")
@@ -167,7 +167,7 @@ class HomeViewModel : ViewModel() {
             connection.doOutput = true
 
             // Replace 'YOUR_SERVER_KEY' with your FCM server key
-            connection.setRequestProperty("Authorization","")
+            connection.setRequestProperty("Authorization","key=BGNUTTOEQ-4Nq8iaHCT0LsnBaicx3wQ0wqAjKNiQr-daB-oKWcYO0i-1V8ib4IlwgtbW-S6s5qV5GjTausiezt4")
             connection.setRequestProperty("Content-Type", "application/json")
 
             // Create the FCM notification payload
