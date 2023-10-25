@@ -1,6 +1,5 @@
-package com.samrish.driver.services
+package com.samrish.driver.network
 
-import android.R.attr.key
 import android.content.Context
 import android.content.SharedPreferences
 

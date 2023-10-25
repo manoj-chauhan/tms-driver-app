@@ -1,4 +1,4 @@
-package com.samrish.driver.services
+package com.samrish.driver.network
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -15,9 +16,16 @@ import com.samrish.driver.R
 
 class MyFirebaseMessagingService: FirebaseMessagingService(){
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-//        val deviceId = remoteMessage.data["device_id"]
+
+        val deviceId = remoteMessage.data["device_id"]
 //        if (isDriverDevice(deviceId)) {
-            showNotification(remoteMessage.notification?.title, remoteMessage.notification?.body)
+
+
+        Log.d("TAG", "onMessageReceived: $this")
+        val list = tripList(this)
+
+        Log.d("TAG", "onMessageReceived: ${list}")
+        showNotification(remoteMessage.notification?.title, remoteMessage.notification?.body)
 //        }
     }
 

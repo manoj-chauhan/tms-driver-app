@@ -1,4 +1,4 @@
-package com.samrish.driver.services
+package com.samrish.driver.network
 
 import android.content.Context
 import android.util.Log
@@ -13,7 +13,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.Profile
-import com.samrish.driver.services.requests.ProfileRequest
+import com.samrish.driver.network.requests.ProfileRequest
 
 fun fetchDriverProfile(
     context: Context,

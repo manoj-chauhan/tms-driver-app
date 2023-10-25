@@ -1,4 +1,4 @@
-package com.samrish.driver.services
+package com.samrish.driver.network
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -29,7 +29,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Matrix
-import com.samrish.driver.services.requests.SendDeviceMatrixRequest
+import com.samrish.driver.network.requests.SendDeviceMatrixRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

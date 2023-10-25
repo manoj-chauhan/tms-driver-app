@@ -16,7 +16,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.samrish.driver.R
-import com.samrish.driver.services.getAccessToken
+import com.samrish.driver.network.getAccessToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

@@ -11,7 +11,7 @@ import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
 import com.samrish.driver.models.AssignmentHistory
 import com.samrish.driver.models.History
-import com.samrish.driver.services.getAccessToken
+import com.samrish.driver.network.getAccessToken
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types

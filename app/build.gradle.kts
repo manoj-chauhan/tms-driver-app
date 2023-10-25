@@ -46,7 +46,7 @@ android {
 }
 
 dependencies {
-    implementation("com.google.firebase:firebase-messaging-ktx:23.3.0")
+
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
     val lifecycle_version = "2.6.2"
     val recyclerViewVersion = "1.3.1"
@@ -77,6 +77,10 @@ dependencies {
     // Feature module Support
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
     implementation("com.android.volley:volley:$volleyVersion")
+
+    //fcm
+    implementation("com.google.firebase:firebase-messaging-ktx:23.3.0")
+    implementation ("com.google.firebase:firebase-analytics-ktx:20.0.0")
 
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:$nav_version")

@@ -39,11 +39,11 @@
             android:exported="true">
         </activity>
         <service
-            android:name=".services.LocationService"
+            android:name=".network.LocationService"
             android:foregroundServiceType="location" />
 
         <service
-            android:name=".services.MyFirebaseMessagingService"
+            android:name=".network.MyFirebaseMessagingService"
             android:exported="false"
             tools:ignore = "Instantiable">
             <intent-filter>

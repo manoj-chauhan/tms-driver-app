@@ -1,4 +1,4 @@
-package com.samrish.driver.services.requests
+package com.samrish.driver.network.requests
 
 import com.android.volley.NetworkResponse
 import com.android.volley.Response

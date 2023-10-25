@@ -1,4 +1,4 @@
-package com.samrish.driver.services
+package com.samrish.driver.network
 
 import android.content.Context
 import android.os.Build
@@ -9,7 +9,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
-import com.samrish.driver.services.requests.RegisterDeviceRequest
+import com.samrish.driver.network.requests.RegisterDeviceRequest
 import org.json.JSONObject
 
 

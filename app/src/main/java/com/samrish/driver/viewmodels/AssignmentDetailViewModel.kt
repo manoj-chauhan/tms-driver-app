@@ -22,7 +22,7 @@ import com.samrish.driver.models.TripCheckInRequest
 import com.samrish.driver.models.TripDetail
 import com.samrish.driver.models.TripRequest
 import com.samrish.driver.models.TripStartRequest
-import com.samrish.driver.services.getAccessToken
+import com.samrish.driver.network.getAccessToken
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types

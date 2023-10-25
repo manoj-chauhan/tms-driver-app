@@ -16,7 +16,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.samrish.driver.R
-import com.samrish.driver.services.authenticate
+import com.samrish.driver.network.authenticate
 
 class LoginActivity : ComponentActivity() {
 

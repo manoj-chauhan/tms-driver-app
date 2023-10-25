@@ -7,7 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
-import com.samrish.driver.services.LocationService
+import com.samrish.driver.network.LocationService
 
 
 class MainActivity : ComponentActivity() {

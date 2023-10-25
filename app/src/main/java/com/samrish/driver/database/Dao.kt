@@ -35,3 +35,12 @@ interface MatrixRepository {
 
 }
 
+
+@Dao
+interface TripRepository {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTrip(vararg trip: Trip)
+
+    @Query("SELECT * from trip")
+    suspend fun tripList(): List<Trip>
+}

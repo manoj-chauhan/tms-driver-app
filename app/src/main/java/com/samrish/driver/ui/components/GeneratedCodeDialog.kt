@@ -1,7 +1,6 @@
 package com.samrish.driver.ui.components
 
 import android.content.Context
-import android.graphics.Paint.Style
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,9 +20,9 @@ import androidx.compose.ui.window.Dialog
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.R
 import com.samrish.driver.models.generatedCode
-import com.samrish.driver.services.getAccessToken
-import com.samrish.driver.services.handleError
-import com.samrish.driver.services.requests.CodeGeneratorRequest
+import com.samrish.driver.network.getAccessToken
+import com.samrish.driver.network.handleError
+import com.samrish.driver.network.requests.CodeGeneratorRequest
 
 // Reference: https://medium.com/@manojbhadane/android-custom-dialog-using-jetpack-compose-954d83e55af7
 

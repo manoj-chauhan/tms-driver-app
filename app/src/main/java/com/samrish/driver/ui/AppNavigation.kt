@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.samrish.driver.services.clearSession
-import com.samrish.driver.services.getAccessToken
+import com.samrish.driver.network.clearSession
+import com.samrish.driver.network.getAccessToken
 import com.samrish.driver.ui.components.HistoryScreen
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.HomeScreen
