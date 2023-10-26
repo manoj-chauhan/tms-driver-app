@@ -44,6 +44,21 @@ class LocationService : Service(), LocationListener {
     private var powerManager: PowerManager? = null
     private var wakeLock: WakeLock? = null
 
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val startedByReceiver = intent?.getBooleanExtra("started_by_receiver", false)
+
+        if (startedByReceiver == true) {
+            Log.d("TAG", "onStartCommand: ")
+        } else {
+            // The service was started by other means
+        }
+
+        // Rest of your onStartCommand logic
+
+        return START_STICKY
+    }
+
     private fun createNotificationChannel() {
         Log.d("create notification", "createNotificationChannel: ")
             val name: CharSequence = "Location Sharing"

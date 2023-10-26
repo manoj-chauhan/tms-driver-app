@@ -7,21 +7,26 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.R
+import com.samrish.driver.ui.MainActivity
 
 class MyFirebaseMessagingService: FirebaseMessagingService(){
+
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage);
-            Log.d("TAG", "onMessageReceived: location service")
-        Log.d("msg", "onMessageReceived: " + remoteMessage.getData().get("message"));
-        if (remoteMessage.data["start_location_service"] == "true") {
+        val broadCastIntent = Intent(CUSTOM_BROADCAST_ACTION)
+        sendBroadcast(broadCastIntent)
 
-            val intent = Intent(this.applicationContext, LocationService::class.java)
-            ContextCompat.startForegroundService(this, intent)
-        }
+
+        Log.d("TAG", "onMessageReceived: location service")
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+
         if (remoteMessage.notification != null) {
             val title = remoteMessage.notification?.title
             val body = remoteMessage.notification?.body
@@ -61,7 +66,10 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
 
     companion object {
         private const val CHANNEL_ID = "main"
+        const val CUSTOM_BROADCAST_ACTION = "com.example.app.CUSTOM_BROADCAST_ACTION"
+
     }
+
 }
 
 
