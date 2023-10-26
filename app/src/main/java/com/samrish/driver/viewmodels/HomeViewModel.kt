@@ -20,11 +20,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
-import java.net.URL
 
 @JsonClass(generateAdapter = true)
 data class VehicleAssignment(
@@ -138,8 +133,6 @@ class HomeViewModel : ViewModel() {
                     vehicleAssignment
                 )
             }
-
-            addNewTrip( )
             Log.i("Fuel", "Response1: $vehicleAssignment")
             Log.i("Fuel", "Response2: $tripsAssignment")
 
@@ -147,73 +140,6 @@ class HomeViewModel : ViewModel() {
         }
 
 
-    }
-
-    private fun addNewTrip() {
-
-        sendNotification("New Trip Assigned", "You have a new trip assignment.", )
-    }
-
-    private fun sendNotification(s: String, s1: String) {
-        val targetToken =
-                "d43ZjN44SOaUMr8kbuemwQ:APA91bFDa15slBdwxTbKC6tEOJ0LfYW8Cr_eoHJz3ycB51oWuPHMOskvu_NAcTlpkElfgy1wex8oh6pDnjNRYp6jJvH6tEPLANRdDXYpNf23NnnP5WcJy-D0vuGXUM8v-DR9GQDoTiMy"
-
-        try {
-            val url = URL("https://fcm.googleapis.com/fcm/send")
-            val connection = url.openConnection() as HttpURLConnection
-
-            // Set the request method to POST
-            connection.requestMethod = "POST"
-            connection.doOutput = true
-
-            // Replace 'YOUR_SERVER_KEY' with your FCM server key
-            connection.setRequestProperty("Authorization","key=BGNUTTOEQ-4Nq8iaHCT0LsnBaicx3wQ0wqAjKNiQr-daB-oKWcYO0i-1V8ib4IlwgtbW-S6s5qV5GjTausiezt4")
-            connection.setRequestProperty("Content-Type", "application/json")
-
-            // Create the FCM notification payload
-            val payload = """
-            {
-                "to": "$targetToken",
-                "notification": {
-                    "title": "$s",
-                    "body": "$s1"
-                }
-            }
-        """.trimIndent()
-
-            // Write the payload to the connection's output stream
-            val outputWriter = OutputStreamWriter(connection.outputStream)
-            outputWriter.write(payload)
-            outputWriter.flush()
-
-            // Execute the request and retrieve the response
-            val responseCode = connection.responseCode
-            val responseMessage = connection.responseMessage
-
-            val response = StringBuilder()
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                val reader = BufferedReader(InputStreamReader(connection.inputStream))
-                var line: String?
-                while (reader.readLine().also { line = it } != null) {
-                    response.append(line)
-                }
-            } else {
-                response.append("Error: $responseCode $responseMessage")
-            }
-
-            // Handle the response as needed
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                println("Notification sent successfully")
-                println(response.toString())
-            } else {
-                println("Notification sending failed")
-                println(response.toString())
-            }
-
-            connection.disconnect()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     fun showLog() {

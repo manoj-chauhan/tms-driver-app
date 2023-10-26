@@ -1,62 +1,53 @@
 package com.samrish.driver.network
 
-import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.os.Build
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.R
 
 class MyFirebaseMessagingService: FirebaseMessagingService(){
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        super.onMessageReceived(remoteMessage);
+            Log.d("TAG", "onMessageReceived: location service")
+        Log.d("msg", "onMessageReceived: " + remoteMessage.getData().get("message"));
+        if (remoteMessage.data["start_location_service"] == "true") {
 
-        val deviceId = remoteMessage.data["device_id"]
-//        if (isDriverDevice(deviceId)) {
-
-
-        Log.d("TAG", "onMessageReceived: $this")
-        val list = tripList(this)
-
-        Log.d("TAG", "onMessageReceived: ${list}")
-        showNotification(remoteMessage.notification?.title, remoteMessage.notification?.body)
-//        }
-    }
-
-    private fun isDriverDevice(deviceId: String?): Boolean {
-        // Implement your logic to determine if the device is assigned to the driver.
-        // Return true if it's the driver's device, otherwise false.
-        return true
-    }
-
-    private fun showNotification(title: String?, body: String?) {
-        val channelId = "default_channel" // Change this to your desired channel ID.
-        val notificationId = 1 // Use a unique ID for each notification.
-
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.notification) // Replace with your notification icon.
-            .setContentTitle(title)
-            .setContentText(body)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-        createNotificationChannelIfNeeded(channelId)
-
-        val notificationManager = NotificationManagerCompat.from(this)
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
+            val intent = Intent(this.applicationContext, LocationService::class.java)
+            ContextCompat.startForegroundService(this, intent)
         }
-        notificationManager.notify(notificationId, notificationBuilder.build())
+        if (remoteMessage.notification != null) {
+            val title = remoteMessage.notification?.title
+            val body = remoteMessage.notification?.body
+
+            val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notification)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channelId = "your_channel_id"
+                val channelName = "Your Channel Name"
+                val importance = NotificationManager.IMPORTANCE_DEFAULT
+                val notificationChannel = NotificationChannel(channelId, channelName, importance)
+                notificationManager.createNotificationChannel(notificationChannel)
+            }
+
+            // Show the notification
+            notificationManager.notify(0, notificationBuilder.build())
+
+        }
     }
+
 
     private fun createNotificationChannelIfNeeded(channelId: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -67,5 +58,10 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
             notificationManager.createNotificationChannel(channel)
         }
     }
+
+    companion object {
+        private const val CHANNEL_ID = "main"
+    }
 }
+
 

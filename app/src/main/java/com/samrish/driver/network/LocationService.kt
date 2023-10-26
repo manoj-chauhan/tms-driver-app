@@ -1,4 +1,5 @@
 package com.samrish.driver.network
+
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -44,6 +45,7 @@ class LocationService : Service(), LocationListener {
     private var wakeLock: WakeLock? = null
 
     private fun createNotificationChannel() {
+        Log.d("create notification", "createNotificationChannel: ")
             val name: CharSequence = "Location Sharing"
             val description = "Location sharing notification"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -54,8 +56,8 @@ class LocationService : Service(), LocationListener {
     }
 
     private fun showNotification() {
+        Log.d("show notification", "showNotification: ")
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, CHANNEL_ID)
-//            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("DRISHTO")
             .setContentText("You are sharing your location")
             .setStyle(
@@ -65,12 +67,11 @@ class LocationService : Service(), LocationListener {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         val notificationManager = NotificationManagerCompat.from(this)
 
-// notificationId is a unique int for each notification that you must define
         startForeground(1001, builder.build())
     }
 
     override fun onCreate() {
-        super.onCreate()
+            super.onCreate()
         Log.i("TRACKER", "Service Started")
         val oPowerManager = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
         val packageName = applicationContext.packageName
@@ -110,7 +111,7 @@ class LocationService : Service(), LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        this.locationManager!!.requestLocationUpdates(provider!!, 0, 0.01f, this)
+        this.locationManager!!.requestLocationUpdates(provider!!, 0, 10f, this)
     }
 
     override fun onDestroy() {
@@ -191,7 +192,7 @@ class LocationService : Service(), LocationListener {
 
             val userLocation = db.matrixRepository()
             userLocation.insertLocation(Matrix(latitude =  lat, longitude = lng, time= formater.format(LocalDateTime.now())))
-            sendMatrix(lat, lng)
+//            sendMatrix(lat, lng)
         }
     }
     companion object {
