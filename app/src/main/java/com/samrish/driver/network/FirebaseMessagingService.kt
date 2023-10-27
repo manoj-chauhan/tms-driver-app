@@ -13,7 +13,6 @@ import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.R
 import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Trip
-import com.samrish.driver.ui.MainActivity
 import com.samrish.driver.viewmodels.TripsAssigned
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,11 +27,6 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
         sendBroadcast(broadCastIntent)
 
         Log.d("TAG", "onMessageReceived: location service")
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            startActivity(intent)
-
         fetchLocalData()
 
             val title = remoteMessage.notification?.title
@@ -74,7 +68,6 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
             val tripList = db.tripRepository()
                 tripList.clearAllTrips()
                 cachedTripList?.forEach { trip ->
-
                     val tripInfo = Trip(
                         trip. tripCode,
                         trip.tripName,
@@ -89,9 +82,16 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
                         trip.tripId
                     )
                     tripList.insertTrip(tripInfo)
+
                 }
                 val matrixRepository = db.tripRepository()
                 val matList = matrixRepository.tripList()
+                matList.forEach{ list ->
+                    if(list.status != "TRIP_CREATED"){
+                        val serviceIntent = Intent(applicationContext, LocationService::class.java)
+                        applicationContext.startService(serviceIntent)
+                    }
+                }
                 Log.d("TAG", "fetchAssignmentDetail in response:$matList ")
             }catch (e:Exception){
 
