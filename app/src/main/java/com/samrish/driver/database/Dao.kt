@@ -43,4 +43,10 @@ interface TripRepository {
 
     @Query("SELECT * from trip")
     suspend fun tripList(): List<Trip>
+
+    @Delete
+    suspend fun deleteTrip(vararg trip: Trip)
+
+    @Query("DELETE FROM trip")
+    suspend fun clearAllTrips()
 }

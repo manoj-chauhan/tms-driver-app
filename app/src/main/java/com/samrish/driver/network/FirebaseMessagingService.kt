@@ -63,41 +63,45 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
 
     private fun fetchLocalData(){
 
-        var cachedTripList: List<TripsAssigned>? = tripList(applicationContext)
         CoroutineScope(Dispatchers.IO).launch {
+            try {
             val db = Room.databaseBuilder(
                 applicationContext,
                 AppDatabase::class.java, "drishto"
             ).build()
+        var cachedTripList: List<TripsAssigned>? = tripList(applicationContext)
 
             val tripList = db.tripRepository()
-            cachedTripList?.forEach { trip ->
+                tripList.clearAllTrips()
+                cachedTripList?.forEach { trip ->
 
-                val tripInfo = Trip(
-                    trip. tripCode,
-                    trip.tripName,
-                    trip.status,
-                    trip.label,
-                    trip.companyName,
-                    trip.companyCode,
-                    trip.operatorCompanyName,
-                    trip.operatorCompanyCode,
-                    trip.operatorCompanyId,
-                    trip.tripDate,
-                    trip.tripId
-                )
+                    val tripInfo = Trip(
+                        trip. tripCode,
+                        trip.tripName,
+                        trip.status,
+                        trip.label,
+                        trip.companyName,
+                        trip.companyCode,
+                        trip.operatorCompanyName,
+                        trip.operatorCompanyCode,
+                        trip.operatorCompanyId,
+                        trip.tripDate,
+                        trip.tripId
+                    )
+                    tripList.insertTrip(tripInfo)
+                }
+                val matrixRepository = db.tripRepository()
+                val matList = matrixRepository.tripList()
+                Log.d("TAG", "fetchAssignmentDetail in response:$matList ")
+            }catch (e:Exception){
 
-                tripList.insertTrip(tripInfo)
             }
+
         }
 
 
         CoroutineScope(Dispatchers.IO).launch {
-            val db = AppDatabase.getDatabase(applicationContext)
-            val matrixRepository = db.tripRepository()
-            val matList = matrixRepository.tripList()
 
-            Log.d("TAG", "fetchAssignmentDetail in response:$matList ")
 
         }
     }
