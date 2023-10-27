@@ -4,19 +4,16 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
-import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Trip
 import com.samrish.driver.network.getAccessToken
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -133,44 +130,6 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val vehicleAssignment = channel1.receive();
             val tripsAssignment = channel2.receive();
-            CoroutineScope(Dispatchers.IO).launch {
-                val db = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java, "drishto"
-                ).build()
-
-                val tripList = db.tripRepository()
-                tripsAssignment.forEach { trip ->
-
-                    val tripInfo = Trip(
-                    trip. tripCode,
-                    trip.tripName,
-                    trip.status,
-                    trip.label,
-                    trip.companyName,
-                        trip.companyCode,
-                        trip.operatorCompanyName,
-                        trip.operatorCompanyCode,
-                        trip.operatorCompanyId,
-                        trip.tripDate,
-                        trip.tripId
-                    )
-
-                    tripList.insertTrip(tripInfo)
-                }
-            }
-
-            viewModelScope.launch {
-                val db = AppDatabase.getDatabase(context)
-                val matrixRepository = db.tripRepository()
-                val matList = matrixRepository.tripList()
-
-                Log.d("TAG", "fetchAssignmentDetail:$matList ")
-                _matrixList.update { _ ->
-                    matList
-                }
-            }
-
             _currentAssignment.update { old ->
                 CurrentAssignmentData(
                     old?.userLocationVisible ?: false,
@@ -178,10 +137,6 @@ class HomeViewModel : ViewModel() {
                     vehicleAssignment
                 )
             }
-            Log.i("Fuel", "Response1: $vehicleAssignment")
-            Log.i("Fuel", "Response2: $tripsAssignment")
-
-            Log.i("Fuel", "All Coroutines Finished!")
         }
 
 

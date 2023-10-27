@@ -7,10 +7,17 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.room.Room
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.R
+import com.samrish.driver.database.AppDatabase
+import com.samrish.driver.database.Trip
 import com.samrish.driver.ui.MainActivity
+import com.samrish.driver.viewmodels.TripsAssigned
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MyFirebaseMessagingService: FirebaseMessagingService(){
 
@@ -20,14 +27,14 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
         val broadCastIntent = Intent(CUSTOM_BROADCAST_ACTION)
         sendBroadcast(broadCastIntent)
 
-
         Log.d("TAG", "onMessageReceived: location service")
             val intent = Intent(applicationContext, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)
 
-        if (remoteMessage.notification != null) {
+        fetchLocalData()
+
             val title = remoteMessage.notification?.title
             val body = remoteMessage.notification?.body
 
@@ -50,9 +57,50 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
             // Show the notification
             notificationManager.notify(0, notificationBuilder.build())
 
-        }
+
     }
 
+
+    private fun fetchLocalData(){
+
+        var cachedTripList: List<TripsAssigned>? = tripList(applicationContext)
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java, "drishto"
+            ).build()
+
+            val tripList = db.tripRepository()
+            cachedTripList?.forEach { trip ->
+
+                val tripInfo = Trip(
+                    trip. tripCode,
+                    trip.tripName,
+                    trip.status,
+                    trip.label,
+                    trip.companyName,
+                    trip.companyCode,
+                    trip.operatorCompanyName,
+                    trip.operatorCompanyCode,
+                    trip.operatorCompanyId,
+                    trip.tripDate,
+                    trip.tripId
+                )
+
+                tripList.insertTrip(tripInfo)
+            }
+        }
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = AppDatabase.getDatabase(applicationContext)
+            val matrixRepository = db.tripRepository()
+            val matList = matrixRepository.tripList()
+
+            Log.d("TAG", "fetchAssignmentDetail in response:$matList ")
+
+        }
+    }
 
     private fun createNotificationChannelIfNeeded(channelId: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

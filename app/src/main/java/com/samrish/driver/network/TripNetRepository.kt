@@ -1,6 +1,7 @@
 package com.samrish.driver.network
 
 import android.content.Context
+import android.util.Log
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
@@ -24,6 +25,7 @@ fun tripList(context: Context): List<TripsAssigned>? {
             val (_, _, result) = tripAssignmentUrl.httpGet()
                 .authentication().bearer(it)
                 .responseObject(moshiDeserializerOf(adapter))
+            Log.d("TAG", "tripList:$result ")
             result.get()
         }
     } catch (e: Exception) {
