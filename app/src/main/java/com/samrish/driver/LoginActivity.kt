@@ -1,4 +1,4 @@
-package com.samrish.driver.ui
+package com.samrish.driver
 
 import android.content.Intent
 import android.content.IntentSender
@@ -11,11 +11,11 @@ import androidx.compose.material3.Text
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.samrish.driver.R
 import com.samrish.driver.network.authenticate
 
 class LoginActivity : ComponentActivity() {
@@ -66,6 +66,7 @@ class LoginActivity : ComponentActivity() {
                 Text(text = "Click to Authenticate")
             }
         }
+        FirebaseApp.initializeApp(this);
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

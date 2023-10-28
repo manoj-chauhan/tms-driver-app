@@ -25,7 +25,7 @@
             android:resource="@color/colorAccent" />
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".LoginActivity"
             android:exported="true">
         </activity>
         <service
@@ -42,7 +42,7 @@
             android:foregroundServiceType="location" />
 
         <service
-            android:name=".network.MyFirebaseMessagingService"
+            android:name=".MyFirebaseMessagingService"
             android:exported="false"
             tools:ignore = "Instantiable"
             >
