@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
-import com.samrish.driver.network.attemptLogin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,13 +87,13 @@ fun Login(
                             .padding(16.dp)
                             .fillMaxWidth(),
                         onClick = {
-                            attemptLogin(
-                                context,
-                                username,
-                                password,
-                                { onLoginSuccess() },
-                                { onLoginFailure() }
-                            )
+//                            attemptLogin(
+//                                context,
+//                                username,
+//                                password,
+//                                { onLoginSuccess() },
+//                                { onLoginFailure() }
+//                            )
                         }
                     ) {
                         Text(text = "Login")
