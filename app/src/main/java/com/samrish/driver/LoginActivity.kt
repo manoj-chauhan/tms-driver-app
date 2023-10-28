@@ -2,9 +2,9 @@ package com.samrish.driver
 
 import android.app.Activity
 import android.content.Intent
-import android.content.IntentSender
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
@@ -14,12 +14,13 @@ import androidx.compose.material3.Text
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.samrish.driver.network.authenticate
+import com.google.firebase.messaging.FirebaseMessaging
 
 class LoginActivity : ComponentActivity() {
 
@@ -109,13 +110,23 @@ class LoginActivity : ComponentActivity() {
     }
 
     private fun updateUI(firebaseIdToken: String) {
-        authenticate(this, firebaseIdToken, {
-            val myIntent = Intent(this, MainActivity::class.java)
-            startActivity(myIntent)
-            finish()
-        }, {
+        Log.d(TAG, "Going to Authenticate")
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("Login", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            AuthManager.getInstance().authenticate(applicationContext, firebaseIdToken, task.result, {
+                val myIntent = Intent(this, MainActivity::class.java)
+                startActivity(myIntent)
+                finish()
+            },{ errorMsg ->
+                Toast.makeText(applicationContext, errorMsg, Toast.LENGTH_LONG).show()
+            });
 
         })
+
     }
 
 }
