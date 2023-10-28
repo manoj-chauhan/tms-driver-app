@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.room.Room
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.R
@@ -59,15 +58,13 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-            val db = Room.databaseBuilder(
-                applicationContext,
-                AppDatabase::class.java, "drishto"
-            ).build()
+            val db = AppDatabase.getDatabase(applicationContext)
         var cachedTripList: List<TripsAssigned>? = tripList(applicationContext)
 
             val tripList = db.tripRepository()
                 tripList.clearAllTrips()
                 cachedTripList?.forEach { trip ->
+
                     val tripInfo = Trip(
                         trip. tripCode,
                         trip.tripName,

@@ -37,6 +37,15 @@
             android:name=".ui.LoginActivity"
             android:exported="true">
         </activity>
+
+        <activity
+            android:name=".ui.PhoneNumberActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.OTPActivity"
+            android:exported="true">
+        </activity>
         <service
             android:name=".network.LocationService"
             android:foregroundServiceType="location" />
