@@ -24,8 +24,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +49,7 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.samrish.driver.MainActivity
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -116,7 +117,7 @@ class PhoneNumberActivity : ComponentActivity() {
         setContent {
 
 
-            var text by remember { mutableStateOf(TextFieldValue("")) }
+            var text by remember { mutableStateOf(TextFieldValue("8700059515")) }
 
             Box(
                 modifier = Modifier
@@ -178,7 +179,7 @@ class PhoneNumberActivity : ComponentActivity() {
                                 verticalArrangement = Arrangement.SpaceBetween,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                OutlinedTextField(
+                                TextField(
                                     value = text,
                                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                                     leadingIcon = {
@@ -189,7 +190,6 @@ class PhoneNumberActivity : ComponentActivity() {
                                     },
                                     label = { Text(text = "Enter Your Phone Number") },
                                     onValueChange = {
-                                        text = it
                                     }
                                 )
 

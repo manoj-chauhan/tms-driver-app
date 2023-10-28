@@ -1,6 +1,5 @@
 package com.samrish.driver.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -43,7 +42,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import com.samrish.driver.network.authenticate
 
 class OTPActivity(): ComponentActivity() {
 
@@ -61,7 +59,7 @@ class OTPActivity(): ComponentActivity() {
         phoneNumber = intent.getStringExtra("phoneNumber")!!
 
         setContent {
-            var text by remember { mutableStateOf(TextFieldValue("")) }
+            var text by remember { mutableStateOf(TextFieldValue("123456")) }
 
             Box(
                 modifier = Modifier
@@ -205,15 +203,5 @@ class OTPActivity(): ComponentActivity() {
             }
     }
 
-    private fun updateUI(firebaseIdToken:String) {
-        Log.d("TAG", "updateUI: ")
-        authenticate(this, firebaseIdToken, {
-            val myIntent = Intent(this, MainActivity::class.java)
-            startActivity(myIntent)
-            finish()
-        }, {
-
-        })
-    }
 
 }
