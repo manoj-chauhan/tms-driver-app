@@ -1,11 +1,14 @@
 package com.samrish.driver
 
+import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -21,12 +24,51 @@ import com.samrish.driver.network.authenticate
 class LoginActivity : ComponentActivity() {
 
     private lateinit var auth: FirebaseAuth
-    private val REQ_ONE_TAP = 140
-
     private val TAG = "Login"
 
     private lateinit var oneTapClient: SignInClient
     private lateinit var signInRequest: BeginSignInRequest
+
+    private var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { res ->
+            if (res.resultCode == Activity.RESULT_OK) {
+                Log.i(TAG, "OnActivityResult")
+
+                val googleCredential = oneTapClient.getSignInCredentialFromIntent(res.data)
+                val idToken = googleCredential.googleIdToken
+                when {
+                    idToken != null -> {
+                        // Got an ID token from Google. Use it to authenticate
+                        // with Firebase.
+                        val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+
+                        auth.signInWithCredential(firebaseCredential)
+                            .addOnCompleteListener(this) { task ->
+                                if (task.isSuccessful) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    val user = auth.currentUser
+                                    user?.getIdToken(true)?.addOnSuccessListener {
+                                        it.token?.let { token -> updateUI(token) }
+                                    }
+                                    Log.d(TAG, "signInWithCredential:success")
+
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+//                            updateUI(null)
+                                }
+                            }
+                    }
+
+                    else -> {
+                        // Shouldn't happen.
+                        Log.d(TAG, "No ID token!")
+                    }
+                }
+
+            }
+        }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,21 +82,18 @@ class LoginActivity : ComponentActivity() {
                     .setServerClientId(getString(R.string.default_web_client_id))
                     // Only show accounts previously used to sign in.
                     .setFilterByAuthorizedAccounts(true)
-                    .build())
+                    .build()
+            )
             .build()
 
         setContent {
             Button(onClick = {
                 oneTapClient.beginSignIn(signInRequest)
                     .addOnSuccessListener(this) { result ->
-                        try {
-
-                            startIntentSenderForResult(
-                                result.pendingIntent.intentSender, REQ_ONE_TAP,
-                                null, 0, 0, 0, null)
-                        } catch (e: IntentSender.SendIntentException) {
-                            Log.e(TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
-                        }
+                        Log.d(TAG, "OnOneTapClient Success")
+                        val intentSenderRequest =
+                            IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
+                        resultLauncher.launch(intentSenderRequest)
                     }
                     .addOnFailureListener(this) { e ->
                         // No saved credentials found. Launch the One Tap sign-up flow, or
@@ -69,41 +108,7 @@ class LoginActivity : ComponentActivity() {
         FirebaseApp.initializeApp(this);
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        val googleCredential = oneTapClient.getSignInCredentialFromIntent(data)
-        val idToken = googleCredential.googleIdToken
-        when {
-            idToken != null -> {
-                // Got an ID token from Google. Use it to authenticate
-                // with Firebase.
-                val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-
-                auth.signInWithCredential(firebaseCredential)
-                    .addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful) {
-                            // Sign in success, update UI with the signed-in user's information
-                            val user = auth.currentUser
-                            user?.getIdToken(true)?.addOnSuccessListener {
-                                it.token?.let { token -> updateUI(token) }
-                            }
-                            Log.d(TAG, "signInWithCredential:success")
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.exception)
-//                            updateUI(null)
-                        }
-                    }
-            }
-            else -> {
-                // Shouldn't happen.
-                Log.d(TAG, "No ID token!")
-            }
-        }
-    }
-
-    private fun updateUI(firebaseIdToken:String) {
+    private fun updateUI(firebaseIdToken: String) {
         authenticate(this, firebaseIdToken, {
             val myIntent = Intent(this, MainActivity::class.java)
             startActivity(myIntent)
