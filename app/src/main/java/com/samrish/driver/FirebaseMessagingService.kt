@@ -8,6 +8,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Trip
 import com.samrish.driver.network.TripNetRepository
+import com.samrish.driver.tripmgmt.TripManager
 import com.samrish.driver.viewmodels.TripsAssigned
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,11 @@ import javax.inject.Inject
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
-    lateinit var database : AppDatabase;
+    lateinit var database : AppDatabase
+
+    @Inject
+    lateinit var tripManager: TripManager
+
 
     @WorkerThread
     override fun onNewToken(token: String) {
@@ -36,7 +41,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun fetchLocalData() {
         CoroutineScope(Dispatchers.IO).launch {
             //Fetched from Server
-            val fetchedAssignedTrips: List<TripsAssigned>? = TripNetRepository.getInstance().tripList(applicationContext)
+            val fetchedAssignedTrips: List<TripsAssigned>? = tripManager.getActiveTrips()
 
             //Retrieved from Local Database
             val tripNetRepo = database.tripRepository()

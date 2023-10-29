@@ -16,4 +16,9 @@ class DatabaseModule {
     fun providesDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(context, AppDatabase::class.java, "drishto").build()
     }
+
+    @Provides
+    fun providesTripRepository(appDatabase: AppDatabase): TripRepository {
+        return appDatabase.tripRepository()
+    }
 }

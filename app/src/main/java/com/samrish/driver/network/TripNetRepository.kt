@@ -11,8 +11,9 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import org.greenrobot.eventbus.EventBus
+import javax.inject.Inject
 
-class TripNetRepository {
+class TripNetRepository @Inject constructor()  {
     fun tripList(context: Context): List<TripsAssigned>? {
         val assignedTripType =
             Types.newParameterizedType(MutableList::class.java, TripsAssigned::class.java)
@@ -40,19 +41,6 @@ class TripNetRepository {
             }
         } catch (e: Exception) {
             null
-        }
-    }
-
-
-    companion object {
-        private var INSTANCE: TripNetRepository? = null
-        fun getInstance(): TripNetRepository {
-            if (INSTANCE == null) {
-                synchronized(this) {
-                    INSTANCE = TripNetRepository()
-                }
-            }
-            return INSTANCE!!
         }
     }
 
