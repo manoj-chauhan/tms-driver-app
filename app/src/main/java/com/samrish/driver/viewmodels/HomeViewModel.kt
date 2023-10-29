@@ -8,12 +8,14 @@ import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
+import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Trip
 import com.samrish.driver.network.getAccessToken
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @JsonClass(generateAdapter = true)
 data class VehicleAssignment(
@@ -57,8 +60,8 @@ data class CurrentAssignmentData (
     var vehicle: VehicleAssignment
 )
 
-
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(database : AppDatabase) : ViewModel() {
 
     private val _currentAssignment: MutableStateFlow<CurrentAssignmentData?> = MutableStateFlow(null)
     val currentAssignment: StateFlow<CurrentAssignmentData?> = _currentAssignment.asStateFlow()

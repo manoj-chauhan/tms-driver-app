@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.database.Matrix
 import com.samrish.driver.viewmodels.MatrixLogViewModel
 
 @Composable
-fun MatrixLog(vm: MatrixLogViewModel = viewModel()) {
+fun MatrixLog(vm: MatrixLogViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
     val matList by vm.matrixList.collectAsStateWithLifecycle()

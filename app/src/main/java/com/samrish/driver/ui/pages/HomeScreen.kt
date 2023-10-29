@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.samrish.driver.ui.components.AssignedTrip
 import com.samrish.driver.ui.components.AssignedVehicle
@@ -29,7 +29,7 @@ import com.samrish.driver.viewmodels.TripsAssigned
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    vm: HomeViewModel = viewModel(),
+    vm: HomeViewModel = hiltViewModel(),
     onTripSelected: (assignment: TripsAssigned) -> Unit
 ) {
     val context = LocalContext.current
