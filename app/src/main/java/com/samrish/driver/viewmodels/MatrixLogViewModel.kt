@@ -5,13 +5,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Matrix
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MatrixLogViewModel : ViewModel() {
+@HiltViewModel
+class MatrixLogViewModel @Inject constructor(database : AppDatabase) : ViewModel() {
+
+    val database : AppDatabase;
+    init {
+        this.database = database
+    }
 
     private val _matrixList: MutableStateFlow<List<Matrix>?> = MutableStateFlow(null)
     val matrixList: StateFlow<List<Matrix>?> = _matrixList.asStateFlow()
@@ -19,8 +27,7 @@ class MatrixLogViewModel : ViewModel() {
     fun loadMatrixLog(context: Context) {
 
         viewModelScope.launch {
-            val db = AppDatabase.getDatabase(context)
-            val matrixRepository = db.matrixRepository()
+            val matrixRepository = database.matrixRepository()
             val matList = matrixRepository.loadMatrices()
 
             _matrixList.update { _ ->

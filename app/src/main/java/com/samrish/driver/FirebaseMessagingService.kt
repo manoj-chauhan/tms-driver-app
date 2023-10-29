@@ -13,9 +13,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+
+    @Inject
+    lateinit var database : AppDatabase;
 
     @WorkerThread
     override fun onNewToken(token: String) {
@@ -35,8 +39,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val fetchedAssignedTrips: List<TripsAssigned>? = TripNetRepository.getInstance().tripList(applicationContext)
 
             //Retrieved from Local Database
-            val db = AppDatabase.getDatabase(applicationContext)
-            val tripNetRepo = db.tripRepository()
+            val tripNetRepo = database.tripRepository()
 
             fetchedAssignedTrips?.let { tripList ->
                 run {
