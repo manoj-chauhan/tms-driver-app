@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MyFirebaseMessagingService : FirebaseMessagingService() {
+class FCMService : FirebaseMessagingService() {
 
     @Inject
     lateinit var database : AppDatabase
