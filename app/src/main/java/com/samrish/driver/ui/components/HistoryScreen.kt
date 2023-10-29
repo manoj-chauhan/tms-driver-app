@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.History
-import com.samrish.driver.viewmodels.HistoryViewModel
+import com.samrish.driver.ui.viewmodels.HistoryViewModel
 import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterial3Api::class)

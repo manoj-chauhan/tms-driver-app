@@ -15,7 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.samrish.driver.viewmodels.VehicleAssignment
+import com.samrish.driver.ui.viewmodels.VehicleAssignment
 import java.text.SimpleDateFormat
 
 

@@ -2,7 +2,6 @@ package com.samrish.driver.ui.pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.samrish.driver.database.Matrix
-import com.samrish.driver.viewmodels.MatrixLogViewModel
+import com.samrish.driver.ui.viewmodels.MatrixLogViewModel
 
 @Composable
 fun MatrixLog(vm: MatrixLogViewModel = hiltViewModel()) {

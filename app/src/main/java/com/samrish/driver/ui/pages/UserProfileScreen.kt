@@ -39,7 +39,7 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.R
-import com.samrish.driver.viewmodels.UserProfileViewModel
+import com.samrish.driver.ui.viewmodels.UserProfileViewModel
 
 @Composable
 fun UserProfile(vm: UserProfileViewModel = viewModel()) {

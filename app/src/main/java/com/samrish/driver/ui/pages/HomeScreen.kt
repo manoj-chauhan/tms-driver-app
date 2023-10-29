@@ -23,8 +23,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.samrish.driver.ui.components.AssignedTrip
 import com.samrish.driver.ui.components.AssignedVehicle
-import com.samrish.driver.viewmodels.HomeViewModel
-import com.samrish.driver.viewmodels.TripsAssigned
+import com.samrish.driver.ui.viewmodels.HomeViewModel
+import com.samrish.driver.ui.viewmodels.TripsAssigned
 
 @Composable
 fun HomeScreen(

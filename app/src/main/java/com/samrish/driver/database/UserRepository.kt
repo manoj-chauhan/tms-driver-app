@@ -24,29 +24,3 @@ interface UserRepository {
     @Query("SELECT * from user")
     suspend fun loadUsers(): List<User>
 }
-
-@Dao
-interface MatrixRepository {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(vararg location: Matrix)
-
-    @Query("SELECT * from matrix")
-    suspend fun loadMatrices(): List<Matrix>
-
-}
-
-
-@Dao
-interface TripRepository {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrip(vararg trip: Trip)
-
-    @Query("SELECT * from trip")
-    suspend fun tripList(): List<Trip>
-
-    @Delete
-    suspend fun deleteTrip(vararg trip: Trip)
-
-    @Query("DELETE FROM trip")
-    suspend fun clearAllTrips()
-}

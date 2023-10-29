@@ -1,4 +1,4 @@
-package com.samrish.driver.viewmodels
+package com.samrish.driver.ui.viewmodels
 
 import android.content.Context
 import android.util.Log
@@ -8,7 +8,6 @@ import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
-import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Trip
 import com.samrish.driver.network.getAccessToken
 import com.squareup.moshi.JsonAdapter

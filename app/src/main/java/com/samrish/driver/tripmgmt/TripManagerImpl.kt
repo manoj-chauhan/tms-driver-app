@@ -4,7 +4,7 @@ import android.content.Context
 import com.samrish.driver.auth.AuthManager
 import com.samrish.driver.database.TripRepository
 import com.samrish.driver.network.TripNetRepository
-import com.samrish.driver.viewmodels.TripsAssigned
+import com.samrish.driver.ui.viewmodels.TripsAssigned
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

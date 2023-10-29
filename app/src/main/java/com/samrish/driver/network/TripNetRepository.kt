@@ -6,7 +6,7 @@ import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
-import com.samrish.driver.viewmodels.TripsAssigned
+import com.samrish.driver.ui.viewmodels.TripsAssigned
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types

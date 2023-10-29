@@ -7,9 +7,8 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Trip
-import com.samrish.driver.network.TripNetRepository
 import com.samrish.driver.tripmgmt.TripManager
-import com.samrish.driver.viewmodels.TripsAssigned
+import com.samrish.driver.ui.viewmodels.TripsAssigned
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
