@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.components
+package com.samrish.driver.ui.pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.History
@@ -37,7 +38,7 @@ import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoryScreen(vm: HistoryViewModel = viewModel()) {
+fun HistoryScreen(vm: HistoryViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
     val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()

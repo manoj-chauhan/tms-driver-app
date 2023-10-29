@@ -3,6 +3,7 @@ package com.samrish.driver.tripmgmt
 import android.content.Context
 import com.samrish.driver.auth.AuthManager
 import com.samrish.driver.database.TripRepository
+import com.samrish.driver.models.History
 import com.samrish.driver.network.TripNetRepository
 import com.samrish.driver.ui.viewmodels.TripsAssigned
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -16,10 +17,10 @@ class TripManagerImpl @Inject constructor(
 ): TripManager {
 
     override fun getActiveTrips(): List<TripsAssigned>? {
-        return tripNetRepository.tripList(context)
+        return tripNetRepository.fetchActiveTrips()
     }
 
-    override fun getPastTrips() {
-        TODO("getPastTrips() Not yet implemented")
+    override fun getPastTrips(pageNumber: Int): List<History>? {
+        return tripNetRepository.fetchPastTrips(pageNumber)
     }
 }

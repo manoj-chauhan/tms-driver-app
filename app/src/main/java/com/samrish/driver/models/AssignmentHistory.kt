@@ -18,5 +18,5 @@ data class History(
 
 
 data class AssignmentHistory(
-     var history: MutableList<History>
+     var history: List<History>?
 )

@@ -12,9 +12,11 @@ import com.samrish.driver.R
 import com.samrish.driver.models.AssignmentHistory
 import com.samrish.driver.models.History
 import com.samrish.driver.network.getAccessToken
+import com.samrish.driver.tripmgmt.TripManager
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,55 +24,30 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HistoryViewModel : ViewModel() {
+@HiltViewModel
+class HistoryViewModel @Inject constructor(private val tripManager: TripManager)  : ViewModel() {
     private val  _historyDetail: MutableStateFlow<AssignmentHistory?> = MutableStateFlow(null)
     val assignmentDetail: StateFlow<AssignmentHistory?> =  _historyDetail.asStateFlow()
 
     private var currentPage: Int = 0
 
+    //ToDo: Page Number Handling need to be done, page number should be part of state.
     fun incrementPage() {
         currentPage++
     }
+
+
     fun fetchHistoryDetail(context: Context){
-        val channel4= Channel<MutableList<History>>()
 
         viewModelScope.launch(Dispatchers.IO) {
-            val historyurl = context.resources.getString(R.string.url_trip_history)  + "assignmentHistory?pageno="+ currentPage
-            Log.d("TAG", "fetchHistoryDetail:$historyurl ")
-
-            val  historyList = Types.newParameterizedType(MutableList::class.java, History::class.java)
-            val history: JsonAdapter<MutableList<History>> = Moshi.Builder().build().adapter( historyList)
-
-            getAccessToken(context)?.let {
-                val (request1, response1, result) = historyurl.httpGet()
-                    .authentication().bearer(it)
-                    .response(moshiDeserializerOf(history))
-
-                result.fold(
-                    {
-                            historyDetail -> channel4.send(historyDetail)
-                    },
-                    { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
-                    }
-                )
-            }
-        }
-
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val tripDetail = channel4.receive();
-
+            val historyDetail = tripManager.getPastTrips(currentPage)
             _historyDetail.update { _ ->
                 AssignmentHistory(
-                    tripDetail
+                    historyDetail
                 )
             }
-            Log.i("tag", "$tripDetail")
         }
 
     }
