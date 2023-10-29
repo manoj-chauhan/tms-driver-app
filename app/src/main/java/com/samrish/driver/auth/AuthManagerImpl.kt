@@ -12,9 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AuthManagerImpl @Inject constructor(): AuthManager {
+class AuthManagerImpl @Inject constructor(private val authNetRepo: AuthNetRepository): AuthManager {
 
-    private val authNetRepo = AuthNetRepository.getInstance()
     override fun authenticate(
         context: Context,
         firebaseIdToken: String,
