@@ -10,6 +10,7 @@ import com.samrish.driver.viewmodels.TripsAssigned
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import org.greenrobot.eventbus.EventBus
 
 class TripNetRepository {
     fun tripList(context: Context): List<TripsAssigned>? {
@@ -26,6 +27,15 @@ class TripNetRepository {
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(adapter))
                 Log.d("TAG", "tripList:$result ")
+                result.fold(
+                    {
+
+                    },
+                    {
+                        EventBus.getDefault().post("AUTH_FAILED")
+                    }
+                )
+
                 result.get()
             }
         } catch (e: Exception) {
