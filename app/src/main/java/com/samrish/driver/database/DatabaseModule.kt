@@ -21,4 +21,16 @@ class DatabaseModule {
     fun providesTripRepository(appDatabase: AppDatabase): TripRepository {
         return appDatabase.tripRepository()
     }
+
+    @Provides
+    fun providesUserRepository(appDatabase: AppDatabase): UserRepository {
+        return appDatabase.userRepository()
+    }
+
+    @Provides
+    fun providesMatrixRepository(appDatabase: AppDatabase): MatrixRepository {
+        return appDatabase.matrixRepository()
+    }
+
+
 }
