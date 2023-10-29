@@ -61,7 +61,7 @@ data class CurrentAssignmentData (
 )
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(database : AppDatabase) : ViewModel() {
+class HomeViewModel @Inject constructor() : ViewModel() {
 
     private val _currentAssignment: MutableStateFlow<CurrentAssignmentData?> = MutableStateFlow(null)
     val currentAssignment: StateFlow<CurrentAssignmentData?> = _currentAssignment.asStateFlow()

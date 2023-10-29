@@ -1,4 +1,4 @@
-package com.samrish.driver
+package com.samrish.driver.auth
 
 import android.content.Context
 import android.os.Build
@@ -10,11 +10,12 @@ import com.samrish.driver.network.saveAccessToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AuthManager {
+class AuthManagerImpl @Inject constructor(): AuthManager {
 
     private val authNetRepo = AuthNetRepository.getInstance()
-    fun authenticate(
+    override fun authenticate(
         context: Context,
         firebaseIdToken: String,
         fcmToken: String,
@@ -48,18 +49,6 @@ class AuthManager {
                 }
             }
 
-        }
-    }
-
-    companion object {
-        private var INSTANCE: AuthManager? = null
-        fun getInstance(): AuthManager {
-            if (INSTANCE == null) {
-                synchronized(this) {
-                    INSTANCE = AuthManager()
-                }
-            }
-            return INSTANCE!!
         }
     }
 }
