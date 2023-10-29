@@ -7,14 +7,14 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Trip
-import com.samrish.driver.network.LocationService
 import com.samrish.driver.network.TripNetRepository
-//import com.samrish.driver.network.tripList
 import com.samrish.driver.viewmodels.TripsAssigned
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @WorkerThread

@@ -1,4 +1,4 @@
-package com.samrish.driver.network
+package com.samrish.driver
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -30,14 +30,16 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.Volley
 import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Matrix
+import com.samrish.driver.network.getAccessToken
 import com.samrish.driver.network.requests.SendDeviceMatrixRequest
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-
+@AndroidEntryPoint
 class LocationService : Service(), LocationListener {
     private var locationManager: LocationManager? = null
     private var provider: String? = null
@@ -137,7 +139,7 @@ class LocationService : Service(), LocationListener {
 
     private fun sendMatrix(latitude: Double, longitude: Double) {
         val queue = Volley.newRequestQueue(this)
-        val url = resources.getString(com.samrish.driver.R.string.url_device_matrix)
+        val url = resources.getString(R.string.url_device_matrix)
 
         val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
         val authHeader = getAccessToken(this)
