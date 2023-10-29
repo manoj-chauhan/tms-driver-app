@@ -11,26 +11,39 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 
+class TripNetRepository {
+    fun tripList(context: Context): List<TripsAssigned>? {
+        val assignedTripType =
+            Types.newParameterizedType(MutableList::class.java, TripsAssigned::class.java)
+        val adapter: JsonAdapter<MutableList<TripsAssigned>> =
+            Moshi.Builder().build().adapter(assignedTripType)
 
-fun tripList(context: Context): List<TripsAssigned>? {
-    val assignedTripType =
-        Types.newParameterizedType(MutableList::class.java, TripsAssigned::class.java)
-    val adapter: JsonAdapter<MutableList<TripsAssigned>> =
-        Moshi.Builder().build().adapter(assignedTripType)
+        val tripAssignmentUrl = context.resources.getString(R.string.url_trips_list)
 
-    val tripAssignmentUrl = context.resources.getString(R.string.url_trips_list)
-
-    return try {
-        getAccessToken(context)?.let {
-            val (_, _, result) = tripAssignmentUrl.httpGet()
-                .authentication().bearer(it)
-                .responseObject(moshiDeserializerOf(adapter))
-            Log.d("TAG", "tripList:$result ")
-            result.get()
+        return try {
+            getAccessToken(context)?.let {
+                val (_, _, result) = tripAssignmentUrl.httpGet()
+                    .authentication().bearer(it)
+                    .responseObject(moshiDeserializerOf(adapter))
+                Log.d("TAG", "tripList:$result ")
+                result.get()
+            }
+        } catch (e: Exception) {
+            null
         }
-    } catch (e: Exception) {
-        null
     }
 
+
+    companion object {
+        private var INSTANCE: TripNetRepository? = null
+        fun getInstance(): TripNetRepository {
+            if (INSTANCE == null) {
+                synchronized(this) {
+                    INSTANCE = TripNetRepository()
+                }
+            }
+            return INSTANCE!!
+        }
+    }
 
 }

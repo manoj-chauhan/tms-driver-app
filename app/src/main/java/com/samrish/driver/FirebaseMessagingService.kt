@@ -8,7 +8,8 @@ import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Trip
 import com.samrish.driver.network.LocationService
-import com.samrish.driver.network.tripList
+import com.samrish.driver.network.TripNetRepository
+//import com.samrish.driver.network.tripList
 import com.samrish.driver.viewmodels.TripsAssigned
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +32,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun fetchLocalData() {
         CoroutineScope(Dispatchers.IO).launch {
             //Fetched from Server
-            val fetchedAssignedTrips: List<TripsAssigned>? = tripList(applicationContext)
+            val fetchedAssignedTrips: List<TripsAssigned>? = TripNetRepository.getInstance().tripList(applicationContext)
 
             //Retrieved from Local Database
             val db = AppDatabase.getDatabase(applicationContext)
@@ -73,6 +74,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     }
                     if (isAnyTripStarted) {
                         applicationContext.startService(
+                            Intent(
+                                applicationContext,
+                                LocationService::class.java
+                            )
+                        )
+                    }else {
+                        applicationContext.stopService(
                             Intent(
                                 applicationContext,
                                 LocationService::class.java

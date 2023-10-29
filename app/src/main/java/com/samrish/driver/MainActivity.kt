@@ -24,12 +24,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onStart() {
-        Log.d("TAG", "onStart: ")
-        val i = Intent(this.applicationContext, LocationService::class.java)
-        startService(i)
-        super.onStart()
-    }
 }
 
 
