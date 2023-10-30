@@ -1,5 +1,6 @@
 package com.samrish.driver
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -16,6 +17,16 @@ class MainActivity : ComponentActivity() {
             DrishtoApp()
         }
     }
+//
+//    override fun onStart() {
+//        super.onStart()
+//        applicationContext.startService(
+//            Intent(
+//                applicationContext,
+//                LocationService::class.java
+//            )
+//        )
+//    }
 
 }
 

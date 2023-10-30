@@ -17,12 +17,12 @@ class TelemetryManagerImpl @Inject constructor(
     override suspend fun sendMatrix(telemetry: Telemetry) {
         telemetryNetRepository.sentTelemetry(telemetry)
         val tel = com.samrish.driver.database.Telemetry(
-            telemetry.latitude, telemetry.longitude, telemetry.time.toString()
+            telemetry.latitude, telemetry.longitude, telemetry.time
         )
         telemetryRepository.insertLocation(tel)
     }
 
     override suspend fun getTelemetry(): List<Telemetry> {
-        return telemetryRepository.loadMatrices().asSequence().map { t -> Telemetry("", t.latitude, t.longitude) }.toList()
+        return telemetryRepository.loadMatrices().asSequence().map { t -> Telemetry("", t.latitude, t.longitude, t.time) }.toList()
     }
 }
