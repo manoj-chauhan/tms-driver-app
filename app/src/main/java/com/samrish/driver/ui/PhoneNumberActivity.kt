@@ -51,7 +51,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.samrish.driver.MainActivity
 import java.util.concurrent.TimeUnit
-
 @OptIn(ExperimentalMaterial3Api::class)
 
 class PhoneNumberActivity : ComponentActivity() {
@@ -197,7 +196,7 @@ class PhoneNumberActivity : ComponentActivity() {
                                 Row(
                                     modifier = Modifier.fillMaxSize(),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Button(onClick = {
                                         number = "+91"+text.text.trim().toString()
@@ -225,19 +224,6 @@ class PhoneNumberActivity : ComponentActivity() {
 
         }
     }
-
-//    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-//        auth.signInWithCredential(credential)
-//            .addOnCompleteListener(object : OnCompleteListener<AuthResult?> {
-//                override fun onComplete(task: Task<AuthResult?>) {
-//                    if (task.isSuccessful) {
-//                        val i = Intent(this@PhoneNumberActivity, MainActivity::class.java)
-//                        startActivity(i);
-//                        finish()
-//                    }
-//                }
-//            })
-//    }
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)

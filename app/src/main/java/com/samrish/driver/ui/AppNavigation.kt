@@ -35,7 +35,6 @@ import com.samrish.driver.network.getAccessToken
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.HistoryScreen
 import com.samrish.driver.ui.pages.HomeScreen
-import com.samrish.driver.ui.pages.Login
 import com.samrish.driver.ui.pages.MatrixLog
 import com.samrish.driver.ui.pages.UserProfile
 
@@ -205,12 +204,12 @@ fun AppNavigationHost(
                 }
             )
         }
-        composable(
-            "login"
-        ) {
-            Login(navController = navController)
-
-        }
+//        composable(
+//            "login"
+//        ) {
+//            Login(navController = navController)
+//
+//        }
     }
 }
 
