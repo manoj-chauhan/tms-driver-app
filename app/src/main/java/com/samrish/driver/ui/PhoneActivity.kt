@@ -39,13 +39,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 
 class OTPActivity(): ComponentActivity() {
 
-    val auth = FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
     private  lateinit var OTP: String
     private lateinit var resentToken:PhoneAuthProvider.ForceResendingToken
     private lateinit var phoneNumber: String
@@ -59,7 +58,7 @@ class OTPActivity(): ComponentActivity() {
         phoneNumber = intent.getStringExtra("phoneNumber")!!
 
         setContent {
-            var text by remember { mutableStateOf(TextFieldValue("123456")) }
+            var text by remember { mutableStateOf(TextFieldValue("")) }
 
             Box(
                 modifier = Modifier
@@ -143,7 +142,7 @@ class OTPActivity(): ComponentActivity() {
                                 ) {
                                     Button(onClick = {
                                         val credential = PhoneAuthProvider.getCredential(OTP,
-                                            text.toString()
+                                            text.text.trim()
                                         )
                                         Log.d("TAG", "onCreate: $credential")
                                         signInWithPhoneAuthCredential(credential)
@@ -189,18 +188,50 @@ class OTPActivity(): ComponentActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-
                     val user = task.result?.user
                     Log.d("TAG", "signInWithCredential:success $user")
-                } else {
-                    // Sign in failed, display a message and update the UI
-                    Log.w("TAG", "signInWithCredential:failure", task.exception)
-                    if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                        // The verification code entered was invalid
+                    if (user != null) {
+                        user.getIdToken(true)
+                            .addOnSuccessListener { tokenResult ->
+                                val idToken = tokenResult.token
+                                if (idToken != null) {
+                                    updateUI(idToken)
+                                }
+                                Log.d("TAG", "ID Token: $idToken")
+                            }
+                            .addOnFailureListener { exception ->
+                                // Handle the case where getting the ID token failed
+                                Log.e("TAG", "Error getting ID token: ${exception.message}")
+                            }
                     }
-                    // Update UI
+
+                    Log.d("TAG", "signInWithCredential:success $user")
+
+            } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("TAG", "signInWithCredential:failure", task.exception)
+//                            updateUI(null)
                 }
             }
+    }
+
+    private fun updateUI(firebaseIdToken: String) {
+        Log.d("TAG", "Going to Authenticate $firebaseIdToken")
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+//            if (!task.isSuccessful) {
+//                Log.w("Login", "Fetching FCM registration token failed", task.exception)
+//                return@OnCompleteListener
+//            }
+//
+//            AuthManager.getInstance().authenticate(applicationContext, firebaseIdToken, task.result, {
+//                val myIntent = Intent(this, MainActivity::class.java)
+//                startActivity(myIntent)
+//                finish()
+//            },{ errorMsg ->
+//                Toast.makeText(applicationContext, errorMsg, Toast.LENGTH_LONG).show()
+//            });
+//
+//        })
     }
 
 

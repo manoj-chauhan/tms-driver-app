@@ -117,7 +117,7 @@ class PhoneNumberActivity : ComponentActivity() {
         setContent {
 
 
-            var text by remember { mutableStateOf(TextFieldValue("8700059515")) }
+            var text by remember { mutableStateOf(TextFieldValue("")) }
 
             Box(
                 modifier = Modifier
@@ -190,6 +190,7 @@ class PhoneNumberActivity : ComponentActivity() {
                                     },
                                     label = { Text(text = "Enter Your Phone Number") },
                                     onValueChange = {
+                                        text = it
                                     }
                                 )
 
