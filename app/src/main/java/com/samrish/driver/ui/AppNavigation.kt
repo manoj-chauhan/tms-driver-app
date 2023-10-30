@@ -33,8 +33,8 @@ import androidx.navigation.compose.composable
 import com.samrish.driver.LoginActivity
 import com.samrish.driver.network.clearSession
 import com.samrish.driver.network.getAccessToken
-import com.samrish.driver.ui.pages.HistoryScreen
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
+import com.samrish.driver.ui.pages.HistoryScreen
 import com.samrish.driver.ui.pages.HomeScreen
 import com.samrish.driver.ui.pages.Login
 import com.samrish.driver.ui.pages.MatrixLog
@@ -140,7 +140,7 @@ fun AppNavigationHost(
     }
 
     if (startScreen == "login") {
-        val myIntent = Intent(LocalContext.current, PhoneNumberActivity::class.java)
+        val myIntent = Intent(LocalContext.current, LoginActivity::class.java)
         LocalContext.current.startActivity(myIntent)
     }
 
@@ -160,8 +160,8 @@ fun AppNavigationHost(
     }
 
     if (logout) {
-        val myIntent = Intent(LocalContext.current, LoginActivity::class.java)
-        myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        val myIntent = Intent(LocalContext.current, PhoneNumberActivity::class.java)
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         LocalContext.current.startActivity(myIntent)
         clearSession(LocalContext.current)
         logout= false

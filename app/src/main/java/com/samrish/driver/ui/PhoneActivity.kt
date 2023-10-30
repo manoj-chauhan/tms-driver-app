@@ -1,7 +1,9 @@
 package com.samrish.driver.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -38,20 +40,32 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.messaging.FirebaseMessaging
+import com.samrish.driver.MainActivity
+import com.samrish.driver.auth.AuthManager
+import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class OTPActivity(): ComponentActivity() {
+@AndroidEntryPoint
+class OTPActivity() : ComponentActivity() {
 
-    private val auth = FirebaseAuth.getInstance()
-    private  lateinit var OTP: String
-    private lateinit var resentToken:PhoneAuthProvider.ForceResendingToken
+    private lateinit var auth: FirebaseAuth
+    private lateinit var OTP: String
+    private lateinit var resentToken: PhoneAuthProvider.ForceResendingToken
     private lateinit var phoneNumber: String
+
+    @Inject
+    lateinit var authManager: AuthManager;
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = FirebaseAuth.getInstance()
 
         OTP = intent.getStringExtra("OTP").toString()
         resentToken = intent.getParcelableExtra("resentToken")!!
@@ -73,9 +87,7 @@ class OTPActivity(): ComponentActivity() {
                             .padding(
                                 PaddingValues(
 
-                                    top = 30.dp,
-                                    end = 12.dp,
-                                    bottom = 20.dp
+                                    top = 30.dp, end = 12.dp, bottom = 20.dp
                                 )
                             )
                     ) {
@@ -88,7 +100,8 @@ class OTPActivity(): ComponentActivity() {
                             Text(
                                 text = "DRISHTO", style = TextStyle(
                                     color = Color.Red,
-                                    fontSize = 40.sp, fontWeight = FontWeight.ExtraBold
+                                    fontSize = 40.sp,
+                                    fontWeight = FontWeight.ExtraBold
                                 )
                             )
 
@@ -110,9 +123,7 @@ class OTPActivity(): ComponentActivity() {
                                 .fillMaxSize()
                                 .align(Alignment.CenterHorizontally)
                                 .padding(
-                                    start = 12.dp, top = 50.dp,
-                                    end = 12.dp,
-                                    bottom = 20.dp
+                                    start = 12.dp, top = 50.dp, end = 12.dp, bottom = 20.dp
                                 )
                         ) {
                             Column(
@@ -120,20 +131,18 @@ class OTPActivity(): ComponentActivity() {
                                 verticalArrangement = Arrangement.SpaceBetween,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                OutlinedTextField(
-                                    value = text,
+                                OutlinedTextField(value = text,
                                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                                     leadingIcon = {
                                         Icon(
                                             imageVector = Icons.Default.PhoneEnabled,
                                             contentDescription = "emailIcon"
                                         )
-                                    }   ,
+                                    },
                                     label = { Text(text = "Enter Your Otp Sent") },
                                     onValueChange = {
                                         text = it
-                                    }
-                                )
+                                    })
 
                                 Row(
                                     modifier = Modifier.fillMaxSize(),
@@ -141,8 +150,8 @@ class OTPActivity(): ComponentActivity() {
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Button(onClick = {
-                                        val credential = PhoneAuthProvider.getCredential(OTP,
-                                            text.text.trim()
+                                        val credential = PhoneAuthProvider.getCredential(
+                                            OTP, text.text.trim()
                                         )
                                         Log.d("TAG", "onCreate: $credential")
                                         signInWithPhoneAuthCredential(credential)
@@ -152,8 +161,6 @@ class OTPActivity(): ComponentActivity() {
                                     }
                                 }
                             }
-
-
                         }
 
                     }
@@ -166,40 +173,20 @@ class OTPActivity(): ComponentActivity() {
 
 
     }
-//    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-//        auth.signInWithCredential(credential)
-//            .addOnCompleteListener { task ->
-//                Log.d("TAG", "signInWithPhoneAuthCredential: ")
-//                    val user = auth.currentUser
-//                if (task.isSuccessful) {
-//                    when {
-//                        resentToken != null -> {
-//                            user?.getIdToken(true)?.addOnSuccessListener {
-//                                it.token?.let { token -> updateUI(token) }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//    }
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
+        auth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
                     val user = task.result?.user
                     Log.d("TAG", "signInWithCredential:success $user")
                     if (user != null) {
-                        user.getIdToken(true)
-                            .addOnSuccessListener { tokenResult ->
+                        user.getIdToken(true).addOnSuccessListener { tokenResult ->
                                 val idToken = tokenResult.token
                                 if (idToken != null) {
                                     updateUI(idToken)
                                 }
                                 Log.d("TAG", "ID Token: $idToken")
-                            }
-                            .addOnFailureListener { exception ->
+                            }.addOnFailureListener { exception ->
                                 // Handle the case where getting the ID token failed
                                 Log.e("TAG", "Error getting ID token: ${exception.message}")
                             }
@@ -207,32 +194,27 @@ class OTPActivity(): ComponentActivity() {
 
                     Log.d("TAG", "signInWithCredential:success $user")
 
-            } else {
-                    // If sign in fails, display a message to the user.
+                } else {
                     Log.w("TAG", "signInWithCredential:failure", task.exception)
-//                            updateUI(null)
                 }
             }
     }
 
     private fun updateUI(firebaseIdToken: String) {
         Log.d("TAG", "Going to Authenticate $firebaseIdToken")
-//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-//            if (!task.isSuccessful) {
-//                Log.w("Login", "Fetching FCM registration token failed", task.exception)
-//                return@OnCompleteListener
-//            }
-//
-//            AuthManager.getInstance().authenticate(applicationContext, firebaseIdToken, task.result, {
-//                val myIntent = Intent(this, MainActivity::class.java)
-//                startActivity(myIntent)
-//                finish()
-//            },{ errorMsg ->
-//                Toast.makeText(applicationContext, errorMsg, Toast.LENGTH_LONG).show()
-//            });
-//
-//        })
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("Login", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            Log.d("TAG", "updateUI: Inside  ")
+            authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
+                val myIntent = Intent(this, MainActivity::class.java)
+                startActivity(myIntent)
+                finish()
+            }, { errorMsg ->
+                Toast.makeText(applicationContext, errorMsg, Toast.LENGTH_LONG).show()
+            })
+        })
     }
-
-
 }

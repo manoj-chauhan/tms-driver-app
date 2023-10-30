@@ -7,16 +7,9 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.room.Room
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.R
-import com.samrish.driver.database.AppDatabase
-import com.samrish.driver.database.Trip
-import com.samrish.driver.viewmodels.TripsAssigned
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MyFirebaseMessagingService: FirebaseMessagingService(){
 
@@ -56,54 +49,6 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
 
 
     private fun fetchLocalData(){
-
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-            val db = Room.databaseBuilder(
-                applicationContext,
-                AppDatabase::class.java, "drishto"
-            ).build()
-        var cachedTripList: List<TripsAssigned>? = tripList(applicationContext)
-
-            val tripList = db.tripRepository()
-                tripList.clearAllTrips()
-                cachedTripList?.forEach { trip ->
-                    val tripInfo = Trip(
-                        trip. tripCode,
-                        trip.tripName,
-                        trip.status,
-                        trip.label,
-                        trip.companyName,
-                        trip.companyCode,
-                        trip.operatorCompanyName,
-                        trip.operatorCompanyCode,
-                        trip.operatorCompanyId,
-                        trip.tripDate,
-                        trip.tripId
-                    )
-                    tripList.insertTrip(tripInfo)
-
-                }
-                val matrixRepository = db.tripRepository()
-                val matList = matrixRepository.tripList()
-                matList.forEach{ list ->
-                    if(list.status != "TRIP_CREATED"){
-                        val serviceIntent = Intent(applicationContext, LocationService::class.java)
-                        applicationContext.startService(serviceIntent)
-                    }
-                }
-                Log.d("TAG", "fetchAssignmentDetail in response:$matList ")
-            }catch (e:Exception){
-
-            }
-
-        }
-
-
-        CoroutineScope(Dispatchers.IO).launch {
-
-
-        }
     }
 
     private fun createNotificationChannelIfNeeded(channelId: String) {
