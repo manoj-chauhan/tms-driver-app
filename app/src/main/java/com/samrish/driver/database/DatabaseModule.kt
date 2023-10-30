@@ -28,8 +28,8 @@ class DatabaseModule {
     }
 
     @Provides
-    fun providesMatrixRepository(appDatabase: AppDatabase): MatrixRepository {
-        return appDatabase.matrixRepository()
+    fun providesMatrixRepository(appDatabase: AppDatabase): TelemetryRepository {
+        return appDatabase.telemetryRepository()
     }
 
 

@@ -57,7 +57,14 @@ fun HomeScreen(
         }
         currentAssignmentData?.let {
             LocationPermissionScreen()
-            AssignedVehicle(it.vehicle)
+            AssignedVehicle(it.vehicle, currentAssignmentData?.assignmentCode?:"",
+                currentAssignmentData!!.isAssignmentCodeVisible,
+                onGenerateCodeClicked = {
+                    vm.generateAssignmentCode(context)
+                },
+                onGeneratedDialogDismissed = {
+                    vm.hideAssignmentCode(context)
+                })
 
             if (it.trips.size == 0 ){
                 Box(modifier = Modifier

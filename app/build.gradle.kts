@@ -79,7 +79,6 @@ dependencies {
 
     // Feature module Support
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
-    implementation("com.android.volley:volley:$volleyVersion")
 
     //fcm
     implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")

@@ -19,25 +19,15 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.room.Room
-import com.android.volley.AuthFailureError
-import com.android.volley.NetworkError
-import com.android.volley.NoConnectionError
-import com.android.volley.ParseError
-import com.android.volley.ServerError
-import com.android.volley.TimeoutError
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.Volley
-import com.samrish.driver.database.AppDatabase
-import com.samrish.driver.database.Matrix
-import com.samrish.driver.network.getAccessToken
-import com.samrish.driver.network.requests.SendDeviceMatrixRequest
+import com.samrish.driver.models.Telemetry
+import com.samrish.driver.telemetry.TelemetryManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LocationService : Service(), LocationListener {
@@ -46,6 +36,8 @@ class LocationService : Service(), LocationListener {
     private var powerManager: PowerManager? = null
     private var wakeLock: WakeLock? = null
 
+    @Inject
+    lateinit var telemetryManager: TelemetryManager
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val startedByReceiver = intent?.getBooleanExtra("started_by_receiver", false)
@@ -137,54 +129,6 @@ class LocationService : Service(), LocationListener {
         super.onDestroy()
     }
 
-    private fun sendMatrix(latitude: Double, longitude: Double) {
-        val queue = Volley.newRequestQueue(this)
-        val url = resources.getString(R.string.url_device_matrix)
-
-        val hdrs: MutableMap<String, String> = mutableMapOf<String, String>()
-        val authHeader = getAccessToken(this)
-        if(authHeader != null) {
-            hdrs?.put("Authorization", "Bearer $authHeader")
-        }
-
-        val deviceIdentifier = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-
-        queue.add(SendDeviceMatrixRequest(
-            deviceIdentifier,
-            latitude,
-            longitude,
-            url,
-            hdrs,
-            { response ->
-                Log.i("LocationService", "Device matrix sent successfully!!")
-            },
-            { error -> handleError(error) }
-        ))
-    }
-
-
-    private fun handleError(error: VolleyError) {
-        Log.i("LocationService", "Request Failed with Error: $error")
-        when (error) {
-            is TimeoutError, is NoConnectionError -> {
-                Log.i("LocationService", "Couldn't Connect!")
-            }
-            is AuthFailureError -> {
-                stopSelf();
-            }
-            is ServerError -> {
-                Log.i("LocationService", "Server Error!")
-            }
-            is NetworkError -> {
-                Log.i("LocationService", "Network Error!")
-            }
-            is ParseError -> {
-                Log.i("LocationService", "Unable to parse response!")
-            }
-        }
-    }
-
-
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
@@ -202,14 +146,13 @@ class LocationService : Service(), LocationListener {
         val context: Context = this
 
         CoroutineScope(Dispatchers.IO).launch {
-            val db = Room.databaseBuilder(
-                context.applicationContext,
-                AppDatabase::class.java, "drishto"
-            ).build()
+            val deviceIdentifier = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
 
-            val userLocation = db.matrixRepository()
-            userLocation.insertLocation(Matrix(latitude =  lat, longitude = lng, time= formater.format(LocalDateTime.now())))
-//            sendMatrix(lat, lng)
+            telemetryManager.sendMatrix(Telemetry(
+                deviceIdentifier,
+                lat,
+                lng
+            ))
         }
     }
     companion object {
