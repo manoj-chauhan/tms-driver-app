@@ -12,14 +12,11 @@ data class User(
 )
 
 @Entity
-data class Matrix(
+data class Telemetry(
     @ColumnInfo(name =  "latitude" ) val latitude: Double,
     @ColumnInfo(name =  "longitude" ) val longitude: Double,
     @ColumnInfo(name =  "DateTime" ) val time:String
-
-
 ){
-
     @PrimaryKey (autoGenerate = true)
     var id: Int= 0
 }

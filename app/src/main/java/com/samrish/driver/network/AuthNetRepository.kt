@@ -11,6 +11,7 @@ import com.samrish.driver.R
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
+import javax.inject.Inject
 
 @JsonClass(generateAdapter = true)
 data class AuthResponse(
@@ -27,7 +28,7 @@ data class DeviceRegistrationDetail(
 )
 
 
-class AuthNetRepository {
+class AuthNetRepository @Inject constructor() {
 
     fun login(context: Context, firebaseIdToken: String): String {
         val url =
@@ -74,18 +75,6 @@ class AuthNetRepository {
 
     }
 
-
-    companion object {
-        private var INSTANCE: AuthNetRepository? = null
-        fun getInstance(): AuthNetRepository {
-            if (INSTANCE == null) {
-                synchronized(this) {
-                    INSTANCE = AuthNetRepository()
-                }
-            }
-            return INSTANCE!!
-        }
-    }
 
 }
 

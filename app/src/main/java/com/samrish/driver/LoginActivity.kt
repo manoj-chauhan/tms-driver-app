@@ -21,7 +21,11 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.samrish.driver.auth.AuthManager
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
 
     private lateinit var auth: FirebaseAuth
@@ -29,6 +33,9 @@ class LoginActivity : ComponentActivity() {
 
     private lateinit var oneTapClient: SignInClient
     private lateinit var signInRequest: BeginSignInRequest
+
+    @Inject
+    lateinit var authManager: AuthManager;
 
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { res ->
@@ -117,7 +124,7 @@ class LoginActivity : ComponentActivity() {
                 return@OnCompleteListener
             }
 
-            AuthManager.getInstance().authenticate(applicationContext, firebaseIdToken, task.result, {
+            authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
                 val myIntent = Intent(this, MainActivity::class.java)
                 startActivity(myIntent)
                 finish()

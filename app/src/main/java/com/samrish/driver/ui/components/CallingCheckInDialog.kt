@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.Schedule
-import com.samrish.driver.viewmodels.AssignmentDetailViewModel
+import com.samrish.driver.ui.viewmodels.AssignmentDetailViewModel
 
 @Composable
 fun CallCheckInDialog(context: Context,tripId:Int, tripCode:String, operatorId:Int, locations: Schedule, setShowDialog: (Boolean) -> Unit, vm: AssignmentDetailViewModel = viewModel(),){

@@ -7,14 +7,23 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.samrish.driver.database.AppDatabase
 import com.samrish.driver.database.Trip
-import com.samrish.driver.network.LocationService
-import com.samrish.driver.network.tripList
-import com.samrish.driver.viewmodels.TripsAssigned
+import com.samrish.driver.tripmgmt.TripManager
+import com.samrish.driver.ui.viewmodels.TripsAssigned
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MyFirebaseMessagingService : FirebaseMessagingService() {
+@AndroidEntryPoint
+class FCMService : FirebaseMessagingService() {
+
+    @Inject
+    lateinit var database : AppDatabase
+
+    @Inject
+    lateinit var tripManager: TripManager
+
 
     @WorkerThread
     override fun onNewToken(token: String) {
@@ -31,11 +40,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun fetchLocalData() {
         CoroutineScope(Dispatchers.IO).launch {
             //Fetched from Server
-            val fetchedAssignedTrips: List<TripsAssigned>? = tripList(applicationContext)
+            val fetchedAssignedTrips: List<TripsAssigned>? = tripManager.getActiveTrips()
 
             //Retrieved from Local Database
-            val db = AppDatabase.getDatabase(applicationContext)
-            val tripNetRepo = db.tripRepository()
+            val tripNetRepo = database.tripRepository()
 
             fetchedAssignedTrips?.let { tripList ->
                 run {
@@ -73,6 +81,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     }
                     if (isAnyTripStarted) {
                         applicationContext.startService(
+                            Intent(
+                                applicationContext,
+                                LocationService::class.java
+                            )
+                        )
+                    }else {
+                        applicationContext.stopService(
                             Intent(
                                 applicationContext,
                                 LocationService::class.java

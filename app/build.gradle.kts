@@ -1,8 +1,10 @@
 plugins {
+    kotlin("kapt")
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -45,30 +47,31 @@ android {
 
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 dependencies {
 
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
-    val lifecycle_version = "2.6.2"
-    val recyclerViewVersion = "1.3.1"
+    val lifecycleVersion = "2.6.2"
     val appCompatVersion = "1.6.1"
     val volleyVersion = "1.2.1"
     val constraintLayoutVersion = "2.1.4"
     val activityVersion = "1.8.0"
     val nav_version = "2.7.4"
-    val room_version = "2.5.2"
+    val room_version = "2.6.0"
 
 
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    implementation("com.google.firebase:firebase-auth-ktx:22.1.2")
+    implementation("com.google.firebase:firebase-auth-ktx:22.2.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
-    debugImplementation ("androidx.compose.ui:ui-tooling:1.5.3")
+    debugImplementation ("androidx.compose.ui:ui-tooling:1.5.4")
     implementation("androidx.appcompat:appcompat:$appCompatVersion")
     implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
     implementation("androidx.activity:activity-ktx:$activityVersion")
-    // RecyclerView
-    implementation("androidx.recyclerview:recyclerview:$recyclerViewVersion")
 
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
@@ -76,11 +79,10 @@ dependencies {
 
     // Feature module Support
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
-    implementation("com.android.volley:volley:$volleyVersion")
 
     //fcm
-    implementation("com.google.firebase:firebase-messaging-ktx:23.3.0")
-    implementation ("com.google.firebase:firebase-analytics-ktx:20.0.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")
+    implementation ("com.google.firebase:firebase-analytics-ktx:21.4.0")
 
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
@@ -98,21 +100,21 @@ dependencies {
 
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:{$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:{$lifecycleVersion")
     // ViewModel utilities for Compose
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
     // LiveData
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     // Lifecycles only (without ViewModel or LiveData)
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     // Lifecycle utilities for Compose
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion")
 
     // Saved state module for ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion")
 
     // alternately - if using Java8, use the following instead of lifecycle-compiler
-    implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
 
     implementation("androidx.room:room-runtime:$room_version")
 
@@ -125,7 +127,13 @@ dependencies {
 
     implementation ("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation ("com.github.kittinunf.fuel:fuel-moshi:2.3.1")
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
     implementation("com.squareup.moshi:moshi:1.15.0")
+
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    implementation("org.greenrobot:eventbus:3.3.1")
 
 }

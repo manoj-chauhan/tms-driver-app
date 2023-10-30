@@ -40,7 +40,7 @@ import com.samrish.driver.R
 import com.samrish.driver.ui.components.CallCheckInDialog
 import com.samrish.driver.ui.components.DocumentsDialog
 import com.samrish.driver.ui.components.ScheduleDialog
-import com.samrish.driver.viewmodels.AssignmentDetailViewModel
+import com.samrish.driver.ui.viewmodels.AssignmentDetailViewModel
 import java.text.SimpleDateFormat
 
 @Composable

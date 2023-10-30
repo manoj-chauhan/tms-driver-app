@@ -33,7 +33,7 @@ import androidx.navigation.compose.composable
 import com.samrish.driver.LoginActivity
 import com.samrish.driver.network.clearSession
 import com.samrish.driver.network.getAccessToken
-import com.samrish.driver.ui.components.HistoryScreen
+import com.samrish.driver.ui.pages.HistoryScreen
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
 import com.samrish.driver.ui.pages.HomeScreen
 import com.samrish.driver.ui.pages.Login

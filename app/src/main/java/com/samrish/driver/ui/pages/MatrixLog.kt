@@ -2,7 +2,6 @@ package com.samrish.driver.ui.pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,13 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.samrish.driver.database.Matrix
-import com.samrish.driver.viewmodels.MatrixLogViewModel
+import com.samrish.driver.models.Telemetry
+import com.samrish.driver.ui.viewmodels.MatrixLogViewModel
 
 @Composable
-fun MatrixLog(vm: MatrixLogViewModel = viewModel()) {
+fun MatrixLog(vm: MatrixLogViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
     val matList by vm.matrixList.collectAsStateWithLifecycle()
@@ -45,7 +44,7 @@ fun MatrixLog(vm: MatrixLogViewModel = viewModel()) {
 
 
 @Composable
-fun MatrixRecord(mat: Matrix) {
+fun MatrixRecord(mat: Telemetry) {
     Text(text = "${mat.time} ${mat.latitude},${mat.longitude}")
 }
 

@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.Documents
-import com.samrish.driver.viewmodels.DocumentDownloadViewModel
+import com.samrish.driver.ui.viewmodels.DocumentDownloadViewModel
 
 @Composable
 fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>, setShowDialog: (Boolean) -> Unit) {

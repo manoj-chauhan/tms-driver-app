@@ -15,13 +15,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.samrish.driver.viewmodels.VehicleAssignment
+import com.samrish.driver.ui.viewmodels.VehicleAssignment
 import java.text.SimpleDateFormat
 
 
 @Composable
-fun AssignedVehicle(vehicleAssignment: VehicleAssignment) {
-    val isCheckInDialogVisible = remember { mutableStateOf(false); }
+fun AssignedVehicle(vehicleAssignment: VehicleAssignment, assignmentCode: String, isCheckInDialogVisible: Boolean, onGenerateCodeClicked: () -> Unit, onGeneratedDialogDismissed: () -> Unit) {
 
     val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
     val outputFormat = SimpleDateFormat("dd MMMM, yyyy HH:mm a")
@@ -89,20 +88,17 @@ fun AssignedVehicle(vehicleAssignment: VehicleAssignment) {
                 .fillMaxWidth()
                 .padding(start = 16.dp, bottom = 16.dp)
         ) {
-            Button(onClick = {
-                    isCheckInDialogVisible.value = true
-            }) {
+            Button(onClick = onGenerateCodeClicked) {
                 Text(text = "Generate Code")
             }
         }
 
     }
 
-    if (isCheckInDialogVisible.value) {
+    if(isCheckInDialogVisible) {
         GeneratedCodeDialog(
-            setShowDialog = {
-                Log.i("Dialog", "Dialog dismissed")
-                isCheckInDialogVisible.value = it
-            })
+            assignmentCode,
+            setShowDialog = onGeneratedDialogDismissed
+        )
     }
 }
