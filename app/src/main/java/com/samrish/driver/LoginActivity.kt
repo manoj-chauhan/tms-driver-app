@@ -250,6 +250,7 @@ class LoginActivity : ComponentActivity() {
 
             authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
                 val myIntent = Intent(this, MainActivity::class.java)
+                myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(myIntent)
                 finish()
             },{ errorMsg ->

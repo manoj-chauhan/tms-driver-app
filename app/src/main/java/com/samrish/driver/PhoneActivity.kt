@@ -1,5 +1,6 @@
 package com.samrish.driver
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -209,6 +210,7 @@ class OTPActivity() : ComponentActivity() {
             Log.d("TAG", "updateUI: Inside  ")
             authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
                 val myIntent = Intent(this, MainActivity::class.java)
+                myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(myIntent)
                 finish()
             }, { errorMsg ->
