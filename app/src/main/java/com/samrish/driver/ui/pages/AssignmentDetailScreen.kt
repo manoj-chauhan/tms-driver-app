@@ -1,7 +1,6 @@
 package com.samrish.driver.ui.pages
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,12 +39,13 @@ import androidx.navigation.NavHostController
 import com.samrish.driver.R
 import com.samrish.driver.ui.components.CallCheckInDialog
 import com.samrish.driver.ui.components.DocumentsDialog
+import com.samrish.driver.ui.components.LocationList
 import com.samrish.driver.ui.components.ScheduleDialog
 import com.samrish.driver.ui.viewmodels.AssignmentDetailViewModel
 import java.text.SimpleDateFormat
 
 @Composable
-fun AssignmentDetailScreen (
+fun AssignmentDetailScreen(
     navController: NavHostController,
     selectedAssignment: String,
     operatorId: Int,
@@ -56,7 +57,7 @@ fun AssignmentDetailScreen (
     val painter = painterResource(id = R.drawable.signal)
 
     val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
-    if(assignment?.isDataLoaded != true) {
+    if (assignment?.isDataLoaded != true) {
         vm.fetchAssignmentDetail(
             context = context,
             tripId = tripId,
@@ -85,7 +86,8 @@ fun AssignmentDetailScreen (
     ) {
         Column {
             assignment?.let {
-                val parsedDate = remember(it.tripDetail.tripDateTime) { inputFormat.parse(it.tripDetail.tripDateTime) }
+                val parsedDate =
+                    remember(it.tripDetail.tripDateTime) { inputFormat.parse(it.tripDetail.tripDateTime) }
                 val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
                 Box(
                     modifier = Modifier
@@ -102,7 +104,7 @@ fun AssignmentDetailScreen (
                 ) {
 
                     Text(
-                        text =  it.tripDetail.operatorName , style = TextStyle(
+                        text = it.tripDetail.operatorName, style = TextStyle(
                             color = Color.Black,
                             fontSize = 23.sp
                         )
@@ -186,25 +188,39 @@ fun AssignmentDetailScreen (
                     )
                     {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painter, contentDescription = null,
-                                Modifier
-                                    .height(100.dp)
-                                    .fillMaxSize()
-                            )
-                        }
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(modifier = Modifier.fillMaxWidth().height(250.dp)) {
+                                        Text(text = "Schedules")
+
+                                    assignment?.loc?.let { it1 ->
+                                        LazyColumn(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 32.dp)
+                                        ) {
+                                            items(
+                                                it1.locations.size
+                                            ) {
+                                                LocationList(it, it1.locations[it])
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
 
 
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(20.dp), contentAlignment = Alignment.Center
-                                ) {
-                                    if(it.tripDetail.status =="TRIP_STARTED" || it.tripDetail.status =="TRIP_CHECKED_IN" || it.tripDetail.status =="TRIP_IN_TRANSIT") {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(20.dp), contentAlignment = Alignment.Center
+                            ) {
+                                if (it.tripDetail.status == "TRIP_STARTED" || it.tripDetail.status == "TRIP_CHECKED_IN" || it.tripDetail.status == "TRIP_IN_TRANSIT") {
                                     Text(
                                         text = "Sharing Location",
                                         style = TextStyle(
@@ -213,17 +229,16 @@ fun AssignmentDetailScreen (
                                             fontWeight = FontWeight.Medium
                                         )
                                     )
-                                }
-                                    else {
-                                        Text(
-                                            text = "Not Sharing Location",
-                                            style = TextStyle(
-                                                color = Color.Black,
-                                                fontSize = 16.sp,
-                                                fontWeight = FontWeight.Medium
-                                            )
+                                } else {
+                                    Text(
+                                        text = "Not Sharing Location",
+                                        style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Medium
                                         )
-                                    }
+                                    )
+                                }
                             }
 
                             Box(
@@ -306,7 +321,7 @@ fun AssignmentDetailScreen (
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             verticalAlignment = Alignment.Bottom
                         ) {
-                            if( assignment?.activeStatusDetail?.travelledDistance != null) {
+                            if (assignment?.activeStatusDetail?.travelledDistance != null) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(
                                         text = "Total Distance Covered",
@@ -337,9 +352,11 @@ fun AssignmentDetailScreen (
                                         )
                                     )
                                     Text(
-                                        text = "${assignment?.activeStatusDetail?.travelTime?.div(
-                                            60
-                                        )}" + " hr " + "${assignment?.activeStatusDetail?.travelTime}"+" min",
+                                        text = "${
+                                            assignment?.activeStatusDetail?.travelTime?.div(
+                                                60
+                                            )
+                                        }" + " hr " + "${assignment?.activeStatusDetail?.travelTime}" + " min",
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 16.sp,
@@ -408,9 +425,11 @@ fun AssignmentDetailScreen (
                                         )
                                     )
                                     Text(
-                                        text = "Estimated Time ${assignment?.activeStatusDetail?.estimatedTime?.div(
-                                            60
-                                        )}hr " + "${assignment?.activeStatusDetail?.estimatedTime}"+ "min",
+                                        text = "Estimated Time ${
+                                            assignment?.activeStatusDetail?.estimatedTime?.div(
+                                                60
+                                            )
+                                        }hr " + "${assignment?.activeStatusDetail?.estimatedTime}" + "min",
                                         style = TextStyle(
                                             color = Color.Gray,
                                             fontSize = 13.sp,
@@ -432,9 +451,11 @@ fun AssignmentDetailScreen (
                                         )
                                     )
                                     Text(
-                                        text = "Travelled Time ${assignment?.activeStatusDetail?.travelTime?.div(
-                                            60
-                                        )}hr " +"${assignment?.activeStatusDetail?.travelTime}" + "min",
+                                        text = "Travelled Time ${
+                                            assignment?.activeStatusDetail?.travelTime?.div(
+                                                60
+                                            )
+                                        }hr " + "${assignment?.activeStatusDetail?.travelTime}" + "min",
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 14.sp,
@@ -458,7 +479,7 @@ fun AssignmentDetailScreen (
                         }
                     }
 
-                    if(it.tripDetail.status !="TRIP_ENDED") {
+                    if (it.tripDetail.status != "TRIP_ENDED") {
                         assignment?.activeStatusDetail?.actions.let {
                             Box(
                                 modifier = Modifier
@@ -543,8 +564,8 @@ fun AssignmentDetailScreen (
                     }
 
                     if (isCheckInDialogVisible.value) {
-                        assignment?.loc?.let {it1->
-                            CallCheckInDialog(context,tripId,tripCode,operatorId,it1,
+                        assignment?.loc?.let { it1 ->
+                            CallCheckInDialog(context, tripId, tripCode, operatorId, it1,
                                 setShowDialog = {
                                     Log.i("Dialog", "Dialog dismissed")
                                     isCheckInDialogVisible.value = it
@@ -554,25 +575,27 @@ fun AssignmentDetailScreen (
                         }
                     }
 
-                    if(isDocumentSelected.value){
-                        assignment?.documents.let{
-                            document->
+                    if (isDocumentSelected.value) {
+                        assignment?.documents.let { document ->
                             if (document != null) {
-                                DocumentsDialog(operatorId,document, setShowDialog = {
+                                DocumentsDialog(operatorId, document, setShowDialog = {
                                     isDocumentSelected.value = it
                                 })
                             }
                         }
                     }
-                    if( isScheduleSelected.value){
-                        assignment?.loc?.let { it1 -> ScheduleDialog(it1,setShowDialog = {isScheduleSelected.value = it}) }
+                    if (isScheduleSelected.value) {
+                        assignment?.loc?.let { it1 ->
+                            ScheduleDialog(
+                                it1,
+                                setShowDialog = { isScheduleSelected.value = it })
+                        }
                     }
                 }
             }
 
         }
     }
-
 
 
 }
