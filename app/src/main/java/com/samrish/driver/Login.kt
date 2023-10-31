@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.pages
+package com.samrish.driver
 
 import android.app.Activity
 import android.content.Intent
@@ -126,14 +126,15 @@ class LoginUserNameActivity : ComponentActivity() {
             )
             .build()
 
-        fun loginSuccess() {
-            val myIntent = Intent(this, MainActivity::class.java)
-            startActivity(myIntent)
-        }
+//        fun loginSuccess() {
+//            val myIntent = Intent(this, MainActivity::class.java)
+//            startActivity(myIntent)
+//        }
 
         fun phoneLogin() {
-            val myIntent = Intent(applicationContext, PhoneNumberActivity::class.java)
-            startActivity(myIntent)
+            Log.d(TAG, "phoneLogin: ")
+            val loginIntent = Intent(this, PhoneNumberActivity::class.java)
+            startActivity(loginIntent)
         }
 
         setContent {
@@ -165,19 +166,7 @@ class LoginUserNameActivity : ComponentActivity() {
 
                     var context = LocalContext.current
 
-                    fun onLoginSuccess() {
-                        Log.i("Login", "Login Successful")
-//                    navController.navigate(
-//                        "Home",
-//                        NavOptions.Builder().setPopUpTo("login", true).build()
-//                    )
-                        loginSuccess()
-                    }
 
-                    fun onLoginFailure() {
-                        Log.i("Login", "Login Failure")
-                        Toast.makeText(context, "Login Failed!", Toast.LENGTH_LONG).show()
-                    }
 
                     Box(
                         modifier = Modifier.fillMaxHeight(),
@@ -214,7 +203,6 @@ class LoginUserNameActivity : ComponentActivity() {
 //                                password,
 //                                { onLoginSuccess() },
 //                                { onLoginFailure() }
-//                            )
                                 }
                             ) {
                                 Text(text = "Login")
@@ -245,9 +233,11 @@ class LoginUserNameActivity : ComponentActivity() {
 
 
                                 Icon(
-                                    imageVector = Icons.Filled.Phone,
-                                    contentDescription = "Home Icon",
-                                    modifier = Modifier.clickable { phoneLogin() }
+                                    imageVector = Icons.Default.Phone,
+                                    contentDescription = "Phone Icon",
+                                    modifier = Modifier.clickable {
+                                        phoneLogin()
+                                    }
                                 )
                             }
                         }

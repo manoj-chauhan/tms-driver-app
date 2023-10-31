@@ -48,7 +48,7 @@
             android:exported="true">
         </activity>
         <activity
-            android:name=".ui.pages.LoginUserNameActivity"
+            android:name=".LoginUserNameActivity"
             android:exported="true">
         </activity>
         <service

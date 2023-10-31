@@ -17,16 +17,6 @@ class MainActivity : ComponentActivity() {
             DrishtoApp()
         }
     }
-//
-//    override fun onStart() {
-//        super.onStart()
-//        applicationContext.startService(
-//            Intent(
-//                applicationContext,
-//                LocationService::class.java
-//            )
-//        )
-//    }
 
 }
 
