@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -113,485 +115,492 @@ fun AssignmentDetailScreen(
                 }
 
 //            Box(modifier = Modifier.fillMaxSize().background(Color.Gray)){
-                Card(
+                Column(
                     modifier = Modifier
+                        .verticalScroll(rememberScrollState()) // Use verticalScroll instead of ScrollView
                         .fillMaxWidth()
-                        .fillMaxSize(1f),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
-                    ),
-                    shape = RoundedCornerShape(35.dp, 35.dp)
+                        .fillMaxHeight() // You can adjust these modifiers as needed
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp)
-                            .padding(start = 25.dp, top = 30.dp, end = 12.dp)
-                    ) {
-                        Text(
-                            text = "CURRENT ASSIGNMENT",
-                            style = TextStyle(
-                                color = Color.Gray,
-                                fontSize = 21.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-
-                    }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(80.dp)
-                            .padding(start = 25.dp, top = 30.dp, end = 12.dp)
-                    ) {
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.Bottom
+                        Card(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White,
+                            ),
+                            shape = RoundedCornerShape(35.dp, 35.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(60.dp)
+                                    .padding(start = 25.dp, top = 30.dp, end = 12.dp)
                             ) {
                                 Text(
-                                    text = it.tripDetail.tripCode,
+                                    text = "CURRENT ASSIGNMENT",
                                     style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.ExtraBold
-                                    )
-                                )
-                                Text(
-                                    text = formattedDate,
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight.ExtraBold
+                                        color = Color.Gray,
+                                        fontSize = 21.sp,
+                                        fontWeight = FontWeight.Bold
                                     )
                                 )
 
                             }
-                            Text(
-                                text = "(${it.tripDetail.tripName})",
-                                style = TextStyle(
-                                    color = Color.Gray,
-                                    fontSize = 17.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            )
-                        }
-                    }
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(80.dp)
+                                    .padding(start = 25.dp, top = 30.dp, end = 12.dp)
+                            ) {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.Bottom
+                                    ) {
+                                        Text(
+                                            text = it.tripDetail.tripCode,
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 20.sp,
+                                                fontWeight = FontWeight.ExtraBold
+                                            )
+                                        )
+                                        Text(
+                                            text = formattedDate,
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 15.sp,
+                                                fontWeight = FontWeight.ExtraBold
+                                            )
+                                        )
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(160.dp)
-                            .padding(start = 25.dp, top = 20.dp, end = 12.dp),
-                        contentAlignment = Alignment.Center
-                    )
-                    {
-                        Column(modifier = Modifier.fillMaxWidth()) {
+                                    }
+                                    Text(
+                                        text = "(${it.tripDetail.tripName})",
+                                        style = TextStyle(
+                                            color = Color.Gray,
+                                            fontSize = 17.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    )
+                                }
+                            }
 
                             Box(
                                 modifier = Modifier
-                                    .fillMaxWidth(),
+                                    .fillMaxWidth()
+                                    .height(160.dp)
+                                    .padding(start = 25.dp, top = 20.dp, end = 12.dp),
                                 contentAlignment = Alignment.Center
-                            ) {
-                                Column(modifier = Modifier.fillMaxWidth().height(250.dp)) {
-                                        Text(text = "Schedules")
+                            )
+                            {
+                                Column(modifier = Modifier.fillMaxWidth()) {
 
-                                    assignment?.loc?.let { it1 ->
-                                        LazyColumn(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(top = 32.dp)
-                                        ) {
-                                            items(
-                                                it1.locations.size
-                                            ) {
-                                                LocationList(it, it1.locations[it])
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                            Text(text = "Schedules")
+
+                                            assignment?.loc?.let { it1 ->
+                                                LazyColumn(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                ) {
+                                                    items(
+                                                        it1.locations.size
+                                                    ) {
+                                                        LocationList(it, it1.locations[it])
+                                                    }
+                                                }
                                             }
+
                                         }
                                     }
 
-                                }
-                            }
-
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(20.dp), contentAlignment = Alignment.Center
-                            ) {
-                                if (it.tripDetail.status == "TRIP_STARTED" || it.tripDetail.status == "TRIP_CHECKED_IN" || it.tripDetail.status == "TRIP_IN_TRANSIT") {
-                                    Text(
-                                        text = "Sharing Location",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-                                } else {
-                                    Text(
-                                        text = "Not Sharing Location",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-                                }
-                            }
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(30.dp), contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "${it.tripDetail.status}",
-                                    style = TextStyle(
-                                        color = Color.Red,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "Departed from AHL at 12:30 hr ",
-                                    style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                        }
-
-                    }
-
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp)
-                    )
-                    {
-                        val context = LocalContext.current
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.White),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Button(
-                                colors = ButtonDefaults.buttonColors(
-                                    Color.LightGray
-                                ),
-                                onClick = {
-                                    isScheduleSelected.value = true
-                                }
-                            ) {
-                                Text(text = "Schedule", style = TextStyle(color = Color.Black))
-
-                            }
-                            Button(
-                                colors = ButtonDefaults.buttonColors(
-                                    Color.LightGray
-                                ),
-                                onClick = {
-                                    isDocumentSelected.value = true
-                                }) {
-                                Text(text = "Documents", style = TextStyle(color = Color.Black))
-
-                            }
-
-                        }
-
-                    }
-
-                    Box(modifier = Modifier.height(50.dp), contentAlignment = Alignment.Center) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.White),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.Bottom
-                        ) {
-                            if (assignment?.activeStatusDetail?.travelledDistance != null) {
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text(
-                                        text = "Total Distance Covered",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-                                    Box(contentAlignment = Alignment.Center) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(100.dp), contentAlignment = Alignment.Center
+                                    ) {
                                         Text(
-                                            text = "${assignment?.activeStatusDetail?.travelledDistance}" + "km",
+                                            text = "${it.tripDetail.status}",
                                             style = TextStyle(
-                                                color = Color.Black,
-                                                fontSize = 16.sp,
+                                                color = Color.Red,
+                                                fontSize = 18.sp,
                                                 fontWeight = FontWeight.Medium
                                             )
                                         )
                                     }
-                                }
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text(
-                                        text = "Total Travelled Time",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-                                    Text(
-                                        text = "${
-                                            assignment?.activeStatusDetail?.travelTime?.div(
-                                                60
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = "Departed from AHL at 12:30 hr ",
+                                            style = TextStyle(
+                                                color = Color.Gray,
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight.Medium
                                             )
-                                        }" + " hr " + "${assignment?.activeStatusDetail?.travelTime}" + " min",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Medium
                                         )
-                                    )
+                                    }
 
                                 }
-                            }
-                        }
 
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 25.dp, top = 30.dp, end = 12.dp)
-                            .height(100.dp), contentAlignment = Alignment.BottomStart
-                    ) {
-
-                        Column {
-                            if (assignment?.activeStatusDetail!!.nextLocationName != null) {
-                                Text(
-                                    text = "Next Destination",
-                                    style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                )
-                                Text(
-                                    text = "${assignment?.activeStatusDetail?.nextLocationName}",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                )
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.Bottom
-                                ) {
-                                    Text(
-                                        text = "STA 09:00 hours (hc)",
-                                        style = TextStyle(
-                                            color = Color.Gray,
-                                            fontSize = 13.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-
-                                }
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.Bottom
-                                ) {
-                                    Text(
-                                        text = "Distance ${assignment?.activeStatusDetail?.estimatedDistance}km",
-                                        style = TextStyle(
-                                            color = Color.Gray,
-                                            fontSize = 13.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-                                    Text(
-                                        text = "Estimated Time ${
-                                            assignment?.activeStatusDetail?.estimatedTime?.div(
-                                                60
-                                            )
-                                        }hr " + "${assignment?.activeStatusDetail?.estimatedTime}" + "min",
-                                        style = TextStyle(
-                                            color = Color.Gray,
-                                            fontSize = 13.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.Bottom
-                                ) {
-                                    Text(
-                                        text = "Distance Covered ${assignment?.activeStatusDetail?.travelledDistance}km",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-                                    Text(
-                                        text = "Travelled Time ${
-                                            assignment?.activeStatusDetail?.travelTime?.div(
-                                                60
-                                            )
-                                        }hr " + "${assignment?.activeStatusDetail?.travelTime}" + "min",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-
-                                }
                             }
 
-                            if (assignment?.activeStatusDetail?.currentLocationName != null) {
-                                Text(
-                                    text = "Current Location ${assignment?.activeStatusDetail?.currentLocationName}",
-                                    style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                )
-                            }
-                        }
-                    }
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(80.dp)
+                            )
+                            {
+                                val context = LocalContext.current
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Color.White),
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Button(
+                                        colors = ButtonDefaults.buttonColors(
+                                            Color.LightGray
+                                        ),
+                                        onClick = {
+                                            isScheduleSelected.value = true
+                                        }
+                                    ) {
+                                        Text(
+                                            text = "Schedule",
+                                            style = TextStyle(color = Color.Black)
+                                        )
 
-                    if (it.tripDetail.status != "TRIP_ENDED") {
-                        assignment?.activeStatusDetail?.actions.let {
+                                    }
+                                    Button(
+                                        colors = ButtonDefaults.buttonColors(
+                                            Color.LightGray
+                                        ),
+                                        onClick = {
+                                            isDocumentSelected.value = true
+                                        }) {
+                                        Text(
+                                            text = "Documents",
+                                            style = TextStyle(color = Color.Black)
+                                        )
+
+                                    }
+
+                                }
+
+                            }
+
+                            Box(
+                                modifier = Modifier.height(50.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Color.White),
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.Bottom
+                                ) {
+                                    if (assignment?.activeStatusDetail?.travelledDistance != null) {
+                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Text(
+                                                text = "Total Distance Covered",
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 16.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            )
+                                            Box(contentAlignment = Alignment.Center) {
+                                                Text(
+                                                    text = "${assignment?.activeStatusDetail?.travelledDistance}" + "km",
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 16.sp,
+                                                        fontWeight = FontWeight.Medium
+                                                    )
+                                                )
+                                            }
+                                        }
+                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Text(
+                                                text = "Total Travelled Time",
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 16.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            )
+                                            Text(
+                                                text = "${
+                                                    assignment?.activeStatusDetail?.travelTime?.div(
+                                                        60
+                                                    )
+                                                }" + " hr " + "${assignment?.activeStatusDetail?.travelTime}" + " min",
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 16.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            )
+
+                                        }
+                                    }
+                                }
+
+                            }
+
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .fillMaxHeight()
-                                    .padding(
-                                        start = 25.dp,
-                                        top = 30.dp,
-                                        end = 12.dp,
-                                        bottom = 30.dp
-                                    ),
-                                contentAlignment = Alignment.BottomStart
+                                    .padding(start = 25.dp, top = 30.dp, end = 12.dp)
+                                    .height(100.dp), contentAlignment = Alignment.BottomStart
+                            ) {
 
-                            )
-                            {
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceEvenly
-                                ) {
-                                    if (isStartEnabled == true) {
-                                        Button(colors = ButtonDefaults.buttonColors(
-                                            Color.Red
-                                        ),
-                                            onClick = {
-                                                vm.startTrip(context, tripId, tripCode, operatorId)
-                                            },
-                                            content = {
-                                                Text(text = "Start")
-                                            }
+                                Column {
+                                    if (assignment?.activeStatusDetail!!.nextLocationName != null) {
+                                        Text(
+                                            text = "Next Destination",
+                                            style = TextStyle(
+                                                color = Color.Gray,
+                                                fontSize = 20.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
                                         )
+                                        Text(
+                                            text = "${assignment?.activeStatusDetail?.nextLocationName}",
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 16.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        )
+
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.Bottom
+                                        ) {
+                                            Text(
+                                                text = "STA 09:00 hours (hc)",
+                                                style = TextStyle(
+                                                    color = Color.Gray,
+                                                    fontSize = 13.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            )
+
+                                        }
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.Bottom
+                                        ) {
+                                            Text(
+                                                text = "Distance ${assignment?.activeStatusDetail?.estimatedDistance}km",
+                                                style = TextStyle(
+                                                    color = Color.Gray,
+                                                    fontSize = 13.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            )
+                                            Text(
+                                                text = "Estimated Time ${
+                                                    assignment?.activeStatusDetail?.estimatedTime?.div(
+                                                        60
+                                                    )
+                                                }hr " + "${assignment?.activeStatusDetail?.estimatedTime}" + "min",
+                                                style = TextStyle(
+                                                    color = Color.Gray,
+                                                    fontSize = 13.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            )
+                                        }
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.Bottom
+                                        ) {
+                                            Text(
+                                                text = "Distance Covered ${assignment?.activeStatusDetail?.travelledDistance}km",
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 14.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            )
+                                            Text(
+                                                text = "Travelled Time ${
+                                                    assignment?.activeStatusDetail?.travelTime?.div(
+                                                        60
+                                                    )
+                                                }hr " + "${assignment?.activeStatusDetail?.travelTime}" + "min",
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 14.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            )
+
+                                        }
                                     }
 
-                                    if (isCancelEnabled == true) {
-                                        Button(
-                                            onClick = {
-                                                vm.cancelTrip(context, tripId, tripCode, operatorId)
-
-                                            },
-                                            content = {
-                                                Text(text = "Cancel")
-                                            }
+                                    if (assignment?.activeStatusDetail?.currentLocationName != null) {
+                                        Text(
+                                            text = "Current Location ${assignment?.activeStatusDetail?.currentLocationName}",
+                                            style = TextStyle(
+                                                color = Color.Gray,
+                                                fontSize = 20.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
                                         )
-                                    }
-                                    if (isEndEnabled == true) {
-                                        Button(
-                                            onClick = {
-                                                vm.endTrip(context, tripId, tripCode, operatorId)
-
-                                            },
-                                            content = {
-                                                Text(text = "End")
-                                            }
-                                        )
-                                    }
-                                    if (isCheckInEnabled == true) {
-                                        Button(
-                                            onClick = {
-                                                isCheckInDialogVisible.value = true
-                                            },
-                                            content = {
-                                                Text(text = "Check-In")
-                                            }
-                                        )
-                                    }
-                                    if (isDepartEnabled == true) {
-                                        Button(
-                                            onClick = {
-                                                vm.departTrip(context, tripId, tripCode, operatorId)
-                                            },
-                                            content = {
-                                                Text(text = "Depart")
-                                            }
-                                        )
-
                                     }
                                 }
-
                             }
 
-                        }
-                    }
+                            if (it.tripDetail.status != "TRIP_ENDED") {
+                                assignment?.activeStatusDetail?.actions.let {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .fillMaxHeight()
+                                            .padding(
+                                                start = 25.dp,
+                                                top = 30.dp,
+                                                end = 12.dp,
+                                                bottom = 30.dp
+                                            ),
+                                        contentAlignment = Alignment.BottomStart
 
-                    if (isCheckInDialogVisible.value) {
-                        assignment?.loc?.let { it1 ->
-                            CallCheckInDialog(context, tripId, tripCode, operatorId, it1,
-                                setShowDialog = {
-                                    Log.i("Dialog", "Dialog dismissed")
-                                    isCheckInDialogVisible.value = it
+                                    )
+                                    {
+
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceEvenly
+                                        ) {
+                                            if (isStartEnabled == true) {
+                                                Button(colors = ButtonDefaults.buttonColors(
+                                                    Color.Red
+                                                ),
+                                                    onClick = {
+                                                        vm.startTrip(
+                                                            context,
+                                                            tripId,
+                                                            tripCode,
+                                                            operatorId
+                                                        )
+                                                    },
+                                                    content = {
+                                                        Text(text = "Start")
+                                                    }
+                                                )
+                                            }
+
+                                            if (isCancelEnabled == true) {
+                                                Button(
+                                                    onClick = {
+                                                        vm.cancelTrip(
+                                                            context,
+                                                            tripId,
+                                                            tripCode,
+                                                            operatorId
+                                                        )
+
+                                                    },
+                                                    content = {
+                                                        Text(text = "Cancel")
+                                                    }
+                                                )
+                                            }
+                                            if (isEndEnabled == true) {
+                                                Button(
+                                                    onClick = {
+                                                        vm.endTrip(
+                                                            context,
+                                                            tripId,
+                                                            tripCode,
+                                                            operatorId
+                                                        )
+
+                                                    },
+                                                    content = {
+                                                        Text(text = "End")
+                                                    }
+                                                )
+                                            }
+                                            if (isCheckInEnabled == true) {
+                                                Button(
+                                                    onClick = {
+                                                        isCheckInDialogVisible.value = true
+                                                    },
+                                                    content = {
+                                                        Text(text = "Check-In")
+                                                    }
+                                                )
+                                            }
+                                            if (isDepartEnabled == true) {
+                                                Button(
+                                                    onClick = {
+                                                        vm.departTrip(
+                                                            context,
+                                                            tripId,
+                                                            tripCode,
+                                                            operatorId
+                                                        )
+                                                    },
+                                                    content = {
+                                                        Text(text = "Depart")
+                                                    }
+                                                )
+
+                                            }
+                                        }
+
+                                    }
+
                                 }
-                            )
+                            }
 
-                        }
-                    }
+                            if (isCheckInDialogVisible.value) {
+                                assignment?.loc?.let { it1 ->
+                                    CallCheckInDialog(context, tripId, tripCode, operatorId, it1,
+                                        setShowDialog = {
+                                            Log.i("Dialog", "Dialog dismissed")
+                                            isCheckInDialogVisible.value = it
+                                        }
+                                    )
 
-                    if (isDocumentSelected.value) {
-                        assignment?.documents.let { document ->
-                            if (document != null) {
-                                DocumentsDialog(operatorId, document, setShowDialog = {
-                                    isDocumentSelected.value = it
-                                })
+                                }
+                            }
+
+                            if (isDocumentSelected.value) {
+                                assignment?.documents.let { document ->
+                                    if (document != null) {
+                                        DocumentsDialog(operatorId, document, setShowDialog = {
+                                            isDocumentSelected.value = it
+                                        })
+                                    }
+                                }
+                            }
+                            if (isScheduleSelected.value) {
+                                assignment?.loc?.let { it1 ->
+                                    ScheduleDialog(
+                                        it1,
+                                        setShowDialog = { isScheduleSelected.value = it })
+                                }
                             }
                         }
                     }
-                    if (isScheduleSelected.value) {
-                        assignment?.loc?.let { it1 ->
-                            ScheduleDialog(
-                                it1,
-                                setShowDialog = { isScheduleSelected.value = it })
-                        }
-                    }
-                }
             }
 
         }
