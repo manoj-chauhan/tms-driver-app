@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,22 +31,40 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.samrish.driver.LocationService
-import com.samrish.driver.MainActivity
 import com.samrish.driver.R
 import com.samrish.driver.ui.components.AssignedTrip
 import com.samrish.driver.ui.components.AssignedVehicle
 import com.samrish.driver.ui.viewmodels.HomeViewModel
+import com.samrish.driver.ui.viewmodels.MatrixLogViewModel
 import com.samrish.driver.ui.viewmodels.TripsAssigned
+import java.text.SimpleDateFormat
 
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     vm: HomeViewModel = hiltViewModel(),
+    mv: MatrixLogViewModel = hiltViewModel(),
     onTripSelected: (assignment: TripsAssigned) -> Unit
 ) {
 
+    val matList by mv.matrixList.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
+    var formattedDate :String=""
+    mv.loadMatrixLog(context = context)
+
+    val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
+    val outputFormat = SimpleDateFormat("HH:mm a")
+    matList?.let {
+
+        val lastTime = it.last().time
+
+    val parsedDate = remember(matList?.last()?.time) { inputFormat.parse(lastTime.toString()) }
+        formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
+        Log.d("TAG", "HomeScreen: $formattedDate ")
+    }
+
 
 
     val currentAssignmentData by vm.currentAssignment.collectAsStateWithLifecycle()
@@ -122,7 +141,8 @@ fun HomeScreen(
                                 .fillMaxSize()
                         )
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                            Text(text = "Last recorded location time ")
+                                Text(text = "Last recorded location time ${formattedDate} ")
+
                         }
                     }
                 }
