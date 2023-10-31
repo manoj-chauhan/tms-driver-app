@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.samrish.driver.LoginUserNameActivity
+import com.samrish.driver.LoginActivity
 import com.samrish.driver.network.clearSession
 import com.samrish.driver.network.getAccessToken
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
@@ -110,7 +110,7 @@ fun AppNavigationHost(
 
                     DropdownMenuItem(text = { Text(text = "Log out") },
                         onClick = {
-                            val myIntent = Intent(context, LoginUserNameActivity::class.java)
+                            val myIntent = Intent(context, LoginActivity::class.java)
                             myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                             context.startActivity(myIntent)
                             clearSession(context)
@@ -141,7 +141,7 @@ fun AppNavigationHost(
     }
 
     if (startScreen == "login") {
-        val myIntent = Intent(LocalContext.current, LoginUserNameActivity::class.java)
+        val myIntent = Intent(LocalContext.current, LoginActivity::class.java)
         LocalContext.current.startActivity(myIntent)
     }
 

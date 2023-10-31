@@ -1,4 +1,4 @@
-package com.samrish.driver.ui
+package com.samrish.driver
 
 import android.content.Intent
 import android.os.Bundle
@@ -45,7 +45,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.messaging.FirebaseMessaging
-import com.samrish.driver.MainActivity
 import com.samrish.driver.auth.AuthManager
 import javax.inject.Inject
 import dagger.hilt.android.AndroidEntryPoint

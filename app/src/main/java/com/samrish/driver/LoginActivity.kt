@@ -9,8 +9,35 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -25,6 +52,7 @@ import com.samrish.driver.auth.AuthManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
 
@@ -35,7 +63,7 @@ class LoginActivity : ComponentActivity() {
     private lateinit var signInRequest: BeginSignInRequest
 
     @Inject
-    lateinit var authManager: AuthManager;
+    lateinit var authManager: AuthManager
 
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { res ->
@@ -80,6 +108,7 @@ class LoginActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         auth = Firebase.auth
         oneTapClient = Identity.getSignInClient(this)
         signInRequest = BeginSignInRequest.builder()
@@ -94,26 +123,121 @@ class LoginActivity : ComponentActivity() {
             )
             .build()
 
-        setContent {
-            Button(onClick = {
-                oneTapClient.beginSignIn(signInRequest)
-                    .addOnSuccessListener(this) { result ->
-                        Log.d(TAG, "OnOneTapClient Success")
-                        val intentSenderRequest =
-                            IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
-                        resultLauncher.launch(intentSenderRequest)
-                    }
-                    .addOnFailureListener(this) { e ->
-                        // No saved credentials found. Launch the One Tap sign-up flow, or
-                        // do nothing and continue presenting the signed-out UI.
-                        Log.d(TAG, e.localizedMessage)
-                    }
-            }) {
+//        fun loginSuccess() {
+//            val myIntent = Intent(this, MainActivity::class.java)
+//            startActivity(myIntent)
+//        }
 
-                Text(text = "Click to Authenticate")
+
+
+        setContent {
+            Column() {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .height(400.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = "DRISHTO",
+                        fontSize = 60.sp,
+                        color = Color.White
+                    )
+                }
+                Card(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    var username by remember {
+                        mutableStateOf("")
+                    }
+                    var password by remember {
+                        mutableStateOf("")
+                    }
+
+                    var context = LocalContext.current
+
+
+
+                    Box(
+                        modifier = Modifier.fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(48.dp)
+                                .fillMaxWidth()
+                        ) {
+                            TextField(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .fillMaxWidth(),
+                                label = { Text(text = "Username") },
+                                value = username, onValueChange = { username = it }
+                            )
+                            TextField(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .fillMaxWidth(),
+                                label = { Text(text = "Password") },
+                                value = password, onValueChange = { password = it }
+                            )
+                            Button(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(16.dp)
+                                    .fillMaxWidth(),
+                                onClick = {
+//                            attemptLogin(
+//                                context,
+//                                username,
+//                                password,
+//                                { onLoginSuccess() },
+//                                { onLoginFailure() }
+                                }
+                            ) {
+                                Text(text = "Login")
+                            }
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.google),
+                                    contentDescription = "Home Icon",
+                                    modifier = Modifier.clickable {
+                                        oneTapClient.beginSignIn(signInRequest)
+                                        .addOnSuccessListener { result ->
+                                            Log.d(TAG, "OnOneTapClient Success")
+                                            val intentSenderRequest =
+                                                IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
+                                            resultLauncher.launch(intentSenderRequest)
+                                        }
+                                        .addOnFailureListener { e ->
+                                            // No saved credentials found. Launch the One Tap sign-up flow, or
+                                            // do nothing and continue presenting the signed-out UI.
+                                            Log.d(TAG, e.localizedMessage)
+                                        }
+                                    }
+                                )
+
+                                Icon(
+                                    imageVector = Icons.Default.Phone,
+                                    contentDescription = "Home Icon",
+                                    modifier = Modifier.clickable {
+                                        phoneLogin()
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
             }
+            FirebaseApp.initializeApp(this);
         }
-        FirebaseApp.initializeApp(this);
     }
 
     private fun updateUI(firebaseIdToken: String) {
@@ -135,5 +259,12 @@ class LoginActivity : ComponentActivity() {
         })
 
     }
+
+    private fun phoneLogin() {
+        Log.d(TAG, "phoneLogin: ")
+        val loginIntent = Intent(this, PhoneNumberActivity::class.java)
+        startActivity(loginIntent)
+    }
+
 
 }

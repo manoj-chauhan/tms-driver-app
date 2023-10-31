@@ -1,4 +1,4 @@
-package com.samrish.driver.ui
+package com.samrish.driver
 
 import android.content.Intent
 import android.os.Bundle
