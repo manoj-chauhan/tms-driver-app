@@ -3,6 +3,7 @@ package com.samrish.driver
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -65,16 +66,19 @@ class LocationService : Service(), LocationListener {
     }
 
     private fun showNotification() {
+
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent,
+            PendingIntent.FLAG_IMMUTABLE)
+
         Log.d("show notification", "showNotification: ")
-        val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("DRISHTO")
-            .setContentText("You are sharing your location")
-            .setStyle(
-                NotificationCompat.BigTextStyle()
-                    .bigText("You are sharing your location using Drishto")
-            )
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        val notificationManager = NotificationManagerCompat.from(this)
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("You are operating a trip")
+            .setSmallIcon(R.drawable.notification)
+            .setContentIntent(pendingIntent)
+            .setContentText("Your location is being shared ")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         startForeground(1001, builder.build())
     }

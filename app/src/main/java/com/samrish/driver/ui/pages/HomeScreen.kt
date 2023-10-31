@@ -1,7 +1,7 @@
 package com.samrish.driver.ui.pages
 
+import android.app.PendingIntent
 import android.content.Intent
-import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,14 +21,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.samrish.driver.LocationService
+import com.samrish.driver.MainActivity
 import com.samrish.driver.ui.components.AssignedTrip
 import com.samrish.driver.ui.components.AssignedVehicle
 import com.samrish.driver.ui.viewmodels.HomeViewModel
 import com.samrish.driver.ui.viewmodels.TripsAssigned
+
 
 @Composable
 fun HomeScreen(
@@ -36,6 +38,7 @@ fun HomeScreen(
     vm: HomeViewModel = hiltViewModel(),
     onTripSelected: (assignment: TripsAssigned) -> Unit
 ) {
+
     val context = LocalContext.current
 
     val currentAssignmentData by vm.currentAssignment.collectAsStateWithLifecycle()
@@ -73,7 +76,7 @@ fun HomeScreen(
             if (it.trips.size == 0 ){
                 Box(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(13.dp,)
+                    .padding(13.dp)
                     .align(Alignment.CenterHorizontally)) {
                     Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
                         Text(text ="No trips assigned!!",style = TextStyle(
