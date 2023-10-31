@@ -38,6 +38,7 @@ import com.samrish.driver.ui.components.AssignedVehicle
 import com.samrish.driver.ui.viewmodels.HomeViewModel
 import com.samrish.driver.ui.viewmodels.MatrixLogViewModel
 import com.samrish.driver.ui.viewmodels.TripsAssigned
+import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 
 
@@ -52,21 +53,11 @@ fun HomeScreen(
     val matList by mv.matrixList.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
-    var formattedDate :String=""
+
     mv.loadMatrixLog(context = context)
 
     val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
     val outputFormat = SimpleDateFormat("HH:mm a")
-    matList?.let {
-
-        val lastTime = it.last().time
-
-    val parsedDate = remember(matList?.last()?.time) { inputFormat.parse(lastTime.toString()) }
-        formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
-        Log.d("TAG", "HomeScreen: $formattedDate ")
-    }
-
-
 
     val currentAssignmentData by vm.currentAssignment.collectAsStateWithLifecycle()
     vm.fetchAssignmentDetail(context = context)
@@ -140,10 +131,24 @@ fun HomeScreen(
                                 .height(100.dp)
                                 .fillMaxSize()
                         )
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                                Text(text = "Last recorded location time ${formattedDate} ")
+                        matList?.let { mList ->
+                            if(mList.isNotEmpty()) {
+                                val lastTime = mList.last().time
 
+                                val parsedDate = inputFormat.parse(lastTime.toString())
+                                val formattedDate = outputFormat.format(parsedDate)
+                                Log.d("TAG", "HomeScreen: $formattedDate ")
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(text = "Last recorded location time ${formattedDate} ")
+
+                                }
+                            }
                         }
+
+
                     }
                 }
                 Log.d("Location Intent", "HomeScreen: ")

@@ -5,6 +5,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -54,6 +55,7 @@ kapt {
 dependencies {
 
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
+    val firebaseBom = platform("com.google.firebase:firebase-bom:32.5.0")
     val lifecycleVersion = "2.6.2"
     val appCompatVersion = "1.6.1"
     val volleyVersion = "1.2.1"
@@ -62,13 +64,14 @@ dependencies {
     val nav_version = "2.7.4"
     val room_version = "2.6.0"
 
+    implementation(firebaseBom)
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
 
-    implementation("com.google.firebase:firebase-auth-ktx:22.2.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
-    debugImplementation ("androidx.compose.ui:ui-tooling:1.5.4")
     implementation("androidx.appcompat:appcompat:$appCompatVersion")
     implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
     implementation("androidx.activity:activity-ktx:$activityVersion")
@@ -80,23 +83,20 @@ dependencies {
     // Feature module Support
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
 
-    //fcm
-    implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")
-    implementation ("com.google.firebase:firebase-analytics-ktx:21.4.0")
 
     // Jetpack Compose Integration
+    implementation(composeBom)
+    implementation("androidx.activity:activity-compose:1.8.0")
     implementation("androidx.navigation:navigation-compose:$nav_version")
-
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3-window-size-class")
-    implementation("androidx.activity:activity-compose:1.8.0")
     implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.compose.runtime:runtime-rxjava2")
-
-
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
+    androidTestImplementation(composeBom)
 
 
     // ViewModel
