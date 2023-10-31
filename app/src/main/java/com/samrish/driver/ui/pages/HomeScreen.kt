@@ -1,5 +1,8 @@
 package com.samrish.driver.ui.pages
 
+import android.content.Intent
+import android.location.Location
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.samrish.driver.LocationService
 import com.samrish.driver.ui.components.AssignedTrip
 import com.samrish.driver.ui.components.AssignedVehicle
 import com.samrish.driver.ui.viewmodels.HomeViewModel
@@ -80,8 +84,15 @@ fun HomeScreen(
                     }
 
                 }
+                val location = Intent(context, LocationService::class.java)
+                context.stopService(location)
             }
-            it.trips.forEach { trip -> AssignedTrip(trip, onClick=onTripSelected) }
+            else {
+                val location = Intent(context, LocationService::class.java)
+                context.startForegroundService(location)
+                Log.d("Location Intent", "HomeScreen: ")
+                it.trips.forEach { trip -> AssignedTrip(trip, onClick = onTripSelected) }
+            }
 
             if (it.userLocationVisible) {
                 MatrixLog()
