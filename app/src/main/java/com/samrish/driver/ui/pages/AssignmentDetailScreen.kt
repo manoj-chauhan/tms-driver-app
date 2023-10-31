@@ -255,7 +255,7 @@ fun AssignmentDetailScreen(
                             Surface(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(80.dp)
+                                    .height(100.dp)
                             )
                             {
                                 val context = LocalContext.current
@@ -266,20 +266,7 @@ fun AssignmentDetailScreen(
                                     horizontalArrangement = Arrangement.SpaceEvenly,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Button(
-                                        colors = ButtonDefaults.buttonColors(
-                                            Color.LightGray
-                                        ),
-                                        onClick = {
-                                            isScheduleSelected.value = true
-                                        }
-                                    ) {
-                                        Text(
-                                            text = "Schedule",
-                                            style = TextStyle(color = Color.Black)
-                                        )
 
-                                    }
                                     Button(
                                         colors = ButtonDefaults.buttonColors(
                                             Color.LightGray
