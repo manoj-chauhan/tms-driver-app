@@ -1,44 +1,94 @@
 package com.samrish.driver.network
 
 import android.content.Context
-import android.util.Log
-import com.github.kittinunf.fuel.core.FuelManager
-import com.github.kittinunf.fuel.core.extensions.authentication
-import com.github.kittinunf.fuel.core.extensions.jsonBody
-import com.samrish.driver.R
 import com.samrish.driver.models.Telemetry
+import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonClass
+import com.squareup.moshi.JsonReader
+import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.ToJson
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
-class TelemetryNetRepository @Inject constructor(@ApplicationContext private val context: Context) {
-    fun sentTelemetry(telemetry: Telemetry) {
-        val moshi = Moshi.Builder().build()
-        val jsonAdapter: JsonAdapter<Telemetry> =
-            moshi.adapter(Telemetry::class.java)
-        val requestBody: String = jsonAdapter.toJson(telemetry)
 
+@JsonClass(generateAdapter = true)
+data class TelemetryPost(
+    var deviceIdentifier: String,
+    var deviceName: String,
+    var latitude:Double,
+    var longitude: Double,
+    var time: LocalDateTime
+)
 
-        val url = context.resources.getString(R.string.url_device_matrix)
+class DateTimeAdapter : JsonAdapter<LocalDateTime>() {
+    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        val fuelManager = FuelManager()
-        getAccessToken(context)?.let {
-            {
-                val (_, response, result) = fuelManager.post(url).authentication()
-                    .bearer(it)
-                    .jsonBody(requestBody)
-                    .response()
+    @FromJson
+    override fun fromJson(reader: JsonReader): LocalDateTime? {
+        return try {
+            val dateAsString = reader.nextString()
+            synchronized(dateTimeFormatter) {
+                dateTimeFormatter.parse(dateAsString) as LocalDateTime
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
 
-                result.fold(
-                    { successResponse ->
-                        Log.d("Device Matrix", "Device Matrix Sent Successful")
-                    },
-                    { error ->
-                        Log.d("Device Matrix", "Matrix sending Failed $error")
-                        throw Exception("Device Matrix Failed");
-                    })
+    @ToJson
+    override fun toJson(writer: JsonWriter, value: LocalDateTime?) {
+        if (value != null) {
+            synchronized(dateTimeFormatter) {
+                writer.value(dateTimeFormatter.format(value))
             }
         }
+    }
+
+    companion object {
+        const val SERVER_FORMAT = ("yyyy-MM-dd HH:mm:ss") // define your server format here
+    }
+}
+
+class TelemetryNetRepository @Inject constructor(@ApplicationContext private val context: Context)  {
+
+    fun sentTelemetry(telemetry: Telemetry) {
+
+        val moshi = Moshi.Builder()
+            .add(DateTimeAdapter())
+            .build()
+        val jsonAdapter: JsonAdapter<TelemetryPost> = moshi.adapter(TelemetryPost::class.java)
+        val deviceName = Build.MANUFACTURER + " " + Build.MODEL
+        val requestBody: String = jsonAdapter.toJson(TelemetryPost(
+            deviceIdentifier = telemetry.deviceIdentifier,
+            deviceName = deviceName,
+            latitude = telemetry.latitude,
+            longitude = telemetry.longitude,
+            time = telemetry.time)
+        )
+
+        Log.d("Telemetry", requestBody)
+
+        getAccessToken(context)?.let { accessToken ->
+
+            val url = context.resources.getString(R.string.url_device_matrix)
+            val fuelManager = FuelManager()
+            val (_, response, result) = fuelManager.post(url).authentication().bearer(accessToken)
+                .jsonBody(requestBody)
+                .response()
+
+            result.fold(
+                { _ ->
+                    Log.d("Telemetry", "Telemetry Posted")
+                },
+                { error ->
+                    Log.d("Telemetry", "Telemetry Failed $error")
+                    throw Exception("Error in posting telemetry");
+                })
+        }
+
     }
 }
