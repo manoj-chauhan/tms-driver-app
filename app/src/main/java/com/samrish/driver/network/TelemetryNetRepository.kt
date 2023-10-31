@@ -1,6 +1,12 @@
 package com.samrish.driver.network
 
 import android.content.Context
+import android.os.Build
+import android.util.Log
+import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.core.extensions.authentication
+import com.github.kittinunf.fuel.core.extensions.jsonBody
+import com.samrish.driver.R
 import com.samrish.driver.models.Telemetry
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonAdapter
