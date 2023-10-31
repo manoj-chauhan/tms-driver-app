@@ -1,5 +1,6 @@
 package com.samrish.driver.ui.pages
 
+import android.app.ActivityManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -70,16 +71,14 @@ fun HomeScreen(
     val currentAssignmentData by vm.currentAssignment.collectAsStateWithLifecycle()
     vm.fetchAssignmentDetail(context = context)
 
-    fun isLocationServiceEnabled(context: Context): Boolean {
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
-        // Check if GPS provider is enabled
-        val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        // Check if Network provider is enabled
-        val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-
-        // Return true if either GPS or Network provider is enabled
-        return isGpsEnabled || isNetworkEnabled
+     fun isLocationServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
+        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -131,7 +130,8 @@ fun HomeScreen(
             else {
                 val location = Intent(context, LocationService::class.java)
                 context.startForegroundService(location)
-                val service = isLocationServiceEnabled(context)
+                val loc = LocationService::class.java
+                val service = isLocationServiceRunning(context, loc)
                 if (service){
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Image(
