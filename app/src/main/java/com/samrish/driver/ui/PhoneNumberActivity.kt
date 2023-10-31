@@ -49,7 +49,6 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.samrish.driver.MainActivity
 import java.util.concurrent.TimeUnit
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -99,10 +98,6 @@ class PhoneNumberActivity : ComponentActivity() {
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken,
             ) {
-                // The SMS verification code has been sent to the provided phone number, we
-                // now need to ask the user to enter the code and then construct a credential
-                // by combining the code with a verification ID.
-                // Save verification ID and resending token so we can use them later
                 super.onCodeSent(verificationId, token)
                 val intent = Intent(this@PhoneNumberActivity, OTPActivity::class.java)
                 intent.putExtra("OTP", verificationId)
@@ -196,7 +191,7 @@ class PhoneNumberActivity : ComponentActivity() {
                                 Row(
                                     modifier = Modifier.fillMaxSize(),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.Center
                                 ) {
                                     Button(onClick = {
                                         number = "+91"+text.text.trim().toString()
@@ -242,15 +237,5 @@ class PhoneNumberActivity : ComponentActivity() {
                     // Update UI
                 }
             }
-    }
-
-
-
-
-    override fun onStart() {
-        super.onStart()
-        if(auth.currentUser!= null){
-            startActivity(Intent(this, MainActivity::class.java))
-        }
     }
 }

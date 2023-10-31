@@ -25,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
@@ -131,11 +132,7 @@ class LoginUserNameActivity : ComponentActivity() {
 //            startActivity(myIntent)
 //        }
 
-        fun phoneLogin() {
-            Log.d(TAG, "phoneLogin: ")
-            val loginIntent = Intent(this, PhoneNumberActivity::class.java)
-            startActivity(loginIntent)
-        }
+
 
         setContent {
             Column() {
@@ -231,10 +228,9 @@ class LoginUserNameActivity : ComponentActivity() {
                                     }
                                 )
 
-
                                 Icon(
                                     imageVector = Icons.Default.Phone,
-                                    contentDescription = "Phone Icon",
+                                    contentDescription = "Home Icon",
                                     modifier = Modifier.clickable {
                                         phoneLogin()
                                     }
@@ -266,6 +262,12 @@ class LoginUserNameActivity : ComponentActivity() {
 
         })
 
+    }
+
+    private fun phoneLogin() {
+        Log.d(TAG, "phoneLogin: ")
+        val loginIntent = Intent(this, PhoneNumberActivity::class.java)
+        startActivity(loginIntent)
     }
 
 

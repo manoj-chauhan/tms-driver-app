@@ -1,7 +1,6 @@
 package com.samrish.driver.ui
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,6 +46,7 @@ fun AppNavigationHost(
     navController: NavHostController
 ) {
 
+    val context = LocalContext.current
     var expander by remember {
         mutableStateOf(false)
     }
@@ -56,10 +56,6 @@ fun AppNavigationHost(
     }
 
     var userProfile by remember {
-        mutableStateOf(false)
-    }
-
-    var logout by remember {
         mutableStateOf(false)
     }
 
@@ -113,7 +109,12 @@ fun AppNavigationHost(
                         })
 
                     DropdownMenuItem(text = { Text(text = "Log out") },
-                        onClick = { logout = true; expander = false },
+                        onClick = {
+                            val myIntent = Intent(context, LoginUserNameActivity::class.java)
+                            myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            context.startActivity(myIntent)
+                            clearSession(context)
+                        },
                         leadingIcon = {
                             Icon(imageVector = Icons.Filled.Logout, contentDescription = null)
                         })
@@ -154,17 +155,9 @@ fun AppNavigationHost(
         userProfile = false
     }
 
-    if(history){
+    if (history) {
         navController.navigate("history")
         history = false
-    }
-
-    if (logout) {
-        val myIntent = Intent(LocalContext.current, LoginUserNameActivity::class.java)
-        myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        LocalContext.current.startActivity(myIntent)
-        clearSession(LocalContext.current)
-        logout= false
     }
 
 
@@ -185,7 +178,7 @@ fun AppNavigationHost(
             MatrixLog()
         }
 
-        composable("history"){
+        composable("history") {
             HistoryScreen()
         }
 
@@ -205,12 +198,6 @@ fun AppNavigationHost(
                     navController.navigate("current-assignment-detail")
                 }
             )
-        }
-
-        composable("login"){
-            Log.d("TAG", "AppNavigationHost: ")
-//            val myIntent = Intent(LocalContext.current, PhoneNumberActivity::class.java)
-//            LocalContext.current.startActivity(myIntent)
         }
     }
 }
