@@ -37,3 +37,11 @@ data class Trip(
     @PrimaryKey val tripId : Int,
 
 )
+
+@Entity
+data class History(
+    @ColumnInfo(name = " state" ) val state: String,
+    @ColumnInfo(name =  "description" ) val description: String,
+    @ColumnInfo(name =  "time" ) val time: String
+
+)
