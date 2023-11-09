@@ -19,7 +19,6 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.samrish.driver.models.Telemetry
 import com.samrish.driver.telemetry.TelemetryManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -124,7 +123,7 @@ class LocationService : Service(), LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        this.locationManager!!.requestLocationUpdates(provider!!, 0, 0.0f, this)
+        this.locationManager!!.requestLocationUpdates(provider!!, 4, 0f, this)
     }
 
     override fun onDestroy() {

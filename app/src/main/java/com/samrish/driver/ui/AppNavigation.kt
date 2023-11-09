@@ -1,6 +1,7 @@
 package com.samrish.driver.ui
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.google.firebase.auth.FirebaseAuth
+import com.samrish.driver.LocationService
 import com.samrish.driver.LoginActivity
 import com.samrish.driver.network.clearSession
 import com.samrish.driver.network.getAccessToken
@@ -38,6 +41,7 @@ import com.samrish.driver.ui.pages.HistoryScreen
 import com.samrish.driver.ui.pages.HomeScreen
 import com.samrish.driver.ui.pages.MatrixLog
 import com.samrish.driver.ui.pages.UserProfile
+import java.util.concurrent.TimeUnit
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -140,6 +144,22 @@ fun AppNavigationHost(
         startScreen = "home"
     }
 
+    val accessToken = getAccessToken(LocalContext.current)
+
+    if (accessToken != null) {
+//        if (isTokenExpired(accessToken)) {
+//            startScreen = "login"
+//        } else {
+            startScreen = "home"
+//        }
+    } else {
+        val location = Intent(context, LocationService::class.java)
+        context.stopService(location)
+        Log.d("TAG", "AppNavigationHost: No auth token present ")
+        startScreen = "login"
+    }
+
+
     if (startScreen == "login") {
         val myIntent = Intent(LocalContext.current, LoginActivity::class.java)
         LocalContext.current.startActivity(myIntent)
@@ -201,4 +221,21 @@ fun AppNavigationHost(
         }
     }
 }
+
+//fun isTokenExpired(token: String): Boolean {
+//    val firebaseAuth = FirebaseAuth.getInstance()
+//    val currentUser = firebaseAuth.currentUser
+//
+//    return if (currentUser != null) {
+//        val expirationTimeMillis = currentUser.metadata?.lastSignInTimestamp ?: 0
+//        val currentTimeMillis = System.currentTimeMillis()
+//
+//        val expirationTimeThreshold = TimeUnit.HOURS.toMillis(1) // 1 hour
+//
+//        currentTimeMillis - expirationTimeMillis > expirationTimeThreshold
+//    } else {
+//        true
+//    }
+//}
+
 

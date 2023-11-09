@@ -1,10 +1,8 @@
 package com.samrish.driver.ui.pages
 
 import android.app.ActivityManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.location.LocationManager
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,7 +35,6 @@ import com.samrish.driver.ui.components.AssignedVehicle
 import com.samrish.driver.ui.viewmodels.HomeViewModel
 import com.samrish.driver.ui.viewmodels.MatrixLogViewModel
 import com.samrish.driver.ui.viewmodels.TripsAssigned
-import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 
 
@@ -145,10 +141,17 @@ fun HomeScreen(
                                     Text(text = "Last recorded location time ${formattedDate} ")
 
                                 }
+                            }else {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(text = "Last recorded location time - Not shared ")
+                                    }
+                                }
                             }
                         }
-
-
                     }
                 }
                 Log.d("Location Intent", "HomeScreen: ")
