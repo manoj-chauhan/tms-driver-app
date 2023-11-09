@@ -1,12 +1,13 @@
 package com.samrish.driver.ui.viewmodels
 
 import android.content.Context
-import android.util.Log
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
+import com.samrish.driver.LoginActivity
 import com.samrish.driver.R
 import com.samrish.driver.network.getAccessToken
 import com.samrish.driver.vehiclemgmt.VehicleManager
@@ -86,10 +87,9 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
                         channel1.send(vehicleAssignment)
                     },
                     { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
+                        if (error.response.statusCode == 401) {
+                            navigateToLoginActivity(context)
+                        }
                     }
                 )
             }
@@ -115,10 +115,9 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
 
                     },
                     { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
+                        if (error.response.statusCode == 401) {
+                            navigateToLoginActivity(context)
+                        }
                     }
                 )
             }
@@ -136,9 +135,14 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
                 )
             }
         }
-
-
     }
+
+    private fun navigateToLoginActivity(context: Context) {
+            val intent = Intent(context, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or  Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            context.startActivity(intent)
+    }
+
 
     fun generateAssignmentCode(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.google.firebase.auth.FirebaseAuth
 import com.samrish.driver.LocationService
 import com.samrish.driver.LoginActivity
 import com.samrish.driver.network.clearSession
@@ -41,7 +40,6 @@ import com.samrish.driver.ui.pages.HistoryScreen
 import com.samrish.driver.ui.pages.HomeScreen
 import com.samrish.driver.ui.pages.MatrixLog
 import com.samrish.driver.ui.pages.UserProfile
-import java.util.concurrent.TimeUnit
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -147,11 +145,7 @@ fun AppNavigationHost(
     val accessToken = getAccessToken(LocalContext.current)
 
     if (accessToken != null) {
-//        if (isTokenExpired(accessToken)) {
-//            startScreen = "login"
-//        } else {
             startScreen = "home"
-//        }
     } else {
         val location = Intent(context, LocationService::class.java)
         context.stopService(location)
@@ -221,21 +215,3 @@ fun AppNavigationHost(
         }
     }
 }
-
-//fun isTokenExpired(token: String): Boolean {
-//    val firebaseAuth = FirebaseAuth.getInstance()
-//    val currentUser = firebaseAuth.currentUser
-//
-//    return if (currentUser != null) {
-//        val expirationTimeMillis = currentUser.metadata?.lastSignInTimestamp ?: 0
-//        val currentTimeMillis = System.currentTimeMillis()
-//
-//        val expirationTimeThreshold = TimeUnit.HOURS.toMillis(1) // 1 hour
-//
-//        currentTimeMillis - expirationTimeMillis > expirationTimeThreshold
-//    } else {
-//        true
-//    }
-//}
-
-
