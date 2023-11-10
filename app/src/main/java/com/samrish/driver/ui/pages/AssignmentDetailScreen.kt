@@ -1,7 +1,9 @@
 package com.samrish.driver.ui.pages
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +69,7 @@ fun AssignmentDetailScreen(
     }
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
     val isDocumentSelected = remember { mutableStateOf(false); }
+    val isHistorySelected = remember { mutableStateOf(false); }
 
     val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
     val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
@@ -101,6 +104,7 @@ fun AssignmentDetailScreen(
                             )
                         )
                 ) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
 
                     Text(
                         text = it.tripDetail.operatorName, style = TextStyle(
@@ -108,6 +112,9 @@ fun AssignmentDetailScreen(
                             fontSize = 23.sp
                         )
                     )
+                        Image(painter = painterResource(id = R.drawable.history), contentDescription = "" , modifier = Modifier.clickable { isHistorySelected.value= true })
+                    }
+
 
                 }
 
@@ -355,7 +362,7 @@ fun AssignmentDetailScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 25.dp, top = 30.dp, end = 12.dp)
-                                    .height(100.dp), contentAlignment = Alignment.BottomStart
+                                    .height(130.dp), contentAlignment = Alignment.BottomStart
                             ) {
 
 
@@ -421,10 +428,9 @@ fun AssignmentDetailScreen(
                                                 )
                                             )
                                         }
-                                        Row(
+                                        Column(
                                             modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.Bottom
+
                                         ) {
                                             Text(
                                                 text = "Distance Covered ${assignment?.activeStatusDetail?.travelledDistance}km",
@@ -590,6 +596,9 @@ fun AssignmentDetailScreen(
                                 }
                             }
                         }
+//                        if(isHistorySelected.value){
+//                            navController.navigate("history_detail")
+//                        }
                     }
                 }
             }

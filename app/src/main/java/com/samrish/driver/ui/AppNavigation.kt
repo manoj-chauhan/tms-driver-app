@@ -213,5 +213,9 @@ fun AppNavigationHost(
                 }
             )
         }
+
+//        composable("history_detail"){
+//            History()
+//        }
     }
 }

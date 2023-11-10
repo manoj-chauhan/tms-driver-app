@@ -8,6 +8,7 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
 import com.samrish.driver.models.History
+import com.samrish.driver.ui.viewmodels.TripHistory
 import com.samrish.driver.ui.viewmodels.TripsAssigned
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -47,6 +48,38 @@ class TripNetRepository @Inject constructor(@ApplicationContext private val cont
         }
     }
 
+    fun fetchTripHistory(): List<TripHistory>? {
+        val assignedTripHistory =
+            Types.newParameterizedType(MutableList::class.java, TripHistory::class.java)
+        val adapter: JsonAdapter<MutableList<TripHistory>> =
+            Moshi.Builder().build().adapter(assignedTripHistory)
+
+        val tripHistoryUrl = context.resources.getString(R.string.url_trips_detail)+"7126/" +"history"
+        Log.d("TAG", "fetchTripHistory: $tripHistoryUrl ")
+        return try {
+            getAccessToken(context)?.let {
+                val (_, _, result) = tripHistoryUrl.httpGet()
+                    .authentication().bearer(it)
+                    .header("Company-Id", 179)
+                    .responseObject(moshiDeserializerOf(adapter))
+                Log.d("TAG", "tripList:$result ")
+                result.fold(
+                    {
+
+                    },
+                    {
+                        EventBus.getDefault().post("AUTH_FAILED")
+                    }
+                )
+
+                result.get()
+            }
+        } catch (e: Exception) {
+            null
+        }
+
+    }
+
     fun fetchPastTrips(currentPage:Int): List<History>? {
         val url = context.resources.getString(R.string.url_trip_history)  + "assignmentHistory?pageno="+ currentPage
         Log.d("TAG", "fetchHistoryDetail:$url ")
@@ -76,5 +109,7 @@ class TripNetRepository @Inject constructor(@ApplicationContext private val cont
         }
         return null;
     }
+
+
 
 }
