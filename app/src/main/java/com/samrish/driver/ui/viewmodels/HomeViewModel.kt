@@ -1,14 +1,13 @@
 package com.samrish.driver.ui.viewmodels
 
 import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
-import com.samrish.driver.LoginActivity
 import com.samrish.driver.R
+import com.samrish.driver.errormgmt.ErrManager
 import com.samrish.driver.network.getAccessToken
 import com.samrish.driver.vehiclemgmt.VehicleManager
 import com.squareup.moshi.JsonAdapter
@@ -63,7 +62,8 @@ data class CurrentAssignmentData (
 )
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManager) : ViewModel() {
+class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManager, private  val errorManager: ErrManager) : ViewModel() {
+
 
     private val _currentAssignment: MutableStateFlow<CurrentAssignmentData?> =
         MutableStateFlow(null)
@@ -88,7 +88,7 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
                     },
                     { error ->
                         if (error.response.statusCode == 401) {
-                            navigateToLoginActivity(context)
+                            errorManager.getErrorDescription(context)
                         }
                     }
                 )
@@ -116,7 +116,7 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
                     },
                     { error ->
                         if (error.response.statusCode == 401) {
-                            navigateToLoginActivity(context)
+                            errorManager.getErrorDescription(context)
                         }
                     }
                 )
@@ -135,12 +135,6 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
                 )
             }
         }
-    }
-
-    private fun navigateToLoginActivity(context: Context) {
-            val intent = Intent(context, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or  Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            context.startActivity(intent)
     }
 
 
