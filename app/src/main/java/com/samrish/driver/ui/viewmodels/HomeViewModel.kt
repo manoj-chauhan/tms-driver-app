@@ -39,6 +39,13 @@ data class VehicleAssignment(
 )
 
 @JsonClass(generateAdapter = true)
+data class errorDescription(
+    val  errorCode :  String,
+    val errorDescription:String,
+    val errorShortDescription: String
+)
+
+@JsonClass(generateAdapter = true)
 data class TripsAssigned(
     var tripCode: String,
     var tripName:String,
@@ -117,6 +124,12 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
                     { error ->
                         if (error.response.statusCode == 401) {
                             errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+//                        Log.d("Error", "fetchAssignmentDetail: $errorResponse")
+                        launch(Dispatchers.Main) {
+                            errorManager.handleErrorResponse(context, errorResponse)
                         }
                     }
                 )

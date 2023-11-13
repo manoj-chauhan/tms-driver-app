@@ -14,6 +14,7 @@ import com.github.kittinunf.fuel.core.response
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
+import com.samrish.driver.errormgmt.ErrManager
 import com.samrish.driver.models.ActiveStatusDetail
 import com.samrish.driver.models.AssignmentDetailData
 import com.samrish.driver.models.Documents
@@ -26,6 +27,7 @@ import com.samrish.driver.network.getAccessToken
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,9 +35,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
-class AssignmentDetailViewModel (application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class AssignmentDetailViewModel @Inject constructor(private  val errorManager: ErrManager, application: Application): AndroidViewModel(application)  {
 
     private val _assignmentDetail: MutableStateFlow<AssignmentDetailData?> = MutableStateFlow(null)
     val assignmentDetail: StateFlow<AssignmentDetailData?> = _assignmentDetail.asStateFlow()
@@ -186,12 +189,36 @@ class AssignmentDetailViewModel (application: Application) : AndroidViewModel(ap
                 val requestBody: String = jsonAdapter.toJson(request)
 
 
+                    Log.d("TAG", "startTrip ")
                 val url = context.resources.getString(R.string.url_trip_start)
                 getAccessToken(context)?.let {
                     val fuelManager = FuelManager()
                     val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
                         .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
                         .response()
+
+                    Log.d("TAG", "startTrip: $result")
+
+                    if (response.statusCode == 200) {
+                        // The request was successful, handle the response here
+                    } else {
+                        result.fold(
+                            { _ ->
+
+                            },
+                            { error ->
+                                if (error.response.statusCode == 401) {
+                                    errorManager.getErrorDescription(context)
+                                }
+
+                                val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                                Log.d("Error", "fetchAssignmentDetail: $errorResponse")
+                                launch(Dispatchers.Main) {
+                                    errorManager.handleErrorResponse(context, errorResponse)
+                                }
+                            }
+                        )
+                    }
                 }
                 fetchAssignmentDetail(context,tripId, tripCode, operatorId)
 
@@ -217,6 +244,27 @@ class AssignmentDetailViewModel (application: Application) : AndroidViewModel(ap
                     val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
                         .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
                         .response()
+
+                    if (response.statusCode == 200) {
+                        // The request was successful, handle the response here
+                    } else {
+                        result.fold(
+                            { _ ->
+
+                            },
+                            { error ->
+                                if (error.response.statusCode == 401) {
+                                    errorManager.getErrorDescription(context)
+                                }
+
+                                val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                                Log.d("Error", "fetchAssignmentDetail: $errorResponse")
+                                launch(Dispatchers.Main) {
+                                    errorManager.handleErrorResponse(context, errorResponse)
+                                }
+                            }
+                        )
+                    }
                 }
                 fetchAssignmentDetail(context,tripId, tripCode, operatorId)
 
@@ -243,6 +291,27 @@ class AssignmentDetailViewModel (application: Application) : AndroidViewModel(ap
                     val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
                         .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
                         .response()
+
+                    if (response.statusCode == 200) {
+                        // The request was successful, handle the response here
+                    } else {
+                        result.fold(
+                            { _ ->
+
+                            },
+                            { error ->
+                                if (error.response.statusCode == 401) {
+                                    errorManager.getErrorDescription(context)
+                                }
+
+                                val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                                Log.d("Error", "fetchAssignmentDetail: $errorResponse")
+                                launch(Dispatchers.Main) {
+                                    errorManager.handleErrorResponse(context, errorResponse)
+                                }
+                            }
+                        )
+                    }
                 }
                 fetchAssignmentDetail(context,tripId, tripCode, operatorId)
 
@@ -267,6 +336,27 @@ class AssignmentDetailViewModel (application: Application) : AndroidViewModel(ap
                     val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
                         .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
                         .response()
+
+                    if (response.statusCode == 200) {
+                        // The request was successful, handle the response here
+                    } else {
+                        result.fold(
+                            { _ ->
+
+                            },
+                            { error ->
+                                if (error.response.statusCode == 401) {
+                                    errorManager.getErrorDescription(context)
+                                }
+
+                                val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                                Log.d("Error", "fetchAssignmentDetail: $errorResponse")
+                                launch(Dispatchers.Main) {
+                                    errorManager.handleErrorResponse(context, errorResponse)
+                                }
+                            }
+                        )
+                    }
                 }
                 fetchAssignmentDetail(context,tripId, tripCode, operatorId)
 
@@ -292,6 +382,27 @@ class AssignmentDetailViewModel (application: Application) : AndroidViewModel(ap
                     val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
                         .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
                         .response()
+
+                    if (response.statusCode == 200) {
+                        // The request was successful, handle the response here
+                    } else {
+                        result.fold(
+                            { _ ->
+
+                            },
+                            { error ->
+                                if (error.response.statusCode == 401) {
+                                    errorManager.getErrorDescription(context)
+                                }
+
+                                val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                                Log.d("Error", "fetchAssignmentDetail: $errorResponse")
+                                launch(Dispatchers.Main) {
+                                    errorManager.handleErrorResponse(context, errorResponse)
+                                }
+                            }
+                        )
+                    }
                 }
 
                 Toast.makeText(

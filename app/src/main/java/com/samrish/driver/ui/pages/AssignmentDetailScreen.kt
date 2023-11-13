@@ -36,8 +36,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.samrish.driver.R
 import com.samrish.driver.ui.components.CallCheckInDialog
@@ -53,7 +53,7 @@ fun AssignmentDetailScreen(
     operatorId: Int,
     tripId: Int,
     tripCode: String,
-    vm: AssignmentDetailViewModel = viewModel(),
+    vm: AssignmentDetailViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val painter = painterResource(id = R.drawable.signal)
