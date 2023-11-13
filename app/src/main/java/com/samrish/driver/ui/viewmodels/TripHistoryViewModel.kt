@@ -28,10 +28,10 @@ class TripHistoryViewModel @Inject constructor(private val tripHistoryManager: T
     private val  _historyDetail: MutableStateFlow<List<TripHistory>?> = MutableStateFlow(null)
     val tripHistory:  StateFlow<List<TripHistory>?> = _historyDetail.asStateFlow()
 
-    fun fetchTripHistoryDetail(context: Context){
+    fun fetchTripHistoryDetail(context: Context, tripCode:String){
 
         viewModelScope.launch(Dispatchers.IO) {
-            val historyList = tripHistoryManager.getTripHistory()
+            val historyList = tripHistoryManager.getTripHistory(tripCode)
             _historyDetail.update { _ ->
                 historyList
             }

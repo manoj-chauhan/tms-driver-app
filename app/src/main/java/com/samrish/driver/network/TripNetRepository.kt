@@ -48,14 +48,14 @@ class TripNetRepository @Inject constructor(@ApplicationContext private val cont
         }
     }
 
-    fun fetchTripHistory(): List<TripHistory>? {
+    fun fetchTripHistory(tripCode:String): List<TripHistory>? {
         val assignedTripHistory =
             Types.newParameterizedType(MutableList::class.java, TripHistory::class.java)
         val adapter: JsonAdapter<MutableList<TripHistory>> =
             Moshi.Builder().build().adapter(assignedTripHistory)
 
-        val tripHistoryUrl = context.resources.getString(R.string.url_trips_detail)+"7126/" +"history"
-        Log.d("TAG", "fetchTripHistory: $tripHistoryUrl ")
+        val tripHistoryUrl = context.resources.getString(R.string.url_trips_detail)+"$tripCode/" +"history"
+        Log.d("tripHistoryurl", "fetchTripHistory: $tripHistoryUrl ")
         return try {
             getAccessToken(context)?.let {
                 val (_, _, result) = tripHistoryUrl.httpGet()
