@@ -216,7 +216,11 @@ fun AppNavigationHost(
         }
 
         composable("history_detail"){
-            History(navController = navController, selectedAssignmentCode)
+            History(navController = navController, selectedAssignmentCode, operatorId)
+        }
+
+        composable("login"){
+
         }
     }
 }

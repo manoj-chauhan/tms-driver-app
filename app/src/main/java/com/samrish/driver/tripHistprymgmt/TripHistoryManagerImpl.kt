@@ -10,8 +10,8 @@ class TripHistoryManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val tripNetRepository: TripNetRepository,
 ): TripHistoryManager {
-    override fun getTripHistory(tripCode:String): List<TripHistory>? {
-        return tripNetRepository.fetchTripHistory(tripCode)
+    override fun getTripHistory(tripCode:String, operatorId:Int): List<TripHistory>? {
+        return tripNetRepository.fetchTripHistory(tripCode, operatorId)
     }
 
 

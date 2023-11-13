@@ -33,11 +33,11 @@ import com.samrish.driver.ui.viewmodels.TripHistory
 import com.samrish.driver.ui.viewmodels.TripHistoryViewModel
 
 @Composable
-fun History(navController: NavHostController,tripCode: String, thm: TripHistoryViewModel = hiltViewModel()) {
+fun History(navController: NavHostController,tripCode: String,operatorId:Int, thm: TripHistoryViewModel = hiltViewModel()) {
     val context = LocalContext.current
 
     val currentAssignmentData by thm.tripHistory.collectAsStateWithLifecycle()
-    thm.fetchTripHistoryDetail(context = context, tripCode)
+    thm.fetchTripHistoryDetail(context = context, tripCode, operatorId)
 
     Box(
         modifier = Modifier

@@ -48,7 +48,7 @@ class TripNetRepository @Inject constructor(@ApplicationContext private val cont
         }
     }
 
-    fun fetchTripHistory(tripCode:String): List<TripHistory>? {
+    fun fetchTripHistory(tripCode:String, operatorId:Int): List<TripHistory>? {
         val assignedTripHistory =
             Types.newParameterizedType(MutableList::class.java, TripHistory::class.java)
         val adapter: JsonAdapter<MutableList<TripHistory>> =
@@ -60,7 +60,7 @@ class TripNetRepository @Inject constructor(@ApplicationContext private val cont
             getAccessToken(context)?.let {
                 val (_, _, result) = tripHistoryUrl.httpGet()
                     .authentication().bearer(it)
-                    .header("Company-Id", 179)
+                    .header("Company-Id", operatorId)
                     .responseObject(moshiDeserializerOf(adapter))
                 Log.d("TAG", "tripList:$result ")
                 result.fold(
@@ -68,6 +68,8 @@ class TripNetRepository @Inject constructor(@ApplicationContext private val cont
 
                     },
                     {
+                        val errorResponse = it.response.responseMessage
+                        Log.d("TAG", "fetchTripHistory: $errorResponse")
                         EventBus.getDefault().post("AUTH_FAILED")
                     }
                 )
