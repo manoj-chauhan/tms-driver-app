@@ -22,15 +22,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.samrish.driver.ui.viewmodels.TripHistoryViewModel
 
 @Composable
-fun History(thm: TripHistoryViewModel = hiltViewModel()) {
+fun History(navController: NavHostController, thm: TripHistoryViewModel = hiltViewModel()) {
     val context = LocalContext.current
 
     val currentAssignmentData by thm.tripHistory.collectAsStateWithLifecycle()
@@ -196,10 +196,4 @@ fun History(thm: TripHistoryViewModel = hiltViewModel()) {
         }
 
     }
-}
-
-@Preview
-@Composable
-fun HistoryPreview() {
-    History()
 }

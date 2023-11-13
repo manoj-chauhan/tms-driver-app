@@ -104,7 +104,13 @@ fun AssignmentDetailScreen(
                             )
                         )
                 ) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            PaddingValues(
+                                end = 12.dp,
+                            )
+                        ), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
 
                     Text(
                         text = it.tripDetail.operatorName, style = TextStyle(
@@ -112,13 +118,16 @@ fun AssignmentDetailScreen(
                             fontSize = 23.sp
                         )
                     )
-                        Image(painter = painterResource(id = R.drawable.history), contentDescription = "" , modifier = Modifier.clickable { isHistorySelected.value= true })
+
+                        Image(painter = painterResource(id = R.drawable.history), contentDescription = "" , modifier = Modifier
+                            .clickable { navController.navigate("history_detail") }
+                            .height(30.dp)
+                            )
                     }
 
 
                 }
 
-//            Box(modifier = Modifier.fillMaxSize().background(Color.Gray)){
                 Column(
                     modifier = Modifier
                         .verticalScroll(rememberScrollState()) // Use verticalScroll instead of ScrollView
@@ -596,9 +605,6 @@ fun AssignmentDetailScreen(
                                 }
                             }
                         }
-//                        if(isHistorySelected.value){
-//                            navController.navigate("history_detail")
-//                        }
                     }
                 }
             }

@@ -36,6 +36,7 @@ import com.samrish.driver.LoginActivity
 import com.samrish.driver.network.clearSession
 import com.samrish.driver.network.getAccessToken
 import com.samrish.driver.ui.pages.AssignmentDetailScreen
+import com.samrish.driver.ui.pages.History
 import com.samrish.driver.ui.pages.HistoryScreen
 import com.samrish.driver.ui.pages.HomeScreen
 import com.samrish.driver.ui.pages.MatrixLog
@@ -214,8 +215,8 @@ fun AppNavigationHost(
             )
         }
 
-//        composable("history_detail"){
-//            History()
-//        }
+        composable("history_detail"){
+            History(navController = navController)
+        }
     }
 }
