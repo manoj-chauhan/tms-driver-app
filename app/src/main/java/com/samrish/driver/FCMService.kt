@@ -33,6 +33,7 @@ class FCMService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage);
+        Log.d("Message", "onMessageReceived: $remoteMessage")
         fetchLocalData()
     }
 

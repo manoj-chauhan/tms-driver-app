@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -69,8 +71,7 @@ fun AssignmentDetailScreen(
     }
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
     val isDocumentSelected = remember { mutableStateOf(false); }
-    val isHistorySelected = remember { mutableStateOf(false); }
-
+    var showFullSchedule = remember { mutableStateOf(false) }
     val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
     val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
 
@@ -218,20 +219,48 @@ fun AssignmentDetailScreen(
                                         .padding(8.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Column(modifier = Modifier.fillMaxWidth()) {
-                                        Text(text = "Schedules")
+//                                    Column(modifier = Modifier.fillMaxWidth()) {
+//                                        Text(text = "Schedules")
+//
+//                                        assignment?.loc?.let { it1 ->
+//                                            it1.locations.forEach { location ->
+//                                                Column(
+//                                                    modifier = Modifier
+//                                                        .fillMaxWidth()
+//                                                ) {
+//                                                    LocationList(location)
+//                                                }
+//                                            }
+//                                        }
+//
+//                                    }
 
-                                        assignment?.loc?.let { it1 ->
-                                            it1.locations.forEach { location ->
-                                                Column(
+
+                                    LazyColumn(
+                                        modifier = Modifier
+                                            .height(240.dp)
+                                    ) {
+                                        items(
+                                            items = if (showFullSchedule.value) assignment?.loc?.locations ?: emptyList() else assignment?.loc?.locations?.take(2) ?: emptyList(),
+                                            key = { location -> location.placeCode }
+                                        ) { location ->
+                                                LocationList(location)
+                                        }
+
+                                        if (!showFullSchedule.value && (assignment?.loc?.locations?.size ?: 0) > 3) {
+                                            item {
+                                                Button(
+                                                    onClick = {
+                                                        showFullSchedule.value = true
+                                                    },
                                                     modifier = Modifier
                                                         .fillMaxWidth()
+                                                        .padding(8.dp)
                                                 ) {
-                                                    LocationList(location)
+                                                    Text("Load More")
                                                 }
                                             }
                                         }
-
                                     }
                                 }
 
@@ -273,7 +302,6 @@ fun AssignmentDetailScreen(
                                 .height(50.dp)
                         )
                         {
-                            val context = LocalContext.current
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -302,7 +330,7 @@ fun AssignmentDetailScreen(
 
                         if (it.tripDetail.status == "TRIP_CREATED" || it.tripDetail.status == "TRIP_STARTED") {
                             Box(
-                                modifier = Modifier.height(70.dp),
+                                modifier = Modifier.height(50.dp),
                                 contentAlignment = Alignment.Center
                             ) {
 

@@ -114,7 +114,7 @@ fun AppNavigationHost(
                     DropdownMenuItem(text = { Text(text = "Log out") },
                         onClick = {
                             val myIntent = Intent(context, LoginActivity::class.java)
-                            myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             context.startActivity(myIntent)
                             clearSession(context)
                         },
