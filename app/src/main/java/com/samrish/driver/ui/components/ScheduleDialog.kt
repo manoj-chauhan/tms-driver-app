@@ -108,14 +108,14 @@ import com.samrish.driver.models.ScheduleLocation
                     }
 
                     Text(
-                        text = "25 Apr 2023", style = TextStyle(
+                        text = scheduleLocation.scheduledArrivalTime, style = TextStyle(
                             color = Color.Black,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium
                         )
                     )
                     Text(
-                        text = "25 Apr 2023", style = TextStyle(
+                        text = scheduleLocation.scheduledDepartureTime, style = TextStyle(
                             color = Color.Black,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium
@@ -140,21 +140,26 @@ import com.samrish.driver.models.ScheduleLocation
                             )
                         )
                     }
-
-                    Text(
-                        text = "25 Apr 2023", style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
+                    Box(modifier = Modifier.width(100.dp), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = scheduleLocation?.actualArrivalTime ?: "--",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
                         )
-                    )
-                    Text(
-                        text = "25 Apr 2023", style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
+                    }
+                    Box(modifier = Modifier.width(100.dp), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = scheduleLocation?.actualDepartureTime ?: "--",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
                         )
-                    )
+                    }
                 }
             }
     }

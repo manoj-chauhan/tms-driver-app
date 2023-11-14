@@ -300,6 +300,15 @@ fun AssignmentDetailScreen(
 
                         }
 
+                        if (it.tripDetail.status == "TRIP_CREATED" || it.tripDetail.status == "TRIP_STARTED") {
+                            Box(
+                                modifier = Modifier.height(70.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+
+                            }
+                        }
+
                         if (it.tripDetail.status == "TRIP_IN_TRANSIT") {
                             Box(
                                 modifier = Modifier.height(50.dp),
