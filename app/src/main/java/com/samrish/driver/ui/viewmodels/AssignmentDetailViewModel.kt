@@ -187,7 +187,7 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
                 val jsonAdapter: JsonAdapter<TripStartRequest> =
                     moshi.adapter(TripStartRequest::class.java)
                 val requestBody: String = jsonAdapter.toJson(request)
-                    Log.d("TAG", "startTrip ")
+                Log.d("TAG", "startTrip ")
                 val url = context.resources.getString(R.string.url_trip_start)
                 getAccessToken(context)?.let {
                     val fuelManager = FuelManager()
