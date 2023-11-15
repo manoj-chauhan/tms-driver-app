@@ -229,7 +229,7 @@ fun AssignmentDetailScreen(
                                             }
                                         }
 
-                                        if (!showFullSchedule.value && (assignment?.loc?.locations?.size ?: 0) > 3) {
+                                        if (!showFullSchedule.value && (assignment?.loc?.locations?.size ?: 0) > 2) {
                                             Button(
                                                 onClick = {
                                                     showFullSchedule.value = true
