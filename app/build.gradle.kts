@@ -96,6 +96,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.compose.runtime:runtime-rxjava2")
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
+    implementation ("io.coil-kt:coil-compose:1.4.0")
     androidTestImplementation(composeBom)
 
 

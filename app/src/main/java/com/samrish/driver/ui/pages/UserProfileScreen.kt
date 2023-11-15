@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -25,6 +26,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +47,9 @@ import com.samrish.driver.ui.viewmodels.UserProfileViewModel
 @Composable
 fun UserProfile(vm: UserProfileViewModel = viewModel()) {
     val context = LocalContext.current
+
+    val isDetailsSelected = remember { mutableStateOf(false); }
+    val isDialogVisible = remember { mutableStateOf(false); }
 
     val userDetail by vm.userDetail.collectAsStateWithLifecycle()
     vm.userDetail(context = context)
@@ -93,6 +99,16 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+
+                        Button(onClick = {isDetailsSelected.value  =  true }) {
+                            Text(text = "Add Details")
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Bottom,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -123,7 +139,7 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "21 years old", style = TextStyle(
+                            text = "Age", style = TextStyle(
                                 color = Color.Gray, fontSize = 14.sp, fontWeight = FontWeight.Bold
                             )
                         )
@@ -131,7 +147,7 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                         Icon(
                             imageVector = Icons.Default.Edit, // Use the Edit icon from Icons.Default
                             contentDescription = "Edit Icon",
-                            modifier = Modifier.size(25.dp) // Adjust the size as needed
+                            modifier = Modifier.size(20.dp) // Adjust the size as needed
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -142,7 +158,7 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                     ) {
                         Box(modifier = Modifier.width(300.dp)) {
                             Text(
-                                text = "D-608 3rd Floor, Avantika, Sector-1, Rohini, Delhi- 110085 ",
+                                text = "Address ",
                                 style = TextStyle(
                                     color = Color.Gray,
                                     fontSize = 14.sp,
@@ -154,7 +170,7 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                         Icon(
                             imageVector = Icons.Default.Edit, // Use the Edit icon from Icons.Default
                             contentDescription = "Edit Icon",
-                            modifier = Modifier.size(25.dp) // Adjust the size as needed
+                            modifier = Modifier.size(20.dp) // Adjust the size as needed
                         )
                     }
 
@@ -197,7 +213,7 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                             Icon(
                                 imageVector = Icons.Default.Edit, // Use the Edit icon from Icons.Default
                                 contentDescription = "Edit Icon",
-                                modifier = Modifier.size(30.dp) // Adjust the size as needed
+                                modifier = Modifier.size(25.dp) // Adjust the size as needed
                             )
 
                         }
@@ -207,6 +223,12 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                 }
             }
         }
+    }
+
+    if(isDetailsSelected.value){
+        AddUserDetail(setShowDialog = {
+            isDialogVisible.value = it
+        })
     }
 }
 
