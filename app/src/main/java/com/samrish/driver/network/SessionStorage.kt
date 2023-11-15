@@ -2,6 +2,7 @@ package com.samrish.driver.network
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 
 
 private val authStorage = "AUTHENTICATION"
@@ -59,6 +60,7 @@ fun removeCompanySelection(context: Context) {
 
 fun clearSession(context: Context) {
     var editor = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).edit()
+    Log.d("Clear", "clearSession: ")
     editor.clear()
     editor.apply()
 }
