@@ -27,14 +27,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.Documents
 import com.samrish.driver.ui.viewmodels.DocumentDownloadViewModel
 
 @Composable
-fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>, setShowDialog: (Boolean) -> Unit) {
-    Dialog(onDismissRequest = { setShowDialog(false) }) {
+fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>) {
 
         Surface(
             shape = RoundedCornerShape(16.dp),
@@ -66,9 +64,6 @@ fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>, setShowDial
 
             }
         }
-
-
-    }
 }
 
 @Composable

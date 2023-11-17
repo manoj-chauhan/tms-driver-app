@@ -7,8 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +21,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,8 +31,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,7 +70,7 @@ fun AssignmentDetailScreen(
         )
     }
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
-    val isDocumentSelected = remember { mutableStateOf(false); }
+    val isDocumentSelected = remember { mutableStateOf(true); }
     var showFullSchedule = remember { mutableStateOf(false) }
     var expandedHeight = remember { mutableStateOf(280.dp) }
     val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
@@ -81,52 +83,76 @@ fun AssignmentDetailScreen(
     val isCancelEnabled = assignment?.activeStatusDetail?.actions?.contains("CANCEL")
     val isEndEnabled = assignment?.activeStatusDetail?.actions?.contains("END")
 
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Yellow)
     ) {
         Column {
-            assignment?.let {
+            assignment?.let { it ->
                 val parsedDate =
                     remember(it.tripDetail.tripDateTime) { inputFormat.parse(it.tripDetail.tripDateTime) }
                 val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .padding(
-                            PaddingValues(
-                                start = 25.dp,
-                                top = 30.dp,
-                                end = 12.dp,
-                                bottom = 20.dp
-                            )
-                        )
-                ) {
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            PaddingValues(
-                                end = 12.dp,
-                            )
-                        ), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
 
-                    Text(
-                        text = it.tripDetail.operatorName, style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 23.sp
-                        )
-                    )
-
-                        Image(painter = painterResource(id = R.drawable.history), contentDescription = "" , modifier = Modifier
-                            .clickable { navController.navigate("history_detail") }
-                            .height(30.dp)
+                val annotatedString = remember {
+                    buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Black,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.ExtraBold
                             )
+                        ) {
+                            append(it.tripDetail.tripCode)
+                        }
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Gray,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp
+                            )
+                        ) {
+                            append("($formattedDate)")
+                        }
                     }
-
-
                 }
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(100.dp)
+//                        .padding(
+//                            PaddingValues(
+//                                start = 25.dp,
+//                                top = 30.dp,
+//                                end = 12.dp,
+//                                bottom = 20.dp
+//                            )
+//                        )
+//                ) {
+//                    Row(modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(
+//                            PaddingValues(
+//                                end = 12.dp,
+//                            )
+//                        ), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
+//
+//                    Text(
+//                        text = it.tripDetail.operatorName, style = TextStyle(
+//                            color = Color.Black,
+//                            fontSize = 23.sp
+//                        )
+//                    )
+//
+//                        Image(painter = painterResource(id = R.drawable.history), contentDescription = "" , modifier = Modifier
+//                            .clickable { navController.navigate("history_detail") }
+//                            .height(30.dp)
+//                            )
+//                    }
+//
+//
+//                }
 
                 Column(
                     modifier = Modifier
@@ -145,23 +171,7 @@ fun AssignmentDetailScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(60.dp)
-                                .padding(start = 25.dp, top = 30.dp, end = 12.dp)
-                        ) {
-                            Text(
-                                text = "CURRENT ASSIGNMENT",
-                                style = TextStyle(
-                                    color = Color.Gray,
-                                    fontSize = 21.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-
-                        }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
+                                .height(120.dp)
                                 .padding(start = 25.dp, top = 30.dp, end = 12.dp)
                         ) {
                             Column(modifier = Modifier.fillMaxWidth()) {
@@ -171,143 +181,46 @@ fun AssignmentDetailScreen(
                                     verticalAlignment = Alignment.Bottom
                                 ) {
                                     Text(
-                                        text = it.tripDetail.tripCode,
+                                        text = annotatedString,
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 20.sp,
                                             fontWeight = FontWeight.ExtraBold
                                         )
                                     )
-                                    Text(
-                                        text = formattedDate,
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 15.sp,
-                                            fontWeight = FontWeight.ExtraBold
-                                        )
-                                    )
+                                    Image(painter = painterResource(id = R.drawable.history), contentDescription = "" , modifier = Modifier
+                                        .clickable { navController.navigate("history_detail") }
+                                        .height(30.dp)
+                            )
+                                    
 
                                 }
-                                Text(
-                                    text = "(${it.tripDetail.tripName})",
-                                    style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 17.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                )
-                            }
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 25.dp, top = 20.dp, end = 12.dp),
-                            contentAlignment = Alignment.Center
-                        )
-                        {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(
-                                            Color.LightGray,
-                                            shape = RoundedCornerShape(16.dp)
-                                        )
-                                        .padding(8.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Column(
-                                        modifier = Modifier.fillMaxSize()
-                                    ) {
-                                        Text(text = "Schedules")
-
-                                        assignment?.loc?.locations?.let { locations ->
-                                            for (location in if (showFullSchedule.value) locations else locations.take(2)) {
-                                                LocationList(location)
-                                            }
-                                        }
-
-                                        if (!showFullSchedule.value && (assignment?.loc?.locations?.size ?: 0) > 2) {
-                                            Button(
-                                                onClick = {
-                                                    showFullSchedule.value = true
-                                                    expandedHeight.value = (expandedHeight.value / 2) * (assignment?.loc?.locations?.size ?: 0)
-                                                },
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(8.dp)
-                                            ) {
-                                                Text("Load More")
-                                            }
-                                        }
-                                    }
-                                }
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(50.dp), contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "${it.tripDetail.status}",
-                                        style = TextStyle(
-                                            color = Color.Red,
-                                            fontSize = 18.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-                                }
-                                Box(
-                                    modifier = Modifier.fillMaxWidth().height(50.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
+                                Spacer(modifier = Modifier.padding(8.dp))
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
                                     Text(
                                         text = "Departed from AHL at 12:30 hr ",
                                         style = TextStyle(
                                             color = Color.Gray,
-                                            fontSize = 18.sp,
+                                            fontSize = 13.sp,
                                             fontWeight = FontWeight.Medium
                                         )
                                     )
-                                }
 
-                            }
-
-                        }
-
-                        Surface(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp)
-                        )
-                        {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(Color.White),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-
-                                Button(
-                                    colors = ButtonDefaults.buttonColors(
-                                        Color.LightGray
-                                    ),
-                                    onClick = {
-                                        isDocumentSelected.value = true
-                                    }) {
                                     Text(
-                                        text = "Documents",
-                                        style = TextStyle(color = Color.Black)
+                                        text = it.tripDetail.status,
+                                        style = TextStyle(
+                                            color = Color.Red,
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Medium
+                                        )
                                     )
 
                                 }
-
                             }
-
                         }
+
+
+
 
                         if (it.tripDetail.status == "TRIP_CREATED" || it.tripDetail.status == "TRIP_STARTED" || it.tripDetail.status == "TRIP_CHECKED_IN" ) {
                             Box(
@@ -335,7 +248,7 @@ fun AssignmentDetailScreen(
                                             Text(
                                                 text = "Total Distance Covered",
                                                 style = TextStyle(
-                                                    color = Color.Black,
+                                                    color = Color.Gray,
                                                     fontSize = 16.sp,
                                                     fontWeight = FontWeight.Medium
                                                 )
@@ -355,7 +268,7 @@ fun AssignmentDetailScreen(
                                             Text(
                                                 text = "Total Travelled Time",
                                                 style = TextStyle(
-                                                    color = Color.Black,
+                                                    color = Color.Gray,
                                                     fontSize = 16.sp,
                                                     fontWeight = FontWeight.Medium
                                                 )
@@ -382,16 +295,13 @@ fun AssignmentDetailScreen(
                                 }
 
                             }
-                        }
 
-                        if (it.tripDetail.status == "TRIP_IN_TRANSIT") {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 25.dp, top = 30.dp, end = 12.dp)
                                     .height(130.dp), contentAlignment = Alignment.BottomStart
                             ) {
-
 
                                 Column {
                                     if (assignment?.activeStatusDetail!!.nextLocationName != null) {
@@ -489,15 +399,30 @@ fun AssignmentDetailScreen(
                         }
 
                         if (assignment?.activeStatusDetail?.currentLocationName != null) {
-                            Text(
-                                text = "Current Location ${assignment?.activeStatusDetail?.currentLocationName}",
-                                style = TextStyle(
-                                    color = Color.Gray,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        start = 25.dp,
+                                        top = 30.dp,
+                                        end = 12.dp,
+                                        bottom = 30.dp
+                                    ),
+                                contentAlignment = Alignment.BottomStart
+
                             )
+                            {
+                                Text(
+                                    text = "Current Location ${assignment?.activeStatusDetail?.currentLocationName}",
+                                    style = TextStyle(
+                                        color = Color.Gray,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
                         }
+
                         if (it.tripDetail.status != "TRIP_ENDED") {
                             assignment?.activeStatusDetail?.actions.let {
                                 Box(
@@ -602,6 +527,43 @@ fun AssignmentDetailScreen(
                             }
                         }
 
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 25.dp, top = 10.dp, end = 12.dp, bottom = 20.dp),
+                            contentAlignment = Alignment.Center
+                        )
+                        {
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        Color.LightGray,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                                    .padding(8.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    Text(text = "Schedules")
+
+                                    assignment?.loc?.let { it1 ->
+                                        it1.locations.forEach { location ->
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                            ) {
+                                                LocationList(location)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         if (isCheckInDialogVisible.value) {
                             assignment?.loc?.let { it1 ->
                                 CallCheckInDialog(context, tripId, tripCode, operatorId, it1,
@@ -617,9 +579,7 @@ fun AssignmentDetailScreen(
                         if (isDocumentSelected.value) {
                             assignment?.documents.let { document ->
                                 if (document != null) {
-                                    DocumentsDialog(operatorId, document, setShowDialog = {
-                                        isDocumentSelected.value = it
-                                    })
+                                    DocumentsDialog(operatorId, document)
                                 }
                             }
                         }
