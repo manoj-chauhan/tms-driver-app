@@ -71,8 +71,6 @@ fun AssignmentDetailScreen(
     }
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
     val isDocumentSelected = remember { mutableStateOf(true); }
-    var showFullSchedule = remember { mutableStateOf(false) }
-    var expandedHeight = remember { mutableStateOf(280.dp) }
     val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
     val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
 
@@ -109,11 +107,11 @@ fun AssignmentDetailScreen(
                         withStyle(
                             style = SpanStyle(
                                 color = Color.Gray,
-                                fontWeight = FontWeight.SemiBold,
+                                fontWeight = FontWeight.Normal,
                                 fontSize = 14.sp
                             )
                         ) {
-                            append("($formattedDate)")
+                            append("  "+formattedDate)
                         }
                     }
                 }
@@ -178,7 +176,7 @@ fun AssignmentDetailScreen(
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.Bottom
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
                                         text = annotatedString,
@@ -219,8 +217,33 @@ fun AssignmentDetailScreen(
                             }
                         }
 
+                        if (isDocumentSelected.value) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 25.dp, top = 10.dp, end = 12.dp, bottom = 20.dp),
+                                contentAlignment = Alignment.Center
+                            )
+                            {
 
-
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            Color.LightGray,
+                                            shape = RoundedCornerShape(16.dp)
+                                        )
+                                        .padding(8.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    assignment?.documents.let { document ->
+                                        if (document != null) {
+                                            DocumentsDialog(operatorId, document)
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                         if (it.tripDetail.status == "TRIP_CREATED" || it.tripDetail.status == "TRIP_STARTED" || it.tripDetail.status == "TRIP_CHECKED_IN" ) {
                             Box(
@@ -469,7 +492,8 @@ fun AssignmentDetailScreen(
                                                         context,
                                                         tripId,
                                                         tripCode,
-                                                        operatorId
+                                                        operatorId,
+                                                        navController
                                                     )
 
                                                 },
@@ -485,7 +509,8 @@ fun AssignmentDetailScreen(
                                                         context,
                                                         tripId,
                                                         tripCode,
-                                                        operatorId
+                                                        operatorId,
+                                                        navController
                                                     )
 
                                                 },
@@ -576,13 +601,6 @@ fun AssignmentDetailScreen(
                             }
                         }
 
-                        if (isDocumentSelected.value) {
-                            assignment?.documents.let { document ->
-                                if (document != null) {
-                                    DocumentsDialog(operatorId, document)
-                                }
-                            }
-                        }
                     }
                 }
             }

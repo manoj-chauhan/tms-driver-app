@@ -1,7 +1,6 @@
 package com.samrish.driver.ui.components
 
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,11 +11,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,17 +30,11 @@ import com.samrish.driver.ui.viewmodels.DocumentDownloadViewModel
 
 @Composable
 fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>) {
-
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = Color.White
-        ) {
             val context = LocalContext.current
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .background(Color.White)
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(text = "Documents", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold))
@@ -63,7 +54,6 @@ fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>) {
                 }
 
             }
-        }
 }
 
 @Composable

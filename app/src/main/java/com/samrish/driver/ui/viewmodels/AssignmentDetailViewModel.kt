@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
@@ -208,6 +209,11 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
                                 if (error.response.statusCode == 401) {
                                     errorManager.getErrorDescription(context)
                                 }
+                                if(error.response.statusCode == 500) {
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(context, "Trip not started", Toast.LENGTH_SHORT)
+                                    }
+                                }
 
                                 val errorResponse = error.response.data.toString(Charsets.UTF_8)
                                 Log.d("Error", "fetchAssignmentDetail: $errorResponse")
@@ -253,6 +259,11 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
                             { error ->
                                 if (error.response.statusCode == 401) {
                                     errorManager.getErrorDescription(context)
+                                }
+                                if(error.response.statusCode == 500) {
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(context, "Trip not checked in", Toast.LENGTH_SHORT)
+                                    }
                                 }
 
                                 val errorResponse = error.response.data.toString(Charsets.UTF_8)
@@ -302,6 +313,12 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
                                     errorManager.getErrorDescription(context)
                                 }
 
+                                if(error.response.statusCode == 500) {
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(context, "Trip Depart not Completed", Toast.LENGTH_SHORT)
+                                    }
+                                }
+
                                 val errorResponse = error.response.data.toString(Charsets.UTF_8)
                                 Log.d("Error", "fetchAssignmentDetail: $errorResponse")
                                 launch(Dispatchers.Main) {
@@ -319,7 +336,7 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
         }
     }
 
-    fun cancelTrip(context: Context,tripId:Int, tripCode: String, operatorId: Int) {
+    fun cancelTrip(context: Context,tripId:Int, tripCode: String, operatorId: Int,  navController: NavHostController) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val cancelRequest = TripRequest(tripCode, operatorId)
@@ -337,6 +354,10 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
 
                     if (response.statusCode == 200) {
                         // The request was successful, handle the response here
+                        launch(Dispatchers.Main) {
+                            navController.navigate("home")
+                            Toast.makeText(context, "Trip Cancelled Successfully", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         result.fold(
                             { _ ->
@@ -345,6 +366,12 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
                             { error ->
                                 if (error.response.statusCode == 401) {
                                     errorManager.getErrorDescription(context)
+                                }
+
+                                if(error.response.statusCode == 500) {
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(context, "Trip not cancelled", Toast.LENGTH_SHORT)
+                                    }
                                 }
 
                                 val errorResponse = error.response.data.toString(Charsets.UTF_8)
@@ -365,7 +392,7 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
         }
     }
 
-    fun endTrip(context: Context,tripId:Int, tripCode: String, operatorId: Int) {
+    fun endTrip(context: Context,tripId:Int, tripCode: String, operatorId: Int,  navController: NavHostController) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val endRequest = TripRequest(tripCode, operatorId)
@@ -383,11 +410,15 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
 
                     if (response.statusCode == 200) {
                         // The request was successful, handle the response here
+                                launch(Dispatchers.Main) {
+                                    navController.navigate("home")
+                                    Toast.makeText(context, "Trip Ended Successfully", Toast.LENGTH_SHORT).show()
+                                }
+
                     } else {
                         result.fold(
                             { _ ->
-
-                            },
+                                },
                             { error ->
                                 if (error.response.statusCode == 401) {
                                     errorManager.getErrorDescription(context)
@@ -395,6 +426,11 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
 
                                 val errorResponse = error.response.data.toString(Charsets.UTF_8)
                                 Log.d("Error", "fetchAssignmentDetail: $errorResponse")
+                                if(error.response.statusCode == 500) {
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(context, "Trip not  ended", Toast.LENGTH_SHORT)
+                                    }
+                                }
                                 launch(Dispatchers.Main) {
                                     errorManager.handleErrorResponse(context, errorResponse)
                                 }
