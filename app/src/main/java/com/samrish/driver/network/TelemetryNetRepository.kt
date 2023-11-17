@@ -92,7 +92,6 @@ class TelemetryNetRepository @Inject constructor(@ApplicationContext private val
                 },
                 { error ->
                     Log.d("Telemetry", "Telemetry Failed $error")
-                    throw Exception("Error in posting telemetry");
                 })
         }
 
