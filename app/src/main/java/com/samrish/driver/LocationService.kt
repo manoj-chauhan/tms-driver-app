@@ -123,7 +123,7 @@ class LocationService : Service(), LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        this.locationManager!!.requestLocationUpdates(provider!!, 4, 10f, this)
+        this.locationManager!!.requestLocationUpdates(provider!!, 0, 0f, this)
     }
 
     override fun onDestroy() {
@@ -147,15 +147,21 @@ class LocationService : Service(), LocationListener {
         Log.i("TRACKER", "Location: $lat,$lng")
 
         val context: Context = this
+        if (lat != 0.0 || lng != 0.0) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val deviceIdentifier =
+                    Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val deviceIdentifier = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-
-            telemetryManager.sendMatrix(Telemetry(
-                deviceIdentifier,
-                lat,
-                lng
-            ))
+                telemetryManager.sendMatrix(
+                    Telemetry(
+                        deviceIdentifier,
+                        lat,
+                        lng
+                    )
+                )
+            }
+        } else {
+            Log.d("Lat long", "Last known location is not available or is (0, 0)")
         }
     }
     companion object {
