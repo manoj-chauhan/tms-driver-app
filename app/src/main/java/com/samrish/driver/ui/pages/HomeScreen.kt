@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +34,7 @@ import com.samrish.driver.LocationService
 import com.samrish.driver.R
 import com.samrish.driver.ui.components.AssignedTrip
 import com.samrish.driver.ui.components.AssignedVehicle
+import com.samrish.driver.ui.components.GeneratedCodeDialog
 import com.samrish.driver.ui.viewmodels.HomeViewModel
 import com.samrish.driver.ui.viewmodels.MatrixLogViewModel
 import com.samrish.driver.ui.viewmodels.TripsAssigned
@@ -93,15 +95,29 @@ fun HomeScreen(
             it.vehicles.let { vList ->
 
                 Column {
-                    for (v in vList) {
-                        AssignedVehicle(v, currentAssignmentData?.assignmentCode ?: "",
-                            currentAssignmentData!!.isAssignmentCodeVisible,
-                            onGenerateCodeClicked = {
+                    vList.forEach { vehicleAssignment ->
+                        AssignedVehicle(vehicleAssignment)
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, bottom = 16.dp)
+                    ) {
+                        Button(
+                            onClick = {
                                 vm.generateAssignmentCode(context)
-                            },
-                            onGeneratedDialogDismissed = {
+                            }
+                        ) {
+                            Text(text = "Generate Code")
+                        }
+                    }
+                    if(currentAssignmentData!!.isAssignmentCodeVisible) {
+                        GeneratedCodeDialog(
+                            currentAssignmentData?.assignmentCode ?: "",
+                            setShowDialog = {
                                 vm.hideAssignmentCode(context)
-                            })
+                            }
+                        )
                     }
                 }
 

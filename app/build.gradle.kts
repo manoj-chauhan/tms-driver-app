@@ -58,7 +58,6 @@ dependencies {
     val firebaseBom = platform("com.google.firebase:firebase-bom:32.5.0")
     val lifecycleVersion = "2.6.2"
     val appCompatVersion = "1.6.1"
-    val volleyVersion = "1.2.1"
     val constraintLayoutVersion = "2.1.4"
     val activityVersion = "1.8.0"
     val nav_version = "2.7.4"
