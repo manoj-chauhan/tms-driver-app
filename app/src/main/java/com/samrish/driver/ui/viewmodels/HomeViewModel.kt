@@ -63,7 +63,7 @@ data class TripsAssigned(
 data class CurrentAssignmentData (
     var userLocationVisible: Boolean,
     var trips: MutableList<TripsAssigned>,
-    var vehicle: VehicleAssignment,
+    var vehicles: MutableList<VehicleAssignment>,
     var assignmentCode: String = "Not Available",
     var isAssignmentCodeVisible: Boolean = false
 )
@@ -79,19 +79,25 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
 
     fun fetchAssignmentDetail(context: Context) {
 
-        val channel1 = Channel<VehicleAssignment>()
+        val channel1 = Channel<MutableList<VehicleAssignment>>()
         val channel2 = Channel<MutableList<TripsAssigned>>()
 
         viewModelScope.launch(Dispatchers.IO) {
             val vehicleAssignmentUrl = context.resources.getString(R.string.url_vehicle_assignment)
             getAccessToken(context)?.let {
+
+                val assignedVehicleType =
+                    Types.newParameterizedType(MutableList::class.java, VehicleAssignment::class.java)
+                val adapter: JsonAdapter<MutableList<VehicleAssignment>> =
+                    Moshi.Builder().build().adapter(assignedVehicleType)
+
                 val (request1, response1, result1) = vehicleAssignmentUrl.httpGet()
                     .authentication().bearer(it)
-                    .responseObject(moshiDeserializerOf(VehicleAssignment::class.java))
+                    .responseObject(moshiDeserializerOf(adapter))
 
                 result1.fold(
-                    { vehicleAssignment ->
-                        channel1.send(vehicleAssignment)
+                    { vehicleAssignments ->
+                        channel1.send(vehicleAssignments)
                     },
                     { error ->
                         if (error.response.statusCode == 401) {
@@ -136,13 +142,13 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            val vehicleAssignment = channel1.receive();
-            val tripsAssignment = channel2.receive();
+            val vehicleAssignments = channel1.receive();
+            val tripsAssignments = channel2.receive();
             _currentAssignment.update { old ->
                 CurrentAssignmentData(
                     userLocationVisible = old?.userLocationVisible ?: false,
-                    trips = tripsAssignment,
-                    vehicle = vehicleAssignment,
+                    trips = tripsAssignments,
+                    vehicles = vehicleAssignments,
                     assignmentCode = old?.assignmentCode?: "Not Available",
                     isAssignmentCodeVisible = old?.isAssignmentCodeVisible?:false
                 )
@@ -159,7 +165,7 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
                     CurrentAssignmentData(
                         it.userLocationVisible,
                         it.trips,
-                        it.vehicle,
+                        it.vehicles,
                         code,
                         isAssignmentCodeVisible = true
                     )
@@ -174,7 +180,7 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
                 CurrentAssignmentData(
                     userLocationVisible = old.userLocationVisible,
                     trips = old.trips,
-                    vehicle = old.vehicle,
+                    vehicles = old.vehicles,
                     assignmentCode = "Not Available",
                     isAssignmentCodeVisible = false
                 )

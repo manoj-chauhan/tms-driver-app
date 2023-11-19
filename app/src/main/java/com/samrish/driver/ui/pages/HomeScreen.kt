@@ -59,7 +59,7 @@ fun HomeScreen(
     val currentAssignmentData by vm.currentAssignment.collectAsStateWithLifecycle()
     vm.fetchAssignmentDetail(context = context)
 
-     fun isLocationServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
+    fun isLocationServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
         val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.name == service.service.className) {
@@ -89,83 +89,98 @@ fun HomeScreen(
         }
         currentAssignmentData?.let {
             LocationPermissionScreen()
-            AssignedVehicle(it.vehicle, currentAssignmentData?.assignmentCode?:"",
-                currentAssignmentData!!.isAssignmentCodeVisible,
-                onGenerateCodeClicked = {
-                    vm.generateAssignmentCode(context)
-                },
-                onGeneratedDialogDismissed = {
-                    vm.hideAssignmentCode(context)
-                })
 
-            if (it.trips.size == 0 ){
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(13.dp)
-                    .align(Alignment.CenterHorizontally)) {
-                    Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
-                        Text(text ="No trips assigned!!",style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        ))
+            it.vehicles.let { vList ->
+
+                Column {
+                    for (v in vList) {
+                        AssignedVehicle(v, currentAssignmentData?.assignmentCode ?: "",
+                            currentAssignmentData!!.isAssignmentCodeVisible,
+                            onGenerateCodeClicked = {
+                                vm.generateAssignmentCode(context)
+                            },
+                            onGeneratedDialogDismissed = {
+                                vm.hideAssignmentCode(context)
+                            })
                     }
-
                 }
-                val location = Intent(context, LocationService::class.java)
-                context.stopService(location)
-            }
-            else {
-                val location = Intent(context, LocationService::class.java)
-                context.startForegroundService(location)
-                val loc = LocationService::class.java
-                val service = isLocationServiceRunning(context, loc)
-                if (service){
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Image(
-                            painter = painterResource(id = R.drawable.signal), contentDescription = null,
-                            Modifier
-                                .height(100.dp)
-                                .fillMaxSize()
-                        )
-                        matList?.let { mList ->
-                            if(mList.isNotEmpty()) {
-                                val lastTime = mList.last().time
 
-                                val parsedDate = inputFormat.parse(lastTime.toString())
-                                val formattedDate = outputFormat.format(parsedDate)
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Text(text = "Last recorded location time ${formattedDate} ")
+                if (it.trips.size == 0) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(13.dp)
+                            .align(Alignment.CenterHorizontally)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "No trips assigned!!", style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
 
-                                }
-                            }else {
-                                Column(modifier = Modifier.fillMaxWidth()) {
+                    }
+                    val location = Intent(context, LocationService::class.java)
+                    context.stopService(location)
+                } else {
+                    val location = Intent(context, LocationService::class.java)
+                    context.startForegroundService(location)
+                    val loc = LocationService::class.java
+                    val service = isLocationServiceRunning(context, loc)
+                    if (service) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Image(
+                                painter = painterResource(id = R.drawable.signal),
+                                contentDescription = null,
+                                Modifier
+                                    .height(100.dp)
+                                    .fillMaxSize()
+                            )
+                            matList?.let { mList ->
+                                if (mList.isNotEmpty()) {
+                                    val lastTime = mList.last().time
+
+                                    val parsedDate = inputFormat.parse(lastTime.toString())
+                                    val formattedDate = outputFormat.format(parsedDate)
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.Center
                                     ) {
-                                        Text(text = "Last recorded location time - Not shared ")
+                                        Text(text = "Last recorded location time ${formattedDate} ")
+
+                                    }
+                                } else {
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(text = "Last recorded location time - Not shared ")
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                LazyColumn {
-                    items(it.trips) { trip ->
-                        AssignedTrip(trip, onClick = onTripSelected)
+                    LazyColumn {
+                        items(it.trips) { trip ->
+                            AssignedTrip(trip, onClick = onTripSelected)
+                        }
                     }
                 }
+
+                if (it.userLocationVisible) {
+                    MatrixLog()
+                }
             }
 
-            if (it.userLocationVisible) {
-                MatrixLog()
-            }
         }
-
     }
 }
 
