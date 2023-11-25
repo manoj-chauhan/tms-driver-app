@@ -1,6 +1,7 @@
 package com.samrish.driver.telemetry
 
 import android.content.Context
+import android.util.Log
 import com.samrish.driver.auth.AuthManager
 import com.samrish.driver.database.TelemetryRepository
 import com.samrish.driver.models.Telemetry
@@ -19,7 +20,20 @@ class TelemetryManagerImpl @Inject constructor(
             telemetry.latitude, telemetry.longitude, telemetry.time, false
         )
         telemetryRepository.insertLocation(tel)
-        telemetryNetRepository.sentTelemetry(telemetry)
+        val telemetryWithFalseStatus = telemetryRepository.getTelemetryWithFalseStatus()
+        Log.d("TAG", "sendMatrix: $telemetryWithFalseStatus ")
+        if (telemetryWithFalseStatus.isNotEmpty()) {
+            telemetryWithFalseStatus.forEach { metry ->
+                try {
+                    val tele = Telemetry(telemetry.deviceIdentifier, metry.latitude, metry.longitude, metry.time)
+                    telemetryNetRepository.sentTelemetry(tele)
+                    telemetryRepository.updateTelemetryStatus(metry.id, true)
+                }
+                catch (e:Exception){
+                    Log.d("","")
+                }
+            }
+        }
     }
 
     override suspend fun getTelemetry(): List<com.samrish.driver.database.Telemetry> {

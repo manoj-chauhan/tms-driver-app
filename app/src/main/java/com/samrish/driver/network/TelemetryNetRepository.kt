@@ -3,6 +3,10 @@ package com.samrish.driver.network
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.core.extensions.authentication
+import com.github.kittinunf.fuel.core.extensions.jsonBody
+import com.samrish.driver.R
 import com.samrish.driver.database.TelemetryRepository
 import com.samrish.driver.models.Telemetry
 import com.squareup.moshi.FromJson
@@ -75,26 +79,23 @@ class TelemetryNetRepository @Inject constructor(@ApplicationContext private val
 
         Log.d("Telemetry", requestBody)
 
-//        getAccessToken(context)?.let { accessToken ->
-//
-//            val url = context.resources.getString(R.string.url_device_matrix)
-//            val fuelManager = FuelManager()
-//            val (_, response, result) = fuelManager.post(url).authentication().bearer(accessToken)
-//                .jsonBody(requestBody)
-//                .response()
-//
-//            result.fold(
-//                { _ ->
-//                   val id =  telemetryRepository.getTelemetryId(telemetry.latitude, telemetry.longitude, telemetry.time)
-//                    telemetryRepository.updateTelemetryStatus(id, true)
-//
-//                    Log.d("TAG", "sentTelemetry: $id")
-//                    Log.d("Telemetry", "Telemetry Posted")
-//                },
-//                { error ->
-//                    Log.d("Telemetry", "Telemetry Failed $error")
-//                })
-//        }
+        getAccessToken(context)?.let { accessToken ->
+
+            val url = context.resources.getString(R.string.url_device_matrix)
+            val fuelManager = FuelManager()
+            val (_, response, result) = fuelManager.post(url).authentication().bearer(accessToken)
+                .jsonBody(requestBody)
+                .response()
+
+            result.fold(
+                { _ ->
+                    Log.d("Telemetry", "Telemetry Posted")
+                },
+                { error ->
+                    Log.d("Telemetry", "Telemetry Failed $error")
+                    throw Exception()
+                })
+        }
 
     }
 }
