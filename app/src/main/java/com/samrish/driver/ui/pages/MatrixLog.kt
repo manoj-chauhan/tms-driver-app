@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.samrish.driver.models.Telemetry
 import com.samrish.driver.ui.viewmodels.MatrixLogViewModel
 
 @Composable
@@ -44,8 +43,8 @@ fun MatrixLog(vm: MatrixLogViewModel = hiltViewModel()) {
 
 
 @Composable
-fun MatrixRecord(mat: Telemetry) {
-    Text(text = "${mat.time} ${mat.latitude},${mat.longitude}")
+fun MatrixRecord(mat: com.samrish.driver.database.Telemetry) {
+    Text(text = "${mat.time} ${mat.latitude},${mat.longitude}, ${mat.isDataLoaded}")
 }
 
 @Preview

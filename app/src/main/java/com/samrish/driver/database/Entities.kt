@@ -16,7 +16,8 @@ data class User(
 data class Telemetry(
     @ColumnInfo(name =  "latitude" ) val latitude: Double,
     @ColumnInfo(name =  "longitude" ) val longitude: Double,
-    @ColumnInfo(name =  "DateTime" ) val time:LocalDateTime
+    @ColumnInfo(name =  "DateTime" ) val time:LocalDateTime,
+    @ColumnInfo(name =  "DataLoaded" ) val isDataLoaded: Boolean
 ){
     @PrimaryKey (autoGenerate = true)
     var id: Int= 0

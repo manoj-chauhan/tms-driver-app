@@ -4,5 +4,5 @@ import com.samrish.driver.models.Telemetry
 
 interface TelemetryManager {
     suspend fun sendMatrix(telemetry: Telemetry)
-    suspend fun getTelemetry(): List<Telemetry>
+    suspend fun getTelemetry(): List<com.samrish.driver.database.Telemetry>
 }
