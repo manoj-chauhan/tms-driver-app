@@ -19,8 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.Schedule
@@ -39,22 +41,30 @@ fun CallCheckInDialog(context: Context,tripId:Int, tripCode:String, operatorId:I
                         contentAlignment = Alignment.Center
                     ) {
                         Column() {
-                            val (selectedLocation, onLocationSelected) = remember { mutableStateOf(locations.locations[0]?.placeCode) }
+                            var (selectedLocation, onLocationSelected) = remember { mutableStateOf(locations.locations[0]?.placeCode) }
 
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                                    .align(Alignment.CenterHorizontally)
+
+                            ) {
+                                Text(text = "Choose the next location to Check in", style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 14.sp))
+                            }
                             locations.locations.forEach { sch ->
 
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp)
+                                        .padding(16.dp)
                                         .selectable(
                                             selected = (sch?.placeCode == selectedLocation),
                                             onClick = { onLocationSelected(sch?.placeCode) }
                                         )
                                 ) {
-
                                     RadioButton(
-                                        selected = (sch?.placeCode == selectedLocation) ,modifier = Modifier.padding(all = Dp(value = 8F)),
+                                        selected = (sch?.placeCode == selectedLocation),
                                         onClick = {
 //                                    onLocationSelected(sch.placeCode)
                                             onLocationSelected(sch?.placeCode)
@@ -63,7 +73,6 @@ fun CallCheckInDialog(context: Context,tripId:Int, tripCode:String, operatorId:I
                                     )
                                     Text(
                                         text = sch?.placeName + "(" + sch?.placeCode + ")",
-                                        modifier = Modifier.padding(start = 16.dp)
                                     )
                                 }
                             }
@@ -79,7 +88,8 @@ fun CallCheckInDialog(context: Context,tripId:Int, tripCode:String, operatorId:I
                                                 tripId = tripId,
                                                 tripCode = tripCode,
                                                 operatorId = operatorId,
-                                                placeCode = selectedLocation)
+                                                placeCode = selectedLocation!!
+                                            )
                                         }
                                         setShowDialog(false)
                                     },

@@ -123,7 +123,9 @@ class LocationService : Service(), LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        this.locationManager!!.requestLocationUpdates(provider!!, 0, 0f, this)
+
+
+        this.locationManager!!.requestLocationUpdates(provider!!, 1000L, 0.1f, this)
     }
 
     override fun onDestroy() {

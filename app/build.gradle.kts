@@ -136,4 +136,6 @@ dependencies {
 
     implementation("org.greenrobot:eventbus:3.3.1")
 
+    implementation ("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
+
 }
