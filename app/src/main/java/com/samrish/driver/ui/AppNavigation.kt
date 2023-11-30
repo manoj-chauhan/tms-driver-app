@@ -40,6 +40,7 @@ import com.samrish.driver.ui.pages.History
 import com.samrish.driver.ui.pages.HistoryScreen
 import com.samrish.driver.ui.pages.HomeScreen
 import com.samrish.driver.ui.pages.MatrixLog
+import com.samrish.driver.ui.pages.PastAssignmentDetailScreen
 import com.samrish.driver.ui.pages.UserProfile
 
 
@@ -196,12 +197,16 @@ fun AppNavigationHost(
                 selectedAssignmentCode = it.tripCode
                 operatorId = it.operatorCompanyId
                 tripId = it.tripId
-                navController.navigate("current-assignment-detail")
+                navController.navigate("past-assignment-detail")
             })
         }
 
         composable("user-profile") {
             UserProfile()
+        }
+
+        composable("past-assignment-detail"){
+            PastAssignmentDetailScreen(navController = navController, operatorId = operatorId, tripId = tripId, tripCode = selectedAssignmentCode)
         }
 
         composable(

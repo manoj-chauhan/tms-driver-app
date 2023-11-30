@@ -79,15 +79,10 @@ class MainActivity : ComponentActivity() {
                 permissionState.launchPermissionRequest()
             }
             if (permissionState.status.isGranted) {
-                Column() {
-                    Text(text = "Notification permission granted")
-                }
             } else {
                 Column() {
                     if (permissionState.status.shouldShowRationale) {
-                        Text(text = "Permission required")
                     } else {
-                        Text(text = "permission not granted open setting")
                     }
                 }
             }
