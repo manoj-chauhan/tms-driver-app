@@ -7,3 +7,9 @@ data class AssignmentDetailData (
     var documents: MutableList<Documents>,
     var isDataLoaded: Boolean = false
 )
+
+data class PastAssignmentDetailData (
+    var tripDetail: TripDetail,
+    var documents: MutableList<Documents>,
+    var isDataLoaded: Boolean = false
+)

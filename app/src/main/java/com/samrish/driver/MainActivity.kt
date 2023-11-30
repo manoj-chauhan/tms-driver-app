@@ -47,13 +47,11 @@ class MainActivity : ComponentActivity() {
             val isBatteryOptimizationEnabled = isBatteryOptimizationEnabled(applicationContext)
             Log.d("Battery", "onCreate: $isBatteryOptimizationEnabled ")
             if (!isBatteryOptimizationEnabled && showBatteryOptimizationDialog) {
-                AlertDialog(
-                    onDismissRequest = { showBatteryOptimizationDialog = true },
+                AlertDialog(onDismissRequest = { showBatteryOptimizationDialog = true },
                     title = { Text("Battery Optimization") },
                     text = {
                         Text(
-                            "Battery optimization is currently disabled for this app. " +
-                                    "To ensure proper functionality, please enable battery optimization."
+                            "Battery optimization is currently enabled for this app. " + "To ensure proper functionality, please disable battery optimization."
                         )
                     },
                     confirmButton = {
@@ -71,6 +69,7 @@ class MainActivity : ComponentActivity() {
 
                 )
             }
+
 
             val permissionState =
                 rememberPermissionState(permission = android.Manifest.permission.POST_NOTIFICATIONS)

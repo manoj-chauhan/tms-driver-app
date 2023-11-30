@@ -46,6 +46,7 @@ import com.samrish.driver.ui.components.CallCheckInDialog
 import com.samrish.driver.ui.components.DocumentsDialog
 import com.samrish.driver.ui.components.LocationList
 import com.samrish.driver.ui.viewmodels.AssignmentDetailViewModel
+import com.samrish.driver.ui.viewmodels.PastAssignmentDetailViewModel
 import java.text.SimpleDateFormat
 
 @Composable
@@ -56,11 +57,15 @@ fun AssignmentDetailScreen(
     tripId: Int,
     tripCode: String,
     vm: AssignmentDetailViewModel = hiltViewModel(),
+    pt: PastAssignmentDetailViewModel = hiltViewModel()
 ) {
+    Log.d("Detail", "AssignmentDetailScreen: ")
     val context = LocalContext.current
     val painter = painterResource(id = R.drawable.signal)
 
     val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
+    val pastAssignment by pt.pastassignmentDetail.collectAsStateWithLifecycle()
+
     if (assignment?.isDataLoaded != true) {
         vm.fetchAssignmentDetail(
             context = context,
@@ -82,6 +87,158 @@ fun AssignmentDetailScreen(
     val isEndEnabled = assignment?.activeStatusDetail?.actions?.contains("END")
 
 
+        pastAssignment?.let {
+            val parsedDate =
+                remember(it.tripDetail.tripDateTime) {
+                    it.tripDetail.tripDateTime.let { it1 ->
+                        inputFormat.parse(
+                            it1
+                        )
+                    }
+                }
+            val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
+
+            val annotatedString = remember {
+                buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            color = Color.Black,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    ) {
+                        append(it?.tripDetail?.tripCode)
+                    }
+                    withStyle(
+                        style = SpanStyle(
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 14.sp
+                        )
+                    ) {
+                        append("  $formattedDate")
+                    }
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState()) // Use verticalScroll instead of ScrollView
+                    .fillMaxWidth()
+                    .fillMaxHeight() // You can adjust these modifiers as needed
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White,
+                    ),
+                    shape = RoundedCornerShape(35.dp, 35.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(120.dp)
+                            .padding(start = 25.dp, top = 30.dp, end = 12.dp)
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = annotatedString,
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.ExtraBold
+                                    )
+                                )
+                                Image(painter = painterResource(id = R.drawable.history),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .clickable { navController.navigate("history_detail") }
+                                        .height(30.dp)
+                                )
+
+
+                            }
+                            Spacer(modifier = Modifier.padding(8.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.Bottom
+                            ) {
+                                Text(
+                                    text = "Departed from AHL at 12:30 hr ",
+                                    style = TextStyle(
+                                        color = Color.Gray,
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                )
+
+                                it.tripDetail?.status?.let { it1 ->
+                                    Text(
+                                        text = it1,
+                                        style = TextStyle(
+                                            color = Color.Red,
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    )
+                                }
+
+                            }
+                        }
+                    }
+
+                    if (isDocumentSelected.value) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = 25.dp,
+                                    top = 10.dp,
+                                    end = 12.dp,
+                                    bottom = 20.dp
+                                ),
+                            contentAlignment = Alignment.Center
+                        )
+                        {
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        Color.LightGray,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                                    .padding(8.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                pastAssignment?.documents.let { document ->
+                                    if (document != null) {
+                                        DocumentsDialog(operatorId, document)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp)) {
+                        History(
+                            navController = navController,
+                            it.tripDetail.tripCode,
+                            it.tripDetail.operatorId
+                        )
+                    }
+                }
+            }
+
+        }
 
     Box(
         modifier = Modifier
@@ -221,7 +378,12 @@ fun AssignmentDetailScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 25.dp, top = 10.dp, end = 12.dp, bottom = 20.dp),
+                                    .padding(
+                                        start = 25.dp,
+                                        top = 10.dp,
+                                        end = 12.dp,
+                                        bottom = 20.dp
+                                    ),
                                 contentAlignment = Alignment.Center
                             )
                             {
@@ -254,7 +416,7 @@ fun AssignmentDetailScreen(
                             }
                         }
 
-                        if (it.tripDetail.status == "TRIP_IN_TRANSIT") {
+                        if (it.tripDetail.status == "TRIP_IN_TRANSIT" && it.tripDetail.status != "TRIP_ENDED") {
                             Box(
                                 modifier = Modifier.height(50.dp),
                                 contentAlignment = Alignment.Center
@@ -421,7 +583,7 @@ fun AssignmentDetailScreen(
                             }
                         }
 
-                        if (assignment?.activeStatusDetail?.currentLocationName != null) {
+                        if (assignment?.activeStatusDetail?.currentLocationName != null && it.tripDetail.status != "TRIP_ENDED") {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -552,36 +714,43 @@ fun AssignmentDetailScreen(
                             }
                         }
 
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 25.dp, top = 10.dp, end = 12.dp, bottom = 20.dp),
-                            contentAlignment = Alignment.Center
-                        )
-                        {
-
+                        if(it.tripDetail.status != "TRIP_ENDED") {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(
-                                        Color.LightGray,
-                                        shape = RoundedCornerShape(16.dp)
-                                    )
-                                    .padding(8.dp),
+                                    .padding(
+                                        start = 25.dp,
+                                        top = 10.dp,
+                                        end = 12.dp,
+                                        bottom = 20.dp
+                                    ),
                                 contentAlignment = Alignment.Center
-                            ) {
-                                Column(
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    Text(text = "Schedules")
+                            )
+                            {
 
-                                    assignment?.loc?.let { it1 ->
-                                        it1.locations.forEach { location ->
-                                            Column(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                            ) {
-                                                LocationList(location)
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            Color.LightGray,
+                                            shape = RoundedCornerShape(16.dp)
+                                        )
+                                        .padding(8.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxSize()
+                                    ) {
+                                        Text(text = "Schedules")
+
+                                        assignment?.loc?.let { it1 ->
+                                            it1.locations.forEach { location ->
+                                                Column(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                ) {
+                                                    LocationList(location)
+                                                }
                                             }
                                         }
                                     }

@@ -192,7 +192,12 @@ fun AppNavigationHost(
         }
 
         composable("history") {
-            HistoryScreen()
+            HistoryScreen(onTripSelected = {
+                selectedAssignmentCode = it.tripCode
+                operatorId = it.operatorCompanyId
+                tripId = it.tripId
+                navController.navigate("current-assignment-detail")
+            })
         }
 
         composable("user-profile") {

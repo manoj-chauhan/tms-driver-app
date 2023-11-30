@@ -1,6 +1,7 @@
 package com.samrish.driver.ui.pages
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,11 +38,10 @@ import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoryScreen(vm: HistoryViewModel = hiltViewModel()) {
+fun HistoryScreen(vm: HistoryViewModel = hiltViewModel(),  onTripSelected: (assignment: History) -> Unit) {
 
     val context = LocalContext.current
     val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
-
 
     vm.fetchHistoryDetail(context)
 
@@ -95,7 +95,7 @@ fun HistoryScreen(vm: HistoryViewModel = hiltViewModel()) {
                     val lazyListState = rememberLazyListState()
                     LazyColumn(state = lazyListState){
                         items(historyList) { trip ->
-                            TripsList(trip)
+                            TripsList(trip, onClick = onTripSelected)
                         }
                     }
                 }
@@ -105,7 +105,7 @@ fun HistoryScreen(vm: HistoryViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun TripsList(trip: History) {
+fun TripsList(trip: History, onClick: (tripsToDriver: History) -> Unit) {
 
 
     val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm")
@@ -126,6 +126,7 @@ fun TripsList(trip: History) {
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
+            .clickable { onClick(trip) }
             .padding(16.dp, 16.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {

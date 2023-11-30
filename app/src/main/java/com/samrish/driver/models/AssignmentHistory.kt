@@ -12,7 +12,10 @@ data class History(
      val operatorCompanyName :  String ,
      val createdBy : Int,
      val tripDate:String,
-     val customerCompanyName: String
+     val customerCompanyName: String,
+     val tripId :Int,
+     val operatorCompanyId:Int,
+     val customerCompanyId:Int
 )
 
 
