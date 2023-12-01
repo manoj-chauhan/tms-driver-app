@@ -11,9 +11,6 @@ import androidx.navigation.NavHostController
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
-import com.github.kittinunf.fuel.core.response
-import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.samrish.driver.R
 import com.samrish.driver.errormgmt.ErrManager
 import com.samrish.driver.models.ActiveStatusDetail
@@ -25,9 +22,9 @@ import com.samrish.driver.models.TripDetail
 import com.samrish.driver.models.TripRequest
 import com.samrish.driver.models.TripStartRequest
 import com.samrish.driver.network.getAccessToken
+import com.samrish.driver.tripmgmt.TripManager
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -39,7 +36,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AssignmentDetailViewModel @Inject constructor(private  val errorManager: ErrManager, application: Application): AndroidViewModel(application)  {
+class AssignmentDetailViewModel @Inject constructor(private  val errorManager: ErrManager, application: Application, private val tripManager: TripManager): AndroidViewModel(application)  {
 
     private val _assignmentDetail: MutableStateFlow<AssignmentDetailData?> = MutableStateFlow(null)
     val assignmentDetail: StateFlow<AssignmentDetailData?> = _assignmentDetail.asStateFlow()
@@ -51,114 +48,37 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
         val channel1 = Channel<TripDetail>()
         val channel2 = Channel<ActiveStatusDetail>()
         val channel3 = Channel<Schedule>()
-        val channel4= Channel<MutableList<Documents>>()
 
+        var document: MutableList<Documents>? = mutableListOf()
 
         viewModelScope.launch(Dispatchers.IO) {
-            val documentsurl = context.resources.getString(R.string.url_trip_document) + tripId
-
-            val  documentList = Types.newParameterizedType(MutableList::class.java, Documents::class.java)
-            val documents: JsonAdapter<MutableList<Documents>> = Moshi.Builder().build().adapter( documentList)
-            
-            getAccessToken(context)?.let {
-                val (request1, response1, result) = documentsurl.httpGet()
-                    .authentication().bearer(it)
-                    .header("Company-Id", operatorId)
-                    .response(moshiDeserializerOf(documents))
-
-                Log.d("TAG", "fetchAssignmentDetail: $request1")
-                result.fold(
-                    {
-                            documentsDetail -> channel4.send(documentsDetail)
-                    },
-                    { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
-                    }
-                )
-            }
+            document = tripManager.getDocuments(tripId, operatorId)
         }
 
 
         viewModelScope.launch(Dispatchers.IO) {
-            val tripDetailUrl = context.resources.getString(R.string.url_trips_detail) + tripCode
-            getAccessToken(context)?.let {
-                val (request1, response1, result1) = tripDetailUrl.httpGet()
-                    .authentication().bearer(it)
-                    .header("Company-Id", operatorId)
-                    .responseObject(moshiDeserializerOf(TripDetail::class.java))
-
-                result1.fold(
-                    {
-                        tripDetail -> channel1.send(tripDetail)
-                    },
-                    { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
-                    }
-                )
-            }
+            val tripDetail = tripManager.getTripDetail(tripCode, operatorId)
+            channel1.send(tripDetail)
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-
-            val activeStatusUrl = context.resources.getString(R.string.url_trip_actions) + tripId +"/activeStatus"
-            getAccessToken(context)?.let {
-                val (request1, response1, result1) = activeStatusUrl.httpGet()
-                    .authentication().bearer(it)
-                    .header("Company-Id", operatorId)
-                    .responseObject(moshiDeserializerOf(ActiveStatusDetail::class.java))
-
-                result1.fold(
-                    {
-                            statusDetail -> channel2.send(statusDetail)
-                    },
-                    { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
-                    }
-                )
-            }
+            val activeStatus = tripManager.getTripStatus(tripId, operatorId)
+            channel2.send(activeStatus)
         }
 
 
         viewModelScope.launch(Dispatchers.IO) {
-            val tripScheduleUrl = context.resources.getString(R.string.url_trip_schedules) + tripCode + "/schedule"
-
-            getAccessToken(context)?.let {
-                val (request1, response1, result1) = tripScheduleUrl.httpGet()
-                    .authentication().bearer(it)
-                    .header("Company-Id", operatorId)
-                    .responseObject(moshiDeserializerOf(Schedule::class.java))
-
-                result1.fold(
-                    {
-                            schedule -> channel3.send(schedule)
-                    },
-                    { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
-                    }
-                )
-            }
+            val schedule = tripManager.getTripSchedule(tripCode, operatorId)
+            channel3.send(schedule)
         }
 
 
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            val tripDetail = channel1.receive();
+            val tripDetail = channel1.receive()
             val statusDetail = channel2.receive();
             val schedule = channel3.receive()
-            val documents = channel4.receive()
 
 
             _assignmentDetail.update { _ ->
@@ -166,7 +86,7 @@ class AssignmentDetailViewModel @Inject constructor(private  val errorManager: E
                      tripDetail,
                      statusDetail,
                      schedule,
-                     documents,
+                     document,
                     true
                 )
             }
