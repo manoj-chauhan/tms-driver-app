@@ -147,20 +147,17 @@ class LocationService : Service(), LocationListener {
         val msg =
             "Time: " + LocalDateTime.now().format(formater) + "   Location: " + lat +    "," + lng
         Log.i("TRACKER", "Location: $lat,$lng")
-
         val context: Context = this
         if (lat != 0.0 || lng != 0.0) {
             CoroutineScope(Dispatchers.IO).launch {
                 val deviceIdentifier =
                     Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
 
+                val telemetery = Telemetry(deviceIdentifier, lat, lng)
                 telemetryManager.sendMatrix(
-                    Telemetry(
-                        deviceIdentifier,
-                        lat,
-                        lng
-                    )
+                    telemetery
                 )
+
             }
         } else {
             Log.d("Lat long", "Last known location is not available or is (0, 0)")
