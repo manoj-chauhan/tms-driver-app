@@ -1,6 +1,7 @@
 package com.samrish.driver.tripmgmt
 
 import android.content.Context
+import androidx.navigation.NavHostController
 import com.samrish.driver.auth.AuthManager
 import com.samrish.driver.database.TripRepository
 import com.samrish.driver.models.ActiveStatusDetail
@@ -41,5 +42,25 @@ class TripManagerImpl @Inject constructor(
 
     override fun getTripSchedule(tripCode: String, operatorId: Int):Schedule {
         return tripNetRepository.fetchTripSchedule(tripCode, operatorId)
+    }
+
+    override fun startTrip(tripCode: String, operatorId: Int, deviceIdentifier: String) {
+        return tripNetRepository.startTrip(tripCode, operatorId, deviceIdentifier)
+    }
+
+    override fun checkInTrip(placeCode: String, tripCode: String, operatorId: Int) {
+        return tripNetRepository.checkInTrip(placeCode, tripCode, operatorId)
+    }
+
+    override fun departTrip(tripCode: String, operatorId: Int) {
+        return tripNetRepository.departTrip(tripCode, operatorId)
+    }
+
+    override fun cancelTrip(tripCode: String, operatorId: Int, navController: NavHostController) {
+        return tripNetRepository.cancelTrip(tripCode, operatorId, navController)
+    }
+
+    override fun endTrip(tripCode: String, operatorId: Int, navController: NavHostController) {
+        return tripNetRepository.endTrip(tripCode, operatorId, navController)
     }
 }
