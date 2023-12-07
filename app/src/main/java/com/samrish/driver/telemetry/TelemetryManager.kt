@@ -7,4 +7,5 @@ interface TelemetryManager {
     suspend fun sendMatrix(telemetry: Telemetry)
     suspend fun getTelemetry(): List<com.samrish.driver.database.Telemetry>
     abstract fun isNetworkAvailable(context: Context): Boolean
+    fun startTelemetryProducer()
 }
