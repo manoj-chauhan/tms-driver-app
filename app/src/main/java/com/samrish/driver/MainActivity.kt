@@ -2,6 +2,7 @@ package com.samrish.driver
 
 import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,11 +16,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -41,6 +45,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DrishtoApp()
+            LocationPermissionCheck()
             var showBatteryOptimizationDialog by remember { mutableStateOf(true) }
 
 
@@ -100,6 +105,60 @@ class MainActivity : ComponentActivity() {
         intent.data = Uri.parse("package:" + context.packageName)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
+    }
+
+    @Composable
+    fun LocationPermissionCheck() {
+        val context = LocalContext.current
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        // Check if location is enabled
+        val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val locationEnabledState = rememberUpdatedState(isLocationEnabled)
+
+        if (!locationEnabledState.value) {
+            // Location is not enabled, show a dialog to prompt the user to enable it
+            LocationDisabledDialog()
+        } else {
+            // Location is enabled, you can continue with your logic here
+            // ...
+            Log.e("Location", "LocationPermissionCheck: dialog is disabledd ", )
+        }
+    }
+
+    private @Composable
+    fun LocationDisabledDialog() {
+
+        val context = LocalContext.current
+        val alertDialogShown = remember { mutableStateOf(true) }
+
+        if (alertDialogShown.value) {
+            AlertDialog(
+                onDismissRequest = {
+                    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                    if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        alertDialogShown.value = false
+                    }
+                },
+                title = { Text("Location is disabled") },
+                text = {
+                    Column {
+                        Text("Please enable location to use this app.")
+                        Text("Go to Settings to enable location.")
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            // Open the Settings page to enable location
+                            context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                        }
+                    ) {
+                        Text("Go to Settings")
+                    }
+                }
+            )
+        }
     }
 
 }

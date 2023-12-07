@@ -8,6 +8,8 @@ import com.samrish.driver.database.TelemetryRepository
 import com.samrish.driver.models.Telemetry
 import com.samrish.driver.network.TelemetryNetRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TelemetryManagerImpl @Inject constructor(
@@ -15,39 +17,57 @@ class TelemetryManagerImpl @Inject constructor(
     private val authManager: AuthManager,
     private val telemetryNetRepository: TelemetryNetRepository,
     private val telemetryRepository: TelemetryRepository
-): TelemetryManager {
+) : TelemetryManager {
     override suspend fun sendMatrix(telemetry: Telemetry) {
         val tel = com.samrish.driver.database.Telemetry(
             telemetry.latitude, telemetry.longitude, telemetry.time, false
         )
         telemetryRepository.insertLocation(tel)
+        Log.d(
+            "Size Of New List",
+            "sentTelemetry: ${telemetryRepository.getTelemetryWithFalseStatus().size} "
+        )
         if (isNetworkAvailable(context)) {
-            val telemetryWithFalseStatus = telemetryRepository.getTelemetryWithFalseStatus()
-            Log.d("TAG", "sendMatrix: $telemetryWithFalseStatus ")
-
-            if (telemetryWithFalseStatus.isNotEmpty()) {
-                telemetryWithFalseStatus.forEach { metry ->
-                    try {
+            withContext(Dispatchers.IO) {
+                var telemetryWithFalseStatus: List<com.samrish.driver.database.Telemetry> =
+                    telemetryRepository.getTelemetryWithFalseStatus()
+                if (telemetryWithFalseStatus.isNotEmpty()) {
+                    telemetryWithFalseStatus.forEach { metry ->
                         val tele = Telemetry(
                             telemetry.deviceIdentifier,
                             metry.latitude,
                             metry.longitude,
                             metry.time
                         )
-                        telemetryNetRepository.sentTelemetry(tele)
-                        telemetryRepository.updateTelemetryStatus(metry.id, true)
-                    } catch (e: Exception) {
-                        Log.d("", "")
+                        try {
+                            telemetryNetRepository.sentTelemetry(tele)
+                            Log.d("Matrix Id", "sendMatrix: ${metry.id}")
+                            telemetryRepository.updateTelemetryStatus(metry.id, true)
+                            telemetryWithFalseStatus = telemetryRepository.getTelemetryWithFalseStatus()
+                            Log.d(
+                                "Telemetry after one false Status ",
+                                "sendMatrix: $telemetryWithFalseStatus"
+                            )
+                        } catch (e: Exception) {
+                            Log.d("", "")
+                        }
                     }
                 }
             }
-        }else{
-            Log.d("Noo Internet ", "No sending Matrix: $tel")
+        } else {
+            Log.d("No Internet ", "No sending Matrix: $tel")
         }
     }
 
     override suspend fun getTelemetry(): List<com.samrish.driver.database.Telemetry> {
-        return telemetryRepository.loadMatrices().asSequence().map { t -> com.samrish.driver.database.Telemetry( t.latitude, t.longitude, t.time, t.isDataLoaded) }.toList()
+        return telemetryRepository.loadMatrices().asSequence().map { t ->
+            com.samrish.driver.database.Telemetry(
+                t.latitude,
+                t.longitude,
+                t.time,
+                t.isDataLoaded
+            )
+        }.toList()
     }
 
     override fun isNetworkAvailable(context: Context): Boolean {

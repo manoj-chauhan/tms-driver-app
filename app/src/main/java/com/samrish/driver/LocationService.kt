@@ -125,7 +125,7 @@ class LocationService : Service(), LocationListener {
         }
 
 
-        this.locationManager!!.requestLocationUpdates(provider!!, 1000L, 0.1f, this)
+        this.locationManager!!.requestLocationUpdates(provider!!, 10000L, 0.3f, this)
     }
 
     override fun onDestroy() {
