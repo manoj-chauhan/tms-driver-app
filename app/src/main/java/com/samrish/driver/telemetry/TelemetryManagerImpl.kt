@@ -10,6 +10,7 @@ import com.samrish.driver.network.TelemetryNetRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.LinkedBlockingQueue
 import javax.inject.Inject
@@ -87,14 +88,23 @@ class TelemetryManagerImpl @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             while (true) {
                 Log.d("Queue", "startTelemetryProducer: $telemetryQueue")
-                val telemetry = telemetryQueue.take()
+//                val telemetry = telemetryQueue.take()
+                val telemetry = telemetryQueue.peek()
+
+                if (telemetry == null) {
+                    delay(1000000)
+                    continue
+                }
+
                 Log.d("Queue item to take", "startTelemetryProducer: $telemetry ")
                 if (isNetworkAvailable(context)) {
                     saveTelemetryToDatabase(telemetry)
                     sendTelemetryToServer(telemetry)
+                    telemetryQueue.poll()
                 } else {
                     Log.d("Queue item to take in Network off", "startTelemetryProducer: $telemetry ")
                     saveTelemetryToDatabase(telemetry)
+                    delay(1000000)
                 }
             }
         }
