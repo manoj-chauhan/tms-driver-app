@@ -1,10 +1,13 @@
 package com.samrish.driver
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +42,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.auth.api.phone.SmsRetriever
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -50,6 +55,8 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import java.util.concurrent.TimeUnit
+import java.util.regex.Pattern
+
 @OptIn(ExperimentalMaterial3Api::class)
 
 class PhoneNumberActivity : ComponentActivity() {
@@ -57,10 +64,21 @@ class PhoneNumberActivity : ComponentActivity() {
 
     private var number: String=""
 
+    private var otp :OtpVerification ?= null
+
+    val etotp:TextInputEditText ?= null
+
+    val REQ_USER_CONSENT = 200
+
+    val otpText = etotp?.text?.toString()
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
+
+        autoOtpReceiver()
 
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -103,6 +121,7 @@ class PhoneNumberActivity : ComponentActivity() {
                 intent.putExtra("OTP", verificationId)
                 intent.putExtra("resentToken", token)
                 intent.putExtra("phoneNumber", number)
+                intent.putExtra("otp_number", otpText)
                 Log.d("TAG", "onCodeSent: $verificationId and $token")
                 startActivity(intent)
             }
@@ -208,20 +227,68 @@ class PhoneNumberActivity : ComponentActivity() {
                                             .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
                                             .build()
                                         PhoneAuthProvider.verifyPhoneNumber(options)
+
                                     }) {
                                         Text(text = "Get otp")
                                     }
                                 }
                             }
-
-
                         }
 
                     }
 
                 }
             }
+        }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun autoOtpReceiver() {
+        Log.d("auto", "autoOtpReceiver: ")
+        val client = SmsRetriever.getClient(this)
+        client.startSmsUserConsent(null)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun registerBroadCastReceiver(){
+        Log.d("register", "registerBroadCastReceiver: ")
+        otp = OtpVerification()
+        otp!!.sms = object : OtpVerification.OtpReceiverListener{
+            override fun onOtpSuccess(intent: Intent?){
+                if (intent != null) {
+                    startActivityForResult(intent, REQ_USER_CONSENT)
+                }
+            }
+
+            override fun onOtpTimeOut() {
+                TODO("Not yet implemented")
+            }
+
+        }
+
+        val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
+        registerReceiver(otp, intentFilter, RECEIVER_NOT_EXPORTED)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode,resultCode,data)
+
+        if(requestCode == REQ_USER_CONSENT){
+            if(resultCode == RESULT_OK && data != null){
+                val message = data.getStringExtra(SmsRetriever.EXTRA_SMS_MESSAGE)
+                getOtpFromMessage(message)
+            }
+        }
+    }
+
+    private fun getOtpFromMessage(message: String?) {
+        if (message != null) {
+            val otpPattern = Pattern.compile("(|^)\\d{6}")
+            val matcher = otpPattern.matcher(message)
+            if (matcher.find()) {
+                etotp?.setText(matcher.group(0))
+                Log.d("getOTP", "getOtpFromMessage: $etotp ")
+            }
         }
     }
 
@@ -242,5 +309,11 @@ class PhoneNumberActivity : ComponentActivity() {
                     // Update UI
                 }
             }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onStart() {
+        super.onStart()
+        registerBroadCastReceiver()
     }
 }

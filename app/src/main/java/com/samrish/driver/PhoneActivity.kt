@@ -64,6 +64,7 @@ class OTPActivity() : ComponentActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var OTP: String
+    private lateinit var otpNumber: String
     private lateinit var resentToken: PhoneAuthProvider.ForceResendingToken
     private lateinit var phoneNumber: String
 
@@ -79,6 +80,7 @@ class OTPActivity() : ComponentActivity() {
         auth = FirebaseAuth.getInstance()
 
         OTP = intent.getStringExtra("OTP").toString()
+        otpNumber = intent.getStringExtra("otp_number").toString()
         resentToken = intent.getParcelableExtra("resentToken")!!
         phoneNumber = intent.getStringExtra("phoneNumber")!!
 
@@ -93,6 +95,11 @@ class OTPActivity() : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     delay(TimeUnit.SECONDS.toMillis(6))
                     isResendButtonEnabled = true
+                }
+
+                LaunchedEffect(OTP) {
+                    Log.d("TAG", "onCreate: $otpNumber")
+                    text = TextFieldValue(otpNumber)
                 }
 
                 Column {
