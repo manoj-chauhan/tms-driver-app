@@ -184,7 +184,12 @@ class PhoneNumberActivity : ComponentActivity() {
                                     },
                                     label = { Text(text = "Enter Your Phone Number") },
                                     onValueChange = {
-                                        text = it
+                                        text = if (it.text.length <= 10) {
+                                            it
+                                        } else {
+                                            TextFieldValue(it.text.take(10))
+                                        }
+
                                     }
                                 )
 
