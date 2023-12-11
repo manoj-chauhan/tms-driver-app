@@ -5,6 +5,8 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -20,13 +22,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
@@ -131,6 +130,7 @@ class PhoneNumberActivity : ComponentActivity() {
 
         setContent {
             var text by remember { mutableStateOf(TextFieldValue("")) }
+            var isPhoneNumberValid by remember { mutableStateOf(false) }
 
             Box(
                 modifier = Modifier
@@ -192,23 +192,33 @@ class PhoneNumberActivity : ComponentActivity() {
                                 verticalArrangement = Arrangement.SpaceBetween,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
+
                                 TextField(
                                     value = text,
                                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                                     leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Default.Phone,
-                                            contentDescription = "emailIcon"
-                                        )
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Start
+                                        ) {
+                                            Text(
+                                                text = "+91",
+                                                modifier = Modifier.padding(start = 16.dp),
+                                                style = TextStyle(
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = 16.sp
+                                                )
+                                            )
+                                        }
                                     },
                                     label = { Text(text = "Enter Your Phone Number") },
-                                    onValueChange = {
-                                        text = if (it.text.length <= 10) {
-                                            it
+                                    onValueChange = { newTextFieldValue ->
+                                        if (newTextFieldValue.text.length <= 10) {
+                                            text = newTextFieldValue
+                                            isPhoneNumberValid = newTextFieldValue.text.length == 10 && Patterns.PHONE.matcher(newTextFieldValue.text).matches()
                                         } else {
-                                            TextFieldValue(it.text.take(10))
+                                            Toast.makeText(this@PhoneNumberActivity, "Please enter a correct number", Toast.LENGTH_SHORT).show()
                                         }
-
                                     }
                                 )
 
@@ -228,7 +238,9 @@ class PhoneNumberActivity : ComponentActivity() {
                                             .build()
                                         PhoneAuthProvider.verifyPhoneNumber(options)
 
-                                    }) {
+                                    },
+                                            enabled = isPhoneNumberValid
+                                    ) {
                                         Text(text = "Get otp")
                                     }
                                 }
