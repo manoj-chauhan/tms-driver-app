@@ -239,13 +239,19 @@ class OTPActivity() : ComponentActivity() {
             // for instance if the the phone number format is not valid.
             if (e is FirebaseAuthInvalidCredentialsException) {
                 Log.d("TAG", "onVerificationFailed: $e")
+                Toast.makeText(this@OTPActivity,e.message ,Toast.LENGTH_SHORT).show()
+
             } else if (e is FirebaseTooManyRequestsException) {
                 // The SMS quota for the project has been exceeded
                 Log.d("TAG", "onVerificationFailed: $e")
+                Toast.makeText(this@OTPActivity,e.message ,Toast.LENGTH_SHORT).show()
+
 
             } else if (e is FirebaseAuthMissingActivityForRecaptchaException) {
                 // reCAPTCHA verification attempted with null Activity
                 Log.d("TAG", "onVerificationFailed: $e")
+                Toast.makeText(this@OTPActivity,e.message ,Toast.LENGTH_SHORT).show()
+
 
             }
 
@@ -285,6 +291,10 @@ class OTPActivity() : ComponentActivity() {
 
                 } else {
                     Log.w("TAG", "signInWithCredential:failure", task.exception)
+                    if (task.exception is FirebaseAuthInvalidCredentialsException) {
+                        // The verification code entered was invalid
+                        Toast.makeText(this, "The entered code is invalid. Check the code and try again", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
     }

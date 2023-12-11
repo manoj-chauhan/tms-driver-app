@@ -97,14 +97,17 @@ class PhoneNumberActivity : ComponentActivity() {
                 // This callback is invoked in an invalid request for verification is made,
                 // for instance if the the phone number format is not valid.
                 if (e is FirebaseAuthInvalidCredentialsException) {
-                    Log.d("TAG", "onVerificationFailed: $e")
+                    Log.d("TAG", "onVerificationFailed: ${e.message} ${e.localizedMessage}")
+                    Toast.makeText(this@PhoneNumberActivity,e.message ,Toast.LENGTH_SHORT).show()
                 } else if (e is FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
-                    Log.d("TAG", "onVerificationFailed: $e")
+                    Log.d("TAG", "onVerificationFailed: ${e.message}")
+                    Toast.makeText(this@PhoneNumberActivity,e.message ,Toast.LENGTH_SHORT).show()
 
                 } else if (e is FirebaseAuthMissingActivityForRecaptchaException) {
                     // reCAPTCHA verification attempted with null Activity
-                    Log.d("TAG", "onVerificationFailed: $e")
+                    Log.d("TAG", "onVerificationFailed: ${e.message}")
+                    Toast.makeText(this@PhoneNumberActivity,e.message ,Toast.LENGTH_SHORT).show()
 
                 }
 
@@ -323,6 +326,7 @@ class PhoneNumberActivity : ComponentActivity() {
                     Log.w("TAG", "signInWithCredential:failure", task.exception)
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         // The verification code entered was invalid
+                        Toast.makeText(this, "The entered code is invalid. Check the code and try again", Toast.LENGTH_LONG).show()
                     }
                     // Update UI
                 }
