@@ -21,7 +21,11 @@ class OtpVerification: BroadcastReceiver() {
                         CommonStatusCodes.SUCCESS -> {
                             // Extract the OTP from the SMS message
                             val message =bundle.getParcelable<Intent>(SmsRetriever.EXTRA_CONSENT_INTENT)
+
+                            Log.d("Message", "onReceive: $message")
+                            if (message != null) {
                                 sms?.onOtpSuccess(message)
+                            }
 
                         }
                         CommonStatusCodes.TIMEOUT -> {
@@ -33,7 +37,7 @@ class OtpVerification: BroadcastReceiver() {
     }
 
      interface  OtpReceiverListener{
-        fun onOtpSuccess(intent:Intent?);
+        fun onOtpSuccess(intent:Intent);
         fun onOtpTimeOut()
     }
 }

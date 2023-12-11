@@ -43,7 +43,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.phone.SmsRetriever
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -66,14 +65,15 @@ class PhoneNumberActivity : ComponentActivity() {
 
     private var otp :OtpVerification ?= null
 
-    val etotp:TextInputEditText ?= null
-
     val REQ_USER_CONSENT = 200
 
-    val otpText = etotp?.text?.toString()
+
+    var verification:String?= null
+    var tokenAuth: PhoneAuthProvider.ForceResendingToken? = null
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
+
 
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
@@ -117,19 +117,19 @@ class PhoneNumberActivity : ComponentActivity() {
                 token: PhoneAuthProvider.ForceResendingToken,
             ) {
                 super.onCodeSent(verificationId, token)
-                val intent = Intent(this@PhoneNumberActivity, OTPActivity::class.java)
-                intent.putExtra("OTP", verificationId)
-                intent.putExtra("resentToken", token)
-                intent.putExtra("phoneNumber", number)
-                intent.putExtra("otp_number", otpText)
-                Log.d("TAG", "onCodeSent: $verificationId and $token")
-                startActivity(intent)
+                verification = verificationId
+                tokenAuth = token
+//                val intent = Intent(this@PhoneNumberActivity, OTPActivity::class.java)
+//                intent.putExtra("OTP", verificationId)
+//                intent.putExtra("resentToken", token)
+//                intent.putExtra("phoneNumber", number)
+//                intent.putExtra("otp_number", otpText)
+//                Log.d("TAG", "onCodeSent: $verificationId and $token and $otpText, $otp")
+//                startActivity(intent)
             }
         }
 
         setContent {
-
-
             var text by remember { mutableStateOf(TextFieldValue("")) }
 
             Box(
@@ -222,7 +222,7 @@ class PhoneNumberActivity : ComponentActivity() {
                                         Log.d("TAG", "onCreate: $number")
                                         val options = PhoneAuthOptions.newBuilder(auth)
                                             .setPhoneNumber(number) // Phone number to verify
-                                            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+                                            .setTimeout(0L, TimeUnit.SECONDS) // Timeout and unit
                                             .setActivity(this@PhoneNumberActivity)
                                             .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
                                             .build()
@@ -254,10 +254,8 @@ class PhoneNumberActivity : ComponentActivity() {
         Log.d("register", "registerBroadCastReceiver: ")
         otp = OtpVerification()
         otp!!.sms = object : OtpVerification.OtpReceiverListener{
-            override fun onOtpSuccess(intent: Intent?){
-                if (intent != null) {
-                    startActivityForResult(intent, REQ_USER_CONSENT)
-                }
+            override fun onOtpSuccess(intent: Intent){
+                startActivityForResult(intent, REQ_USER_CONSENT)
             }
 
             override fun onOtpTimeOut() {
@@ -286,8 +284,16 @@ class PhoneNumberActivity : ComponentActivity() {
             val otpPattern = Pattern.compile("(|^)\\d{6}")
             val matcher = otpPattern.matcher(message)
             if (matcher.find()) {
-                etotp?.setText(matcher.group(0))
-                Log.d("getOTP", "getOtpFromMessage: $etotp ")
+                val otpValue = matcher.group(0)
+                Log.d("getOTP", "getOtpFromMessage: $otpValue")
+
+                // Start OTPActivity with the OTP value
+                val intent = Intent(this@PhoneNumberActivity, OTPActivity::class.java)
+                intent.putExtra("OTP", verification)
+                intent.putExtra("resentToken", tokenAuth)
+                intent.putExtra("phoneNumber", number)
+                intent.putExtra("otp_number", otpValue)
+                startActivity(intent)
             }
         }
     }

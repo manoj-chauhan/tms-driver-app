@@ -86,19 +86,19 @@ class OTPActivity() : ComponentActivity() {
 
         setContent {
             var text by remember { mutableStateOf(TextFieldValue("")) }
-            var isResendButtonEnabled by remember { mutableStateOf(true) }
+            var isResendButtonEnabled by remember { mutableStateOf(false) }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Yellow)
             ) {
-                LaunchedEffect(Unit) {
-                    delay(TimeUnit.SECONDS.toMillis(6))
+                LaunchedEffect(true) {
+                    delay(TimeUnit.MINUTES.toMillis(1))
                     isResendButtonEnabled = true
                 }
 
-                LaunchedEffect(OTP) {
-                    Log.d("TAG", "onCreate: $otpNumber")
+                LaunchedEffect(Unit) {
+                    Log.d("OTP VALUE", "onCreate: $otpNumber")
                     text = TextFieldValue(otpNumber)
                 }
 
@@ -128,8 +128,6 @@ class OTPActivity() : ComponentActivity() {
                             )
 
                         }
-
-
                     }
                     Card(
                         modifier = Modifier
@@ -214,7 +212,7 @@ class OTPActivity() : ComponentActivity() {
 
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(phoneNumber) // Phone number to verify
-            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+            .setTimeout(0L, TimeUnit.SECONDS) // Timeout and unit
             .setActivity(this)
             .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
             .setForceResendingToken(resentToken)
