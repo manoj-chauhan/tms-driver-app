@@ -11,16 +11,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -28,6 +31,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,10 +39,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.phone.SmsRetriever
@@ -46,12 +54,12 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthMissingActivityForRecaptchaException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
@@ -60,14 +68,14 @@ import java.util.regex.Pattern
 class PhoneNumberActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
 
-    private var number: String=""
+    private var number: String = ""
 
-    private var otp :OtpVerification ?= null
+    private var otp: OtpVerification? = null
 
     val REQ_USER_CONSENT = 200
 
 
-    var verification:String?= null
+    var verification: String? = null
     var tokenAuth: PhoneAuthProvider.ForceResendingToken? = null
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -78,6 +86,7 @@ class PhoneNumberActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         autoOtpReceiver()
+
 
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -98,16 +107,11 @@ class PhoneNumberActivity : ComponentActivity() {
                 // for instance if the the phone number format is not valid.
                 if (e is FirebaseAuthInvalidCredentialsException) {
                     Log.d("TAG", "onVerificationFailed: ${e.message} ${e.localizedMessage}")
-                    Toast.makeText(this@PhoneNumberActivity,e.message ,Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@PhoneNumberActivity, e.message, Toast.LENGTH_SHORT).show()
                 } else if (e is FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
                     Log.d("TAG", "onVerificationFailed: ${e.message}")
-                    Toast.makeText(this@PhoneNumberActivity,e.message ,Toast.LENGTH_SHORT).show()
-
-                } else if (e is FirebaseAuthMissingActivityForRecaptchaException) {
-                    // reCAPTCHA verification attempted with null Activity
-                    Log.d("TAG", "onVerificationFailed: ${e.message}")
-                    Toast.makeText(this@PhoneNumberActivity,e.message ,Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@PhoneNumberActivity, e.message, Toast.LENGTH_SHORT).show()
 
                 }
 
@@ -121,19 +125,45 @@ class PhoneNumberActivity : ComponentActivity() {
                 super.onCodeSent(verificationId, token)
                 verification = verificationId
                 tokenAuth = token
-//                val intent = Intent(this@PhoneNumberActivity, OTPActivity::class.java)
-//                intent.putExtra("OTP", verificationId)
-//                intent.putExtra("resentToken", token)
-//                intent.putExtra("phoneNumber", number)
-//                intent.putExtra("otp_number", otpText)
-//                Log.d("TAG", "onCodeSent: $verificationId and $token and $otpText, $otp")
-//                startActivity(intent)
+                val intent = Intent(this@PhoneNumberActivity, OTPActivity::class.java)
+                intent.putExtra("OTP", verificationId)
+                intent.putExtra("resentToken", token)
+                intent.putExtra("phoneNumber", number)
+                Log.d("TAG", "onCodeSent: $verificationId and $token and, $otp")
+                startActivity(intent)
             }
         }
 
         setContent {
             var text by remember { mutableStateOf(TextFieldValue("")) }
             var isPhoneNumberValid by remember { mutableStateOf(false) }
+            var countdownSeconds by remember { mutableStateOf(30) }
+            var otpSeconds by remember { mutableStateOf(30) }
+            var isResendEnabled by remember { mutableStateOf(false) }
+            var isButtonEnabled by remember { mutableStateOf(true) }
+
+
+            LaunchedEffect(countdownSeconds) {
+                while (countdownSeconds > 0) {
+                    delay(1000)
+                    countdownSeconds--
+                }
+
+                isResendEnabled = true
+            }
+
+            LaunchedEffect(otpSeconds) {
+                while (otpSeconds > 0) {
+                    delay(1000)
+                    otpSeconds--
+                }
+
+                isButtonEnabled = true
+            }
+
+
+            val context = LocalContext.current
+
 
             Box(
                 modifier = Modifier
@@ -144,7 +174,7 @@ class PhoneNumberActivity : ComponentActivity() {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(500.dp)
+                            .height(400.dp)
                             .padding(
                                 PaddingValues(
 
@@ -192,7 +222,6 @@ class PhoneNumberActivity : ComponentActivity() {
                         ) {
                             Column(
                                 modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.SpaceBetween,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
 
@@ -218,42 +247,164 @@ class PhoneNumberActivity : ComponentActivity() {
                                     onValueChange = { newTextFieldValue ->
                                         if (newTextFieldValue.text.length <= 10) {
                                             text = newTextFieldValue
-                                            isPhoneNumberValid = newTextFieldValue.text.length == 10 && Patterns.PHONE.matcher(newTextFieldValue.text).matches()
+                                            isPhoneNumberValid =
+                                                newTextFieldValue.text.length == 10 && Patterns.PHONE.matcher(
+                                                    newTextFieldValue.text
+                                                ).matches()
                                         } else {
-                                            Toast.makeText(this@PhoneNumberActivity, "Please enter a correct number", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(
+                                                this@PhoneNumberActivity,
+                                                "Please enter a correct number",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                     }
                                 )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 25.dp, bottom = 25.dp, start = 30.dp)
+                                ) {
+                                    Text(text = "Didn't received the OTP?")
+                                    Spacer(modifier = Modifier.padding(10.dp))
+                                    ClickableText(
+                                        text = buildAnnotatedString {
+                                            withStyle(style = SpanStyle(color = if (isResendEnabled) Color.Blue else Color.Gray)) {
+                                                append("Resend OTP")
+
+                                            }
+                                        },
+                                        onClick = { offset ->
+                                            if (isResendEnabled) {
+                                                // Handle click only if resend is enabled
+                                                resendOTP()
+                                                isResendEnabled = false
+                                                countdownSeconds = 30
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Please wait for the timer to finish",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        },
+                                        modifier = Modifier.clickable {
+                                            // Handle click on the entire ClickableText
+                                            if (!isResendEnabled) {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Please wait for the timer to finish",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+
+                                    )
+                                    Spacer(modifier = Modifier.padding(10.dp))
+                                    if(countdownSeconds> 0 ) {
+                                        Text(text = "Wait for $countdownSeconds")
+                                    }
+                                }
+
+
 
                                 Row(
-                                    modifier = Modifier.fillMaxSize(),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center
                                 ) {
-                                    Button(onClick = {
-                                        number = "+91"+text.text.trim().toString()
-                                        Log.d("TAG", "onCreate: $number")
-                                        val options = PhoneAuthOptions.newBuilder(auth)
-                                            .setPhoneNumber(number) // Phone number to verify
-                                            .setTimeout(0L, TimeUnit.SECONDS) // Timeout and unit
-                                            .setActivity(this@PhoneNumberActivity)
-                                            .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
-                                            .build()
-                                        PhoneAuthProvider.verifyPhoneNumber(options)
+                                    Button(
+                                        onClick = {
+                                            if (isButtonEnabled) {
+                                                isButtonEnabled = false
+                                                number = "+91" + text.text.trim().toString()
+                                                Log.d("TAG", "onCreate: $number")
+                                                otpSeconds = 30
+                                                val options = PhoneAuthOptions.newBuilder(auth)
+                                                    .setPhoneNumber(number) // Phone number to verify
+                                                    .setTimeout(
+                                                        0L,
+                                                        TimeUnit.SECONDS
+                                                    ) // Timeout and unit
+                                                    .setActivity(this@PhoneNumberActivity)
+                                                    .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
+                                                    .build()
+                                                PhoneAuthProvider.verifyPhoneNumber(options)
 
-                                    },
-                                            enabled = isPhoneNumberValid
+                                            } else {
+                                                Toast.makeText(
+                                                    this@PhoneNumberActivity,
+                                                    "Please wait for 30 seconds before trying again",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        },
+                                        enabled = isPhoneNumberValid && isButtonEnabled,
                                     ) {
-                                        Text(text = "Get otp")
+                                        Text(text = "GET OTP")
                                     }
+
                                 }
                             }
                         }
-
                     }
-
                 }
             }
+        }
+    }
+
+    private fun resendOTP() {
+        Log.d("TAG", "resendOTP: ")
+        val options = tokenAuth?.let {
+            PhoneAuthOptions.newBuilder(auth)
+                .setPhoneNumber(number) // Phone number to verify
+                .setTimeout(0L, TimeUnit.SECONDS) // Timeout and unit
+                .setActivity(this)
+                .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
+                .setForceResendingToken(it)
+                .build()
+        }
+        if (options != null) {
+            PhoneAuthProvider.verifyPhoneNumber(options)
+        }
+    }
+
+    val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+
+        override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+            // This callback will be invoked in two situations:
+            // 1 - Instant verification. In some cases the phone number can be instantly
+            //     verified without needing to send or enter a verification code.
+            // 2 - Auto-retrieval. On some devices Google Play services can automatically
+            //     detect the incoming verification SMS and perform verification without
+            //     user action.
+            val code: String = credential.smsCode!!
+            Log.d("TD", "onVerificationCompleted: $code ")
+            signInWithPhoneAuthCredential(credential)
+        }
+
+        override fun onVerificationFailed(e: FirebaseException) {
+            // This callback is invoked in an invalid request for verification is made,
+            // for instance if the the phone number format is not valid.
+            if (e is FirebaseAuthInvalidCredentialsException) {
+                Log.d("TAG", "onVerificationFailed: $e")
+                Toast.makeText(this@PhoneNumberActivity, e.message, Toast.LENGTH_SHORT).show()
+
+            } else if (e is FirebaseTooManyRequestsException) {
+                // The SMS quota for the project has been exceeded
+                Log.d("TAG", "onVerificationFailed: $e")
+                Toast.makeText(this@PhoneNumberActivity, e.message, Toast.LENGTH_SHORT).show()
+            }
+
+            // Show a message and update the UI
+        }
+
+        override fun onCodeSent(
+            verificationId: String,
+            token: PhoneAuthProvider.ForceResendingToken,
+        ) {
+            super.onCodeSent(verificationId, token)
+            verification = verificationId
+            tokenAuth = token
         }
     }
 
@@ -265,11 +416,11 @@ class PhoneNumberActivity : ComponentActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun registerBroadCastReceiver(){
+    private fun registerBroadCastReceiver() {
         Log.d("register", "registerBroadCastReceiver: ")
         otp = OtpVerification()
-        otp!!.sms = object : OtpVerification.OtpReceiverListener{
-            override fun onOtpSuccess(intent: Intent){
+        otp!!.sms = object : OtpVerification.OtpReceiverListener {
+            override fun onOtpSuccess(intent: Intent) {
                 startActivityForResult(intent, REQ_USER_CONSENT)
             }
 
@@ -284,10 +435,10 @@ class PhoneNumberActivity : ComponentActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode,resultCode,data)
+        super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == REQ_USER_CONSENT){
-            if(resultCode == RESULT_OK && data != null){
+        if (requestCode == REQ_USER_CONSENT) {
+            if (resultCode == RESULT_OK && data != null) {
                 val message = data.getStringExtra(SmsRetriever.EXTRA_SMS_MESSAGE)
                 getOtpFromMessage(message)
             }
@@ -326,7 +477,11 @@ class PhoneNumberActivity : ComponentActivity() {
                     Log.w("TAG", "signInWithCredential:failure", task.exception)
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         // The verification code entered was invalid
-                        Toast.makeText(this, "The entered code is invalid. Check the code and try again", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this,
+                            "The entered code is invalid. Check the code and try again",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     // Update UI
                 }
