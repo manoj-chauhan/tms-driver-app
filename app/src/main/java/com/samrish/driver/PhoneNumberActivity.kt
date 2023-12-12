@@ -1,7 +1,6 @@
 package com.samrish.driver
 
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -11,19 +10,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -40,16 +36,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -61,7 +53,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
-import java.util.regex.Pattern
 
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -85,7 +76,7 @@ class PhoneNumberActivity : ComponentActivity() {
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
 
-        autoOtpReceiver()
+//        autoOtpReceiver()
 
 
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -137,20 +128,9 @@ class PhoneNumberActivity : ComponentActivity() {
         setContent {
             var text by remember { mutableStateOf(TextFieldValue("")) }
             var isPhoneNumberValid by remember { mutableStateOf(false) }
-            var countdownSeconds by remember { mutableStateOf(30) }
             var otpSeconds by remember { mutableStateOf(30) }
-            var isResendEnabled by remember { mutableStateOf(false) }
             var isButtonEnabled by remember { mutableStateOf(true) }
 
-
-            LaunchedEffect(countdownSeconds) {
-                while (countdownSeconds > 0) {
-                    delay(1000)
-                    countdownSeconds--
-                }
-
-                isResendEnabled = true
-            }
 
             LaunchedEffect(otpSeconds) {
                 while (otpSeconds > 0) {
@@ -260,51 +240,6 @@ class PhoneNumberActivity : ComponentActivity() {
                                         }
                                     }
                                 )
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 25.dp, bottom = 25.dp, start = 30.dp)
-                                ) {
-                                    Text(text = "Didn't received the OTP?")
-                                    Spacer(modifier = Modifier.padding(10.dp))
-                                    ClickableText(
-                                        text = buildAnnotatedString {
-                                            withStyle(style = SpanStyle(color = if (isResendEnabled) Color.Blue else Color.Gray)) {
-                                                append("Resend OTP")
-
-                                            }
-                                        },
-                                        onClick = { offset ->
-                                            if (isResendEnabled) {
-                                                // Handle click only if resend is enabled
-                                                resendOTP()
-                                                isResendEnabled = false
-                                                countdownSeconds = 30
-                                            } else {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Please wait for the timer to finish",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        },
-                                        modifier = Modifier.clickable {
-                                            // Handle click on the entire ClickableText
-                                            if (!isResendEnabled) {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Please wait for the timer to finish",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-
-                                    )
-                                    Spacer(modifier = Modifier.padding(10.dp))
-                                    if(countdownSeconds> 0 ) {
-                                        Text(text = "Wait for $countdownSeconds")
-                                    }
-                                }
 
 
 
@@ -340,7 +275,7 @@ class PhoneNumberActivity : ComponentActivity() {
                                         },
                                         enabled = isPhoneNumberValid && isButtonEnabled,
                                     ) {
-                                        Text(text = "GET OTP")
+                                        Text(text = "Send OTP")
                                     }
 
                                 }
@@ -352,117 +287,62 @@ class PhoneNumberActivity : ComponentActivity() {
         }
     }
 
-    private fun resendOTP() {
-        Log.d("TAG", "resendOTP: ")
-        val options = tokenAuth?.let {
-            PhoneAuthOptions.newBuilder(auth)
-                .setPhoneNumber(number) // Phone number to verify
-                .setTimeout(0L, TimeUnit.SECONDS) // Timeout and unit
-                .setActivity(this)
-                .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
-                .setForceResendingToken(it)
-                .build()
-        }
-        if (options != null) {
-            PhoneAuthProvider.verifyPhoneNumber(options)
-        }
-    }
 
-    val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+//    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+//    private fun autoOtpReceiver() {
+//        Log.d("auto", "autoOtpReceiver: ")
+//        val client = SmsRetriever.getClient(this)
+//        client.startSmsUserConsent(null)
+//    }
 
-        override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-            // This callback will be invoked in two situations:
-            // 1 - Instant verification. In some cases the phone number can be instantly
-            //     verified without needing to send or enter a verification code.
-            // 2 - Auto-retrieval. On some devices Google Play services can automatically
-            //     detect the incoming verification SMS and perform verification without
-            //     user action.
-            val code: String = credential.smsCode!!
-            Log.d("TD", "onVerificationCompleted: $code ")
-            signInWithPhoneAuthCredential(credential)
-        }
-
-        override fun onVerificationFailed(e: FirebaseException) {
-            // This callback is invoked in an invalid request for verification is made,
-            // for instance if the the phone number format is not valid.
-            if (e is FirebaseAuthInvalidCredentialsException) {
-                Log.d("TAG", "onVerificationFailed: $e")
-                Toast.makeText(this@PhoneNumberActivity, e.message, Toast.LENGTH_SHORT).show()
-
-            } else if (e is FirebaseTooManyRequestsException) {
-                // The SMS quota for the project has been exceeded
-                Log.d("TAG", "onVerificationFailed: $e")
-                Toast.makeText(this@PhoneNumberActivity, e.message, Toast.LENGTH_SHORT).show()
-            }
-
-            // Show a message and update the UI
-        }
-
-        override fun onCodeSent(
-            verificationId: String,
-            token: PhoneAuthProvider.ForceResendingToken,
-        ) {
-            super.onCodeSent(verificationId, token)
-            verification = verificationId
-            tokenAuth = token
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun autoOtpReceiver() {
-        Log.d("auto", "autoOtpReceiver: ")
-        val client = SmsRetriever.getClient(this)
-        client.startSmsUserConsent(null)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun registerBroadCastReceiver() {
-        Log.d("register", "registerBroadCastReceiver: ")
-        otp = OtpVerification()
-        otp!!.sms = object : OtpVerification.OtpReceiverListener {
-            override fun onOtpSuccess(intent: Intent) {
-                startActivityForResult(intent, REQ_USER_CONSENT)
-            }
-
-            override fun onOtpTimeOut() {
-                TODO("Not yet implemented")
-            }
-
-        }
-
-        val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
-        registerReceiver(otp, intentFilter, RECEIVER_NOT_EXPORTED)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQ_USER_CONSENT) {
-            if (resultCode == RESULT_OK && data != null) {
-                val message = data.getStringExtra(SmsRetriever.EXTRA_SMS_MESSAGE)
-                getOtpFromMessage(message)
-            }
-        }
-    }
-
-    private fun getOtpFromMessage(message: String?) {
-        if (message != null) {
-            val otpPattern = Pattern.compile("(|^)\\d{6}")
-            val matcher = otpPattern.matcher(message)
-            if (matcher.find()) {
-                val otpValue = matcher.group(0)
-                Log.d("getOTP", "getOtpFromMessage: $otpValue")
-
-                // Start OTPActivity with the OTP value
-                val intent = Intent(this@PhoneNumberActivity, OTPActivity::class.java)
-                intent.putExtra("OTP", verification)
-                intent.putExtra("resentToken", tokenAuth)
-                intent.putExtra("phoneNumber", number)
-                intent.putExtra("otp_number", otpValue)
-                startActivity(intent)
-            }
-        }
-    }
+//    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+//    private fun registerBroadCastReceiver() {
+//        Log.d("register", "registerBroadCastReceiver: ")
+//        otp = OtpVerification()
+//        otp!!.sms = object : OtpVerification.OtpReceiverListener {
+//            override fun onOtpSuccess(intent: Intent) {
+//                startActivityForResult(intent, REQ_USER_CONSENT)
+//            }
+//
+//            override fun onOtpTimeOut() {
+//                TODO("Not yet implemented")
+//            }
+//
+//        }
+//
+//        val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
+//        registerReceiver(otp, intentFilter, RECEIVER_NOT_EXPORTED)
+//    }
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        if (requestCode == REQ_USER_CONSENT) {
+//            if (resultCode == RESULT_OK && data != null) {
+//                val message = data.getStringExtra(SmsRetriever.EXTRA_SMS_MESSAGE)
+//                getOtpFromMessage(message)
+//            }
+//        }
+//    }
+//
+//    private fun getOtpFromMessage(message: String?) {
+//        if (message != null) {
+//            val otpPattern = Pattern.compile("(|^)\\d{6}")
+//            val matcher = otpPattern.matcher(message)
+//            if (matcher.find()) {
+//                val otpValue = matcher.group(0)
+//                Log.d("getOTP", "getOtpFromMessage: $otpValue")
+//
+//                // Start OTPActivity with the OTP value
+//                val intent = Intent(this@PhoneNumberActivity, OTPActivity::class.java)
+//                intent.putExtra("OTP", verification)
+//                intent.putExtra("resentToken", tokenAuth)
+//                intent.putExtra("phoneNumber", number)
+//                intent.putExtra("otp_number", otpValue)
+//                startActivity(intent)
+//            }
+//        }
+//    }
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
@@ -488,9 +368,9 @@ class PhoneNumberActivity : ComponentActivity() {
             }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun onStart() {
-        super.onStart()
-        registerBroadCastReceiver()
-    }
+//    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+//    override fun onStart() {
+//        super.onStart()
+//        registerBroadCastReceiver()
+//    }
 }
