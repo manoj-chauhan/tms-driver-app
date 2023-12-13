@@ -23,7 +23,7 @@ object LocalDateTimeConverter {
     }
 }
 
-@Database(entities = [User::class, Telemetry::class, Trip::class], version = 1)
+@Database(entities = [User::class, Telemetry::class, Trip::class], version = 4)
 @TypeConverters(LocalDateTimeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userRepository(): UserRepository

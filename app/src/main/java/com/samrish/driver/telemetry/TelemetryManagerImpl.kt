@@ -10,8 +10,8 @@ import com.samrish.driver.network.TelemetryNetRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.LinkedBlockingQueue
 import javax.inject.Inject
 
@@ -22,12 +22,14 @@ class TelemetryManagerImpl @Inject constructor(
     private val telemetryRepository: TelemetryRepository
 ) : TelemetryManager {
 
-    private val telemetryQueue: LinkedBlockingQueue<Telemetry> = LinkedBlockingQueue()
+    private var isConsumerRunning :Boolean = false
+    private val telemetryQueue: LinkedBlockingQueue<com.samrish.driver.database.Telemetry> = LinkedBlockingQueue()
     override suspend fun sendMatrix(telemetry: Telemetry) {
 
-        telemetryQueue.offer(telemetry)
-        Log.d("Queue", "sendMatrix: $telemetryQueue")
-        startTelemetryProducer()
+        val json = com.samrish.driver.database.Telemetry(telemetry.latitude, telemetry.longitude, telemetry.time, false, telemetry.deviceIdentifier)
+
+        saveTelemetryToDatabase(json)
+        telemetryQueue.offer(json)
 //        telemetryRepository.insertLocation(tel)
 //        Log.d(
 //            "Size Of New List",
@@ -72,7 +74,8 @@ class TelemetryManagerImpl @Inject constructor(
                 t.latitude,
                 t.longitude,
                 t.time,
-                t.isDataLoaded
+                t.isDataLoaded,
+                t.deviceIdentifier
             )
         }.toList()
     }
@@ -84,41 +87,59 @@ class TelemetryManagerImpl @Inject constructor(
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 
-    override fun startTelemetryProducer() {
+    override fun startTelemetryConsumer(list : List<com.samrish.driver.database.Telemetry>,onConsumerStarted:()->Unit) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            while (true) {
+//                Log.d("Queue", "startTelemetryProducer: $telemetryQueue")
+////                val telemetry = telemetryQueue.take()
+//                val telemetry = telemetryQueue.peek() ?: break
+//
+//                Log.d("Queue item to take", "startTelemetryProducer: $telemetry ")
+//                if (isNetworkAvailable(context)) {
+//                    Log.d("Network", "startTelemetryConsumer: $telemetry ")
+//                    sendTelemetryToServer(telemetry)
+//                    telemetryQueue.poll()
+//                } else {
+//                    Log.d("Queue item to take in Network off", "startTelemetryProducer: $telemetry ")
+//                }
+//            }
+//        }
+
         CoroutineScope(Dispatchers.IO).launch {
-            while (true) {
+            telemetryQueue.addAll(list)
+            withContext(Dispatchers.Main) {
+                onConsumerStarted()
+            }
+            isConsumerRunning = true
+            while (isConsumerRunning) {
                 Log.d("Queue", "startTelemetryProducer: $telemetryQueue")
-//                val telemetry = telemetryQueue.take()
                 val telemetry = telemetryQueue.peek()
 
-                if (telemetry == null) {
-                    delay(1000000)
-                    continue
-                }
-
                 Log.d("Queue item to take", "startTelemetryProducer: $telemetry ")
+
                 if (isNetworkAvailable(context)) {
-                    saveTelemetryToDatabase(telemetry)
-                    sendTelemetryToServer(telemetry)
+                    Log.d("Network", "startTelemetryConsumer: $telemetry ")
+                    val jsonTelemetry = telemetry?.deviceIdentifier?.let { Telemetry(it, telemetry.latitude, telemetry.longitude, telemetry.time) }
+                    if (jsonTelemetry != null) {
+                        sendTelemetryToServer(jsonTelemetry)
+                    }
                     telemetryQueue.poll()
                 } else {
-                    Log.d("Queue item to take in Network off", "startTelemetryProducer: $telemetry ")
-                    saveTelemetryToDatabase(telemetry)
-                    delay(1000000)
+                    Log.d(
+                        "Queue item to take in Network off",
+                        "startTelemetryProducer: $telemetry "
+                    )
                 }
             }
+
         }
+
     }
 
-    private fun saveTelemetryToDatabase(telemetry: Telemetry) {
+    private fun saveTelemetryToDatabase(telemetry: com.samrish.driver.database.Telemetry) {
         CoroutineScope(Dispatchers.IO).launch {
             telemetryRepository.insertLocation(
-                com.samrish.driver.database.Telemetry(
-                    telemetry.latitude,
-                    telemetry.longitude,
-                    telemetry.time,
-                    false
-                )
+                telemetry
             )
         }
     }
@@ -131,6 +152,10 @@ class TelemetryManagerImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("TelemetryManagerImpl", "Error sending telemetry", e)
         }
+    }
+
+    override fun stopTelemetryConsumer() {
+        isConsumerRunning = false
     }
 
 }

@@ -17,7 +17,8 @@ data class Telemetry(
     @ColumnInfo(name =  "latitude" ) val latitude: Double,
     @ColumnInfo(name =  "longitude" ) val longitude: Double,
     @ColumnInfo(name =  "DateTime" ) val time:LocalDateTime,
-    @ColumnInfo(name =  "DataLoaded" ) val isDataLoaded: Boolean
+    @ColumnInfo(name =  "DataLoaded" ) val isDataLoaded: Boolean,
+    @ColumnInfo(name = "deviceIdentifier") val deviceIdentifier:String
 ){
     @PrimaryKey (autoGenerate = true)
     var id: Long= 0

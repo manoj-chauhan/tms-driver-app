@@ -21,8 +21,8 @@ interface TelemetryRepository {
     suspend fun getTelemetryId(latitude: Double, longitude: Double, time: LocalDateTime): Long
 
 
-    @Query("SELECT * FROM telemetry WHERE DataLoaded = false")
-    suspend fun getTelemetryWithFalseStatus(): List<Telemetry>
+    @Query("SELECT * FROM telemetry WHERE DataLoaded  = :isDataLoaded")
+    suspend fun getTelemetryWithFalseStatus(isDataLoaded: Boolean): List<Telemetry>
 
 }
 

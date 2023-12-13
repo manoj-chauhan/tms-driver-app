@@ -19,6 +19,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import com.samrish.driver.database.TelemetryRepository
 import com.samrish.driver.models.Telemetry
 import com.samrish.driver.telemetry.TelemetryManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,7 +36,9 @@ class LocationService : Service(), LocationListener {
     private var provider: String? = null
     private var powerManager: PowerManager? = null
     private var wakeLock: WakeLock? = null
-
+    private var isService:Boolean = true
+    @Inject
+    lateinit var telemetryRepository: TelemetryRepository
     @Inject
     lateinit var telemetryManager: TelemetryManager
 
@@ -84,6 +87,7 @@ class LocationService : Service(), LocationListener {
 
     override fun onCreate() {
             super.onCreate()
+
         Log.i("TRACKER", "Service Started")
         val oPowerManager = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
         val packageName = applicationContext.packageName
@@ -124,13 +128,27 @@ class LocationService : Service(), LocationListener {
             return
         }
 
+        CoroutineScope(Dispatchers.IO).launch {
+                telemetryManager.startTelemetryConsumer(
+                    telemetryRepository.getTelemetryWithFalseStatus(
+                        false
+                    ), onConsumerStarted = {
+                        locationManager!!.requestLocationUpdates(
+                            provider!!,
+                            0,
+                            0f,
+                            this@LocationService
+                        )
+                    })
+        }
 
-        this.locationManager!!.requestLocationUpdates(provider!!, 10000L, 0.3f, this)
+
     }
 
     override fun onDestroy() {
         locationManager!!.removeUpdates(this)
         wakeLock!!.release()
+        telemetryManager.stopTelemetryConsumer()
         super.onDestroy()
     }
 
