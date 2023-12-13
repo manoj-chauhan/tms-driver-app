@@ -492,6 +492,7 @@ class TripNetRepository @Inject constructor(
                 if (response.statusCode == 200) {
                     // The request was successful, handle the response here
                     coroutineScope.launch(Dispatchers.Main) {
+                        navController.popBackStack("home", inclusive = true)
                         navController.navigate("home")
                         Toast.makeText(context, "Trip Ended Successfully", Toast.LENGTH_SHORT).show()
                     }
