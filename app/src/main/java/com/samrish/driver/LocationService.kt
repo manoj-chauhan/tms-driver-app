@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.samrish.driver.database.TelemetryRepository
 import com.samrish.driver.models.Telemetry
+import com.samrish.driver.network.TelemetryNetRepository
 import com.samrish.driver.telemetry.TelemetryManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -36,11 +37,20 @@ class LocationService : Service(), LocationListener {
     private var provider: String? = null
     private var powerManager: PowerManager? = null
     private var wakeLock: WakeLock? = null
-    private var isService:Boolean = true
+    private var isService: Boolean = true
+
     @Inject
     lateinit var telemetryRepository: TelemetryRepository
+
+    @Inject
+    lateinit var telemetryNetRepository: TelemetryNetRepository
+
     @Inject
     lateinit var telemetryManager: TelemetryManager
+
+    @Volatile
+    private var isRunning = true
+
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val startedByReceiver = intent?.getBooleanExtra("started_by_receiver", false)
@@ -58,21 +68,23 @@ class LocationService : Service(), LocationListener {
 
     private fun createNotificationChannel() {
         Log.d("create notification", "createNotificationChannel: ")
-            val name: CharSequence = "Location Sharing"
-            val description = "Location sharing notification"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance)
-            channel.description = description
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
+        val name: CharSequence = "Location Sharing"
+        val description = "Location sharing notification"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(CHANNEL_ID, name, importance)
+        channel.description = description
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun showNotification() {
 
         val intent = Intent(applicationContext, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent,
-            PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getActivity(
+            applicationContext, 0, intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
 
         Log.d("show notification", "showNotification: ")
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
@@ -86,7 +98,7 @@ class LocationService : Service(), LocationListener {
     }
 
     override fun onCreate() {
-            super.onCreate()
+        super.onCreate()
 
         Log.i("TRACKER", "Service Started")
         val oPowerManager = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
@@ -127,28 +139,62 @@ class LocationService : Service(), LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
+        locationManager!!.requestLocationUpdates(
+            provider!!,
+            10000,
+            0.03f,
+            this@LocationService
+        )
+        Thread {
+            while (isRunning) {
+                //get only oldest telemetry entry with false status = t
+                //call sendTELEMEETRY TO SERVER
+                //if task is successful update the database
+                //check for telemetry with false status in database if exist fetch oldest one
+                //repeat line 182
+                //else wait for few seconds
+                //repeat line 182
+                //else
+                //wait for few seconds
+                //repeat line 182
 
-        CoroutineScope(Dispatchers.IO).launch {
-                telemetryManager.startTelemetryConsumer(
-                    telemetryRepository.getTelemetryWithFalseStatus(
-                        false
-                    ), onConsumerStarted = {
-                        locationManager!!.requestLocationUpdates(
-                            provider!!,
-                            0,
-                            0f,
-                            this@LocationService
+                val telemetry = telemetryRepository.getOldestTelemetryWithFalseStatus(false)
+                if (telemetry != null) {
+                    val jsonTelemetry = Telemetry(
+                        telemetry.deviceIdentifier,
+                        telemetry.latitude,
+                        telemetry.longitude,
+                        telemetry.time
+                    )
+                    try {
+                        Log.d("Data", "saveTelemetryToDatabase: $telemetry ")
+                        // send telemetry to the network
+                        telemetryNetRepository.sentTelemetry(jsonTelemetry)
+
+                        // If successful, update the database
+                        val id = telemetryRepository.getTelemetryId(
+                            telemetry.latitude,
+                            telemetry.longitude,
+                            telemetry.time
                         )
-                    })
-        }
-
+                        telemetryRepository.updateTelemetryStatus(id, true)
+                    } catch (e: Exception) {
+                        Log.e("TelemetryManagerImpl", "Error sending telemetry", e)
+                        Thread.sleep(5000)
+                    }
+                } else {
+                    Thread.sleep(10000)
+                }
+            }
+        }.start()
 
     }
 
     override fun onDestroy() {
         locationManager!!.removeUpdates(this)
         wakeLock!!.release()
-        telemetryManager.stopTelemetryConsumer()
+        isRunning = false
+
         super.onDestroy()
     }
 
@@ -163,25 +209,21 @@ class LocationService : Service(), LocationListener {
         Log.d("Latitude", "onLocationChanged: Latitude $lat $lng")
         val formater = DateTimeFormatter.ISO_LOCAL_DATE_TIME
         val msg =
-            "Time: " + LocalDateTime.now().format(formater) + "   Location: " + lat +    "," + lng
+            "Time: " + LocalDateTime.now().format(formater) + "   Location: " + lat + "," + lng
         Log.i("TRACKER", "Location: $lat,$lng")
         val context: Context = this
-        if (lat != 0.0 || lng != 0.0) {
-            CoroutineScope(Dispatchers.IO).launch {
-                val deviceIdentifier =
-                    Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        CoroutineScope(Dispatchers.IO).launch {
+            val deviceIdentifier =
+                Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
 
-                val telemetery = Telemetry(deviceIdentifier, lat, lng)
-                telemetryManager.sendMatrix(
-                    telemetery
-                )
-
-            }
-        } else {
-            Log.d("Lat long", "Last known location is not available or is (0, 0)")
+            val telemetery = Telemetry(deviceIdentifier, lat, lng)
+            telemetryManager.sendMatrix(
+                telemetery
+            )
         }
     }
+
     companion object {
         private const val CHANNEL_ID = "main"
     }
-    }
+}

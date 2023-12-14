@@ -15,14 +15,18 @@ interface TelemetryRepository {
     suspend fun loadMatrices(): List<Telemetry>
 
     @Query("UPDATE telemetry SET DataLoaded = :isDataLoaded WHERE id = :telemetryId")
-    suspend fun updateTelemetryStatus(telemetryId: Long, isDataLoaded: Boolean)
+    fun updateTelemetryStatus(telemetryId: Long, isDataLoaded: Boolean)
 
     @Query("SELECT id FROM telemetry WHERE latitude = :latitude AND longitude = :longitude AND DateTime = :time")
-    suspend fun getTelemetryId(latitude: Double, longitude: Double, time: LocalDateTime): Long
+    fun getTelemetryId(latitude: Double, longitude: Double, time: LocalDateTime): Long
 
 
     @Query("SELECT * FROM telemetry WHERE DataLoaded  = :isDataLoaded")
-    suspend fun getTelemetryWithFalseStatus(isDataLoaded: Boolean): List<Telemetry>
+    fun getTelemetryWithFalseStatus(isDataLoaded: Boolean): List<Telemetry>
+
+
+    @Query("SELECT * FROM telemetry WHERE DataLoaded = :isDataLoaded ORDER BY DateTime ASC LIMIT 1")
+    fun getOldestTelemetryWithFalseStatus(isDataLoaded: Boolean): Telemetry?
 
 }
 

@@ -62,7 +62,7 @@ class DateTimeAdapter : JsonAdapter<LocalDateTime>() {
 
 class TelemetryNetRepository @Inject constructor(@ApplicationContext private val context: Context,  private val telemetryRepository: TelemetryRepository)  {
 
-    suspend fun sentTelemetry(telemetry: Telemetry) {
+     fun sentTelemetry(telemetry: Telemetry) {
 
         val moshi = Moshi.Builder()
             .add(DateTimeAdapter())
@@ -90,9 +90,6 @@ class TelemetryNetRepository @Inject constructor(@ApplicationContext private val
             result.fold(
                 { _ ->
                     Log.d("Telemetry", "Telemetry Posted")
-//                    val id = telemetryRepository.getTelemetryId(telemetry.latitude, telemetry.longitude, telemetry.time)
-//                    telemetryRepository.updateTelemetryStatus(id, true)
-//                    Log.d("Size Of New List", "sentTelemetry: ${telemetryRepository.getTelemetryWithFalseStatus().size} ")
                 },
                 { error ->
                     Log.d("Telemetry", "Telemetry Failed $error")
