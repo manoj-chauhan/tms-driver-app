@@ -79,18 +79,21 @@ fun HistoryScreen(vm: HistoryViewModel = hiltViewModel(),  onTripSelected: (assi
                 ),
                 shape = RoundedCornerShape(35.dp, 35.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .padding(start = 16.dp, top = 30.dp, end = 12.dp)
-                ) {
-//                    Text(
-//                        text = "CURRENT ASSIGNMENT", style = TextStyle(
-//                            color = Color.Gray, fontSize = 21.sp, fontWeight = FontWeight.Bold
-//                        )
-//                    )
-                }
+               if( assignment?.history?.size == 0 ) {
+                   Row(
+                       modifier = Modifier
+                           .fillMaxWidth()
+                           .height(60.dp)
+                           .padding(start = 16.dp, top = 30.dp, end = 12.dp),
+                       horizontalArrangement = Arrangement.Center
+                   ) {
+                    Text(
+                        text = "No trips present in past trips ", style = TextStyle(
+                            color = Color.Black, fontSize = 21.sp, fontWeight = FontWeight.Bold
+                        )
+                    )
+                   }
+               }
                 assignment?.history?.let { historyList ->
                     val lazyListState = rememberLazyListState()
                     LazyColumn(state = lazyListState){

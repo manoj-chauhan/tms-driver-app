@@ -158,7 +158,6 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                                 )
                                 Text(
                                     text = company.companyName, style = TextStyle(
-                                        color = Color.Gray,
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Bold
                                     )

@@ -28,5 +28,7 @@ interface TelemetryRepository {
     @Query("SELECT * FROM telemetry WHERE DataLoaded = :isDataLoaded ORDER BY DateTime ASC LIMIT 1")
     fun getOldestTelemetryWithFalseStatus(isDataLoaded: Boolean): Telemetry?
 
+    @Query("DELETE FROM telemetry")
+    fun deleteAllTelemetry()
 }
 

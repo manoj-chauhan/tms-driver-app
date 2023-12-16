@@ -2,16 +2,27 @@ package com.samrish.driver.ui.pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.samrish.driver.ui.viewmodels.MatrixLogViewModel
@@ -23,18 +34,36 @@ fun MatrixLog(vm: MatrixLogViewModel = hiltViewModel()) {
     val matList by vm.matrixList.collectAsStateWithLifecycle()
     vm.loadMatrixLog(context = context)
 
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Yellow)
     ) {
-        matList?.let {
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-//                matList!!.forEach { record -> MatrixRecord(record) }
-                items(
-                    matList!!.size
-                ) {
-                    MatrixRecord(matList!![it] )
+        if(matList?.size != 0 ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+            ) {
+                Button(onClick = { vm.deleteMatrix(context) }) {
+                    Text(text = "Clear Database")
+                }
+            }
+        }
+
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(top = 60.dp)) {
+            matList?.let {
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    itemsIndexed(
+                        items = matList!!.reversed(), // Reverse the order of the list
+                        itemContent = { _, mat ->
+                            MatrixRecord(mat)
+                        }
+                    )
                 }
             }
         }
@@ -44,7 +73,11 @@ fun MatrixLog(vm: MatrixLogViewModel = hiltViewModel()) {
 
 @Composable
 fun MatrixRecord(mat: com.samrish.driver.database.Telemetry) {
-    Text(text = "${mat.time} ${mat.latitude},${mat.longitude}, ${mat.isDataLoaded}")
+    Row {
+        Text(text = "${mat.time}",style = TextStyle(color = Color.Gray, fontSize = 16.sp, fontWeight = FontWeight.Bold))
+    }
+    Text(text = "${mat.latitude},${mat.longitude}, ${mat.isDataLoaded}")
+    Spacer(modifier = Modifier.height(20.dp))
 }
 
 @Preview

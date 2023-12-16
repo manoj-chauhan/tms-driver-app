@@ -4,17 +4,20 @@ package com.samrish.driver.ui.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.samrish.driver.database.TelemetryRepository
 import com.samrish.driver.telemetry.TelemetryManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MatrixLogViewModel @Inject constructor(private val telemetryManager: TelemetryManager) : ViewModel() {
+class MatrixLogViewModel @Inject constructor(private val telemetryManager: TelemetryManager, private val telemetryRepository: TelemetryRepository) : ViewModel() {
 
     private val _matrixList: MutableStateFlow<List<com.samrish.driver.database.Telemetry>?> = MutableStateFlow(null)
     val matrixList: StateFlow<List<com.samrish.driver.database.Telemetry>?> = _matrixList.asStateFlow()
@@ -27,6 +30,15 @@ class MatrixLogViewModel @Inject constructor(private val telemetryManager: Telem
                 matList
             }
         }
+    }
+
+     fun deleteMatrix(context: Context){
+         viewModelScope.launch {
+             withContext(Dispatchers.IO) {
+                 telemetryRepository.deleteAllTelemetry()
+             }
+         }
+        loadMatrixLog(context)
     }
 }
 
