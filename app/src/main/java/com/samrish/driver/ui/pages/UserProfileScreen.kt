@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
@@ -53,12 +55,17 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
 
     val userDetail by vm.userDetail.collectAsStateWithLifecycle()
     vm.userDetail(context = context)
+
+    val filteredCompanies = userDetail?.companiesList?.filter { company ->
+        "DRIVER" in company.roles
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Yellow)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             Box(
                 modifier = Modifier
                     .size(200.dp)
@@ -125,11 +132,39 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                     }
                     Row {
                         Text(
-                            text = "(${userDetail?.username})", style = TextStyle(
+                            text = "(${userDetail?.userName})", style = TextStyle(
                                 color = Color.Gray, fontSize = 18.sp, fontWeight = FontWeight.Bold
                             )
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(15.dp))
+
+                    Row{
+                        Text(text = "Companies List", style = TextStyle(
+                            color = Color.Black, fontSize = 19.sp, fontWeight = FontWeight.Bold
+                        ))
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+                        filteredCompanies?.forEach { company ->
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text(
+                                    text = company.companyCode, style = TextStyle(
+                                        color = Color.Gray,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                                Text(
+                                    text = company.companyName, style = TextStyle(
+                                        color = Color.Gray,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
+                        }
 
                     Spacer(modifier = Modifier.height(15.dp))
 
@@ -226,8 +261,9 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
     }
 
     if(isDetailsSelected.value){
-        AddUserDetail(setShowDialog = {
-            isDialogVisible.value = it
+        AddUserDetail(context,
+            setShowDialog = {
+                isDetailsSelected.value = it
         })
     }
 }

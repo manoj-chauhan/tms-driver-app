@@ -21,7 +21,14 @@ import kotlinx.coroutines.launch
 @JsonClass(generateAdapter = true)
 data class UserProfile(
     val name: String, 
-    val username: String
+    val userName: String,
+    val companiesList: List<CompanyPositions>
+)
+@JsonClass(generateAdapter = true)
+data class CompanyPositions(
+    val companyCode: String,
+    val companyName: String,
+    val roles: List<String>
 )
 
 class UserProfileViewModel : ViewModel() {
@@ -59,7 +66,8 @@ class UserProfileViewModel : ViewModel() {
             _userDetails.update { _ ->
                 UserProfile(
                     tripDetail.name,
-                    tripDetail.username
+                    tripDetail.userName,
+                    tripDetail.companiesList
                 )
             }
 
