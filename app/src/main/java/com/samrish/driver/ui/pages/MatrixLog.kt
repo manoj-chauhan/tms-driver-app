@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.samrish.driver.ui.viewmodels.MatrixLogViewModel
+import java.text.SimpleDateFormat
 
 @Composable
 fun MatrixLog(vm: MatrixLogViewModel = hiltViewModel()) {
@@ -73,12 +75,20 @@ fun MatrixLog(vm: MatrixLogViewModel = hiltViewModel()) {
 
 @Composable
 fun MatrixRecord(mat: com.samrish.driver.database.Telemetry) {
+    val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ss")
+    val outputFormat = SimpleDateFormat("dd-MMM HH:mm:ss")
+
+    val parsedDate = remember(mat.time) { inputFormat.parse(mat.time.toString()) }
+    val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
     Row {
-        Text(text = "${mat.time}",style = TextStyle(color = Color.Gray, fontSize = 16.sp, fontWeight = FontWeight.Bold))
+        Text(text = formattedDate,style = TextStyle(color = Color.Gray, fontSize = 16.sp, fontWeight = FontWeight.Bold))
+        Spacer(modifier = Modifier.padding(start = 8.dp))
+        Text(text = "${mat.latitude.format(2)},${mat.longitude.format(2)}, ${mat.isDataLoaded}")
     }
-    Text(text = "${mat.latitude},${mat.longitude}, ${mat.isDataLoaded}")
-    Spacer(modifier = Modifier.height(20.dp))
+    Spacer(modifier = Modifier.height(10.dp))
 }
+
+    fun Double.format(digits: Int) = "%.${digits}f".format(this)
 
 @Preview
 @Composable
