@@ -11,6 +11,7 @@ data class ActiveStatusDetail(
     var estimatedDistance: Double?,
     var travelledDistance: Double?,
     var travelTime: Int?,
+    val arrivalTime:String?,
     var currentLocationName : String?,
     var actions : MutableSet<String>
 )

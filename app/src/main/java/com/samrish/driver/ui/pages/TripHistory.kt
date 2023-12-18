@@ -19,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.samrish.driver.ui.viewmodels.TripHistory
 import com.samrish.driver.ui.viewmodels.TripHistoryViewModel
+import java.text.SimpleDateFormat
 
 @Composable
 fun History(navController: NavHostController,tripCode: String,operatorId:Int, thm: TripHistoryViewModel = hiltViewModel()
@@ -90,6 +92,14 @@ fun History(navController: NavHostController,tripCode: String,operatorId:Int, th
 
 @Composable
 fun HistoryList(history: TripHistory){
+
+    val time = SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ss")
+    val outputtime = SimpleDateFormat("dd-MM-yyyy HH:mm")
+
+    val parsedDate =
+        remember(history.time) { time.parse(history.time) }
+    val formattedDate = remember(parsedDate) { outputtime.format(parsedDate) }
+
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(bottom = 20.dp)) {
@@ -115,7 +125,7 @@ fun HistoryList(history: TripHistory){
                         .width(150.dp)
                 )
                 Text(
-                    text = history.time, style = TextStyle(
+                    text = formattedDate, style = TextStyle(
                         color = Color.Gray,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold

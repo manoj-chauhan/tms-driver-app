@@ -80,6 +80,8 @@ fun AssignmentDetailScreen(
     val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
     val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
 
+    val arrivalTime = SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ss")
+    val outputArrivaltime = SimpleDateFormat("HH:mm")
 
     val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
     val isCheckInEnabled = assignment?.activeStatusDetail?.actions?.contains("CHECKIN")
@@ -264,6 +266,10 @@ fun AssignmentDetailScreen(
                         }
 
                         if (it.tripDetail.status == "TRIP_IN_TRANSIT" && it.tripDetail.status != "TRIP_ENDED") {
+                            val parsedDate =
+                                remember(assignment?.activeStatusDetail?.arrivalTime) { arrivalTime.parse(assignment?.activeStatusDetail?.arrivalTime) }
+                            val formattedDate = remember(parsedDate) { outputArrivaltime.format(parsedDate) }
+
                             Box(
                                 modifier = Modifier.height(50.dp),
                                 contentAlignment = Alignment.Center
@@ -360,7 +366,7 @@ fun AssignmentDetailScreen(
                                             verticalAlignment = Alignment.Bottom
                                         ) {
                                             Text(
-                                                text = "STA 09:00 hours (hc)",
+                                                text = "STA $formattedDate",
                                                 style = TextStyle(
                                                     color = Color.Gray,
                                                     fontSize = 13.sp,
