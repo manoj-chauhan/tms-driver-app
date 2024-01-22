@@ -39,7 +39,11 @@
         "mobilesdk_app_id": "1:9387484517:android:e2cdc3640c2ea4c2d8ad8c",
         "android_client_info": {
           "package_name": "com.samrish.driver"
+        },
+        "android_client_info": {
+          "package_name": "com.samrish.parent"
         }
+
       },
       "oauth_client": [
         {

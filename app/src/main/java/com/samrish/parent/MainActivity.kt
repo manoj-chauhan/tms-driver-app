@@ -1,4 +1,4 @@
-package com.samrish.driver
+package com.samrish.parent
 
 import android.content.Context
 import android.content.Intent
@@ -28,6 +28,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
+import com.samrish.driver.R
 import com.samrish.driver.ui.DrishtoApp
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,6 +43,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         var batteryOptimizationDialogShown by mutableStateOf(false)
 
+        setTitle(R.string.app_name)
 
 
         setContent {

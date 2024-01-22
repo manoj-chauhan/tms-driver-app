@@ -13,7 +13,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.samrish.driver"
+        applicationId = "com.samrish"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -29,6 +29,29 @@ android {
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
             )
+        }
+    }
+
+    flavorDimensions += "drishto"
+    productFlavors {
+        create("driver") {
+            dimension = "drishto"
+            applicationIdSuffix = ".driver"
+            versionNameSuffix = "-driver"
+        }
+        create("parent") {
+            dimension = "drishto"
+            applicationIdSuffix = ".parent"
+            versionNameSuffix = "-parent"
+        }
+    }
+
+    sourceSets {
+        getByName("driver") {
+            res.srcDirs("/driver/res")
+        }
+        getByName("parent") {
+            res.srcDirs("/parent/res")
         }
     }
 
@@ -101,7 +124,7 @@ dependencies {
 
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:{$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     // ViewModel utilities for Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
     // LiveData
