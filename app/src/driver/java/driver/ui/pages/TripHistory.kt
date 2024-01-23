@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.pages
+package driver.ui.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

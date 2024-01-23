@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.pages
+package driver.ui.pages
 
 import android.content.Context
 import android.content.Intent

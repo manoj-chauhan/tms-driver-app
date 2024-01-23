@@ -17,7 +17,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,9 +24,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 import com.samrish.driver.ui.DrishtoApp
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,53 +42,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DrishtoApp()
-            LocationPermissionCheck()
-            var showBatteryOptimizationDialog by remember { mutableStateOf(true) }
-
-
-            val isBatteryOptimizationEnabled = isBatteryOptimizationEnabled(applicationContext)
-            Log.d("Battery", "onCreate: $isBatteryOptimizationEnabled ")
-            if (!isBatteryOptimizationEnabled && showBatteryOptimizationDialog) {
-                AlertDialog(onDismissRequest = { showBatteryOptimizationDialog = true },
-                    title = { Text("Battery Optimization") },
-                    text = {
-                        Text(
-                            "Battery optimization is currently enabled for this app. " + "To ensure proper functionality, please disable battery optimization."
-                        )
-                    },
-                    confirmButton = {
-                        Button(onClick = {
-                            showBatteryOptimizationDialog = false
-                            openBatteryOptimizationSettings(applicationContext)
-                        }) {
-                            Text("Go to Settings")
-                        }
-                    },
-                    dismissButton = {
-                        // Set dismissButton to null to prevent dismissal by clicking outside
-                        null
-                    }
-
-                )
-            }
-
-
-            val permissionState =
-                rememberPermissionState(permission = android.Manifest.permission.POST_NOTIFICATIONS)
-
-            LaunchedEffect(key1 = true) {
-                Log.d("TAG", "onCreate: Laungh")
-                permissionState.launchPermissionRequest()
-            }
-            if (permissionState.status.isGranted) {
-            } else {
-                Column() {
-                    if (permissionState.status.shouldShowRationale) {
-                    } else {
-                    }
-                }
-            }
         }
+
     }
 
     private fun isBatteryOptimizationEnabled(context: Context): Boolean {

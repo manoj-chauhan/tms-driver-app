@@ -35,13 +35,13 @@ import com.samrish.driver.LocationService
 import com.samrish.driver.LoginActivity
 import com.samrish.driver.network.clearSession
 import com.samrish.driver.network.getAccessToken
-import com.samrish.driver.ui.pages.AssignmentDetailScreen
-import com.samrish.driver.ui.pages.History
 import com.samrish.driver.ui.pages.HistoryScreen
-import com.samrish.driver.ui.pages.HomeScreen
-import com.samrish.driver.ui.pages.MatrixLog
 import com.samrish.driver.ui.pages.PastAssignmentDetailScreen
 import com.samrish.driver.ui.pages.UserProfile
+import driver.ui.pages.AssignmentDetailScreen
+import driver.ui.pages.History
+import driver.ui.pages.HomeScreen
+import driver.ui.pages.MatrixLog
 
 
 @OptIn(ExperimentalMaterial3Api::class)
