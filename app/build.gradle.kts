@@ -13,7 +13,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.samrish"
+        applicationId = "com.samrish.driver"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -32,28 +32,30 @@ android {
         }
     }
 
-    flavorDimensions += "drishto"
+    flavorDimensions +="drishto"
     productFlavors {
         create("driver") {
+            applicationId ="com.samrish.driver"
             dimension = "drishto"
-            applicationIdSuffix = ".driver"
-            versionNameSuffix = "-driver"
         }
         create("parent") {
+            applicationId ="com.samrish.parent"
             dimension = "drishto"
-            applicationIdSuffix = ".parent"
-            versionNameSuffix = "-parent"
+
         }
     }
 
     sourceSets {
         getByName("driver") {
-            res.srcDirs("/driver/res")
+            res.srcDirs("src/dri/res")
+            java.srcDirs("src/dri/java")
         }
         getByName("parent") {
-            res.srcDirs("/parent/res")
+            res.srcDirs("src/parent/res")
+            java.srcDirs("src/parent/java")
         }
     }
+
 
     compileOptions {
         sourceCompatibility =JavaVersion.VERSION_1_8

@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         var batteryOptimizationDialogShown by mutableStateOf(false)
 
-
+        setTitle(R.string.app_name)
 
         setContent {
             DrishtoApp()
