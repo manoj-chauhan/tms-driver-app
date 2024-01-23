@@ -142,7 +142,7 @@ class LoginActivity : ComponentActivity() {
                         modifier = Modifier.align(Alignment.Center),
                         text = "DRISHTO",
                         fontSize = 60.sp,
-                        color = Color.White
+                        color = Color.Red
                     )
                 }
                 Card(
