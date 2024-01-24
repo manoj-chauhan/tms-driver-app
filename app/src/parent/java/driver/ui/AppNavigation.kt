@@ -139,7 +139,7 @@ fun AppNavigationHost(
     val accessToken = getAccessToken(LocalContext.current)
 
     if (accessToken != null) {
-            startScreen = "home"
+            startScreen = "user-profile"
     } else {
         val location = Intent(context, LocationService::class.java)
         context.stopService(location)
