@@ -35,11 +35,11 @@ android {
     flavorDimensions +="drishto"
     productFlavors {
         create("driver") {
-            applicationId ="com.samrish.driver"
+            applicationId ="com.drishto.driver"
             dimension = "drishto"
         }
         create("parent") {
-            applicationId ="com.samrish.parent"
+            applicationId ="com.drishto.parent"
             dimension = "drishto"
 
         }

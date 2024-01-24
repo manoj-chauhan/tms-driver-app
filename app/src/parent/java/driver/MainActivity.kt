@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.samrish.driver.R
 import dagger.hilt.android.AndroidEntryPoint
+import driver.ui.DrishtoParentApp
 
 
 @AndroidEntryPoint
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
         setTitle(R.string.app_name)
 
         setContent {
+            DrishtoParentApp()
         }
     }
 

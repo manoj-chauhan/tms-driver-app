@@ -10,7 +10,6 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
@@ -24,7 +23,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.samrish.driver.ui.DrishtoApp
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -39,10 +37,6 @@ class MainActivity : ComponentActivity() {
         var batteryOptimizationDialogShown by mutableStateOf(false)
 
         setTitle(R.string.app_name)
-
-        setContent {
-            DrishtoApp()
-        }
 
     }
 

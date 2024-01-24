@@ -1,4 +1,4 @@
-package com.samrish.driver.ui
+package driver.ui
 
 import android.content.Intent
 import android.util.Log
@@ -35,13 +35,7 @@ import com.samrish.driver.LocationService
 import com.samrish.driver.LoginActivity
 import com.samrish.driver.network.clearSession
 import com.samrish.driver.network.getAccessToken
-import com.samrish.driver.ui.pages.HistoryScreen
-import com.samrish.driver.ui.pages.PastAssignmentDetailScreen
 import com.samrish.driver.ui.pages.UserProfile
-import driver.ui.pages.AssignmentDetailScreen
-import driver.ui.pages.History
-import driver.ui.pages.HomeScreen
-import driver.ui.pages.MatrixLog
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -176,56 +170,56 @@ fun AppNavigationHost(
 
 
     NavHost(navController = navController, startDestination = startScreen) {
-        composable("current-assignment-detail") {
-            AssignmentDetailScreen(
-                navController = navController,
-                selectedAssignment = selectedAssignmentCode,
-                operatorId = operatorId,
-                tripId = tripId,
-                tripCode = selectedAssignmentCode
-            )
-        }
+//        composable("current-assignment-detail") {
+//            AssignmentDetailScreen(
+//                navController = navController,
+//                selectedAssignment = selectedAssignmentCode,
+//                operatorId = operatorId,
+//                tripId = tripId,
+//                tripCode = selectedAssignmentCode
+//            )
+//        }
+//
+//        composable(
+//            "locations-screen"
+//        ) {
+//            MatrixLog()
+//        }
 
-        composable(
-            "locations-screen"
-        ) {
-            MatrixLog()
-        }
-
-        composable("history") {
-            HistoryScreen(onTripSelected = {
-                selectedAssignmentCode = it.tripCode
-                operatorId = it.operatorCompanyId
-                tripId = it.tripId
-                navController.navigate("past-assignment-detail")
-            })
-        }
+//        composable("history") {
+//            HistoryScreen(onTripSelected = {
+//                selectedAssignmentCode = it.tripCode
+//                operatorId = it.operatorCompanyId
+//                tripId = it.tripId
+//                navController.navigate("past-assignment-detail")
+//            })
+//        }
 
         composable("user-profile") {
             UserProfile()
         }
 
-        composable("past-assignment-detail"){
-            PastAssignmentDetailScreen(navController = navController, operatorId = operatorId, tripId = tripId, tripCode = selectedAssignmentCode)
-        }
+//        composable("past-assignment-detail"){
+//            PastAssignmentDetailScreen(navController = navController, operatorId = operatorId, tripId = tripId, tripCode = selectedAssignmentCode)
+//        }
 
-        composable(
-            "home"
-        ) {
-            HomeScreen(
-                navController = navController,
-                onTripSelected = {
-                    selectedAssignmentCode = it.tripCode
-                    operatorId = it.operatorCompanyId
-                    tripId = it.tripId
-                    navController.navigate("current-assignment-detail")
-                }
-            )
-        }
+//        composable(
+//            "home"
+//        ) {
+//            HomeScreen(
+//                navController = navController,
+//                onTripSelected = {
+//                    selectedAssignmentCode = it.tripCode
+//                    operatorId = it.operatorCompanyId
+//                    tripId = it.tripId
+//                    navController.navigate("current-assignment-detail")
+//                }
+//            )
+//        }
 
-        composable("history_detail"){
-            History(navController = navController, selectedAssignmentCode, operatorId)
-        }
+//        composable("history_detail"){
+//            History(navController = navController, selectedAssignmentCode, operatorId)
+//        }
 
         composable("login"){
 

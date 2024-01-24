@@ -30,6 +30,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.samrish.driver.R
+import com.samrish.driver.ui.DrishtoApp
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -45,6 +46,8 @@ class MainActivity : ComponentActivity() {
 
         setTitle(R.string.app_name)
         setContent {
+            Log.d("TAG", "onCreate: Drishto is running  ")
+            DrishtoApp()
             LocationPermissionCheck()
             var showBatteryOptimizationDialog by remember { mutableStateOf(true) }
 

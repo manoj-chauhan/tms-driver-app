@@ -7,12 +7,28 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:9387484517:android:4fd55a778d0db994d8ad8c",
+        "mobilesdk_app_id": "1:9387484517:android:ddf3cc45a46ceabbd8ad8c",
         "android_client_info": {
-          "package_name": "com.example.makeitso"
+          "package_name": "com.drishto.driver"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "9387484517-oufm0kqtkqeop8hvl2j6rpjk7kc40gg2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.drishto.driver",
+            "certificate_hash": "36fe2ae1b8369f90059a9532fb03396c7bc9920c"
+          }
+        },
+        {
+          "client_id": "9387484517-qskjipdmte6avltddv0qbvlji77orhbi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.drishto.driver",
+            "certificate_hash": "6af757a6dc41a5b12b47e0926b1ac0b54b3025f8"
+          }
+        },
         {
           "client_id": "9387484517-t6fdifd3a3e20lhkga0hudcdp6pv44s5.apps.googleusercontent.com",
           "client_type": 3
@@ -40,9 +56,24 @@
         "android_client_info": {
           "package_name": "com.samrish.driver"
         }
-
       },
       "oauth_client": [
+        {
+          "client_id": "9387484517-423ja4c55hr4h644saa15buiakttullf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.samrish.driver",
+            "certificate_hash": "36fe2ae1b8369f90059a9532fb03396c7bc9920c"
+          }
+        },
+        {
+          "client_id": "9387484517-oppg61a8nml6mqi9oli0u03kf47tgfo8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.samrish.driver",
+            "certificate_hash": "6af757a6dc41a5b12b47e0926b1ac0b54b3025f8"
+          }
+        },
         {
           "client_id": "9387484517-t6fdifd3a3e20lhkga0hudcdp6pv44s5.apps.googleusercontent.com",
           "client_type": 3
