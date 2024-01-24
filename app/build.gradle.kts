@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.samrish.driver"
+    namespace = "com.drishto.driver"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.samrish"
+        applicationId = "com.drishto"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

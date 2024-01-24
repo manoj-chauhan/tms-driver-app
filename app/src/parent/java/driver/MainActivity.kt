@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.samrish.driver.R
+import com.drishto.driver.R
 import dagger.hilt.android.AndroidEntryPoint
 import driver.ui.DrishtoParentApp
 

@@ -1,0 +1,41 @@
+package com.drishto.driver.errormgmt
+
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import android.widget.Toast
+import com.drishto.driver.LoginActivity
+import driver.ui.viewmodels.errorDescription
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+
+class ErrorMangerImpl @Inject constructor(
+    @ApplicationContext private val context: Context): ErrManager {
+
+
+    override fun getErrorDescription(context: Context) {
+        Log.d("Error", "getErrorDescription: ")
+        val intent = Intent(context, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or  Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        context.startActivity(intent)
+    }
+
+    override fun handleErrorResponse(context: Context, error: String)
+    {
+        try {
+            val moshi = Moshi.Builder().build()
+            val adapter: JsonAdapter<errorDescription> = moshi.adapter(errorDescription::class.java)
+            val errorResponse = adapter.fromJson(error)
+
+            if (errorResponse != null) {
+                Toast.makeText(context, errorResponse.errorDescription, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "API Request Failed", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Error) {
+            Toast.makeText(context, "API Request Failed", Toast.LENGTH_SHORT).show()
+        }
+    }
+}

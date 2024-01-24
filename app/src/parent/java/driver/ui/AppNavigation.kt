@@ -31,11 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.samrish.driver.LocationService
-import com.samrish.driver.LoginActivity
-import com.samrish.driver.network.clearSession
-import com.samrish.driver.network.getAccessToken
-import com.samrish.driver.ui.pages.UserProfile
+import com.drishto.driver.LocationService
+import com.drishto.driver.LoginActivity
+import com.drishto.driver.network.clearSession
+import com.drishto.driver.network.getAccessToken
+import com.drishto.driver.ui.pages.UserProfile
 
 
 @OptIn(ExperimentalMaterial3Api::class)
