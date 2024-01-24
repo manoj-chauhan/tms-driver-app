@@ -5,7 +5,7 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import com.samrish.driver.LoginActivity
-import com.samrish.driver.ui.viewmodels.errorDescription
+import driver.ui.viewmodels.errorDescription
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.qualifiers.ApplicationContext

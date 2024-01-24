@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.components
+package driver.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,9 +48,7 @@ import java.text.SimpleDateFormat
         inputFormat.parse(it)
     }
 
-    val formatActualDeparture = actualDepartureTime?.let {
-        outputFormat.format(it)
-    } ?: "--"
+    val formatActualDeparture = actualDepartureTime?.let { outputFormat.format(it) } ?: "--"
 
             Spacer(modifier = Modifier.padding(8.dp))
 

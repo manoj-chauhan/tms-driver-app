@@ -4,7 +4,9 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,15 +39,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.samrish.driver.LocationService
 import com.samrish.driver.R
-import com.samrish.driver.ui.components.AssignedTrip
-import com.samrish.driver.ui.components.AssignedVehicle
-import com.samrish.driver.ui.components.GeneratedCodeDialog
-import com.samrish.driver.ui.viewmodels.HomeViewModel
-import com.samrish.driver.ui.viewmodels.MatrixLogViewModel
-import com.samrish.driver.ui.viewmodels.TripsAssigned
+import driver.ui.components.AssignedTrip
+import driver.ui.components.AssignedVehicle
+import driver.ui.components.GeneratedCodeDialog
+import driver.ui.viewmodels.HomeViewModel
+import driver.ui.viewmodels.MatrixLogViewModel
+import driver.ui.viewmodels.TripsAssigned
 import java.text.SimpleDateFormat
 
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun HomeScreen(
     navController: NavHostController,

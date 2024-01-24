@@ -6,7 +6,7 @@ import com.samrish.driver.models.Documents
 import com.samrish.driver.models.History
 import com.samrish.driver.models.Schedule
 import com.samrish.driver.models.TripDetail
-import com.samrish.driver.ui.viewmodels.TripsAssigned
+import driver.ui.viewmodels.TripsAssigned
 
 interface TripManager {
     fun getActiveTrips(): List<TripsAssigned>?

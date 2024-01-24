@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.viewmodels
+package driver.ui.viewmodels
 
 //import com.samrish.driver.database.Matrix
 import android.content.Context

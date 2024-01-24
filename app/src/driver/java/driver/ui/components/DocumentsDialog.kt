@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.components
+package driver.ui.components
 
 import android.content.Context
 import androidx.compose.foundation.clickable
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.Documents
-import com.samrish.driver.ui.viewmodels.DocumentDownloadViewModel
+import driver.ui.viewmodels.DocumentDownloadViewModel
 
 @Composable
 fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>) {
@@ -57,7 +57,7 @@ fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>) {
 }
 
 @Composable
-fun DocumentsList(operatorId: Int,context: Context, document: Documents, vm: DocumentDownloadViewModel = viewModel(),){
+fun DocumentsList(operatorId: Int, context: Context, document: Documents, vm: DocumentDownloadViewModel = viewModel(),){
     Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
         Column(modifier = Modifier.width(200.dp)) {
             Box(modifier = Modifier.fillMaxWidth()){

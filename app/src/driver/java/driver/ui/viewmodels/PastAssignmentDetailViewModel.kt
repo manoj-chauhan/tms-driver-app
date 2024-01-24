@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.viewmodels
+package driver.ui.viewmodels
 
 import android.app.Application
 import android.content.Context

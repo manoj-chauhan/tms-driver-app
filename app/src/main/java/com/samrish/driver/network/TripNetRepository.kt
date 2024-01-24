@@ -21,7 +21,7 @@ import com.samrish.driver.models.TripDetail
 import com.samrish.driver.models.TripRequest
 import com.samrish.driver.models.TripStartRequest
 import com.samrish.driver.ui.viewmodels.TripHistory
-import com.samrish.driver.ui.viewmodels.TripsAssigned
+import driver.ui.viewmodels.TripsAssigned
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types

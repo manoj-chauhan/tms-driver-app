@@ -1,7 +1,6 @@
-package com.samrish.driver.ui.components
+package driver.ui.components
 
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.samrish.driver.ui.viewmodels.VehicleAssignment
+import driver.ui.viewmodels.VehicleAssignment
 import java.text.SimpleDateFormat
 
 

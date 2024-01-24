@@ -1,4 +1,4 @@
-package com.samrish.driver.ui.components
+package driver.ui.components
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
@@ -26,10 +26,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samrish.driver.models.Schedule
-import com.samrish.driver.ui.viewmodels.AssignmentDetailViewModel
+import driver.ui.viewmodels.AssignmentDetailViewModel
 
 @Composable
-fun CallCheckInDialog(context: Context,tripId:Int, tripCode:String, operatorId:Int, locations: Schedule, setShowDialog: (Boolean) -> Unit, vm: AssignmentDetailViewModel = viewModel(),){
+fun CallCheckInDialog(context: Context, tripId:Int, tripCode:String, operatorId:Int, locations: Schedule, setShowDialog: (Boolean) -> Unit, vm: AssignmentDetailViewModel = viewModel(),){
 
             Dialog(onDismissRequest = { setShowDialog(false) }) {
                 Surface(
