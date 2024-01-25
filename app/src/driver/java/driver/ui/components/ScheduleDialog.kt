@@ -50,7 +50,7 @@ import java.text.SimpleDateFormat
 
     val formatActualDeparture = actualDepartureTime?.let { outputFormat.format(it) } ?: "--"
 
-            Spacer(modifier = Modifier.padding(8.dp))
+    Spacer(modifier = Modifier.padding(8.dp))
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Row(

@@ -209,14 +209,14 @@ fun AppNavigationHost(
         ) {
             HomeScreen(
                 navController = navController,
+            )
+        }
 //                onTripSelected = {
 //                    selectedAssignmentCode = it.tripCode
 //                    operatorId = it.operatorCompanyId
 //                    tripId = it.tripId
 //                    navController.navigate("current-assignment-detail")
 //                }
-            )
-        }
 
 //        composable("history_detail"){
 //            History(navController = navController, selectedAssignmentCode, operatorId)

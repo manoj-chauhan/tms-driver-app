@@ -34,9 +34,9 @@ class ParentTripNetRepository@Inject constructor(
                 val (_, _, result) = tripAssignmentUrl.httpGet()
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(adapter))
+                        Log.d("TAG", "fetchActiveTrips: $result")
                 result.fold(
                     {
-
                     },
                     {
                         EventBus.getDefault().post("AUTH_FAILED")
