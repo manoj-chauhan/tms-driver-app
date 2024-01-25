@@ -36,6 +36,7 @@ import com.drishto.driver.LoginActivity
 import com.drishto.driver.network.clearSession
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.UserProfile
+import driver.ui.pages.HomeScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -139,7 +140,7 @@ fun AppNavigationHost(
     val accessToken = getAccessToken(LocalContext.current)
 
     if (accessToken != null) {
-            startScreen = "user-profile"
+            startScreen = "home"
     } else {
         val location = Intent(context, LocationService::class.java)
         context.stopService(location)
@@ -203,19 +204,19 @@ fun AppNavigationHost(
 //            PastAssignmentDetailScreen(navController = navController, operatorId = operatorId, tripId = tripId, tripCode = selectedAssignmentCode)
 //        }
 
-//        composable(
-//            "home"
-//        ) {
-//            HomeScreen(
-//                navController = navController,
+        composable(
+            "home"
+        ) {
+            HomeScreen(
+                navController = navController,
 //                onTripSelected = {
 //                    selectedAssignmentCode = it.tripCode
 //                    operatorId = it.operatorCompanyId
 //                    tripId = it.tripId
 //                    navController.navigate("current-assignment-detail")
 //                }
-//            )
-//        }
+            )
+        }
 
 //        composable("history_detail"){
 //            History(navController = navController, selectedAssignmentCode, operatorId)
