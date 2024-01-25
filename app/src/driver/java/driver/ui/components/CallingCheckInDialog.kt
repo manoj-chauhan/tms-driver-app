@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.samrish.driver.models.Schedule
+import com.drishto.driver.models.Schedule
 import driver.ui.viewmodels.AssignmentDetailViewModel
 
 @Composable

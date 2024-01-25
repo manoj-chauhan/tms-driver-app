@@ -43,24 +43,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.drishto.driver.LoginActivity"
+            android:name="LoginActivity"
             android:exported="true">
         </activity>
 
         <activity
-            android:name="com.drishto.driver.PhoneNumberActivity"
+            android:name="PhoneNumberActivity"
             android:exported="true">
         </activity>
         <activity
-            android:name="com.drishto.driver.OTPActivity"
+            android:name="driver.OTPActivity"
             android:exported="true">
         </activity>
         <service
-            android:name="com.drishto.driver.LocationService"
+            android:name="LocationService"
             android:foregroundServiceType="location" />
 
         <service
-            android:name="com.drishto.driver.FCMService"
+            android:name="FCMService"
             android:exported="false"
             tools:ignore = "Instantiable"
             >
@@ -69,7 +69,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name="com.drishto.driver.OtpVerification" android:exported="true"
+        <receiver android:name="OtpVerification" android:exported="true"
             android:permission="com.google.android.gms.auth.api.phone.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED"/>

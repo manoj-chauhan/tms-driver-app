@@ -1,4 +1,4 @@
-package com.drishto.driver
+package driver
 
 import android.content.Intent
 import android.content.IntentFilter
@@ -51,6 +51,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.drishto.driver.OtpVerification
+import com.drishto.driver.auth.AuthManager
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseException
@@ -62,7 +64,6 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.messaging.FirebaseMessaging
-import com.drishto.driver.auth.AuthManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
@@ -370,7 +371,7 @@ class OTPActivity() : ComponentActivity() {
             }
             Log.d("TAG", "updateUI: Inside  ")
             authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
-                val myIntent = Intent(this, MainActivity::class.java)
+                val myIntent = Intent(this,MainActivity::class.java)
                 myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(myIntent)
                 finish()
@@ -384,6 +385,11 @@ class OTPActivity() : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         registerBroadCastReceiver()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(otp)
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

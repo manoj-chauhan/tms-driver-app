@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.samrish.driver.ui.viewmodels.TripHistory
-import com.samrish.driver.ui.viewmodels.TripHistoryViewModel
+import com.drishto.driver.ui.viewmodels.TripHistory
+import com.drishto.driver.ui.viewmodels.TripHistoryViewModel
 import java.text.SimpleDateFormat
 
 @Composable

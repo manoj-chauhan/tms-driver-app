@@ -5,11 +5,11 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.samrish.driver.errormgmt.ErrManager
-import com.samrish.driver.models.Documents
-import com.samrish.driver.models.PastAssignmentDetailData
-import com.samrish.driver.models.TripDetail
-import com.samrish.driver.tripmgmt.TripManager
+import com.drishto.driver.errormgmt.ErrManager
+import com.drishto.driver.models.Documents
+import com.drishto.driver.models.PastAssignmentDetailData
+import com.drishto.driver.models.TripDetail
+import com.drishto.driver.tripmgmt.TripManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel

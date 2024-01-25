@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.samrish.driver.R
+import com.drishto.driver.R
 import driver.ui.components.CallCheckInDialog
 import driver.ui.components.DocumentsDialog
 import driver.ui.components.LocationList

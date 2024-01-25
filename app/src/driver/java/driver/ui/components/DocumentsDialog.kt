@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.samrish.driver.models.Documents
+import com.drishto.driver.models.Documents
 import driver.ui.viewmodels.DocumentDownloadViewModel
 
 @Composable
