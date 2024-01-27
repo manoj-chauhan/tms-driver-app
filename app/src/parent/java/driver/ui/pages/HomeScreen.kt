@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.drishto.driver.models.ParentTrip
 import driver.ui.components.AssignedTrip
 import driver.ui.viewmodels.parentTripAssigned
 
@@ -38,6 +39,7 @@ import driver.ui.viewmodels.parentTripAssigned
 fun HomeScreen(
     navController: NavHostController,
     vm: parentTripAssigned = hiltViewModel(),
+    onTripSelected: (assignment: ParentTrip) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -79,7 +81,7 @@ fun HomeScreen(
                 currentAssignmentData?.let {
                         LazyColumn {
                             items(it) { trip ->
-                                AssignedTrip(trip)
+                                AssignedTrip(trip, onClick = onTripSelected)
                             }
                         }
                 }

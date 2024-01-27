@@ -7,6 +7,7 @@ data class ParentTrip(
     var tripCode: String,
     var tripName: String,
     var driverName: String,
+    var tripId: Int,
     var vehicleNumber: String,
     var status: String,
     var dispatchedPlaceName: String?,

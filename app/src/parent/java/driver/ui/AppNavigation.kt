@@ -35,6 +35,7 @@ import com.drishto.driver.network.clearSession
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.UserProfile
 import driver.LoginActivity
+import driver.ui.pages.AssignmentDetailScreen
 import driver.ui.pages.HomeScreen
 
 
@@ -168,15 +169,13 @@ fun AppNavigationHost(
 
 
     NavHost(navController = navController, startDestination = startScreen) {
-//        composable("current-assignment-detail") {
-//            AssignmentDetailScreen(
-//                navController = navController,
-//                selectedAssignment = selectedAssignmentCode,
-//                operatorId = operatorId,
-//                tripId = tripId,
-//                tripCode = selectedAssignmentCode
-//            )
-//        }
+        composable("current-assignment-detail") {
+            AssignmentDetailScreen(
+                navController = navController,
+                tripId = tripId,
+                tripCode = selectedAssignmentCode
+            )
+        }
 //
 //        composable(
 //            "locations-screen"
@@ -206,14 +205,13 @@ fun AppNavigationHost(
         ) {
             HomeScreen(
                 navController = navController,
+                onTripSelected = {
+                    selectedAssignmentCode = it.tripCode
+                    tripId = it.tripId
+                    navController.navigate("current-assignment-detail")
+                }
             )
         }
-//                onTripSelected = {
-//                    selectedAssignmentCode = it.tripCode
-//                    operatorId = it.operatorCompanyId
-//                    tripId = it.tripId
-//                    navController.navigate("current-assignment-detail")
-//                }
 
 //        composable("history_detail"){
 //            History(navController = navController, selectedAssignmentCode, operatorId)
