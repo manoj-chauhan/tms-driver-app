@@ -164,4 +164,10 @@ dependencies {
 
     implementation ("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
 
+    //maps
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation ("com.google.maps.android:maps-compose:4.1.1")
+    implementation("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
+    implementation ("com.google.maps.android:maps-ktx:5.0.0")
 }

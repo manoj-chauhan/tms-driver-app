@@ -32,6 +32,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyANMz3n_soyBll2XNWR8inxnDeFb2ipdAc" />
 
         <activity
             android:name="driver.MainActivity"
@@ -51,6 +54,16 @@
             android:name="PhoneNumberActivity"
             android:exported="true">
         </activity>
+
+        <activity
+            android:name="driver.ui.pages.MapsActivity"
+            android:exported="true">
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
             android:name="driver.OTPActivity"
             android:exported="true">

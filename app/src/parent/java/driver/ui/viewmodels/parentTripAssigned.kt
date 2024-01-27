@@ -32,5 +32,9 @@ class parentTripAssigned @Inject constructor(private val parentTripManager: Pare
         }
 
     }
-    
+
+    fun fetchTripRouteCoordinates(context: Context) {
+        val tripList = parentTripManager.getActiveTrips()
+    }
+
 }

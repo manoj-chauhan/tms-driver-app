@@ -35,8 +35,8 @@ import com.drishto.driver.network.clearSession
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.UserProfile
 import driver.LoginActivity
-import driver.ui.pages.AssignmentDetailScreen
 import driver.ui.pages.HomeScreen
+import driver.ui.pages.MapsActivity
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -170,11 +170,13 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
-            AssignmentDetailScreen(
-                navController = navController,
-                tripId = tripId,
-                tripCode = selectedAssignmentCode
-            )
+//            AssignmentDetailScreen(
+//                navController = navController,
+//                tripId = tripId,
+//                tripCode = selectedAssignmentCode
+//            )
+            val myIntent = Intent(LocalContext.current, MapsActivity::class.java)
+            LocalContext.current.startActivity(myIntent)
         }
 //
 //        composable(
