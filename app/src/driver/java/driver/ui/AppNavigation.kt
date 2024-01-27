@@ -34,12 +34,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.drishto.driver.LocationService
-import com.drishto.driver.LoginActivity
 import com.drishto.driver.network.clearSession
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.HistoryScreen
 import com.drishto.driver.ui.pages.UserProfile
 import com.samrish.driver.ui.pages.PastAssignmentDetailScreen
+import driver.LoginActivity
 import driver.ui.pages.AssignmentDetailScreen
 import driver.ui.pages.History
 import driver.ui.pages.HomeScreen

@@ -31,11 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.drishto.driver.LocationService
-import com.drishto.driver.LoginActivity
 import com.drishto.driver.network.clearSession
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.UserProfile
+import driver.LoginActivity
 import driver.ui.pages.HomeScreen
 
 
@@ -131,7 +130,7 @@ fun AppNavigationHost(
 
     )
 
-    var startScreen: String = "login"
+    var startScreen: String
 
     getAccessToken(LocalContext.current)?.let {
         startScreen = "home"
@@ -139,13 +138,11 @@ fun AppNavigationHost(
 
     val accessToken = getAccessToken(LocalContext.current)
 
-    if (accessToken != null) {
-            startScreen = "home"
+    startScreen = if (accessToken != null) {
+        "home"
     } else {
-        val location = Intent(context, LocationService::class.java)
-        context.stopService(location)
         Log.d("TAG", "AppNavigationHost: No auth token present ")
-        startScreen = "login"
+        "login"
     }
 
 

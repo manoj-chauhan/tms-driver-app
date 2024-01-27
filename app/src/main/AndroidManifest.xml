@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="LoginActivity"
+            android:name="driver.LoginActivity"
             android:exported="true">
         </activity>
 

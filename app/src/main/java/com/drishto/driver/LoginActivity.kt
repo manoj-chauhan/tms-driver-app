@@ -1,4 +1,4 @@
-package com.drishto.driver
+package driver
 
 import android.app.Activity
 import android.content.Intent
@@ -36,8 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.drishto.driver.PhoneNumberActivity
+import com.drishto.driver.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -50,6 +54,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.drishto.driver.auth.AuthManager
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,6 +135,7 @@ class LoginActivity : ComponentActivity() {
 
 
 
+        val app_name: String =getString(R.string.app_name).toUpperCase()
         setContent {
             Column() {
                 Box(
@@ -140,7 +146,7 @@ class LoginActivity : ComponentActivity() {
                 ) {
                     Text(
                         modifier = Modifier.align(Alignment.Center),
-                        text = "DRISHTO",
+                        text = app_name,
                         fontSize = 60.sp,
                         color = Color.Red
                     )
