@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
@@ -59,19 +61,45 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val context = LocalContext.current
         vm.fetchTripRouteCoordinates(context = context,operatorId, tripCode)
         val tripRoute by vm.points.collectAsStateWithLifecycle()
+//
+//        mapView = MapView(context).apply {
+//            onCreate(null)
+//            onResume()
+//            getMapAsync { map ->
+//                googleMap = map
+//                onMapReady(googleMap)
+//                tripRoute?.let { onMapReady(googleMap, it) }
+//            }
+//        }
 
-        mapView = MapView(context).apply {
-            onCreate(null)
-            onResume()
-            getMapAsync { map ->
-                googleMap = map
+        mapView = rememberMapViewWithLifecycle()
+        AndroidView(factory = { mapView }) { map ->
+            tripRoute?.let { onMapReady(googleMap, it) }
+           map.getMapAsync { googleMap ->
+                this@MapsActivity.googleMap = googleMap
                 onMapReady(googleMap)
-                tripRoute?.let { onMapReady(googleMap, it) }
+            }
+        }
+    }
+
+    @Composable
+    fun rememberMapViewWithLifecycle(): MapView {
+        val context = LocalContext.current
+        val mapView = remember {
+            MapView(context).apply {
+                onCreate(null)
             }
         }
 
-        AndroidView({ mapView }) { mapView ->
+        DisposableEffect(context) {
+            mapView.onResume()
+
+            onDispose {
+                mapView.onDestroy()
+            }
         }
+
+        return mapView
     }
 
     override fun onResume() {
