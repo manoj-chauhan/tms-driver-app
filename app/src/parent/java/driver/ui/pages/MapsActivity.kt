@@ -28,13 +28,18 @@ import driver.ui.viewmodels.parentTripAssigned
 
 @AndroidEntryPoint
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
-
     private lateinit var mMap: GoogleMap
 
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
+    private var operatorId: Int = 0
+    private var tripCode: String=""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        operatorId = intent.getIntExtra("operatorId", 0)
+
+        tripCode = intent.getStringExtra("tripCode").toString()
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -42,14 +47,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 modifier = Modifier.fillMaxSize()
             ) {
                 MapViewContent()
+                Log.d("Fg","$tripCode, $operatorId")
             }
         }
     }
 
+
+
     @Composable
     private fun MapViewContent(vm: parentTripAssigned = hiltViewModel()) {
         val context = LocalContext.current
-        vm.fetchTripRouteCoordinates(context = context,27, "8680")
+        vm.fetchTripRouteCoordinates(context = context,operatorId, tripCode)
         val tripRoute by vm.points.collectAsStateWithLifecycle()
 
         mapView = MapView(context).apply {
@@ -79,12 +87,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             mapView.onPause()
         }    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (::mapView.isInitialized) {
-            mapView.onDestroy()
-        }    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         if (::mapView.isInitialized) {
@@ -112,9 +114,12 @@ private fun drawRoute(googleMap: GoogleMap, routePoints: List<point>?) {
         // Handle the case where the list is null or empty
         return
     }
-     val polylineOptions = PolylineOptions()
+
+    googleMap.clear()
+
+    val polylineOptions = PolylineOptions()
         .width(5f)
-        .color(Color.BLUE)
+        .color(Color.GRAY)
 
     val firstPoint = routePoints.first()
     val lastPoint = routePoints.last()

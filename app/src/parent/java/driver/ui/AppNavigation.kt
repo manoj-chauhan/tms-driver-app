@@ -175,8 +175,8 @@ fun AppNavigationHost(
 //                tripId = tripId,
 //                tripCode = selectedAssignmentCode
 //            )
-            val myIntent = Intent(LocalContext.current, MapsActivity::class.java)
-            LocalContext.current.startActivity(myIntent)
+
+            MapsActivityContent(navController,operatorId, selectedAssignmentCode)
         }
 //
 //        composable(
@@ -224,4 +224,13 @@ fun AppNavigationHost(
 
         }
     }
+}
+
+@Composable
+fun MapsActivityContent(navController: NavHostController,operatorId: Int, tripCode: String) {
+    val context = LocalContext.current
+    val myIntent = Intent(context, MapsActivity::class.java)
+    myIntent.putExtra("operatorId", operatorId)
+    myIntent.putExtra("tripCode", tripCode)
+    context.startActivity(myIntent)
 }
