@@ -5,6 +5,7 @@ import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ParentTrip
+import com.drishto.driver.models.point
 import com.drishto.driver.network.getAccessToken
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
@@ -47,6 +48,67 @@ class ParentTripNetRepository@Inject constructor(
             }
         } catch (e: Exception) {
             null
+        }
+    }
+
+//    fun fetchTripRouteCoor(operatorId:Int, tripCode:String): List<point> {
+//        val assignedTripType =
+//            Types.newParameterizedType(List::class.java, point::class.java)
+//        val adapter: JsonAdapter<List<point>> =
+//            Moshi.Builder().build().adapter(assignedTripType)
+//
+//        val tripAssignmentUrl = context.resources.getString(R.string.url_trip_lat_lon) + tripCode
+//
+//        return try {
+//            getAccessToken(context)?.let {
+//                Log.d("TAG", "fetchActiveTrips: $it")
+//                val (_, _, result) = tripAssignmentUrl.httpGet()
+//                    .authentication().bearer(it)
+//                    .header("Company-Id", operatorId)
+//                    .responseObject(moshiDeserializerOf(adapter))
+//                Log.d("TAG", "getTripRoute: $result")
+//                result.fold(
+//                    {
+//                    },
+//                    {
+//                        EventBus.getDefault().post("AUTH_FAILED")
+//                    }
+//                )
+//
+//                result.get()
+//            }
+//        } catch (e: Exception) {
+//            null
+//        }
+//    }
+
+    fun fetchTripRouteCoor(operatorId: Int, tripCode: String): List<point> {
+        val assignedTripType = Types.newParameterizedType(List::class.java, point::class.java)
+        val adapter: JsonAdapter<List<point>> = Moshi.Builder().build().adapter(assignedTripType)
+
+        val tripAssignmentUrl =
+            context.resources.getString(R.string.url_trip_lat_lon) + tripCode
+
+        return try {
+            getAccessToken(context)?.let {
+                Log.d("TAG", "fetchActiveTrips: $it")
+                val (_, _, result) = tripAssignmentUrl.httpGet()
+                    .authentication().bearer(it)
+                    .header("Company-Id", operatorId)
+                    .responseObject(moshiDeserializerOf(adapter))
+                Log.d("TAG", "getTripRoute: $result")
+                result.fold(
+                    {
+                        it ?: emptyList() // Return empty list if the result is null
+                    },
+                    {
+                        EventBus.getDefault().post("AUTH_FAILED")
+                        emptyList() // Return empty list in case of failure
+                    }
+                )
+            } ?: emptyList() // Return empty list if access token is null
+        } catch (e: Exception) {
+            emptyList() // Return empty list in case of any exception
         }
     }
 }

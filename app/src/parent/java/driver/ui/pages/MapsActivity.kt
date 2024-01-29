@@ -2,14 +2,19 @@ package driver.ui.pages
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.drishto.driver.models.point
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -18,7 +23,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import dagger.hilt.android.AndroidEntryPoint
+import driver.ui.viewmodels.parentTripAssigned
 
+@AndroidEntryPoint
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
@@ -39,14 +47,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     @Composable
-    private fun MapViewContent() {
+    private fun MapViewContent(vm: parentTripAssigned = hiltViewModel()) {
         val context = LocalContext.current
+        vm.fetchTripRouteCoordinates(context = context,27, "8680")
+        val tripRoute by vm.points.collectAsStateWithLifecycle()
+
         mapView = MapView(context).apply {
             onCreate(null)
             onResume()
             getMapAsync { map ->
                 googleMap = map
                 onMapReady(googleMap)
+                tripRoute?.let { onMapReady(googleMap, it) }
             }
         }
 
@@ -80,40 +92,48 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }    }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        val routePoints = getRoutePoints()
+
+    }
+    private fun onMapReady(googleMap: GoogleMap, routePoints: List<point>) {
+        Log.d("TAG", "onMapReady: $routePoints")
         drawRoute(googleMap, routePoints)
     }
 
-    private fun getRoutePoints(): List<LatLng> {
-        // Replace this with your logic to fetch route points from the server
-        return listOf(
-            LatLng(28.705827921844318, 77.0974697720288),
-            LatLng(28.70584, 77.09748),
-            LatLng(28.70525, 77.09843),
-            LatLng(28.70402, 77.10057),
-            LatLng(28.704013551598216, 77.10056386317629)
-        )
+    private fun getRoutePoints(tripCoor:List<point>): List<point> {
+        val serverResponse = tripCoor
+
+        return getRoutePoints(serverResponse)
     }
 
-    private fun drawRoute(googleMap: GoogleMap, routePoints: List<LatLng>) {
-        val polylineOptions = PolylineOptions()
-            .width(5f) // Set the width of the polyline
-            .color(Color.BLUE) // Set the color of the polyline
+}
 
-        for (point in routePoints) {
-            googleMap.addMarker(MarkerOptions().position(point))
-            polylineOptions.add(point)
-        }
-
-        // Add the polyline to the map
-        googleMap.addPolyline(polylineOptions)
-
-        // Move camera to the bounds of the polyline
-        val bounds = LatLngBounds.builder()
-        for (point in routePoints) {
-            bounds.include(point)
-        }
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50))
+private fun drawRoute(googleMap: GoogleMap, routePoints: List<point>?) {
+    if (routePoints.isNullOrEmpty()) {
+        // Handle the case where the list is null or empty
+        return
     }
+     val polylineOptions = PolylineOptions()
+        .width(5f)
+        .color(Color.BLUE)
+
+    val firstPoint = routePoints.first()
+    val lastPoint = routePoints.last()
+    val firstLatLng = LatLng(firstPoint.latitude, firstPoint.longitude)
+    val lastLatLng = LatLng(lastPoint.latitude, lastPoint.longitude)
+    googleMap.addMarker(MarkerOptions().position(firstLatLng))
+    googleMap.addMarker(MarkerOptions().position(lastLatLng))
+
+    for (point in routePoints) {
+        val latLng = LatLng(point.latitude, point.longitude)
+        polylineOptions.add(latLng)
+    }
+
+    googleMap.addPolyline(polylineOptions)
+
+    val bounds = LatLngBounds.builder()
+    for (point in routePoints) {
+        bounds.include(LatLng(point.latitude, point.longitude))
+    }
+    googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50))
 }
 

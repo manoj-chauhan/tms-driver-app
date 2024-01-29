@@ -210,6 +210,7 @@ fun AppNavigationHost(
                 onTripSelected = {
                     selectedAssignmentCode = it.tripCode
                     tripId = it.tripId
+                    operatorId = it.companyId
                     navController.navigate("current-assignment-detail")
                 }
             )

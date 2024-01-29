@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drishto.driver.models.ParentTrip
+import com.drishto.driver.models.point
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.tripManagement.ParentTripManager
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,8 @@ class parentTripAssigned @Inject constructor(private val parentTripManager: Pare
     private val  _parentTrip: MutableStateFlow<List<ParentTrip>?> = MutableStateFlow(null)
     val parentTrip: StateFlow<List<ParentTrip>?> = _parentTrip.asStateFlow()
 
+    private val  _points: MutableStateFlow<List<point>?> = MutableStateFlow(null)
+    val points: StateFlow<List<point>?> = _points.asStateFlow()
 
     fun fetchParentTrip(context: Context){
 
@@ -33,8 +36,13 @@ class parentTripAssigned @Inject constructor(private val parentTripManager: Pare
 
     }
 
-    fun fetchTripRouteCoordinates(context: Context) {
-        val tripList = parentTripManager.getActiveTrips()
+    fun fetchTripRouteCoordinates(context: Context, operatorId:Int, tripCode:String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val pointList = parentTripManager.getTripLatLon(operatorId, tripCode)
+            _points.update { _ ->
+                pointList
+            }
+        }
     }
 
 }

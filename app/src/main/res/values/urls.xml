@@ -27,5 +27,7 @@
 
 <!--    parent-->
     <string name="url_parent_trip">&baseUrl;/parents/activeTrips</string>
+    <string name="url_trip_lat_lon">&baseUrl;/routes/trip/</string>
+
 
 </resources>
