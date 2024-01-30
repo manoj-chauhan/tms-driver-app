@@ -22,6 +22,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
+    buildFeatures {
+        buildConfig = true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -37,10 +41,15 @@ android {
         create("driver") {
             applicationId ="com.drishto.driver"
             dimension = "drishto"
+            buildConfigField("boolean", "ENABLE_CUSTOM_BUILD_CONFIG", "true")
+            buildConfigField ("String", "BUILD_VARIANT", "\" driver \"")
+
         }
         create("parent") {
             applicationId ="com.drishto.parent"
             dimension = "drishto"
+            buildConfigField("boolean", "ENABLE_CUSTOM_BUILD_CONFIG", "true")
+            buildConfigField ("String", "BUILD_VARIANT", "\" parent \"")
 
         }
     }

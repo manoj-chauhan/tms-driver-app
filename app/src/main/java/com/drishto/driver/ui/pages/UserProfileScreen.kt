@@ -1,5 +1,6 @@
 package com.drishto.driver.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,14 +38,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drishto.driver.R
+import com.drishto.driver.models.Student
+import com.drishto.driver.ui.viewmodels.CompanyPositions
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
+import java.lang.reflect.Field
 
 @Composable
 fun UserProfile(vm: UserProfileViewModel = viewModel()) {
@@ -60,12 +63,19 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
         "DRIVER" in company.roles
     }
 
+    val buildConfigClass: Class<*> = Class.forName("com.drishto.driver.BuildConfig")
+    val buildVariantField: Field = buildConfigClass.getDeclaredField("BUILD_VARIANT")
+    val buildVariantValue: String = buildVariantField.get(null) as String
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Yellow)
     ) {
-        Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())) {
             Box(
                 modifier = Modifier
                     .size(200.dp)
@@ -139,32 +149,15 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                     }
 
                     Spacer(modifier = Modifier.height(15.dp))
-
-                    Row{
-                        Text(text = "Companies List", style = TextStyle(
-                            color = Color.Black, fontSize = 19.sp, fontWeight = FontWeight.Bold
-                        ))
-                    }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-                        filteredCompanies?.forEach { company ->
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(
-                                    text = company.companyCode, style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                )
-                                Text(
-                                    text = company.companyName, style = TextStyle(
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                )
-                            }
+                    if(buildVariantValue == "driver") {
+                        if (filteredCompanies != null) {
+                            companyList(filteredCompanies)
+                            Log.d("Variant", "UserProfile: $buildVariantValue")
                         }
+                    }else {
+                        childList()
 
+                    }
                     Spacer(modifier = Modifier.height(15.dp))
 
                     Row(
@@ -266,9 +259,63 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
         })
     }
 }
+@Composable
+fun childList() {
+    val filteredCompanies = listOf(
+        Student("Abhishek Rathore", 12),
+        Student("Ankit Verma", 12),
+    )
+
+    Row{
+        Text(text = "Children List", style = TextStyle(
+            color = Color.Black, fontSize = 19.sp, fontWeight = FontWeight.Bold
+        ))
+    }
+
+    Spacer(modifier = Modifier.height(10.dp))
+    filteredCompanies?.forEach { company ->
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                text = company.studentName, style = TextStyle(
+                    color = Color.Gray,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+            Text(
+                text = company.standard.toString(), style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+    }
+}
 
 @Composable
-@Preview
-fun UserProfilePreview() {
-    UserProfile()
+fun companyList(filteredCompanies: List<CompanyPositions>) {
+    Row{
+        Text(text = "Companies List", style = TextStyle(
+            color = Color.Black, fontSize = 19.sp, fontWeight = FontWeight.Bold
+        ))
+    }
+
+    Spacer(modifier = Modifier.height(10.dp))
+    filteredCompanies?.forEach { company ->
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                text = company.companyCode, style = TextStyle(
+                    color = Color.Gray,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+            Text(
+                text = company.companyName, style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+    }
 }

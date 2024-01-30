@@ -52,6 +52,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drishto.driver.OtpVerification
+import com.drishto.driver.R
 import com.drishto.driver.auth.AuthManager
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.tasks.OnCompleteListener
@@ -105,6 +106,7 @@ class OTPActivity() : ComponentActivity() {
 
         setContent {
             val context = LocalContext.current
+            val app_name: String =getString(R.string.app_name).toUpperCase()
 
             var countdownSeconds by remember { mutableStateOf(30) }
             var isResendEnabled by remember { mutableStateOf(false) }
@@ -129,7 +131,7 @@ class OTPActivity() : ComponentActivity() {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(500.dp)
+                            .height(300.dp)
                             .padding(
                                 PaddingValues(
                                     top = 30.dp, end = 12.dp, bottom = 20.dp
@@ -143,7 +145,7 @@ class OTPActivity() : ComponentActivity() {
 
                         ) {
                             Text(
-                                text = "DRISHTO", style = TextStyle(
+                                text = app_name, style = TextStyle(
                                     color = Color.Red,
                                     fontSize = 40.sp,
                                     fontWeight = FontWeight.ExtraBold
@@ -171,7 +173,6 @@ class OTPActivity() : ComponentActivity() {
                         ) {
                             Column(
                                 modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.SpaceBetween,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 OutlinedTextField(value = text,
@@ -191,7 +192,7 @@ class OTPActivity() : ComponentActivity() {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(top = 25.dp, bottom = 25.dp, start = 30.dp)
+                                        .padding(top = 25.dp, bottom = 25.dp, start = 25.dp)
                                 ) {
                                     Text(text = "Didn't received the OTP?")
                                     Spacer(modifier = Modifier.padding(10.dp))
@@ -236,8 +237,6 @@ class OTPActivity() : ComponentActivity() {
 
 
                                 Row(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Button(onClick = {

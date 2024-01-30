@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -143,6 +144,7 @@ class PhoneNumberActivity : ComponentActivity() {
 
 
             val context = LocalContext.current
+            val app_name: String =getString(R.string.app_name).toUpperCase()
 
 
             Box(
@@ -154,7 +156,7 @@ class PhoneNumberActivity : ComponentActivity() {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(400.dp)
+                            .height(300.dp)
                             .padding(
                                 PaddingValues(
 
@@ -171,7 +173,7 @@ class PhoneNumberActivity : ComponentActivity() {
 
                         ) {
                             Text(
-                                text = "DRISHTO", style = TextStyle(
+                                text = app_name, style = TextStyle(
                                     color = Color.Red,
                                     fontSize = 40.sp, fontWeight = FontWeight.ExtraBold
                                 )
@@ -243,10 +245,14 @@ class PhoneNumberActivity : ComponentActivity() {
 
 
 
-                                Row(
+                                Row( modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 25.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center
                                 ) {
+                                    Spacer(modifier = Modifier.padding(10.dp))
+
                                     Button(
                                         onClick = {
                                             if (isButtonEnabled) {
