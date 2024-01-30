@@ -9,6 +9,6 @@ interface ParentTripManager {
     fun getActiveTrips(): List<ParentTrip>?
     fun getTripLatLon(operatorId: Int, tripCode: String): List<point>
 
-    fun getTripProcessedCoor(operatorId: Int, tripCode: String): List<ProcessedPoints>
+    fun getTripProcessedCoor(operatorId: Int, tripCode: String): List<ProcessedPoints>?
 
 }

@@ -60,20 +60,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     @Composable
     private fun MapViewContent(vm: parentTripAssigned = hiltViewModel()) {
         val context = LocalContext.current
-        vm.fetchTripProcessedCoordinates(context, 1, "3838")
         vm.fetchTripRouteCoordinates(context = context,operatorId, tripCode)
+//        vm.fetchTripProcessedCoordinates(context, operatorId, tripCode)
+        vm.fetchTripProcessedCoordinates(context, 1, "3838")
+
         val tripRoute by vm.points.collectAsStateWithLifecycle()
         val tripProcessCoord by vm.processedpoints.collectAsStateWithLifecycle()
-//
-//        mapView = MapView(context).apply {
-//            onCreate(null)
-//            onResume()
-//            getMapAsync { map ->
-//                googleMap = map
-//                onMapReady(googleMap)
-//                tripRoute?.let { onMapReady(googleMap, it) }
-//            }
-//        }
 
         mapView = rememberMapViewWithLifecycle()
         AndroidView(factory = { mapView }) { map ->

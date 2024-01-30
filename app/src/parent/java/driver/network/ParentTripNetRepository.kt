@@ -101,7 +101,7 @@ class ParentTripNetRepository @Inject constructor(
         }
     }
 
-    fun fetchTripProcessed(operatorId: Int, tripCode: String): List<ProcessedPoints> {
+    fun fetchTripProcessed(operatorId: Int, tripCode: String): List<ProcessedPoints>? {
         val tripCoor = Types.newParameterizedType(List::class.java, ProcessedPoints::class.java)
         val adapter: JsonAdapter<List<ProcessedPoints>> = Moshi.Builder().build().adapter(tripCoor)
 
@@ -113,12 +113,10 @@ class ParentTripNetRepository @Inject constructor(
                 Log.d("TAG", "fetchActiveTrips: $it")
                 val (_, _, result) = tripProcessedCoordinates.httpGet()
                     .authentication().bearer(it)
-                    .header("Company-Id", operatorId)
                     .responseObject(moshiDeserializerOf(adapter))
-                Log.d("TAG", "getTripRoute: $result")
+                Log.d("TAG", "fetchActiveTrips: $result")
                 result.fold(
                     {
-                        it ?: emptyList()
                     },
                     {error->
                         EventBus.getDefault().post("AUTH_FAILED")
@@ -127,16 +125,20 @@ class ParentTripNetRepository @Inject constructor(
                         }
 
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
-//                        Log.d("Error", "fetchAssignmentDetail: $errorResponse")
                         CoroutineScope(Dispatchers.IO).launch(Dispatchers.Main) {
                             errorManager.handleErrorResponse(context, errorResponse)
                         }
-                        emptyList()
+
+                        if (error.response.statusCode == 500) {
+                            errorManager.getErrorDescription500(context, errorResponse)
+                        }
                     }
                 )
-            } ?: emptyList() // Return empty list if access token is null
+
+                result.get()
+            }
         } catch (e: Exception) {
-            emptyList() // Return empty list in case of any exception
+            null
         }
     }
 }
