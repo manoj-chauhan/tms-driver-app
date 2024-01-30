@@ -1,9 +1,10 @@
 package driver.tripManagement
 
 import android.content.Context
-import com.drishto.driver.models.ParentTrip
-import com.drishto.driver.models.point
 import dagger.hilt.android.qualifiers.ApplicationContext
+import driver.models.ParentTrip
+import driver.models.ProcessedPoints
+import driver.models.point
 import driver.network.ParentTripNetRepository
 import javax.inject.Inject
 
@@ -18,5 +19,9 @@ class ParentTripManagerImpl @Inject constructor(
 
     override fun getTripLatLon(operatorId: Int, tripCode: String): List<point> {
         return tripNetRepository.fetchTripRouteCoor(operatorId, tripCode)
+    }
+
+    override fun getTripProcessedCoor(operatorId: Int, tripCode: String): List<ProcessedPoints> {
+        return tripNetRepository.fetchTripProcessed(operatorId, tripCode)
     }
 }

@@ -1,10 +1,14 @@
 package driver.tripManagement
 
-import com.drishto.driver.models.ParentTrip
-import com.drishto.driver.models.point
+import driver.models.ParentTrip
+import driver.models.ProcessedPoints
+import driver.models.point
 
 interface ParentTripManager {
 
     fun getActiveTrips(): List<ParentTrip>?
     fun getTripLatLon(operatorId: Int, tripCode: String): List<point>
+
+    fun getTripProcessedCoor(operatorId: Int, tripCode: String): List<ProcessedPoints>
+
 }

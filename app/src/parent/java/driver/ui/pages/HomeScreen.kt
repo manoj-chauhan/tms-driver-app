@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.drishto.driver.models.ParentTrip
+import driver.models.ParentTrip
 import driver.ui.components.AssignedTrip
 import driver.ui.viewmodels.parentTripAssigned
 

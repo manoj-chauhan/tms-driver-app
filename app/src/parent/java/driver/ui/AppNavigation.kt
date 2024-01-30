@@ -139,13 +139,13 @@ fun AppNavigationHost(
 
     val accessToken = getAccessToken(LocalContext.current)
 
-    startScreen = if (accessToken != null) {
-        "home"
+    if (accessToken != null) {
+        startScreen = "home"
+        Log.d("TAG", "AppNavigationHost: Auth present ")
     } else {
+        startScreen = "login"
         Log.d("TAG", "AppNavigationHost: No auth token present ")
-        "login"
     }
-
 
     if (startScreen == "login") {
         val myIntent = Intent(LocalContext.current, LoginActivity::class.java)

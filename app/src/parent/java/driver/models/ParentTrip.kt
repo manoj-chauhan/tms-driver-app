@@ -1,4 +1,4 @@
-package com.drishto.driver.models
+package driver.models
 
 import com.squareup.moshi.JsonClass
 

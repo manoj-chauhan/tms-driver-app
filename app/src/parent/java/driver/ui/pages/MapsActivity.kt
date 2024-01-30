@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.drishto.driver.models.point
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -26,6 +25,8 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
+import driver.models.ProcessedPoints
+import driver.models.point
 import driver.ui.viewmodels.parentTripAssigned
 
 @AndroidEntryPoint
@@ -59,8 +60,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     @Composable
     private fun MapViewContent(vm: parentTripAssigned = hiltViewModel()) {
         val context = LocalContext.current
+        vm.fetchTripProcessedCoordinates(context, 1, "3838")
         vm.fetchTripRouteCoordinates(context = context,operatorId, tripCode)
         val tripRoute by vm.points.collectAsStateWithLifecycle()
+        val tripProcessCoord by vm.processedpoints.collectAsStateWithLifecycle()
 //
 //        mapView = MapView(context).apply {
 //            onCreate(null)
@@ -74,7 +77,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mapView = rememberMapViewWithLifecycle()
         AndroidView(factory = { mapView }) { map ->
-            tripRoute?.let { onMapReady(googleMap, it) }
+            tripRoute?.let { tripProcessCoord?.let { it1 -> onMapReady(googleMap, it, it1) } }
            map.getMapAsync { googleMap ->
                 this@MapsActivity.googleMap = googleMap
                 onMapReady(googleMap)
@@ -124,9 +127,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
 
     }
-    private fun onMapReady(googleMap: GoogleMap, routePoints: List<point>) {
+    private fun onMapReady(googleMap: GoogleMap, routePoints: List<point>, processedPoints: List<ProcessedPoints>) {
         Log.d("TAG", "onMapReady: $routePoints")
-        drawRoute(googleMap, routePoints)
+        drawRoute(googleMap, routePoints, processedPoints)
     }
 
     private fun getRoutePoints(tripCoor:List<point>): List<point> {
@@ -137,17 +140,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 }
 
-private fun drawRoute(googleMap: GoogleMap, routePoints: List<point>?) {
+private fun drawRoute(googleMap: GoogleMap, routePoints: List<point>?, processedPoints: List<ProcessedPoints>) {
     if (routePoints.isNullOrEmpty()) {
-        // Handle the case where the list is null or empty
         return
     }
+
+    if (processedPoints.isEmpty()) {
+        return
+    }
+
+    Log.d("TAG", "drawRoute: $processedPoints")
 
     googleMap.clear()
 
     val polylineOptions = PolylineOptions()
         .width(5f)
         .color(Color.GRAY)
+
+    val processedLineOption = PolylineOptions()
+        .width(5f)
+        .color(Color.BLUE)
 
     val firstPoint = routePoints.first()
     val lastPoint = routePoints.last()
@@ -160,13 +172,28 @@ private fun drawRoute(googleMap: GoogleMap, routePoints: List<point>?) {
         val latLng = LatLng(point.latitude, point.longitude)
         polylineOptions.add(latLng)
     }
+    for (point in processedPoints) {
+        val latLng = LatLng(point.latitude, point.longitude)
+        processedLineOption.add(latLng)
+    }
 
     googleMap.addPolyline(polylineOptions)
+    googleMap.addPolyline(processedLineOption)
+
 
     val bounds = LatLngBounds.builder()
     for (point in routePoints) {
         bounds.include(LatLng(point.latitude, point.longitude))
     }
-    googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50))
+    val processedBounds = LatLngBounds.builder()
+    for (point in processedPoints) {
+        processedBounds.include(LatLng(point.latitude, point.longitude))
+    }
+    if(processedPoints.isNullOrEmpty()) {
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(processedBounds.build(), 50))
+    }else{
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50))
+
+    }
 }
 
