@@ -110,9 +110,9 @@ class ParentTripNetRepository @Inject constructor(
 
         return try {
             getAccessToken(context)?.let {
-                Log.d("TAG", "fetchActiveTrips: $it")
                 val (_, _, result) = tripProcessedCoordinates.httpGet()
                     .authentication().bearer(it)
+                    .header("Company-Id", operatorId)
                     .responseObject(moshiDeserializerOf(adapter))
                 Log.d("TAG", "fetchActiveTrips: $result")
                 result.fold(

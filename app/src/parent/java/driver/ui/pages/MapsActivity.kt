@@ -181,7 +181,7 @@ private fun drawRoute(googleMap: GoogleMap, routePoints: List<point>?, processed
     for (point in processedPoints) {
         processedBounds.include(LatLng(point.latitude, point.longitude))
     }
-    if(processedPoints.isNullOrEmpty()) {
+    if(!processedPoints.isNullOrEmpty()) {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(processedBounds.build(), 50))
     }else{
         googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50))
