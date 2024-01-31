@@ -1,6 +1,7 @@
 package driver
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -27,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +39,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -164,7 +168,7 @@ class LoginActivity : ComponentActivity() {
                     }
 
                     var context = LocalContext.current
-
+                    var passwordVisibility by remember { mutableStateOf(false) }
 
 
                     Box(
@@ -187,6 +191,7 @@ class LoginActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
                                     .fillMaxWidth(),
+                                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
                                 label = { Text(text = "Password") },
                                 value = password, onValueChange = { password = it }
                             )
@@ -196,12 +201,11 @@ class LoginActivity : ComponentActivity() {
                                     .padding(16.dp)
                                     .fillMaxWidth(),
                                 onClick = {
-//                            attemptLogin(
-//                                context,
-//                                username,
-//                                password,
-//                                { onLoginSuccess() },
-//                                { onLoginFailure() }
+                            attemptLogin(
+                                context,
+                                username,
+                                password,
+                            )
                                 }
                             ) {
                                 Text(text = "Login")
@@ -244,6 +248,20 @@ class LoginActivity : ComponentActivity() {
             }
             FirebaseApp.initializeApp(this);
         }
+    }
+    private fun attemptLogin(context: Context, username: String, password: String) {
+    auth.signInWithEmailAndPassword(username, password)
+        .addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                val user = auth.currentUser
+                user?.getIdToken(true)?.addOnSuccessListener {
+                    it.token?.let { token -> updateUI(token) }
+                }
+            } else {
+                Log.w(TAG, "signInWithCredential:failure", task.exception)
+            }
+        }
+
     }
 
     private fun updateUI(firebaseIdToken: String) {

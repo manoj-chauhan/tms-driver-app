@@ -1,5 +1,6 @@
 package com.drishto.driver.ui.pages
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,6 +28,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +46,7 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drishto.driver.R
+import driver.SetPasswordActivity
 import com.drishto.driver.models.Student
 import com.drishto.driver.ui.viewmodels.CompanyPositions
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
@@ -55,6 +58,7 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
 
     val isDetailsSelected = remember { mutableStateOf(false); }
     val isDialogVisible = remember { mutableStateOf(false); }
+
 
     val userDetail by vm.userDetail.collectAsStateWithLifecycle()
     vm.userDetail(context = context)
@@ -73,9 +77,11 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
             .fillMaxSize()
             .background(Color.Yellow)
     ) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
             Box(
                 modifier = Modifier
                     .size(200.dp)
@@ -119,7 +125,7 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                         horizontalArrangement = Arrangement.End
                     ) {
 
-                        Button(onClick = {isDetailsSelected.value  =  true }) {
+                        Button(onClick = { isDetailsSelected.value = true }) {
                             Text(text = "Add Details")
                         }
                     }
@@ -149,12 +155,12 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                     }
 
                     Spacer(modifier = Modifier.height(15.dp))
-                    if(buildVariantValue == "driver") {
+                    if (buildVariantValue == "driver") {
                         if (filteredCompanies != null) {
                             companyList(filteredCompanies)
                             Log.d("Variant", "UserProfile: $buildVariantValue")
                         }
-                    }else {
+                    } else {
                         childList()
 
                     }
@@ -208,13 +214,11 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                         verticalAlignment = Alignment.Bottom,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = "CHANGE PASSWORD", style = TextStyle(
-                                color = Color.Magenta,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
+                        TextButton(
+                            onClick = { isDialogVisible.value = true }
+                        ) {
+                            Text("Set Button")
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -252,11 +256,17 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
         }
     }
 
-    if(isDetailsSelected.value){
+    if (isDetailsSelected.value) {
         AddUserDetail(context,
             setShowDialog = {
                 isDetailsSelected.value = it
-        })
+            })
+    }
+
+
+    if (isDialogVisible.value) {
+        val myIntent = Intent(context, SetPasswordActivity::class.java)
+        context.startActivity(myIntent)
     }
 }
 @Composable

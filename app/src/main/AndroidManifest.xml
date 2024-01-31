@@ -45,8 +45,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity
             android:name="driver.LoginActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name="driver.SetPasswordActivity"
             android:exported="true">
         </activity>
 
