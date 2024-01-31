@@ -4,14 +4,22 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -50,13 +58,36 @@ class MapsActivity : AppCompatActivity() {
             Surface(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                Box(modifier = Modifier.height(300.dp)) {
-                    GoogleMapView(
-                        modifier = Modifier.fillMaxSize(),
-                        operatorId = operatorId,
-                        tripCode = tripCode,
-                        onMapLoaded = {}
-                    )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(300.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(13.dp, top = 36.dp),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            ReloadButton(onReloadClicked = {
+                                recreate()
+                            })
+                        }
+                        GoogleMapView(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            operatorId= operatorId,
+                            tripCode = tripCode,
+                            onMapLoaded = {}
+                        )
+
+                    }
                 }
             }
         }
@@ -74,7 +105,7 @@ fun GoogleMapView(
 ) {
     val context = LocalContext.current
     vm.fetchTripRouteCoordinates(context = context, operatorId, tripCode)
-    vm.fetchTripProcessedCoordinates(context, 1, "3838")
+    vm.fetchTripProcessedCoordinates(context, operatorId, tripCode)
 
     val tripRoute by vm.points.collectAsStateWithLifecycle()
     val tripProcessCoord by vm.processedpoints.collectAsStateWithLifecycle()
@@ -128,7 +159,8 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoad
     }
 
     GoogleMap(
-        modifier = Modifier,
+        modifier = Modifier
+            .fillMaxWidth(),
         onMapLoaded = onMapLoaded,
         cameraPositionState = cameraPositionState,
         uiSettings = mapUiSetting,
@@ -159,6 +191,16 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoad
             title = "Last Position",
         )
 
+    }
+}
+
+@Composable
+fun ReloadButton(onReloadClicked: () -> Unit) {
+    Button(
+        onClick = onReloadClicked,
+        modifier = Modifier.padding(end = 16.dp)
+    ) {
+        Text("Reload")
     }
 }
 
