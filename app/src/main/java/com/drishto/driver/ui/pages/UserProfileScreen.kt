@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,8 +43,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drishto.driver.R
 import com.drishto.driver.models.Student
 import com.drishto.driver.ui.viewmodels.CompanyPositions
@@ -52,10 +53,15 @@ import driver.SetPasswordActivity
 import java.lang.reflect.Field
 
 @Composable
-fun UserProfile(vm: UserProfileViewModel = viewModel()) {
+fun UserProfile() {
     val context = LocalContext.current
+   val vm: UserProfileViewModel = hiltViewModel()
+
 
     val isDetailsSelected = remember { mutableStateOf(false); }
+
+    val isEditNameSelected = remember { mutableStateOf(false); }
+
     val isDialogVisible = remember { mutableStateOf(false); }
 
 
@@ -140,9 +146,12 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
                             )
                         )
                         Icon(
-                            imageVector = Icons.Default.Edit, // Use the Edit icon from Icons.Default
+                            imageVector = Icons.Default.Edit,
                             contentDescription = "Edit Icon",
-                            modifier = Modifier.size(25.dp) // Adjust the size as needed
+
+                            modifier = Modifier
+                                .size(25.dp)
+                                .clickable { isEditNameSelected.value = true }
                         )
                     }
                     Row {
@@ -260,10 +269,22 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
     }
 
     if (isDetailsSelected.value) {
-        AddUserDetail(context,
-            setShowDialog = {
-                isDetailsSelected.value = it
-            })
+
+            AddUserDetail(context,
+                setShowDialog = {
+                    isDetailsSelected.value = it
+                })
+
+    }
+
+    if(isEditNameSelected.value){
+        userDetail?.name?.let {
+            EditUserName(context,it,
+                setShowDialog = {
+                    isEditNameSelected.value = it
+                }
+            )
+        }
     }
 
 

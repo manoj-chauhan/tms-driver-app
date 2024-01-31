@@ -10,6 +10,7 @@ import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.squareup.moshi.JsonClass
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @JsonClass(generateAdapter = true)
 data class UserProfile(
@@ -31,8 +33,8 @@ data class CompanyPositions(
     val companyName: String,
     val roles: List<String>
 )
-
-class UserProfileViewModel : ViewModel() {
+@HiltViewModel
+class UserProfileViewModel @Inject constructor(private val userProfileManager: com.drishto.driver.usermgmt.UserManager) : ViewModel(){
     private val _userDetails: MutableStateFlow<UserProfile?> = MutableStateFlow(null)
     val userDetail: StateFlow<UserProfile?> = _userDetails.asStateFlow()
 
@@ -77,6 +79,16 @@ class UserProfileViewModel : ViewModel() {
             Log.d("TAG", "userDetail: ${tripDetail.name}")
         }
 
+    }
+
+    fun editUserName(name:String, context:Context){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                userProfileManager.editUserName(name)
+                userDetail(context)
+            } catch (e: Exception) {
+            }
+        }
     }
 
 }
