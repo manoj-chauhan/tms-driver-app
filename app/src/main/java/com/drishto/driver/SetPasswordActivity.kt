@@ -63,15 +63,6 @@ class SetPasswordActivity : AppCompatActivity() {
                         .padding(bottom = 16.dp)
                 )
 
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Password") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp)
-                )
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
