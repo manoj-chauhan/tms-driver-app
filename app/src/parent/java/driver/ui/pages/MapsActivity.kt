@@ -20,18 +20,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.CameraPositionState
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 import dagger.hilt.android.AndroidEntryPoint
 import driver.ui.viewmodels.parentTripAssigned
-
-val indiaState = LatLng(20.5937, 70.9629)
-val defaultcameraPosition = CameraPosition.fromLatLngZoom(indiaState, 4f)
+import kotlin.math.abs
+import kotlin.math.log2
+import kotlin.math.max
 
 @AndroidEntryPoint
 class MapsActivity : AppCompatActivity() {
@@ -48,13 +50,9 @@ class MapsActivity : AppCompatActivity() {
             Surface(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                val cameraPositionState = rememberCameraPositionState {
-                    position = defaultcameraPosition
-                }
                 Box(modifier = Modifier.height(300.dp)) {
                     GoogleMapView(
                         modifier = Modifier.fillMaxSize(),
-                        cameraPositionState = cameraPositionState,
                         operatorId = operatorId,
                         tripCode = tripCode,
                         onMapLoaded = {}
@@ -68,7 +66,6 @@ class MapsActivity : AppCompatActivity() {
 @Composable
 fun GoogleMapView(
     modifier: Modifier,
-    cameraPositionState: CameraPositionState,
     operatorId: Int,
     tripCode: String,
     onMapLoaded: () -> Unit,
@@ -84,66 +81,16 @@ fun GoogleMapView(
 
     Log.d("fetch", "GoogleMapView: $tripRoute")
     Log.d("fetch", "GoogleMapView: $tripProcessCoord")
-    val routePoints: List<LatLng> =
-        tripRoute?.map { LatLng(it.latitude, it.longitude) } ?: emptyList()
-    val processedPoints: List<LatLng> =
-        tripProcessCoord?.map { LatLng(it.latitude, it.longitude) } ?: emptyList()
-
-    process(routePoints, processedPoints, cameraPositionState, onMapLoaded = {}, )
-//    val firstPoint = routePoints.firstOrNull()
-//    val lastPoint = routePoints.last()
-//    val firstLatLng = LatLng(firstPoint.latitude, firstPoint.longitude)
-//    val lastLatLng = LatLng(lastPoint.latitude, lastPoint.longitude)
-//    val mapUiproperties by remember {
-//        mutableStateOf(
-//            MapProperties(
-//                mapType = MapType.NORMAL
-//            )
-//        )
-//    }
-//
-//    val mapUiSetting by remember {
-//        mutableStateOf(
-//            MapUiSettings(
-//                compassEnabled = false
-//            )
-//        )
-//    }
-
-//    cameraPositionState.position = CameraPosition.Builder()
-//        .target(LatLngBounds.builder().include(firstPoint).include(lastPoint).build().center)
-//        .zoom(12f)
-//        .build()
-
-//    GoogleMap(
-//        modifier = Modifier,
-//        onMapLoaded = onMapLoaded,
-//        cameraPositionState = cameraPositionState,
-//        uiSettings = mapUiSetting,
-//        properties = mapUiproperties
-//    )
-//    {
-//        Polyline(
-//            points = routePoints,
-//            color = Color.Gray,
-//            width = 5f
-//        )
-//
-//        Polyline(
-//            points = processedPoints,
-//            color = Color.Blue,
-//            width = 10f
-//        )
-//
-//        if (firstPoint != null) {
-//            Marker(state = rememberMarkerState(position = firstPoint))
-//        }
-//
-//    }
-
+    val routePoints: List<LatLng>? =
+        tripRoute?.map { LatLng(it.latitude, it.longitude) }
+    val processedPoints: List<LatLng>? =
+        tripProcessCoord?.map { LatLng(it.latitude, it.longitude) }
+        routePoints?.let {
+                process(it, processedPoints, onMapLoaded = {}, )
+        }
 }
 @Composable
-fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>, cameraPositionState: CameraPositionState, onMapLoaded: () -> Unit) {
+fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoaded: () -> Unit) {
     val mapUiproperties by remember {
         mutableStateOf(
             MapProperties(
@@ -161,6 +108,24 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>, cameraPosi
         )
     }
 
+    val first = routePoints.first()
+    val lastPoint = routePoints.last()
+    val cameraPosition = if (processedPoints == null || processedPoints.isEmpty()) {
+        val bounds = LatLngBounds.builder().include(first).include(lastPoint).build()
+        CameraPosition.Builder()
+            .target(bounds.center)
+            .zoom(calculateZoomLevel(bounds))
+            .build()
+    } else {
+        CameraPosition.Builder()
+            .target(processedPoints.last())
+            .zoom(16f)
+            .build()
+    }
+
+    val cameraPositionState = rememberCameraPositionState {
+        position = cameraPosition
+    }
 
     GoogleMap(
         modifier = Modifier,
@@ -173,14 +138,41 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>, cameraPosi
         Polyline(
             points = routePoints,
             color = Color.Gray,
-            width = 5f
+            width = 8f
         )
 
-        Polyline(
-            points = processedPoints,
-            color = Color.Blue,
-            width = 10f
+        if (processedPoints != null) {
+            Polyline(
+                points = processedPoints,
+                color = Color.Blue,
+                width = 10f
+            )
+        }
+
+        Marker(state = rememberMarkerState(position = first),
+            draggable = true,
+            title = "Starting Position",
+        )
+
+        Marker(state = rememberMarkerState(position = lastPoint),
+            draggable = true,
+            title = "Last Position",
         )
 
     }
 }
+
+fun calculateZoomLevel(bounds: LatLngBounds): Float {
+    val ZOOM_LEVEL_CONSTANT = 10
+
+    val sw = bounds.southwest
+    val ne = bounds.northeast
+
+    val latRatio = abs(sw.latitude - ne.latitude)
+    val lngRatio = abs(sw.longitude - ne.longitude)
+
+    val ratio = max(latRatio, lngRatio)
+
+    return (ZOOM_LEVEL_CONSTANT - log2(ratio)).toFloat()
+}
+
