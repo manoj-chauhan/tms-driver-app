@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -99,7 +101,46 @@ class MapsActivity : AppCompatActivity() {
         }
     }
 }
+@Composable
+fun MapsActivityContent(navController: NavHostController, operatorId: Int, tripCode: String) {
 
+    val vm: parentTripAssigned = hiltViewModel()
+    val context = LocalContext.current
+    Box(
+        modifier = Modifier
+            .fillMaxSize().background(color = Color.White)
+            .height(300.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(13.dp, top = 36.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Button(
+                    onClick = { vm.callApiAgain(context = context, operatorId, tripCode) },
+                    modifier = Modifier.padding(end = 16.dp)
+                ) {
+                    Text("Reload")
+                }
+            }
+            GoogleMapView(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                operatorId= operatorId,
+                tripCode = tripCode,
+                onMapLoaded = {}
+            )
+
+        }
+    }
+}
 @Composable
 fun GoogleMapView(
     modifier: Modifier,
