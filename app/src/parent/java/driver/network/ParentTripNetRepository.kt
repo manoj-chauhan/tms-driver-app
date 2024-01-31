@@ -88,9 +88,8 @@ class ParentTripNetRepository @Inject constructor(
                         }
 
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
-//                        Log.d("Error", "fetchAssignmentDetail: $errorResponse")
-                        CoroutineScope(Dispatchers.IO).launch(Dispatchers.Main) {
-                            errorManager.handleErrorResponse(context, errorResponse)
+                        if (error.response.statusCode == 500) {
+                            errorManager.getErrorDescription500(context, errorResponse)
                         }
                         emptyList()
                     }
@@ -125,10 +124,6 @@ class ParentTripNetRepository @Inject constructor(
                         }
 
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                        CoroutineScope(Dispatchers.IO).launch(Dispatchers.Main) {
-                            errorManager.handleErrorResponse(context, errorResponse)
-                        }
-
                         if (error.response.statusCode == 500) {
                             errorManager.getErrorDescription500(context, errorResponse)
                         }
