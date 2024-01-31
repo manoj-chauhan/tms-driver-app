@@ -55,6 +55,9 @@ class MapsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+
+            val vm: parentTripAssigned = hiltViewModel()
+            val context = LocalContext.current
             Surface(
                 modifier = Modifier.fillMaxSize(),
             ) {
@@ -75,9 +78,12 @@ class MapsActivity : AppCompatActivity() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
-                            ReloadButton(onReloadClicked = {
-                                recreate()
-                            })
+                            Button(
+                                onClick = { vm.callApiAgain(context = context, operatorId, tripCode) },
+                                modifier = Modifier.padding(end = 16.dp)
+                            ) {
+                                Text("Reload")
+                            }
                         }
                         GoogleMapView(
                             modifier = Modifier
@@ -101,7 +107,6 @@ fun GoogleMapView(
     tripCode: String,
     onMapLoaded: () -> Unit,
     vm: parentTripAssigned = hiltViewModel()
-
 ) {
     val context = LocalContext.current
     vm.fetchTripRouteCoordinates(context = context, operatorId, tripCode)
@@ -142,15 +147,18 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoad
     val first = routePoints.first()
     val lastPoint = routePoints.last()
     val cameraPosition = if (processedPoints == null || processedPoints.isEmpty()) {
+        Log.d("TAG", "process: route")
         val bounds = LatLngBounds.builder().include(first).include(lastPoint).build()
         CameraPosition.Builder()
             .target(bounds.center)
             .zoom(calculateZoomLevel(bounds))
             .build()
     } else {
+        Log.d("TAG", "process: point ${processedPoints.last()}")
+        val bounds = LatLngBounds.builder().include(processedPoints.last()).build()
         CameraPosition.Builder()
-            .target(processedPoints.last())
-            .zoom(16f)
+            .target(bounds.center)
+            .zoom(calculateZoomLevel(bounds))
             .build()
     }
 

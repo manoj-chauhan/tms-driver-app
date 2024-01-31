@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drishto.driver.R
+import com.drishto.driver.network.getAccessToken
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
-import com.drishto.driver.R
-import com.drishto.driver.network.getAccessToken
 import com.squareup.moshi.JsonClass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -22,7 +22,8 @@ import kotlinx.coroutines.launch
 data class UserProfile(
     val name: String, 
     val userName: String,
-    val companiesList: List<CompanyPositions>
+    val companiesList: List<CompanyPositions>,
+    var authProvider:String
 )
 @JsonClass(generateAdapter = true)
 data class CompanyPositions(
@@ -67,7 +68,8 @@ class UserProfileViewModel : ViewModel() {
                 UserProfile(
                     tripDetail.name,
                     tripDetail.userName,
-                    tripDetail.companiesList
+                    tripDetail.companiesList,
+                    tripDetail.authProvider
                 )
             }
 

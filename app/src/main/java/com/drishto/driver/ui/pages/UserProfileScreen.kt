@@ -28,7 +28,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,10 +45,10 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drishto.driver.R
-import driver.SetPasswordActivity
 import com.drishto.driver.models.Student
 import com.drishto.driver.ui.viewmodels.CompanyPositions
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
+import driver.SetPasswordActivity
 import java.lang.reflect.Field
 
 @Composable
@@ -209,15 +208,19 @@ fun UserProfile(vm: UserProfileViewModel = viewModel()) {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        TextButton(
-                            onClick = { isDialogVisible.value = true }
+                    Log.d("TAG", "UserProfile: ${userDetail?.authProvider}")
+
+                    if(userDetail?.authProvider =="google.com") {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Set Button")
+                            Button(
+                                onClick = { isDialogVisible.value = true }
+                            ) {
+                                Text("Set Password")
+                            }
                         }
                     }
 

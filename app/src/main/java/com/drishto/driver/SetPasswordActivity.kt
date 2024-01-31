@@ -95,7 +95,7 @@ class SetPasswordActivity : AppCompatActivity() {
         auth.sendPasswordResetEmail(emailAddress)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(context, "Your account is created", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Email has been sent ", Toast.LENGTH_LONG).show()
                     finish()
                 } else {
                     // Sign in failed, display a message and update the UI

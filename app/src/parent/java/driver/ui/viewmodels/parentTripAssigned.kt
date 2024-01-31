@@ -58,4 +58,9 @@ class parentTripAssigned @Inject constructor(private val parentTripManager: Pare
         }
     }
 
+    fun callApiAgain(context: Context, operatorId: Int,tripCode: String){
+        fetchTripRouteCoordinates(context, operatorId, tripCode)
+        fetchTripProcessedCoordinates(context, operatorId, tripCode)
+    }
+
 }
