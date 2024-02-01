@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import com.drishto.driver.PhoneNumberActivity
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.qualifiers.ApplicationContext
-import driver.LoginActivity
 import driver.ui.viewmodels.errorDescription
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ class ErrorMangerImpl @Inject constructor(
 
     override fun getErrorDescription(context: Context) {
         Log.d("Error", "getErrorDescription: ")
-        val intent = Intent(context, LoginActivity::class.java)
+        val intent = Intent(context, PhoneNumberActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or  Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
         context.startActivity(intent)
     }

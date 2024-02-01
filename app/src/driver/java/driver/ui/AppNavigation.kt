@@ -34,6 +34,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.drishto.driver.LocationService
+import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.clearSession
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.HistoryScreen
@@ -117,7 +118,7 @@ fun AppNavigationHost(
 
                     DropdownMenuItem(text = { Text(text = "Log out") },
                         onClick = {
-                            val myIntent = Intent(context, LoginActivity::class.java)
+                            val myIntent = Intent(context, PhoneNumberActivity::class.java)
                             clearSession(context)
                             myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                             context.startActivity(myIntent)
@@ -158,7 +159,7 @@ fun AppNavigationHost(
 
 
     if (startScreen == "login") {
-        val myIntent = Intent(LocalContext.current, LoginActivity::class.java)
+        val myIntent = Intent(LocalContext.current, PhoneNumberActivity::class.java)
         LocalContext.current.startActivity(myIntent)
     }
 

@@ -1,5 +1,6 @@
 package com.drishto.driver
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -7,8 +8,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +40,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,25 +59,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.drishto.driver.auth.AuthManager
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import dagger.hilt.android.AndroidEntryPoint
+import driver.LoginActivity
+import driver.MainActivity
 import driver.OTPActivity
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class)
-
+@AndroidEntryPoint
 class PhoneNumberActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var authManager: AuthManager
+
     private lateinit var auth: FirebaseAuth
 
     private var number: String = ""
@@ -86,6 +103,48 @@ class PhoneNumberActivity : ComponentActivity() {
 
     var verification: String? = null
     var tokenAuth: PhoneAuthProvider.ForceResendingToken? = null
+    private lateinit var oneTapClient: SignInClient
+    private lateinit var signInRequest: BeginSignInRequest
+
+    private var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { res ->
+            if (res.resultCode == Activity.RESULT_OK) {
+                Log.i("TAG", "OnActivityResult")
+
+                val googleCredential = oneTapClient.getSignInCredentialFromIntent(res.data)
+                val idToken = googleCredential.googleIdToken
+                when {
+                    idToken != null -> {
+                        // Got an ID token from Google. Use it to authenticate
+                        // with Firebase.
+                        val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+
+                        auth.signInWithCredential(firebaseCredential)
+                            .addOnCompleteListener(this) { task ->
+                                if (task.isSuccessful) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    val user = auth.currentUser
+                                    user?.getIdToken(true)?.addOnSuccessListener {
+                                        it.token?.let { token -> updateUI(token) }
+                                    }
+                                    Log.d("TAG", "signInWithCredential:success")
+
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w("TAG", "signInWithCredential:failure", task.exception)
+//                            updateUI(null)
+                                }
+                            }
+                    }
+
+                    else -> {
+                        // Shouldn't happen.
+                        Log.d("TAG", "No ID token!")
+                    }
+                }
+
+            }
+        }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +153,18 @@ class PhoneNumberActivity : ComponentActivity() {
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
 
-//        autoOtpReceiver()
+        oneTapClient = Identity.getSignInClient(this)
+        signInRequest = BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    // Your server's client ID, not your Android client ID.
+                    .setServerClientId(getString(R.string.default_web_client_id))
+                    // Only show accounts previously used to sign in.
+                    .setFilterByAuthorizedAccounts(true)
+                    .build()
+            )
+            .build()
 
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -165,151 +235,6 @@ class PhoneNumberActivity : ComponentActivity() {
             val context = LocalContext.current
             val app_name: String =getString(R.string.app_name).toUpperCase()
 
-
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .background(Color.Yellow)
-//            ) {
-//                Column {
-//                    Box(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(300.dp)
-//                            .padding(
-//                                PaddingValues(
-//
-//                                    top = 30.dp,
-//                                    end = 12.dp,
-//                                    bottom = 20.dp
-//                                )
-//                            )
-//                    ) {
-//                        Row(
-//                            modifier = Modifier.fillMaxSize(),
-//                            verticalAlignment = Alignment.Bottom,
-//                            horizontalArrangement = Arrangement.Center
-//
-//                        ) {
-//                            Text(
-//                                text = app_name, style = TextStyle(
-//                                    color = Color.Red,
-//                                    fontSize = 40.sp, fontWeight = FontWeight.ExtraBold
-//                                )
-//                            )
-//
-//                        }
-//
-//
-//                    }
-//                    Card(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .fillMaxSize(1f),
-//                        colors = CardDefaults.cardColors(
-//                            containerColor = Color.White,
-//                        ),
-//                        shape = RoundedCornerShape(35.dp, 35.dp)
-//                    ) {
-//                        Box(
-//                            modifier = Modifier
-//                                .fillMaxSize()
-//                                .align(Alignment.CenterHorizontally)
-//                                .padding(
-//                                    start = 12.dp, top = 50.dp,
-//                                    end = 12.dp,
-//                                    bottom = 20.dp
-//                                )
-//                        ) {
-//                            Column(
-//                                modifier = Modifier.fillMaxSize(),
-//                                horizontalAlignment = Alignment.CenterHorizontally
-//                            ) {
-//
-//                                TextField(
-//                                    value = text,
-//                                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
-//                                    leadingIcon = {
-//                                        Row(
-//                                            verticalAlignment = Alignment.CenterVertically,
-//                                            horizontalArrangement = Arrangement.Start
-//                                        ) {
-//                                            Text(
-//                                                text = "+91",
-//                                                modifier = Modifier.padding(start = 16.dp),
-//                                                style = TextStyle(
-//                                                    fontWeight = FontWeight.Bold,
-//                                                    fontSize = 16.sp
-//                                                )
-//                                            )
-//                                        }
-//                                    },
-//                                    label = { Text(text = "Enter Your Phone Number") },
-//                                    onValueChange = { newTextFieldValue ->
-//                                        if (newTextFieldValue.text.length <= 10) {
-//                                            text = newTextFieldValue
-//                                            isPhoneNumberValid =
-//                                                newTextFieldValue.text.length == 10 && Patterns.PHONE.matcher(
-//                                                    newTextFieldValue.text
-//                                                ).matches()
-//                                        } else {
-//                                            Toast.makeText(
-//                                                this@PhoneNumberActivity,
-//                                                "Please enter a correct number",
-//                                                Toast.LENGTH_SHORT
-//                                            ).show()
-//                                        }
-//                                    }
-//                                )
-//
-//
-//
-//                                Row( modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(top = 25.dp),
-//                                    verticalAlignment = Alignment.CenterVertically,
-//                                    horizontalArrangement = Arrangement.Center
-//                                ) {
-//                                    Spacer(modifier = Modifier.padding(10.dp))
-//
-//                                    Button(
-//                                        onClick = {
-//                                            if (isButtonEnabled) {
-//                                                isButtonEnabled = false
-//                                                number = "+91" + text.text.trim().toString()
-//                                                Log.d("TAG", "onCreate: $number")
-//                                                otpSeconds = 30
-//                                                val options = PhoneAuthOptions.newBuilder(auth)
-//                                                    .setPhoneNumber(number) // Phone number to verify
-//                                                    .setTimeout(
-//                                                        0L,
-//                                                        TimeUnit.SECONDS
-//                                                    ) // Timeout and unit
-//                                                    .setActivity(this@PhoneNumberActivity)
-//                                                    .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
-//                                                    .build()
-//                                                PhoneAuthProvider.verifyPhoneNumber(options)
-//
-//                                            } else {
-//                                                Toast.makeText(
-//                                                    this@PhoneNumberActivity,
-//                                                    "Please wait for 30 seconds before trying again",
-//                                                    Toast.LENGTH_SHORT
-//                                                ).show()
-//                                            }
-//                                        },
-//                                        enabled = isPhoneNumberValid && isButtonEnabled,
-//                                    ) {
-//                                        Text(text = "Send OTP")
-//                                    }
-//
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
@@ -323,17 +248,7 @@ class PhoneNumberActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.padding(10.dp))
 
                     Text(
-                        text = "Hey there,", style = TextStyle(
-                            color = Color.Gray,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.padding(10.dp))
-
-                    Text(
-                        text = "Welcome Back", style = TextStyle(
+                        text = "Welcome To", style = TextStyle(
                             color = Color.Black,
                             fontSize = 26.sp,
                             fontWeight = FontWeight.ExtraBold
@@ -481,7 +396,19 @@ class PhoneNumberActivity : ComponentActivity() {
                                 Icon(
                                     painter = painterResource(id = R.drawable.google),
                                     contentDescription = "Home Icon",
-                                    modifier = Modifier.size(32.dp)
+                                    modifier = Modifier.size(32.dp).clickable {
+                                        oneTapClient.beginSignIn(signInRequest)
+                                        .addOnSuccessListener { result ->
+                                            Log.d("TAG", "OnOneTapClient Success")
+                                            val intentSenderRequest =
+                                                IntentSenderRequest.Builder(result.pendingIntent.intentSender)
+                                                    .build()
+                                            resultLauncher.launch(intentSenderRequest)
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.d("TAG", e.localizedMessage)
+                                        }
+                                    }
                                 )
 
                                 Text(
@@ -508,11 +435,13 @@ class PhoneNumberActivity : ComponentActivity() {
                                 Icon(
                                     imageVector = Icons.Default.Email,
                                     contentDescription = "Home Icon",
-                                    modifier = Modifier.size(32.dp)
+                                    modifier = Modifier.size(32.dp).clickable {
+                                           startLoginActivity()
+                                    }
                                 )
 
                                 Text(
-                                    text = "Gmail",
+                                    text = "Email",
                                     style = TextStyle(color = Color.Black),
                                     textAlign = TextAlign.Center
                                 )
@@ -523,6 +452,13 @@ class PhoneNumberActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun startLoginActivity() {
+        Log.d("TAG", "phoneLogin: ")
+        val loginIntent = Intent(this, LoginActivity::class.java)
+        startActivity(loginIntent)
+    }
+
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
@@ -545,5 +481,26 @@ class PhoneNumberActivity : ComponentActivity() {
                     // Update UI
                 }
             }
+    }
+
+    private fun updateUI(firebaseIdToken: String) {
+        Log.d("TAG", "Going to Authenticate")
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("Login", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
+                val myIntent = Intent(this, MainActivity::class.java)
+                myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(myIntent)
+                finish()
+            }, { errorMsg ->
+                Toast.makeText(applicationContext, errorMsg, Toast.LENGTH_LONG).show()
+            });
+
+        })
+
     }
 }
