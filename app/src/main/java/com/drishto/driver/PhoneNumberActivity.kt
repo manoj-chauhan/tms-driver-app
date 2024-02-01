@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,15 +18,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Login
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,12 +44,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.FirebaseException
@@ -79,7 +95,6 @@ class PhoneNumberActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
 //        autoOtpReceiver()
-
 
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -123,7 +138,11 @@ class PhoneNumberActivity : ComponentActivity() {
                 intent.putExtra("phoneNumber", number)
                 Log.d("TAG", "onCodeSent: $verificationId and $token and, $otp")
                 startActivity(intent)
+
+
             }
+
+
         }
 
         setContent {
@@ -147,144 +166,356 @@ class PhoneNumberActivity : ComponentActivity() {
             val app_name: String =getString(R.string.app_name).toUpperCase()
 
 
-            Box(
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .background(Color.Yellow)
+//            ) {
+//                Column {
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(300.dp)
+//                            .padding(
+//                                PaddingValues(
+//
+//                                    top = 30.dp,
+//                                    end = 12.dp,
+//                                    bottom = 20.dp
+//                                )
+//                            )
+//                    ) {
+//                        Row(
+//                            modifier = Modifier.fillMaxSize(),
+//                            verticalAlignment = Alignment.Bottom,
+//                            horizontalArrangement = Arrangement.Center
+//
+//                        ) {
+//                            Text(
+//                                text = app_name, style = TextStyle(
+//                                    color = Color.Red,
+//                                    fontSize = 40.sp, fontWeight = FontWeight.ExtraBold
+//                                )
+//                            )
+//
+//                        }
+//
+//
+//                    }
+//                    Card(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .fillMaxSize(1f),
+//                        colors = CardDefaults.cardColors(
+//                            containerColor = Color.White,
+//                        ),
+//                        shape = RoundedCornerShape(35.dp, 35.dp)
+//                    ) {
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                                .align(Alignment.CenterHorizontally)
+//                                .padding(
+//                                    start = 12.dp, top = 50.dp,
+//                                    end = 12.dp,
+//                                    bottom = 20.dp
+//                                )
+//                        ) {
+//                            Column(
+//                                modifier = Modifier.fillMaxSize(),
+//                                horizontalAlignment = Alignment.CenterHorizontally
+//                            ) {
+//
+//                                TextField(
+//                                    value = text,
+//                                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
+//                                    leadingIcon = {
+//                                        Row(
+//                                            verticalAlignment = Alignment.CenterVertically,
+//                                            horizontalArrangement = Arrangement.Start
+//                                        ) {
+//                                            Text(
+//                                                text = "+91",
+//                                                modifier = Modifier.padding(start = 16.dp),
+//                                                style = TextStyle(
+//                                                    fontWeight = FontWeight.Bold,
+//                                                    fontSize = 16.sp
+//                                                )
+//                                            )
+//                                        }
+//                                    },
+//                                    label = { Text(text = "Enter Your Phone Number") },
+//                                    onValueChange = { newTextFieldValue ->
+//                                        if (newTextFieldValue.text.length <= 10) {
+//                                            text = newTextFieldValue
+//                                            isPhoneNumberValid =
+//                                                newTextFieldValue.text.length == 10 && Patterns.PHONE.matcher(
+//                                                    newTextFieldValue.text
+//                                                ).matches()
+//                                        } else {
+//                                            Toast.makeText(
+//                                                this@PhoneNumberActivity,
+//                                                "Please enter a correct number",
+//                                                Toast.LENGTH_SHORT
+//                                            ).show()
+//                                        }
+//                                    }
+//                                )
+//
+//
+//
+//                                Row( modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(top = 25.dp),
+//                                    verticalAlignment = Alignment.CenterVertically,
+//                                    horizontalArrangement = Arrangement.Center
+//                                ) {
+//                                    Spacer(modifier = Modifier.padding(10.dp))
+//
+//                                    Button(
+//                                        onClick = {
+//                                            if (isButtonEnabled) {
+//                                                isButtonEnabled = false
+//                                                number = "+91" + text.text.trim().toString()
+//                                                Log.d("TAG", "onCreate: $number")
+//                                                otpSeconds = 30
+//                                                val options = PhoneAuthOptions.newBuilder(auth)
+//                                                    .setPhoneNumber(number) // Phone number to verify
+//                                                    .setTimeout(
+//                                                        0L,
+//                                                        TimeUnit.SECONDS
+//                                                    ) // Timeout and unit
+//                                                    .setActivity(this@PhoneNumberActivity)
+//                                                    .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
+//                                                    .build()
+//                                                PhoneAuthProvider.verifyPhoneNumber(options)
+//
+//                                            } else {
+//                                                Toast.makeText(
+//                                                    this@PhoneNumberActivity,
+//                                                    "Please wait for 30 seconds before trying again",
+//                                                    Toast.LENGTH_SHORT
+//                                                ).show()
+//                                            }
+//                                        },
+//                                        enabled = isPhoneNumberValid && isButtonEnabled,
+//                                    ) {
+//                                        Text(text = "Send OTP")
+//                                    }
+//
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+
+            Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Yellow)
+                    .background(Color.White)
+                    .padding(28.dp)
             ) {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.padding(10.dp))
+
+                    Text(
+                        text = "Hey there,", style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.padding(10.dp))
+
+                    Text(
+                        text = "Welcome Back", style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.padding(16.dp))
+
                     Box(
                         modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .height(140.dp)
                             .fillMaxWidth()
-                            .height(300.dp)
-                            .padding(
-                                PaddingValues(
-
-                                    top = 30.dp,
-                                    end = 12.dp,
-                                    bottom = 20.dp
-                                )
-                            )
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.Center
-
-                        ) {
-                            Text(
-                                text = app_name, style = TextStyle(
-                                    color = Color.Red,
-                                    fontSize = 40.sp, fontWeight = FontWeight.ExtraBold
-                                )
-                            )
-
-                        }
-
-
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = "DRISHTO",
+                            fontStyle = FontStyle.Normal,
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 60.sp,
+                            color = Color.Red
+                        )
                     }
-                    Card(
+                    Spacer(modifier = Modifier.padding(20.dp))
+
+
+                    OutlinedTextField(label = { Text("Enter your Phone Number") },
+                        value = text,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxSize(1f),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(color = Color(0xFFF7F8F8)),
+                        keyboardOptions =KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
+                        onValueChange = { text = it },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color(0xFF92A3FD),
+                            focusedLabelColor = Color(0xFF92A3FD),
+                            cursorColor = Color(0xFF92A3FD)
                         ),
-                        shape = RoundedCornerShape(35.dp, 35.dp)
+                        leadingIcon = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Text(
+                                    text = "+91",
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp,
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                            }
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.padding(30.dp))
+
+
+                    val primary = Color(0xFF92A3FD)
+                    val secondary = Color(0XFF9DCEFF)
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(48.dp),
+                        onClick = {
+                            number = "+91" + text.text.trim().toString()
+                            val options = PhoneAuthOptions.newBuilder(auth)
+                            .setPhoneNumber(number) // Phone number to verify
+                            .setTimeout(
+                                0L,
+                                TimeUnit.SECONDS
+                            ) // Timeout and unit
+                            .setActivity(this@PhoneNumberActivity)
+                            .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
+                            .build()
+                            PhoneAuthProvider.verifyPhoneNumber(options)
+                                  },
+                        contentPadding = PaddingValues(),
+                        colors = ButtonDefaults.buttonColors(
+                            Color.Transparent
+                        ),
+                        shape = RoundedCornerShape(50.dp)
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .align(Alignment.CenterHorizontally)
-                                .padding(
-                                    start = 12.dp, top = 50.dp,
-                                    end = 12.dp,
-                                    bottom = 20.dp
+                                .fillMaxWidth()
+                                .heightIn(48.dp)
+                                .background(
+                                    brush = Brush.horizontalGradient(listOf(primary, secondary)),
+                                    shape = RoundedCornerShape(50.dp)
+                                ), contentAlignment = Alignment.Center
+                        ) {
+                            Row(modifier = Modifier) {
+                                Icon(
+                                    imageVector = Icons.Default.Login,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.padding(start = 16.dp)
                                 )
+
+                                Spacer(modifier = Modifier.width(16.dp))
+
+                                Text(
+                                    text = "Send OTP",
+                                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.padding(20.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Divider(modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f), color = Color.Gray, thickness = 1.dp)
+
+                        Text( text ="Or", style = TextStyle(fontSize = 18.sp, color = Color.Black), modifier = Modifier.padding(8.dp))
+
+                        Divider(modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f), color = Color.Gray, thickness = 1.dp)
+
+                    }
+
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .width(80.dp)
+                                .background(color = Color(0xFFF7F8F8), shape = RoundedCornerShape(8.dp))
                         ) {
                             Column(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .height(60.dp),
+                                verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-
-                                TextField(
-                                    value = text,
-                                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
-                                    leadingIcon = {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Start
-                                        ) {
-                                            Text(
-                                                text = "+91",
-                                                modifier = Modifier.padding(start = 16.dp),
-                                                style = TextStyle(
-                                                    fontWeight = FontWeight.Bold,
-                                                    fontSize = 16.sp
-                                                )
-                                            )
-                                        }
-                                    },
-                                    label = { Text(text = "Enter Your Phone Number") },
-                                    onValueChange = { newTextFieldValue ->
-                                        if (newTextFieldValue.text.length <= 10) {
-                                            text = newTextFieldValue
-                                            isPhoneNumberValid =
-                                                newTextFieldValue.text.length == 10 && Patterns.PHONE.matcher(
-                                                    newTextFieldValue.text
-                                                ).matches()
-                                        } else {
-                                            Toast.makeText(
-                                                this@PhoneNumberActivity,
-                                                "Please enter a correct number",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    }
+                                Box(modifier = Modifier.fillMaxWidth())
+                                Icon(
+                                    painter = painterResource(id = R.drawable.google),
+                                    contentDescription = "Home Icon",
+                                    modifier = Modifier.size(32.dp)
                                 )
 
+                                Text(
+                                    text = "Google",
+                                    style = TextStyle(color = Color.Black),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
 
+                        Box(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .width(80.dp)
+                                .background(color = Color(0xFFF7F8F8), shape = RoundedCornerShape(16.dp))
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .height(60.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box(modifier = Modifier.fillMaxWidth())
+                                Icon(
+                                    imageVector = Icons.Default.Email,
+                                    contentDescription = "Home Icon",
+                                    modifier = Modifier.size(32.dp)
+                                )
 
-                                Row( modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 25.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Spacer(modifier = Modifier.padding(10.dp))
-
-                                    Button(
-                                        onClick = {
-                                            if (isButtonEnabled) {
-                                                isButtonEnabled = false
-                                                number = "+91" + text.text.trim().toString()
-                                                Log.d("TAG", "onCreate: $number")
-                                                otpSeconds = 30
-                                                val options = PhoneAuthOptions.newBuilder(auth)
-                                                    .setPhoneNumber(number) // Phone number to verify
-                                                    .setTimeout(
-                                                        0L,
-                                                        TimeUnit.SECONDS
-                                                    ) // Timeout and unit
-                                                    .setActivity(this@PhoneNumberActivity)
-                                                    .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
-                                                    .build()
-                                                PhoneAuthProvider.verifyPhoneNumber(options)
-
-                                            } else {
-                                                Toast.makeText(
-                                                    this@PhoneNumberActivity,
-                                                    "Please wait for 30 seconds before trying again",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        },
-                                        enabled = isPhoneNumberValid && isButtonEnabled,
-                                    ) {
-                                        Text(text = "Send OTP")
-                                    }
-
-                                }
+                                Text(
+                                    text = "Gmail",
+                                    style = TextStyle(color = Color.Black),
+                                    textAlign = TextAlign.Center
+                                )
                             }
                         }
                     }

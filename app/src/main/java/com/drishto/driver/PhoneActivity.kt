@@ -10,7 +10,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,19 +19,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PhoneEnabled
+import androidx.compose.material.icons.filled.Login
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,15 +42,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drishto.driver.OtpVerification
@@ -66,7 +71,6 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -108,153 +112,144 @@ class OTPActivity() : ComponentActivity() {
             val context = LocalContext.current
             val app_name: String =getString(R.string.app_name).toUpperCase()
 
+            val lastTwoDigit =  phoneNumber.substring(phoneNumber.length - 2)
+
             var countdownSeconds by remember { mutableStateOf(30) }
             var isResendEnabled by remember { mutableStateOf(false) }
+            val focusRequesters = remember { Array(6) { FocusRequester() } }
 
 
             LaunchedEffect(countdownSeconds) {
-                while (countdownSeconds > 0) {
-                    delay(1000)
-                    countdownSeconds--
-                }
-
-                isResendEnabled = true
+                focusRequesters[0].requestFocus()
             }
-
-            Box(
+            Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Yellow)
+                    .background(Color.White)
+                    .padding(28.dp)
             ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
+                ) {
 
-                Column {
                     Box(
                         modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .height(140.dp)
                             .fillMaxWidth()
-                            .height(300.dp)
-                            .padding(
-                                PaddingValues(
-                                    top = 30.dp, end = 12.dp, bottom = 20.dp
-                                )
-                            )
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.Center
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = "DRISHTO",
+                            fontStyle = FontStyle.Normal,
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 60.sp,
+                            color = Color.Red
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .height(50.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = "OTP sent successfully to +91XXXXXXXX${lastTwoDigit}",
+                            fontStyle = FontStyle.Normal,
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Red,
+                        )
 
-                        ) {
-                            Text(
-                                text = app_name, style = TextStyle(
-                                    color = Color.Red,
-                                    fontSize = 40.sp,
-                                    fontWeight = FontWeight.ExtraBold
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        for (i in 0 until 6) {
+                            OutlinedTextField(
+                                value = if (i < text.text.length) TextFieldValue(text.text[i].toString()) else TextFieldValue(""),
+                                onValueChange = {
+                                    val newText = buildString {
+                                        append(text.text)
+                                        if (it.text.length == 1) {
+                                            append(it.text[0])
+                                            if (i < 5) {
+                                                focusRequesters[i + 1].requestFocus()
+                                            }
+                                        }
+                                    }
+                                    text = TextFieldValue(newText)
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(4.dp)
+                                    .focusRequester(focusRequesters[i]),
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions.Default.copy(
+                                    keyboardType = KeyboardType.Number,
+                                ),
+                                textStyle = TextStyle.Default.copy(fontSize = 20.sp),
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    focusedBorderColor = Color(0xFF92A3FD),
+                                    focusedLabelColor = Color(0xFF92A3FD),
+                                    cursorColor = Color(0xFF92A3FD)
                                 )
                             )
-
                         }
                     }
-                    Card(
+
+                    Spacer(modifier = Modifier.padding(30.dp))
+
+
+                    val primary = Color(0xFF92A3FD)
+                    val secondary = Color(0XFF9DCEFF)
+                    Button(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxSize(1f),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
+                            .heightIn(48.dp),
+                        onClick = {
+                            val credential = PhoneAuthProvider.getCredential(
+                                OTP, text.text.trim()
+                            )
+                            Log.d("TAG", "onCreate: $credential")
+                            signInWithPhoneAuthCredential(credential) },
+                        contentPadding = PaddingValues(),
+                        colors = ButtonDefaults.buttonColors(
+                            Color.Transparent
                         ),
-                        shape = RoundedCornerShape(35.dp, 35.dp)
+                        shape = RoundedCornerShape(50.dp)
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .align(Alignment.CenterHorizontally)
-                                .padding(
-                                    start = 12.dp, top = 50.dp, end = 12.dp, bottom = 20.dp
-                                )
+                                .fillMaxWidth()
+                                .heightIn(48.dp)
+                                .background(
+                                    brush = Brush.horizontalGradient(listOf(primary, secondary)),
+                                    shape = RoundedCornerShape(50.dp)
+                                ), contentAlignment = Alignment.Center
                         ) {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                OutlinedTextField(value = text,
-                                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Default.PhoneEnabled,
-                                            contentDescription = "emailIcon"
-                                        )
-                                    },
-                                    label = { Text(text = "Enter Your Otp Sent") },
-                                    onValueChange = {
-                                        text = it
-                                    }
+                            Row(modifier = Modifier) {
+                                Icon(
+                                    imageVector = Icons.Default.Login,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.padding(start = 16.dp)
                                 )
 
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 25.dp, bottom = 25.dp, start = 25.dp)
-                                ) {
-                                    Text(text = "Didn't received the OTP?")
-                                    Spacer(modifier = Modifier.padding(10.dp))
-                                    ClickableText(
-                                        text = buildAnnotatedString {
-                                            withStyle(style = SpanStyle(color = if (isResendEnabled) Color.Blue else Color.Gray)) {
-                                                append("Resend OTP")
+                                Spacer(modifier = Modifier.width(16.dp))
 
-                                            }
-                                        },
-                                        onClick = { offset ->
-                                            if (isResendEnabled) {
-                                                // Handle click only if resend is enabled
-                                                resendOTPCredential()
-                                                isResendEnabled = false
-                                                countdownSeconds = 30
-                                            } else {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Please wait for the timer to finish",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        },
-                                        modifier = Modifier.clickable {
-                                            // Handle click on the entire ClickableText
-                                            if (!isResendEnabled) {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Please wait for the timer to finish",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-
-                                    )
-                                    Spacer(modifier = Modifier.padding(5.dp))
-                                    if(countdownSeconds> 0 ) {
-                                        Text(text = "Wait for $countdownSeconds")
-                                    }
-                                }
-
-
-                                Row(
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Button(onClick = {
-                                        val credential = PhoneAuthProvider.getCredential(
-                                            OTP, text.text.trim()
-                                        )
-                                        Log.d("TAG", "onCreate: $credential")
-                                        signInWithPhoneAuthCredential(credential)
-
-                                    }) {
-                                        Text(text = "Verify otp")
-                                    }
-                                }
+                                Text(
+                                    text = "Verify OTP",
+                                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                )
                             }
                         }
-
                     }
-
                 }
             }
 
@@ -443,4 +438,147 @@ class OTPActivity() : ComponentActivity() {
             }
         }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun hi() {
+    val phoneNumber = "1234567890"
+    val lastTwoDigit =  phoneNumber.substring(phoneNumber.length - 2)
+
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(28.dp)
+    ) {
+
+        var text by remember {
+            mutableStateOf("321456")
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .height(140.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = "DRISHTO",
+                    fontStyle = FontStyle.Normal,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 60.sp,
+                    color = Color.Red
+                )
+            }
+            Spacer(modifier = Modifier.padding(10.dp))
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .height(50.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = "OTP sent successfully to +91XXXXXXXX${lastTwoDigit}",
+                    fontStyle = FontStyle.Normal,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Red,
+                )
+
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                for (i in 0 until 6) {
+                    OutlinedTextField(
+                        value = if (i < text.length) TextFieldValue(text[i].toString()) else TextFieldValue(""),
+                        onValueChange = {
+                            // Update the individual digit when its value changes
+                            val newText = buildString {
+                                append(text)
+                                if (it.text.length == 1) {
+                                    append(it.text[0])
+                                }
+                            }
+                            text = TextFieldValue(newText).toString()
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(4.dp),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number,
+//                            imeAction = if (i == 5) imeAction else ImeAction.Next
+                        ),
+                        textStyle = TextStyle.Default.copy(fontSize = 20.sp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color(0xFF92A3FD),
+                            focusedLabelColor = Color(0xFF92A3FD),
+                            cursorColor = Color(0xFF92A3FD)
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.padding(30.dp))
+
+
+            val primary = Color(0xFF92A3FD)
+            val secondary = Color(0XFF9DCEFF)
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(48.dp),
+                onClick = {},
+                contentPadding = PaddingValues(),
+                colors = ButtonDefaults.buttonColors(
+                    Color.Transparent
+                ),
+                shape = RoundedCornerShape(50.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(48.dp)
+                        .background(
+                            brush = Brush.horizontalGradient(listOf(primary, secondary)),
+                            shape = RoundedCornerShape(50.dp)
+                        ), contentAlignment = Alignment.Center
+                ) {
+                    Row(modifier = Modifier) {
+                        Icon(
+                            imageVector = Icons.Default.Login,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Text(
+                            text = "Verify OTP",
+                            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun hiPreview() {
+    hi()
 }
