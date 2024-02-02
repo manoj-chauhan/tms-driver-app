@@ -32,10 +32,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,9 +43,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -60,7 +63,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drishto.driver.OtpVerification
@@ -197,25 +199,42 @@ class OTPActivity() : ComponentActivity() {
                                             append(it.text[0])
                                         }
                                     }
+
                                     if (i < 5 && it.text.isNotEmpty()) {
                                         focusManager.moveFocus(FocusDirection.Next)
                                     }
+
                                     text = TextFieldValue(newText)
                                 },
                                 modifier = Modifier
                                     .weight(1f)
-                                    .padding(4.dp),
+                                    .padding(4.dp)
+                                    .onKeyEvent { event ->
+                                    if (event.key == Key.Backspace && text.text.isNotEmpty()) {
+                                        if (text.text.length == 1) {
+                                            text = TextFieldValue("")
+                                        } else {
+                                            focusManager.moveFocus(FocusDirection.Previous)
+                                            text = TextFieldValue(text.text.substring(0, text.text.length - 1))
+                                        }
+                                        true
+                                    } else {
+                                        false
+                                    }
+                                },
                                 keyboardOptions = KeyboardOptions.Default.copy(
                                     keyboardType = KeyboardType.Number,
                                     imeAction = ImeAction.Done
                                 ),
+
                                 singleLine = true,
                                 textStyle = TextStyle.Default.copy(fontSize = 20.sp),
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    cursorColor = Color(0xFF92A3FD),
                                     focusedBorderColor = Color(0xFF92A3FD),
                                     focusedLabelColor = Color(0xFF92A3FD),
-                                    cursorColor = Color(0xFF92A3FD)
-                                )
+                                ),
+
                             )
                         }
                     }
@@ -306,6 +325,13 @@ class OTPActivity() : ComponentActivity() {
 
     }
 
+    private fun handleBackspacePress(focusManager: FocusManager, index: Int) {
+        if (text.text.length == 1) {
+            text = TextFieldValue("")
+        } else if (index > 0) {
+            focusManager.moveFocus(FocusDirection.Previous)
+        }
+    }
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun resendOTPCredential() {
 
@@ -485,147 +511,4 @@ class OTPActivity() : ComponentActivity() {
             }
         }
     }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun hi() {
-    val phoneNumber = "1234567890"
-    val lastTwoDigit =  phoneNumber.substring(phoneNumber.length - 2)
-
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(28.dp)
-    ) {
-
-        var text by remember {
-            mutableStateOf("321456")
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
-        ) {
-
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .height(140.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    modifier = Modifier.align(Alignment.Center),
-                    text = "DRISHTO",
-                    fontStyle = FontStyle.Normal,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 60.sp,
-                    color = Color.Red
-                )
-            }
-            Spacer(modifier = Modifier.padding(10.dp))
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .height(50.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    modifier = Modifier.align(Alignment.Center),
-                    text = "OTP sent successfully to +91XXXXXXXX${lastTwoDigit}",
-                    fontStyle = FontStyle.Normal,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Red,
-                )
-
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                for (i in 0 until 6) {
-                    OutlinedTextField(
-                        value = if (i < text.length) TextFieldValue(text[i].toString()) else TextFieldValue(""),
-                        onValueChange = {
-                            // Update the individual digit when its value changes
-                            val newText = buildString {
-                                append(text)
-                                if (it.text.length == 1) {
-                                    append(it.text[0])
-                                }
-                            }
-                            text = TextFieldValue(newText).toString()
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(4.dp),
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Number,
-//                            imeAction = if (i == 5) imeAction else ImeAction.Next
-                        ),
-                        textStyle = TextStyle.Default.copy(fontSize = 20.sp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color(0xFF92A3FD),
-                            focusedLabelColor = Color(0xFF92A3FD),
-                            cursorColor = Color(0xFF92A3FD)
-                        )
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.padding(30.dp))
-
-
-            val primary = Color(0xFF92A3FD)
-            val secondary = Color(0XFF9DCEFF)
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(48.dp),
-                onClick = {},
-                contentPadding = PaddingValues(),
-                colors = ButtonDefaults.buttonColors(
-                    Color.Transparent
-                ),
-                shape = RoundedCornerShape(50.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(48.dp)
-                        .background(
-                            brush = Brush.horizontalGradient(listOf(primary, secondary)),
-                            shape = RoundedCornerShape(50.dp)
-                        ), contentAlignment = Alignment.Center
-                ) {
-                    Row(modifier = Modifier) {
-                        Icon(
-                            imageVector = Icons.Default.Login,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Text(
-                            text = "Verify OTP",
-                            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun hiPreview() {
-    hi()
 }
