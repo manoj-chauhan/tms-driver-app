@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Login
@@ -35,6 +36,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,13 +50,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,6 +78,7 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -116,11 +122,22 @@ class OTPActivity() : ComponentActivity() {
 
             val lastTwoDigit =  phoneNumber.substring(phoneNumber.length - 2)
 
-            var countdownSeconds by remember { mutableStateOf(30) }
-            var isResendEnabled by remember { mutableStateOf(false) }
             val focusRequesters = remember { Array(6) { FocusRequester() } }
             val focusManager = LocalFocusManager.current
             val keyboardController = LocalSoftwareKeyboardController.current
+
+            var countdownSeconds by remember { mutableStateOf(30) }
+            var isResendEnabled by remember { mutableStateOf(false) }
+
+
+            LaunchedEffect(countdownSeconds) {
+                while (countdownSeconds > 0) {
+                    delay(1000)
+                    countdownSeconds--
+                }
+
+                isResendEnabled = true
+            }
 
             Surface(
                 modifier = Modifier
@@ -204,6 +221,36 @@ class OTPActivity() : ComponentActivity() {
                     }
 
                     Spacer(modifier = Modifier.padding(15.dp))
+
+                    if (isResendEnabled) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 25.dp, bottom = 25.dp, start = 25.dp)
+                        ) {
+                            Text(text = "Didn't received the OTP?")
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            ClickableText(
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(color = if (isResendEnabled) Color.Blue else Color.Gray)) {
+                                        append("Resend OTP")
+                                    }
+                                },
+                                onClick = { offset ->
+                                    resendOTPCredential()
+                                    isResendEnabled = false
+                                    countdownSeconds = 30
+                                },
+
+                            )
+                            Spacer(modifier = Modifier.padding(5.dp))
+                            if (countdownSeconds > 0) {
+                                Text(text = "Wait for $countdownSeconds")
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.padding(15.dp))
+
 
 
                     val primary = Color(0xFF92A3FD)
