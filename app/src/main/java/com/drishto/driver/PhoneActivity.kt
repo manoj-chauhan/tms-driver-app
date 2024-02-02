@@ -35,22 +35,24 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -117,11 +119,9 @@ class OTPActivity() : ComponentActivity() {
             var countdownSeconds by remember { mutableStateOf(30) }
             var isResendEnabled by remember { mutableStateOf(false) }
             val focusRequesters = remember { Array(6) { FocusRequester() } }
+            val focusManager = LocalFocusManager.current
+            val keyboardController = LocalSoftwareKeyboardController.current
 
-
-            LaunchedEffect(countdownSeconds) {
-                focusRequesters[0].requestFocus()
-            }
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
@@ -178,21 +178,21 @@ class OTPActivity() : ComponentActivity() {
                                         append(text.text)
                                         if (it.text.length == 1) {
                                             append(it.text[0])
-                                            if (i < 5) {
-                                                focusRequesters[i + 1].requestFocus()
-                                            }
                                         }
+                                    }
+                                    if (i < 5 && it.text.isNotEmpty()) {
+                                        focusManager.moveFocus(FocusDirection.Next)
                                     }
                                     text = TextFieldValue(newText)
                                 },
                                 modifier = Modifier
                                     .weight(1f)
-                                    .padding(4.dp)
-                                    .focusRequester(focusRequesters[i]),
-                                singleLine = true,
+                                    .padding(4.dp),
                                 keyboardOptions = KeyboardOptions.Default.copy(
                                     keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done
                                 ),
+                                singleLine = true,
                                 textStyle = TextStyle.Default.copy(fontSize = 20.sp),
                                 colors = TextFieldDefaults.outlinedTextFieldColors(
                                     focusedBorderColor = Color(0xFF92A3FD),
@@ -203,7 +203,7 @@ class OTPActivity() : ComponentActivity() {
                         }
                     }
 
-                    Spacer(modifier = Modifier.padding(30.dp))
+                    Spacer(modifier = Modifier.padding(15.dp))
 
 
                     val primary = Color(0xFF92A3FD)
