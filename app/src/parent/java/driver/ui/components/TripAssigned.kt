@@ -57,7 +57,7 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
                             .width(50.dp)
                     ) {
                         Text(
-                            text = trip.tripCode,
+                            text = trip.childName,
 
                             style = TextStyle(
                                 color = Color.Black,
@@ -71,7 +71,7 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
                         modifier = Modifier
                     ) {
                         Text(
-                            text = trip.tripDate,
+                            text = trip.childStandard,
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 12.sp,
@@ -94,39 +94,6 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
                     }
 
                 }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-
-                    Box(
-                        modifier = Modifier
-                    ) {
-                        Text(
-                            text = trip.tripName,
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-
-
-                    Box(
-                        modifier = Modifier
-                    ) {
-                        Text(
-                            text = trip.label,
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-                }
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -146,7 +113,7 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
 
 
                     Text(
-                        text = "${trip.companyName}(${trip.companyCode})",
+                        text = trip.childSchool,
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 12.sp,
@@ -155,6 +122,36 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
                     )
 
                 }
+
+//                if(trip.currentLocation != null) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+
+                        Text(
+                            text = "Current Location",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+
+
+
+                        Text(
+                            text = "Maharaja Agarsen Public School",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+
+                    }
+//                }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -162,7 +159,7 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
 
 
                     Text(
-                        text = "Operator",
+                        text = "Driver",
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 12.sp,
