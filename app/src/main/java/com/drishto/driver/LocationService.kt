@@ -29,6 +29,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -214,10 +215,7 @@ class LocationService : Service(), LocationListener {
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun startLocationUpdates() {
-        val lr = com.google.android.gms.location.LocationRequest.create().apply {
-            interval = 10000
-            priority = com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
+        val lr = com.google.android.gms.location.LocationRequest.Builder(1000).setMinUpdateDistanceMeters(1f).setPriority( Priority.PRIORITY_HIGH_ACCURACY ).build()
 
          fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         if (ActivityCompat.checkSelfPermission(
