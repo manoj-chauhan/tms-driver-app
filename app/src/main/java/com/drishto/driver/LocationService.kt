@@ -8,21 +8,27 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Criteria
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.IBinder
+import android.os.Looper
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.provider.Settings
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.drishto.driver.database.TelemetryRepository
 import com.drishto.driver.models.Telemetry
 import com.drishto.driver.network.TelemetryNetRepository
 import com.drishto.driver.telemetry.TelemetryManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +56,9 @@ class LocationService : Service(), LocationListener {
 
     @Volatile
     private var isRunning = true
+
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -97,6 +106,7 @@ class LocationService : Service(), LocationListener {
         startForeground(1001, builder.build())
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate() {
         super.onCreate()
 
@@ -119,32 +129,42 @@ class LocationService : Service(), LocationListener {
                 }
             }
 
-        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-        val criteria = Criteria()
-        provider = locationManager!!.getBestProvider(criteria, false)
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
+//        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+//        val criteria = Criteria()
+//        provider = locationManager!!.getBestProvider(criteria, false)
+//        if (ActivityCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.ACCESS_FINE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.ACCESS_COARSE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return
+//        }
+//        locationManager!!.requestLocationUpdates(
+//            provider!!,
+//            10000,
+//            0.03f,
+//            this@LocationService
+//        )
+
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(result: LocationResult) {
+                for (currentLocation in result.locations) {
+                    onLocationChanged(currentLocation)
+                }
+            }
         }
-        locationManager!!.requestLocationUpdates(
-            provider!!,
-            10000,
-            0.03f,
-            this@LocationService
-        )
+
         Thread {
             while (isRunning) {
                 //get only oldest telemetry entry with false status = t
@@ -188,10 +208,29 @@ class LocationService : Service(), LocationListener {
             }
         }.start()
 
+        startLocationUpdates()
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun startLocationUpdates() {
+        val lr = com.google.android.gms.location.LocationRequest.create().apply {
+            interval = 10000
+            priority = com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.requestLocationUpdates(lr, locationCallback, Looper.getMainLooper())
+        }
     }
 
     override fun onDestroy() {
-        locationManager!!.removeUpdates(this)
+        fusedLocationClient.removeLocationUpdates(locationCallback)
         wakeLock!!.release()
         isRunning = false
 
@@ -212,6 +251,7 @@ class LocationService : Service(), LocationListener {
             "Time: " + LocalDateTime.now().format(formater) + "   Location: " + lat + "," + lng
         Log.i("TRACKER", "Location: $lat,$lng")
         val context: Context = this
+
         CoroutineScope(Dispatchers.IO).launch {
             val deviceIdentifier =
                 Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)

@@ -439,7 +439,7 @@ class OTPActivity() : ComponentActivity() {
             Log.d("TAG", "updateUI: Inside  ")
             authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
                 val myIntent = Intent(this,MainActivity::class.java)
-                myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(myIntent)
                 finish()
             }, { errorMsg ->

@@ -52,26 +52,26 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:9387484517:android:e2cdc3640c2ea4c2d8ad8c",
+        "mobilesdk_app_id": "1:9387484517:android:d282a520ffa74579d8ad8c",
         "android_client_info": {
-          "package_name": "com.samrish.driver"
+          "package_name": "com.drishto.parent"
         }
       },
       "oauth_client": [
         {
-          "client_id": "9387484517-423ja4c55hr4h644saa15buiakttullf.apps.googleusercontent.com",
+          "client_id": "9387484517-di8pr4lkhqi02s8q7qmtl6dqv566p2e1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.samrish.driver",
-            "certificate_hash": "36fe2ae1b8369f90059a9532fb03396c7bc9920c"
+            "package_name": "com.drishto.parent",
+            "certificate_hash": "6af757a6dc41a5b12b47e0926b1ac0b54b3025f8"
           }
         },
         {
-          "client_id": "9387484517-oppg61a8nml6mqi9oli0u03kf47tgfo8.apps.googleusercontent.com",
+          "client_id": "9387484517-hegaipmvq1n1lqvcbm4jqgj0us34pvpe.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.samrish.driver",
-            "certificate_hash": "6af757a6dc41a5b12b47e0926b1ac0b54b3025f8"
+            "package_name": "com.drishto.parent",
+            "certificate_hash": "36fe2ae1b8369f90059a9532fb03396c7bc9920c"
           }
         },
         {

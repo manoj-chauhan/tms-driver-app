@@ -88,6 +88,7 @@ kapt {
 
 dependencies {
 
+    implementation("com.google.android.gms:play-services-location:21.1.0")
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
     val firebaseBom = platform("com.google.firebase:firebase-bom:32.5.0")
     val lifecycleVersion = "2.6.2"
@@ -176,5 +177,9 @@ dependencies {
     //maps
     implementation ("com.google.maps.android:maps-compose:4.1.1")
     implementation ("com.google.maps.android:maps-ktx:5.0.0")
+
+    //otp
+    implementation("com.google.firebase:firebase-appcheck-debug")
+
 
 }
