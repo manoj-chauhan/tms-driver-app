@@ -61,6 +61,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
 import com.drishto.driver.auth.AuthManager
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -85,6 +86,7 @@ import driver.LoginActivity
 import driver.MainActivity
 import driver.OTPActivity
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -225,7 +227,7 @@ class PhoneNumberActivity : ComponentActivity() {
 
         setContent {
             var text by remember { mutableStateOf(TextFieldValue("")) }
-            var isPhoneNumberValid by remember { mutableStateOf(false) }
+            var buttonText by remember { mutableStateOf("Send OTP") }
             var otpSeconds by remember { mutableStateOf(30) }
             var isButtonEnabled by remember { mutableStateOf(true) }
 
@@ -236,7 +238,11 @@ class PhoneNumberActivity : ComponentActivity() {
                     otpSeconds--
                 }
 
-                isButtonEnabled = true
+                if (isButtonEnabled) {
+                    delay(10000)
+                    isButtonEnabled = true
+                    buttonText = "Send OTP"
+                }
             }
 
 
@@ -322,19 +328,32 @@ class PhoneNumberActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(48.dp),
+                        enabled = if(buttonText=="Send OTP"){true}else{false},
                         onClick = {
-                            number = "+91" + text.text.trim().toString()
-                            val options = PhoneAuthOptions.newBuilder(auth)
-                            .setPhoneNumber(number) // Phone number to verify
-                            .setTimeout(
-                                0L,
-                                TimeUnit.SECONDS
-                            ) // Timeout and unit
-                            .setActivity(this@PhoneNumberActivity)
-                            .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
-                            .build()
-                            PhoneAuthProvider.verifyPhoneNumber(options)
-                                  },
+                            if (text.text.length == 10 && isButtonEnabled && buttonText != "Sending...") {
+                                number = "+91" + text.text.trim().toString()
+                                val options = PhoneAuthOptions.newBuilder(auth)
+                                    .setPhoneNumber(number) // Phone number to verify
+                                    .setTimeout(
+                                        0L,
+                                        TimeUnit.SECONDS
+                                    ) // Timeout and unit
+
+                                    .setActivity(this@PhoneNumberActivity)
+                                    .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
+                                    .build()
+                                PhoneAuthProvider.verifyPhoneNumber(options)
+                                isButtonEnabled = false
+                                buttonText = "Sending..."
+
+
+                                lifecycleScope.launch {
+                                    delay(10000)
+                                    isButtonEnabled = true
+                                    buttonText = "Send OTP"
+                                }
+                            }
+                        },
                         contentPadding = PaddingValues(),
                         colors = ButtonDefaults.buttonColors(
                             Color.Transparent
@@ -361,7 +380,7 @@ class PhoneNumberActivity : ComponentActivity() {
                                 Spacer(modifier = Modifier.width(16.dp))
 
                                 Text(
-                                    text = "Send OTP",
+                                    text = buttonText,
                                     style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
                                 )
                             }

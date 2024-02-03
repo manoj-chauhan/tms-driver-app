@@ -155,7 +155,7 @@ class OTPActivity() : ComponentActivity() {
                     Box(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .height(140.dp)
+                            .height(120.dp)
                             .fillMaxWidth()
                     ) {
                         Text(
@@ -200,7 +200,7 @@ class OTPActivity() : ComponentActivity() {
                                         }
                                     }
 
-                                    if (i < 5 && it.text.isNotEmpty()) {
+                                    if (i < 5 ) {
                                         focusManager.moveFocus(FocusDirection.Next)
                                     }
 
@@ -239,7 +239,7 @@ class OTPActivity() : ComponentActivity() {
                         }
                     }
 
-                    Spacer(modifier = Modifier.padding(15.dp))
+                    Spacer(modifier = Modifier.padding(5.dp))
 
                     if (isResendEnabled) {
                         Row(
@@ -275,6 +275,11 @@ class OTPActivity() : ComponentActivity() {
                     val primary = Color(0xFF92A3FD)
                     val secondary = Color(0XFF9DCEFF)
                     Button(
+                        enabled = if(text.text.length == 6){
+                                                          true
+                                                          }else {
+                                                                false
+                                                                },
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(48.dp),
@@ -286,7 +291,11 @@ class OTPActivity() : ComponentActivity() {
                             signInWithPhoneAuthCredential(credential) },
                         contentPadding = PaddingValues(),
                         colors = ButtonDefaults.buttonColors(
-                            Color.Transparent
+                            contentColor = if (text.text.length == 6) {
+                                Color.White
+                            } else {
+                                Color.Gray
+                            }
                         ),
                         shape = RoundedCornerShape(50.dp)
                     ) {
