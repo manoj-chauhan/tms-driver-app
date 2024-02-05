@@ -2,6 +2,7 @@ package driver.tripManagement
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import driver.models.ParentPastTrip
 import driver.models.ParentTrip
 import driver.models.ProcessedPoints
 import driver.models.point
@@ -23,5 +24,9 @@ class ParentTripManagerImpl @Inject constructor(
 
     override fun getTripProcessedCoor(operatorId: Int, tripCode: String): List<ProcessedPoints>? {
         return tripNetRepository.fetchTripProcessed(operatorId, tripCode)
+    }
+
+    override fun getPastTrips(): List<ParentPastTrip>? {
+        return tripNetRepository.fetchPastTrips()
     }
 }

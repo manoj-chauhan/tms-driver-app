@@ -2,7 +2,6 @@ package driver.ui.pages
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import driver.models.ParentTrip
 import driver.ui.components.AssignedTrip
+import driver.ui.components.pastTrips
 import driver.ui.viewmodels.parentTripAssigned
 
 
@@ -51,13 +51,12 @@ fun HomeScreen(
     }.getOrDefault(false)
 
 
-    Box(modifier = Modifier.fillMaxSize().padding(top = 15.dp)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(top = 15.dp)) {
         if (isConnected) {
             val currentAssignmentData by vm.parentTrip.collectAsStateWithLifecycle()
             vm.fetchParentTrip(context = context)
-
-            Log.d("Parent", "HomeScreen: $currentAssignmentData")
-
 
             Column(modifier = Modifier.fillMaxSize()) {
                 Row(
@@ -85,6 +84,8 @@ fun HomeScreen(
                             }
                         }
                 }
+
+                pastTrips(navHostController = navController)
             }
         } else {
             Box(
