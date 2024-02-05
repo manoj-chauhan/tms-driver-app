@@ -34,6 +34,7 @@ import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.clearSession
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.UserProfile
+import driver.ui.components.pastTrips
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.MapsActivityContent
 
@@ -129,6 +130,11 @@ fun AppNavigationHost(
             )
         }
         composable("login") {
+
+        }
+
+        composable("past-trips-list") {
+            pastTrips(navHostController = navController, screen = "app")
 
         }
     }

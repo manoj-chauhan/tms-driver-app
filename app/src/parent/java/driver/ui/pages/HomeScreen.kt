@@ -85,7 +85,7 @@ fun HomeScreen(
                         }
                 }
 
-                pastTrips(navHostController = navController)
+                pastTrips(navHostController = navController, "home")
             }
         } else {
             Box(
