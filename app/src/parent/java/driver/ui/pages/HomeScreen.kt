@@ -28,7 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.drishto.driver.ui.viewmodels.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import driver.models.ParentTrip
 import driver.ui.components.AssignedTrip
 import driver.ui.components.pastTrips
@@ -49,6 +52,10 @@ fun HomeScreen(
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         activeNetworkInfo != null && activeNetworkInfo.isConnected
     }.getOrDefault(false)
+
+    val vw: SwipeRefresh = viewModel()
+    val isLoading by vw.isLoading.collectAsStateWithLifecycle()
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
 
     Box(modifier = Modifier
@@ -77,12 +84,14 @@ fun HomeScreen(
                     )
                 }
 
-                currentAssignmentData?.let {
-                        LazyColumn {
-                            items(it) { trip ->
-                                AssignedTrip(trip, onClick = onTripSelected)
+                com.google.accompanist.swiperefresh.SwipeRefresh(state = swipeRefreshState, onRefresh =  vw::loadstuff ) {
+                    currentAssignmentData?.let {
+                            LazyColumn {
+                                items(it) { trip ->
+                                    AssignedTrip(trip, onClick = onTripSelected)
+                                }
                             }
-                        }
+                    }
                 }
 
                 pastTrips(navHostController = navController, "home")

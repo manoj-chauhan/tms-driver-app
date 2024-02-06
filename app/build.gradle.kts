@@ -181,5 +181,8 @@ dependencies {
     //otp
     implementation("com.google.firebase:firebase-appcheck-debug")
 
+    //swipe to refresh
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
+
 
 }

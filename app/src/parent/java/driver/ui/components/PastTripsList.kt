@@ -54,7 +54,7 @@ fun pastTrips(navHostController: NavHostController, screen:String, vm: parentTri
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(13.dp, top = 15.dp),
+                        .padding(13.dp, top = 12.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -72,11 +72,11 @@ fun pastTrips(navHostController: NavHostController, screen:String, vm: parentTri
                 pastTrip?.let {
                     if(screen == "home") {
                         LazyColumn {
-                            items(it.take(4)) { trip ->
+                            items(it.take(2)) { trip ->
                                 past_trip(trip)
                             }
                         }
-                        if(it.size > 4 ) {
+                        if(it.size >= 3 ) {
                             val text = remember {
                                 buildAnnotatedString {
                                     withStyle(
