@@ -5,11 +5,16 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,24 +31,37 @@ fun LocationPermissionScreen() {
         mutableStateOf(false)
     }
 
+    var showPermissionDialog by remember {
+        mutableStateOf(true)
+    }
+
     val context = LocalContext.current
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
             isPermissionGranted = true
-            openLocationSettings(context)
-
+//            openLocationSettings(context)
+        }else{
+            Log.d("TAG", "LocationPermissionScreen: FOr dialog")
         }
     }
 
+    if (showPermissionDialog) {
+        Log.d("Location", "LocationPermissionScreen: showPermissionn true ")
+        LocationPermissionDialog(
+            onDismiss = { showPermissionDialog = false },
+            onGrantPermission = {
+                requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        )
+    }
     if (isPermissionGranted) {
         Toast.makeText(
             context,
             "Location Granted",
             Toast.LENGTH_SHORT
         ).show()
-//        ("Location permission granted!")
     } else {
         Column {
                 LaunchedEffect(true) {
@@ -54,12 +72,35 @@ fun LocationPermissionScreen() {
                     ) {
                         isPermissionGranted = true
                     } else {
-                        requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
-
+//                        requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        Log.d("TAG", "LocationPermissionScreen:Hi ")
                     }
                 }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LocationPermissionDialog(onDismiss: () -> Unit, onGrantPermission: () -> Unit) {
+    val context = LocalContext.current
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Location is disabled") },
+        text = {
+            Column {
+                Text("Please enable location to use this app.")
+                Text("Go to Settings to enable location.")
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onGrantPermission
+            ) {
+                Text("Allow Location")
+            }
+        }
+    )
 }
 
 private fun openLocationSettings(context: Context) {
