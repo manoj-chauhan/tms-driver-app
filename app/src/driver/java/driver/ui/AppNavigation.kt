@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -40,7 +41,6 @@ import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.HistoryScreen
 import com.drishto.driver.ui.pages.UserProfile
 import com.samrish.driver.ui.pages.PastAssignmentDetailScreen
-import driver.LoginActivity
 import driver.ui.pages.AssignmentDetailScreen
 import driver.ui.pages.History
 import driver.ui.pages.HomeScreen
@@ -132,7 +132,9 @@ fun AppNavigationHost(
     }, content = { innnerpadding ->
         LazyColumn(
             contentPadding = innnerpadding,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier
+                .fillMaxSize()
         ) {
 
         }

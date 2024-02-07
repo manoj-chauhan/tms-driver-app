@@ -36,9 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.drishto.driver.LocationService
 import com.drishto.driver.R
+import com.drishto.driver.ui.viewmodels.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import driver.ui.components.AssignedTrip
 import driver.ui.components.AssignedVehicle
 import driver.ui.components.GeneratedCodeDialog
@@ -69,6 +72,11 @@ fun HomeScreen(
     }.getOrDefault(false)
 
 
+    val vw: SwipeRefresh = viewModel()
+    val isLoading by vw.isLoading.collectAsStateWithLifecycle()
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
+
     Box(modifier = Modifier.fillMaxSize()) {
         if (isConnected) {
             mv.loadMatrixLog(context = context)
@@ -89,135 +97,156 @@ fun HomeScreen(
                 return false
             }
 
-            Column(modifier = Modifier.fillMaxSize()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(13.dp, top = 36.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
 
-                    Text(
-                        text = " ",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                    )
+            com.google.accompanist.swiperefresh.SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = {
+                    vw.loadstuff()
                 }
-                currentAssignmentData?.let {
-                    LocationPermissionScreen()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, bottom = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = " ",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        )
+                    }
+                    currentAssignmentData?.let {
+                        LocationPermissionScreen()
+                        Column(modifier = Modifier.height(800.dp)) {
+                            it.vehicles.let { vList ->
+                                Column {
+//                                    vList.forEach { vehicleAssignment ->
+//                                        AssignedVehicle(vehicleAssignment)
+//                                    }
 
-                    it.vehicles.let { vList ->
-
-                        Column {
-                            vList.forEach { vehicleAssignment ->
-                                AssignedVehicle(vehicleAssignment)
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 16.dp, bottom = 16.dp)
-                            ) {
-                                Button(
-                                    onClick = {
-                                        vm.generateAssignmentCode(context)
+                                    LazyColumn {
+                                        items(vList) { vehicleAssignment ->
+                                            AssignedVehicle(vehicleAssignment)
+                                        }
                                     }
-                                ) {
-                                    Text(text = "Generate Code")
-                                }
-                            }
-                            if (currentAssignmentData!!.isAssignmentCodeVisible) {
-                                GeneratedCodeDialog(
-                                    currentAssignmentData?.assignmentCode ?: "",
-                                    setShowDialog = {
-                                        vm.hideAssignmentCode(context)
-                                    }
-                                )
-                            }
-                        }
-
-                        if (it.trips.size == 0) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(13.dp)
-                                    .align(Alignment.CenterHorizontally)
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = "No trips assigned!!", style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    )
-                                }
-
-                            }
-                            val location = Intent(context, LocationService::class.java)
-                            context.stopService(location)
-                        } else {
-                            val location = Intent(context, LocationService::class.java)
-                            context.startForegroundService(location)
-                            val loc = LocationService::class.java
-                            val service = isLocationServiceRunning(context, loc)
-                            if (service) {
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.signal),
-                                        contentDescription = null,
-                                        Modifier
-                                            .height(100.dp)
-                                            .fillMaxSize()
-                                    )
-                                    matList?.let { mList ->
-                                        if (mList.isNotEmpty()) {
-                                            val lastTime = mList.last().time
-
-                                            val parsedDate = inputFormat.parse(lastTime.toString())
-                                            val formattedDate = outputFormat.format(parsedDate)
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(text = "Last recorded location time ${formattedDate} ")
-
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(start = 16.dp, bottom = 16.dp)
+                                    ) {
+                                        Button(
+                                            onClick = {
+                                                vm.generateAssignmentCode(context)
                                             }
-                                        } else {
-                                            Column(modifier = Modifier.fillMaxWidth()) {
-                                                Row(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.Center
-                                                ) {
-                                                    Text(text = "Last recorded location time - Not shared ")
+                                        ) {
+                                            Text(text = "Generate Code")
+                                        }
+                                    }
+                                    if (currentAssignmentData!!.isAssignmentCodeVisible) {
+                                        GeneratedCodeDialog(
+                                            currentAssignmentData?.assignmentCode ?: "",
+                                            setShowDialog = {
+                                                vm.hideAssignmentCode(context)
+                                            }
+                                        )
+                                    }
+                                }
+
+                                if (it.trips.size == 0) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(13.dp)
+                                            .align(Alignment.CenterHorizontally)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = "No trips assigned!!",
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 14.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            )
+                                        }
+                                    }
+                                    val location = Intent(context, LocationService::class.java)
+                                    context.stopService(location)
+                                } else {
+                                    val location = Intent(context, LocationService::class.java)
+                                    context.startForegroundService(location)
+                                    val loc = LocationService::class.java
+                                    val service = isLocationServiceRunning(context, loc)
+                                    if (service) {
+                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                            LazyColumn {
+                                                item {
+                                                    Image(
+                                                        painter = painterResource(id = R.drawable.signal),
+                                                        contentDescription = null,
+                                                        Modifier
+                                                            .height(100.dp)
+                                                            .fillMaxSize()
+                                                    )
+                                                    matList?.let { mList ->
+                                                        if (mList.isNotEmpty()) {
+                                                            val lastTime = mList.last().time
+
+                                                            val parsedDate =
+                                                                inputFormat.parse(lastTime.toString())
+                                                            val formattedDate =
+                                                                outputFormat.format(parsedDate)
+                                                            Row(
+                                                                modifier = Modifier.fillMaxWidth(),
+                                                                horizontalArrangement = Arrangement.Center
+                                                            ) {
+                                                                Text(text = "Last recorded location time ${formattedDate} ")
+
+                                                            }
+                                                        } else {
+                                                            Column(modifier = Modifier.fillMaxWidth()) {
+                                                                Row(
+                                                                    modifier = Modifier.fillMaxWidth(),
+                                                                    horizontalArrangement = Arrangement.Center
+                                                                ) {
+                                                                    Text(text = "Last recorded location time - Not shared ")
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
                                                 }
+
                                             }
                                         }
                                     }
+                                    LazyColumn {
+                                        items(it.trips) { trip ->
+                                            AssignedTrip(trip, onClick = onTripSelected)
+                                        }
+                                    }
+                                }
+                                if (it.userLocationVisible) {
+                                    MatrixLog()
                                 }
                             }
-                            LazyColumn {
-                                items(it.trips) { trip ->
-                                    AssignedTrip(trip, onClick = onTripSelected)
-                                }
-                            }
-                        }
-
-                        if (it.userLocationVisible) {
-                            MatrixLog()
                         }
                     }
-
                 }
             }
         } else {
-            // No network available, show loading indicator or error message
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -230,7 +259,8 @@ fun HomeScreen(
                     context,
                     "Please connect to a network and restart application",
                     Toast.LENGTH_SHORT
-                ).show()            }
+                ).show()
+            }
         }
     }
 }
