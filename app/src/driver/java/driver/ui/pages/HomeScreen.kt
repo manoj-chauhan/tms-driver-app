@@ -1,5 +1,6 @@
 package driver.ui.pages
 
+import android.Manifest
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
@@ -125,7 +126,8 @@ fun HomeScreen(
                         )
                     }
                     currentAssignmentData?.let {
-                        LocationPermissionScreen()
+//                        LocationPermissionScreen()
+                        RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
                         Column(modifier = Modifier.height(800.dp)) {
                             it.vehicles.let { vList ->
                                 Column {
