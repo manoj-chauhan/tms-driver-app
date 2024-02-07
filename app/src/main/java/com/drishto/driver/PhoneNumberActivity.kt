@@ -1,6 +1,7 @@
 package com.drishto.driver
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -67,10 +68,13 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.play.core.integrity.IntegrityManagerFactory
+import com.google.android.play.core.integrity.StandardIntegrityManager
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.appcheck.ktx.appCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.GoogleAuthProvider
@@ -151,14 +155,37 @@ class PhoneNumberActivity : ComponentActivity() {
             }
         }
 
+    private fun handleError(exception: Exception) {
+        Log.d("Handle", "handleError: $exception")
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         Firebase.initialize(context = this)
         Firebase.appCheck.installAppCheckProviderFactory(
+            PlayIntegrityAppCheckProviderFactory.getInstance(),
+        )
+        Firebase.appCheck.installAppCheckProviderFactory(
             DebugAppCheckProviderFactory.getInstance(),
         )
 
+        val applicationContext: Context = applicationContext
+        val cloudProjectNumber: Long = 9387484517
+
+        val standardIntegrityManager = IntegrityManagerFactory.createStandard(applicationContext)
+        var integrityTokenProvider: StandardIntegrityManager.StandardIntegrityTokenProvider? = null
+
+        standardIntegrityManager.prepareIntegrityToken(
+            StandardIntegrityManager.PrepareIntegrityTokenRequest.builder()
+                .setCloudProjectNumber(cloudProjectNumber)
+                .build()
+        ).addOnSuccessListener { tokenProvider ->
+            integrityTokenProvider = tokenProvider
+            Log.d("Toekn", "onCreate: ${integrityTokenProvider}")
+        }.addOnFailureListener { exception ->
+            handleError(exception)
+        }
 
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
@@ -411,7 +438,10 @@ class PhoneNumberActivity : ComponentActivity() {
                             modifier = Modifier
                                 .padding(16.dp)
                                 .width(80.dp)
-                                .background(color = Color(0xFFF7F8F8), shape = RoundedCornerShape(8.dp))
+                                .background(
+                                    color = Color(0xFFF7F8F8),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
                         ) {
                             Column(
                                 modifier = Modifier
@@ -423,19 +453,23 @@ class PhoneNumberActivity : ComponentActivity() {
                                 Icon(
                                     painter = painterResource(id = R.drawable.google),
                                     contentDescription = "Home Icon",
-                                    modifier = Modifier.size(32.dp).clickable {
-                                        oneTapClient.beginSignIn(signInRequest)
-                                        .addOnSuccessListener { result ->
-                                            Log.d("TAG", "OnOneTapClient Success")
-                                            val intentSenderRequest =
-                                                IntentSenderRequest.Builder(result.pendingIntent.intentSender)
-                                                    .build()
-                                            resultLauncher.launch(intentSenderRequest)
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clickable {
+                                            oneTapClient
+                                                .beginSignIn(signInRequest)
+                                                .addOnSuccessListener { result ->
+                                                    Log.d("TAG", "OnOneTapClient Success")
+                                                    val intentSenderRequest =
+                                                        IntentSenderRequest
+                                                            .Builder(result.pendingIntent.intentSender)
+                                                            .build()
+                                                    resultLauncher.launch(intentSenderRequest)
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Log.d("TAG", e.localizedMessage)
+                                                }
                                         }
-                                        .addOnFailureListener { e ->
-                                            Log.d("TAG", e.localizedMessage)
-                                        }
-                                    }
                                 )
 
                                 Text(
@@ -450,7 +484,10 @@ class PhoneNumberActivity : ComponentActivity() {
                             modifier = Modifier
                                 .padding(16.dp)
                                 .width(80.dp)
-                                .background(color = Color(0xFFF7F8F8), shape = RoundedCornerShape(16.dp))
+                                .background(
+                                    color = Color(0xFFF7F8F8),
+                                    shape = RoundedCornerShape(16.dp)
+                                )
                         ) {
                             Column(
                                 modifier = Modifier
@@ -462,9 +499,11 @@ class PhoneNumberActivity : ComponentActivity() {
                                 Icon(
                                     imageVector = Icons.Default.Email,
                                     contentDescription = "Home Icon",
-                                    modifier = Modifier.size(32.dp).clickable {
-                                           startLoginActivity()
-                                    }
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clickable {
+                                            startLoginActivity()
+                                        }
                                 )
 
                                 Text(
