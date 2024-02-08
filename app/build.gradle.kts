@@ -16,8 +16,8 @@ android {
         applicationId = "com.drishto"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.0-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,6 +33,7 @@ android {
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -46,7 +47,7 @@ android {
 
         }
         create("parent") {
-            applicationId ="com.drishto.parent"
+            applicationId ="com.drishto"
             dimension = "drishto"
             buildConfigField("boolean", "ENABLE_CUSTOM_BUILD_CONFIG", "true")
             buildConfigField ("String", "BUILD_VARIANT", "\" parent \"")

@@ -7,6 +7,51 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:9387484517:android:ae43b8fe985bce0bd8ad8c",
+        "android_client_info": {
+          "package_name": "com.drishto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "9387484517-cgcr7cc5mbv9nhn5cflortjuenpcis34.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.drishto",
+            "certificate_hash": "6af757a6dc41a5b12b47e0926b1ac0b54b3025f8"
+          }
+        },
+        {
+          "client_id": "9387484517-rgm1074d6ncoi9s8l41pflqrb2v77hm3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.drishto",
+            "certificate_hash": "36fe2ae1b8369f90059a9532fb03396c7bc9920c"
+          }
+        },
+        {
+          "client_id": "9387484517-t6fdifd3a3e20lhkga0hudcdp6pv44s5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbl84GVoMolQn6Hmsl1BDKsTRy9pk4DTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "9387484517-20ahsp75dgs1h8fjc7jplrs2ms16e6pi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:9387484517:android:ddf3cc45a46ceabbd8ad8c",
         "android_client_info": {
           "package_name": "com.drishto.driver"
@@ -72,51 +117,6 @@
           "android_info": {
             "package_name": "com.drishto.parent",
             "certificate_hash": "36fe2ae1b8369f90059a9532fb03396c7bc9920c"
-          }
-        },
-        {
-          "client_id": "9387484517-t6fdifd3a3e20lhkga0hudcdp6pv44s5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDbl84GVoMolQn6Hmsl1BDKsTRy9pk4DTU"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "9387484517-20ahsp75dgs1h8fjc7jplrs2ms16e6pi.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:9387484517:android:e2cdc3640c2ea4c2d8ad8c",
-        "android_client_info": {
-          "package_name": "com.samrish.driver"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "9387484517-423ja4c55hr4h644saa15buiakttullf.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.samrish.driver",
-            "certificate_hash": "36fe2ae1b8369f90059a9532fb03396c7bc9920c"
-          }
-        },
-        {
-          "client_id": "9387484517-oppg61a8nml6mqi9oli0u03kf47tgfo8.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.samrish.driver",
-            "certificate_hash": "6af757a6dc41a5b12b47e0926b1ac0b54b3025f8"
           }
         },
         {

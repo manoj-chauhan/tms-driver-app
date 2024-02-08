@@ -557,6 +557,9 @@ class PhoneNumberActivity : ComponentActivity() {
                 return@OnCompleteListener
             }
 
+            val token = task.result
+            Log.d("TAG", "updateUI: $token")
+
             authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
                 val myIntent = Intent(this, MainActivity::class.java)
                 myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
