@@ -48,7 +48,7 @@ import com.google.accompanist.permissions.shouldShowRationale
 @Composable
 fun RequestPermission(
     permission: String,
-    rationaleMessage: String = "To use this app's functionalities, you need to give us the permission.",
+    rationaleMessage: String = "To use this app's functionalities, you need to give us the location permission.",
 ) {
     val permissionState = rememberPermissionState(permission)
 
