@@ -41,6 +41,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,8 +63,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.drishto.driver.auth.AuthManager
+import com.drishto.driver.database.AppDatabase
+import com.drishto.driver.database.TelemetryRepository
+import com.drishto.driver.network.getUserId
+import com.drishto.driver.network.saveUserId
+import com.drishto.driver.ui.viewmodels.UserProfileViewModel
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -89,6 +97,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import driver.LoginActivity
 import driver.MainActivity
 import driver.OTPActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -100,6 +110,9 @@ class PhoneNumberActivity : ComponentActivity() {
 
     @Inject
     lateinit var authManager: AuthManager
+
+    @Inject
+    lateinit var telemetry : TelemetryRepository
 
     private lateinit var auth: FirebaseAuth
 
@@ -133,6 +146,15 @@ class PhoneNumberActivity : ComponentActivity() {
                                 if (task.isSuccessful) {
                                     // Sign in success, update UI with the signed-in user's information
                                     val user = auth.currentUser
+                                    if (user != null) {
+                                        if(getUserId(applicationContext) != user.uid){
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                telemetry.deleteAllTelemetry()
+                                            }
+                                        }
+                                        Log.d("USER", "${user.uid} ")
+                                        saveUserId(user.uid,applicationContext)
+                                    }
                                     user?.getIdToken(true)?.addOnSuccessListener {
                                         it.token?.let { token -> updateUI(token) }
                                     }
@@ -154,7 +176,6 @@ class PhoneNumberActivity : ComponentActivity() {
 
             }
         }
-
     private fun handleError(exception: Exception) {
         Log.d("Handle", "handleError: $exception")
     }

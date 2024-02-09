@@ -25,7 +25,8 @@ data class UserProfile(
     val name: String, 
     val userName: String,
     val companiesList: List<CompanyPositions>,
-    var authProvider:String
+    var authProvider:String,
+    val id:Int
 )
 @JsonClass(generateAdapter = true)
 data class CompanyPositions(
@@ -71,7 +72,8 @@ class UserProfileViewModel @Inject constructor(private val userProfileManager: c
                     tripDetail.name,
                     tripDetail.userName,
                     tripDetail.companiesList,
-                    tripDetail.authProvider
+                    tripDetail.authProvider,
+                    tripDetail.id
                 )
             }
 

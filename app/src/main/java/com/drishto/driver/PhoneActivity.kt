@@ -68,6 +68,9 @@ import androidx.compose.ui.unit.sp
 import com.drishto.driver.OtpVerification
 import com.drishto.driver.R
 import com.drishto.driver.auth.AuthManager
+import com.drishto.driver.database.TelemetryRepository
+import com.drishto.driver.network.getUserId
+import com.drishto.driver.network.saveUserId
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseException
@@ -80,7 +83,10 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -102,6 +108,9 @@ class OTPActivity() : ComponentActivity() {
 
     @Inject
     lateinit var authManager: AuthManager;
+
+    @Inject
+    lateinit var telemetry: TelemetryRepository;
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @OptIn(ExperimentalMaterial3Api::class)
@@ -416,6 +425,15 @@ class OTPActivity() : ComponentActivity() {
                     if (user != null) {
                         user.getIdToken(true).addOnSuccessListener { tokenResult ->
                                 val idToken = tokenResult.token
+                                if (user != null) {
+                                    if(getUserId(applicationContext) != user.uid){
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            telemetry.deleteAllTelemetry()
+                                        }
+                                    }
+                                    Log.d("USER", "${user.uid} ")
+                                    saveUserId(user.uid,applicationContext)
+                                }
                                 if (idToken != null) {
                                     updateUI(idToken)
                                 }

@@ -59,6 +59,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drishto.driver.R
 import com.drishto.driver.auth.AuthManager
+import com.drishto.driver.database.TelemetryRepository
+import com.drishto.driver.network.getUserId
+import com.drishto.driver.network.saveUserId
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
@@ -67,6 +70,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,6 +84,10 @@ class LoginActivity : ComponentActivity() {
 
     @Inject
     lateinit var authManager: AuthManager
+
+    @Inject
+    lateinit var telemetry: TelemetryRepository
+
     private lateinit var signInRequest: BeginSignInRequest
 
 
@@ -282,6 +292,15 @@ class LoginActivity : ComponentActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
+                    if (user != null) {
+                        if(getUserId(applicationContext) != user.uid){
+                            CoroutineScope(Dispatchers.IO).launch {
+                                telemetry.deleteAllTelemetry()
+                            }
+                        }
+                        Log.d("USER", "${user.uid} ")
+                        saveUserId(user.uid,applicationContext)
+                    }
                     user?.getIdToken(true)?.addOnSuccessListener {
                         it.token?.let { token -> updateUI(token) }
                     }

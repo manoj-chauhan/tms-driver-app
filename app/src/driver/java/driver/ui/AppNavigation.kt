@@ -121,6 +121,8 @@ fun AppNavigationHost(
                             val myIntent = Intent(context, PhoneNumberActivity::class.java)
                             clearSession(context)
                             myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            val location = Intent(context, LocationService::class.java)
+                            context.stopService(location)
                             context.startActivity(myIntent)
                         },
                         leadingIcon = {

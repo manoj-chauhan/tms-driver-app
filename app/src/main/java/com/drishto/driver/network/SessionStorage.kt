@@ -10,6 +10,8 @@ private val authTokenKey = "AUTH_TOKEN"
 private val driverIdKey = "DRIVER_ID"
 private val companyCodeKey = "COMPANY_CODE"
 private val companyIdKey = "COMPANY_ID"
+private val userId = "USER_ID"
+
 
 fun saveAccessToken(context: Context, token: String) {
     val sharedPreference = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
@@ -59,8 +61,30 @@ fun removeCompanySelection(context: Context) {
 }
 
 fun clearSession(context: Context) {
-    var editor = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).edit()
+    var sharedPreference = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
     Log.d("Clear", "clearSession: ")
+
+    val uid = sharedPreference.getString(userId, "")
+
+    val editor = sharedPreference.edit()
+
     editor.clear()
     editor.apply()
+
+    if (uid != "") {
+        editor.putString(userId, uid)
+        Log.d("Driver Found", "clearSession: $uid not deleted saved")
+        editor.apply()
+    }
+}
+
+fun saveUserId(uid:String, context:Context){
+    val sharedPreference = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
+    val editor = sharedPreference.edit()
+    editor.putString(userId, uid)
+    editor.apply()
+}
+
+fun getUserId(context: Context): String? {
+    return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE).getString(userId, null)
 }

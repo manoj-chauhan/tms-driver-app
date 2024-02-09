@@ -160,6 +160,7 @@ class LocationService : Service(), LocationListener {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
+                super.onLocationResult(result)
                 for (currentLocation in result.locations) {
                     onLocationChanged(currentLocation)
                 }
@@ -204,7 +205,7 @@ class LocationService : Service(), LocationListener {
                         Thread.sleep(5000)
                     }
                 } else {
-                    Thread.sleep(1000)
+                    Thread.sleep(2000)
                 }
             }
         }.start()
@@ -215,12 +216,17 @@ class LocationService : Service(), LocationListener {
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun startLocationUpdates() {
-        val lr = com.google.android.gms.location.LocationRequest.Builder(1000).setMinUpdateDistanceMeters(1f).setPriority( Priority.PRIORITY_HIGH_ACCURACY ).build()
+        val lr = com.google.android.gms.location.LocationRequest.Builder(1000L).setMinUpdateIntervalMillis(2000L).setMinUpdateDistanceMeters(
+            0.03F
+        ).setPriority( Priority.PRIORITY_HIGH_ACCURACY ).setWaitForAccurateLocation(true).build()
 
          fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             fusedLocationClient.requestLocationUpdates(lr, locationCallback, Looper.getMainLooper())
@@ -243,7 +249,7 @@ class LocationService : Service(), LocationListener {
         val lat = location.latitude
         val lng = location.longitude
 
-        Log.d("Latitude", "onLocationChanged: Latitude $lat $lng")
+        Log.d("Latitude", "onLocationChanged: Latitude $lat $lng ${location.hasAccuracy()}")
         val formater = DateTimeFormatter.ISO_LOCAL_DATE_TIME
         val msg =
             "Time: " + LocalDateTime.now().format(formater) + "   Location: " + lat + "," + lng

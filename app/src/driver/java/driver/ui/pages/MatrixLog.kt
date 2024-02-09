@@ -75,7 +75,7 @@ fun MatrixLog(vm: MatrixLogViewModel = hiltViewModel()) {
 
 @Composable
 fun MatrixRecord(mat: com.drishto.driver.database.Telemetry) {
-    val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ss")
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
     val outputFormat = SimpleDateFormat("dd-MMM HH:mm:ss")
 
     val parsedDate = remember(mat.time) { inputFormat.parse(mat.time.toString()) }
