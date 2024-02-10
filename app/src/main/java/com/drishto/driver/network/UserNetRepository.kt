@@ -5,16 +5,21 @@ import android.util.Log
 import android.widget.Toast
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
+import com.drishto.driver.models.Student
 import com.drishto.driver.models.UserProfile
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 class UserNetRepository  @Inject constructor(@ApplicationContext private val context: Context, private val errorManager:ErrManager) {
@@ -63,5 +68,34 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
         } catch (e: Exception) {
         }
 
+    }
+
+    fun getChildrenList():List<Student>?{
+        val assignedTripType =
+            Types.newParameterizedType(MutableList::class.java, Student::class.java)
+        val adapter: JsonAdapter<MutableList<Student>> =
+            Moshi.Builder().build().adapter(assignedTripType)
+
+        val tripAssignmentUrl = context.resources.getString(R.string.children_list)
+
+        return try {
+            getAccessToken(context)?.let {
+                val (_, _, result) = tripAssignmentUrl.httpGet()
+                    .authentication().bearer(it)
+                    .responseObject(moshiDeserializerOf(adapter))
+                result.fold(
+                    {
+
+                    },
+                    {
+                        EventBus.getDefault().post("AUTH_FAILED")
+                    }
+                )
+
+                result.get()
+            }
+        } catch (e: Exception) {
+            null
+        }
     }
 }

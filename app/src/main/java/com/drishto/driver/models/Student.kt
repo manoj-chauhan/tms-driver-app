@@ -5,6 +5,17 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 class Student(
-    val studentName: String,
-    val standard: Int
+    val name: String,
+    val standard: String,
+    val dateOfBirth: String,
+    val gender: String,
+    val schoolName: String,
+    val schoolAddress: String,
+    val primaryPhoneNumber: String,
+    val secondaryPhoneNumber: String,
+    val status: String,
+    val createdBy: String,
+    val createdAt: String,
+    val updatedBy: String,
+    val lastUpdatedAt: String
 )

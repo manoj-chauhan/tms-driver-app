@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +47,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.drishto.driver.R
-import com.drishto.driver.models.Student
+import com.drishto.driver.ui.viewmodels.ChildrenListViewModel
 import com.drishto.driver.ui.viewmodels.CompanyPositions
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
 import driver.SetPasswordActivity
@@ -295,10 +296,14 @@ fun UserProfile() {
 }
 @Composable
 fun childList() {
-    val filteredCompanies = listOf(
-        Student("Abhishek Rathore", 12),
-        Student("Ankit Verma", 12),
-    )
+    val vm: ChildrenListViewModel = hiltViewModel()
+
+    val childrensList by vm.childrensList.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        vm.getChildrenList()
+    }
+
+    Log.d("TAG", "childList: $childrensList")
 
     Row{
         Text(text = "Children List", style = TextStyle(
@@ -307,17 +312,17 @@ fun childList() {
     }
 
     Spacer(modifier = Modifier.height(10.dp))
-    filteredCompanies?.forEach { company ->
+    childrensList?.forEach { company ->
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
-                text = company.studentName, style = TextStyle(
+                text = company.name, style = TextStyle(
                     color = Color.Gray,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold
                 )
             )
             Text(
-                text = company.standard.toString(), style = TextStyle(
+                text = company.standard, style = TextStyle(
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold
                 )

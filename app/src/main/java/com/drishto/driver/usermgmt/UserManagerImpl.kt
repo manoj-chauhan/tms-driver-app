@@ -1,6 +1,7 @@
 package com.drishto.driver.usermgmt
 
 import android.content.Context
+import com.drishto.driver.models.Student
 import com.drishto.driver.network.UserNetRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -11,5 +12,9 @@ class UserManagerImpl @Inject constructor(
     ) : UserManager {
     override fun editUserName(name: String) {
         return userNetRepository.editUserName(name)
+    }
+
+    override fun childrenList(): List<Student>? {
+        return userNetRepository.getChildrenList()
     }
 }
