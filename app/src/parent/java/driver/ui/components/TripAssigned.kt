@@ -37,13 +37,13 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp), shape = RoundedCornerShape(10.dp)
+                .height(110.dp), shape = RoundedCornerShape(10.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
-                    .height(80.dp),
+                    .height(100.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
@@ -54,7 +54,7 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
 
                     Box(
                         modifier = Modifier
-                            .width(50.dp)
+                            .width(130.dp)
                     ) {
                         Text(
                             text = trip.childName,
@@ -68,23 +68,11 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
                     }
 
                     Box(
-                        modifier = Modifier
+                        modifier = Modifier.width(20.dp)
+
                     ) {
                         Text(
                             text = trip.childStandard,
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier
-                    ) {
-                        Text(
-                            text = trip.status,
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 12.sp,
@@ -123,35 +111,79 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
 
                 }
 
-//                if(trip.currentLocation != null) {
+                if(trip.currentLocation != null) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Current Location",
+                                style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                            Text(
+                                text = trip.currentLocation,
+                                style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
+                        if(trip.currentLocation != trip.deBoardingPlaceName) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Deboarding Location",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                )
+                                Text(
+                                    text = trip.deBoardingPlaceName,
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                )
+
+                            }
+                        }
+
+                    }
+                }else{
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-
-
                         Text(
-                            text = "Current Location",
+                            text = "Boarding Location",
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Medium
                             )
                         )
-
-
-
                         Text(
-                            text = "Maharaja Agarsen Public School",
+                            text = trip.boardingPlaceName,
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Medium
                             )
                         )
-
                     }
-//                }
+                }
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween

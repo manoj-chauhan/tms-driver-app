@@ -17,5 +17,7 @@ data class ParentTrip(
     val childSchool:String,
     val childStandard: String,
     val currentLocation: String?,
-    val lastUpdateTime: String
+    val lastUpdateTime: String,
+    val deBoardingPlaceName:String,
+    val boardingPlaceName: String
 )

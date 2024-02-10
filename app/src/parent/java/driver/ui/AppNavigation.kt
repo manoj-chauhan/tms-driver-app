@@ -64,7 +64,7 @@ fun AppNavigationHost(
         topBar = {
             TopAppBar(
                 modifier = Modifier.padding(end = 13.dp),
-                title = { Text(text = "Assigned Trips") },
+                title = { Text(text = "Active Trips") },
                 actions = {
                     IconButton(onClick = { expander = true }) {
                         Icon(imageVector = Icons.Filled.MoreVert, contentDescription = null)
