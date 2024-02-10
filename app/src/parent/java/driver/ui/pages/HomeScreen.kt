@@ -84,6 +84,29 @@ fun HomeScreen(
                     )
                 }
 
+                if (currentAssignmentData?.size == 0) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(13.dp)
+                            .align(Alignment.CenterHorizontally)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "No active trips!!",
+                                style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
+                    }
+                }
+
                 com.google.accompanist.swiperefresh.SwipeRefresh(state = swipeRefreshState, onRefresh =  vw::loadstuff ) {
                     currentAssignmentData?.let {
                             LazyColumn {

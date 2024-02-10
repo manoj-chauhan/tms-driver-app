@@ -37,7 +37,11 @@ import driver.models.ParentPastTrip
 import driver.ui.viewmodels.parentTripAssigned
 
 @Composable
-fun pastTrips(navHostController: NavHostController, screen:String, vm: parentTripAssigned = hiltViewModel()) {
+fun pastTrips(
+    navHostController: NavHostController,
+    screen: String,
+    vm: parentTripAssigned = hiltViewModel()
+) {
     val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
     vm.fetchParentPastTrip()
 
@@ -70,13 +74,13 @@ fun pastTrips(navHostController: NavHostController, screen:String, vm: parentTri
                 }
 
                 pastTrip?.let {
-                    if(screen == "home") {
+                    if (screen == "home") {
                         LazyColumn {
                             items(it.take(2)) { trip ->
                                 past_trip(trip)
                             }
                         }
-                        if(it.size >= 3 ) {
+                        if (it.size >= 3) {
                             val text = remember {
                                 buildAnnotatedString {
                                     withStyle(
@@ -111,13 +115,52 @@ fun pastTrips(navHostController: NavHostController, screen:String, vm: parentTri
                                 }
                             }
                         }
-                    }else{
+                    } else {
                         LazyColumn {
                             items(it) { trip ->
                                 past_trip(trip)
                             }
                         }
                     }
+                }
+            }
+        }
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(13.dp)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(13.dp, top = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = "Past Trips",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "No trips assigned!!",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
                 }
             }
         }
