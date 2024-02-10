@@ -1,7 +1,6 @@
 package driver.network
 
 import android.content.Context
-import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
@@ -36,11 +35,9 @@ class ParentTripNetRepository @Inject constructor(
 
         return try {
             getAccessToken(context)?.let {
-                Log.d("TAG", "fetchActiveTrips: $it")
                 val (_, _, result) = tripAssignmentUrl.httpGet()
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(adapter))
-                Log.d("TAG", "fetchActiveTrips: $result")
                 result.fold(
                     {
                     },
@@ -72,12 +69,10 @@ class ParentTripNetRepository @Inject constructor(
 
         return try {
             getAccessToken(context)?.let {
-                Log.d("TAG", "fetchActiveTrips: $it")
                 val (_, _, result) = tripAssignmentUrl.httpGet()
                     .authentication().bearer(it)
                     .header("Company-Id", operatorId)
                     .responseObject(moshiDeserializerOf(adapter))
-                Log.d("TAG", "getTripRoute: $result")
                 result.fold(
                     {
                         it ?: emptyList() // Return empty list if the result is null
@@ -114,7 +109,6 @@ class ParentTripNetRepository @Inject constructor(
                     .authentication().bearer(it)
                     .header("Company-Id", operatorId)
                     .responseObject(moshiDeserializerOf(adapter))
-                Log.d("TAG", "fetchActiveTrips: $result")
                 result.fold(
                     {
                     },
@@ -150,7 +144,6 @@ class ParentTripNetRepository @Inject constructor(
                 val (_, _, result) = tripPast.httpGet()
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(adapter))
-                Log.d("TAG", "fetchPastTrips: $result")
                 result.fold(
                     {
                     it

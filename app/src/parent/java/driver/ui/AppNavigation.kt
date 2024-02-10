@@ -53,6 +53,9 @@ fun AppNavigationHost(
     var selectedAssignmentCode by remember { mutableStateOf("") }
     var operatorId by remember { mutableIntStateOf(0) }
     var tripId by remember { mutableIntStateOf(0) }
+    var boardingPlaceId by remember { mutableStateOf("") }
+    var deBoardingPlaceId by remember { mutableStateOf("") }
+
 
     var startScreen: String by remember {
         mutableStateOf(
@@ -125,6 +128,8 @@ fun AppNavigationHost(
                     selectedAssignmentCode = it.tripCode
                     tripId = it.tripId
                     operatorId = it.companyId
+//                    deBoardingPlaceId= it.deBoardingPlaceId
+//                    boardingPlaceId = it.boardingPlaceId
                     navController.navigate("current-assignment-detail")
                 }
             )

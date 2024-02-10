@@ -10,7 +10,7 @@ data class ParentTrip(
     var tripId: Int,
     var vehicleNumber: String,
     var status: String,
-    var companyId: Int = 20 ,
+    var companyId: Int = 1 ,
     var tripDate: String,
     var routeName: String?,
     var childName: String,
@@ -19,5 +19,7 @@ data class ParentTrip(
     val currentLocation: String?,
     val lastUpdateTime: String,
     val deBoardingPlaceName:String,
-    val boardingPlaceName: String
+    val boardingPlaceName: String,
+//    val boardingPlaceId:String = "MPS",
+//    val deBoardingPlaceId:String
 )

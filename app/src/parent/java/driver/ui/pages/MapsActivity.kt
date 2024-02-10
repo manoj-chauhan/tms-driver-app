@@ -1,7 +1,6 @@
 package driver.ui.pages
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
@@ -41,6 +40,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import dagger.hilt.android.AndroidEntryPoint
 import driver.ui.viewmodels.parentTripAssigned
+import driver.ui.viewmodels.placeDetailViewModel
 import kotlin.math.abs
 import kotlin.math.log2
 import kotlin.math.max
@@ -106,9 +106,15 @@ fun MapsActivityContent(navController: NavHostController, operatorId: Int, tripC
 
     val vm: parentTripAssigned = hiltViewModel()
     val context = LocalContext.current
+
+    val pt: placeDetailViewModel = hiltViewModel()
+    val currentPlaceInfo by pt.placeInfo.collectAsStateWithLifecycle()
+    pt.fetchPlaceCoordinates("MPS")
+
     Box(
         modifier = Modifier
-            .fillMaxSize().background(color = Color.White)
+            .fillMaxSize()
+            .background(color = Color.White)
             .height(300.dp)
     ) {
         Column(
@@ -137,7 +143,6 @@ fun MapsActivityContent(navController: NavHostController, operatorId: Int, tripC
                 tripCode = tripCode,
                 onMapLoaded = {}
             )
-
         }
     }
 }
@@ -156,8 +161,6 @@ fun GoogleMapView(
     val tripRoute by vm.points.collectAsStateWithLifecycle()
     val tripProcessCoord by vm.processedpoints.collectAsStateWithLifecycle()
 
-    Log.d("fetch", "GoogleMapView: $tripRoute")
-    Log.d("fetch", "GoogleMapView: $tripProcessCoord")
     val routePoints: List<LatLng>? =
         tripRoute?.map { LatLng(it.latitude, it.longitude) }
     val processedPoints: List<LatLng>? =
@@ -188,14 +191,12 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoad
     val first = routePoints.first()
     val lastPoint = routePoints.last()
     val cameraPosition = if (processedPoints == null || processedPoints.isEmpty()) {
-        Log.d("TAG", "process: route")
         val bounds = LatLngBounds.builder().include(first).include(lastPoint).build()
         CameraPosition.Builder()
             .target(bounds.center)
             .zoom(calculateZoomLevel(bounds))
             .build()
     } else {
-        Log.d("TAG", "process: point ${processedPoints.last()}")
         val bounds = LatLngBounds.builder().include(processedPoints.last()).build()
         CameraPosition.Builder()
             .target(bounds.center)

@@ -4,15 +4,19 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import driver.models.ParentPastTrip
 import driver.models.ParentTrip
+import driver.models.PlaceInfo
 import driver.models.ProcessedPoints
 import driver.models.point
 import driver.network.ParentTripNetRepository
+import driver.network.PlaceInfoNetRepository
 import javax.inject.Inject
 
 class ParentTripManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val tripNetRepository: ParentTripNetRepository,
-): ParentTripManager {
+    private val placeInforepository: PlaceInfoNetRepository,
+
+    ): ParentTripManager {
 
     override fun getActiveTrips(): List<ParentTrip>? {
         return tripNetRepository.fetchActiveTrips()
@@ -28,5 +32,9 @@ class ParentTripManagerImpl @Inject constructor(
 
     override fun getPastTrips(): List<ParentPastTrip>? {
         return tripNetRepository.fetchPastTrips()
+    }
+
+    override fun getPlaceLatLng(placeCode: String): PlaceInfo {
+        return placeInforepository.fetchPlaceLatitudeLongitude(placeCode)
     }
 }
