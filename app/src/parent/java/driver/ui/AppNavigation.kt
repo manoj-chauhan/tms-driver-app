@@ -116,7 +116,7 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
-            MapsActivityContent(navController, operatorId, selectedAssignmentCode)
+            MapsActivityContent(navController, operatorId, selectedAssignmentCode,deBoardingPlaceId, boardingPlaceId)
         }
         composable("user-profile") {
             UserProfile()
@@ -128,8 +128,8 @@ fun AppNavigationHost(
                     selectedAssignmentCode = it.tripCode
                     tripId = it.tripId
                     operatorId = it.companyId
-//                    deBoardingPlaceId= it.deBoardingPlaceId
-//                    boardingPlaceId = it.boardingPlaceId
+                    deBoardingPlaceId= "MPS"
+                    boardingPlaceId = "WYC"
                     navController.navigate("current-assignment-detail")
                 }
             )

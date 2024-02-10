@@ -1,5 +1,8 @@
 package driver.ui.pages
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -102,14 +105,20 @@ class MapsActivity : AppCompatActivity() {
     }
 }
 @Composable
-fun MapsActivityContent(navController: NavHostController, operatorId: Int, tripCode: String) {
+fun MapsActivityContent(navController: NavHostController, operatorId: Int, tripCode: String, deb:String, bord:String) {
 
     val vm: parentTripAssigned = hiltViewModel()
     val context = LocalContext.current
 
     val pt: placeDetailViewModel = hiltViewModel()
     val currentPlaceInfo by pt.placeInfo.collectAsStateWithLifecycle()
-    pt.fetchPlaceCoordinates("MPS")
+    val debcoord = pt.fetchPlaceCoordinates(deb)
+    val bordcoord = pt.fetchPlaceCoordinates(bord)
+
+    val places = listOf(
+        "Maharaja Agrasen " to debcoord,
+        "Western Yamuna kannal" to bordcoord
+    )
 
     Box(
         modifier = Modifier
@@ -135,6 +144,21 @@ fun MapsActivityContent(navController: NavHostController, operatorId: Int, tripC
                 ) {
                     Text("Reload")
                 }
+
+                Button(
+                    onClick = {
+                        val latitude = currentPlaceInfo?.latitude
+                        val longitude = currentPlaceInfo?.longitude
+                        if (latitude != null) {
+                            if (longitude != null) {
+                                openGoogleMapsForNavigation(context = context, latitude, longitude)
+                            }
+                        }
+                    },
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Text("Open Google Maps for Navigation")
+                }
             }
             GoogleMapView(
                 modifier = Modifier
@@ -146,6 +170,18 @@ fun MapsActivityContent(navController: NavHostController, operatorId: Int, tripC
         }
     }
 }
+
+fun openGoogleMapsForNavigation(context: Context, latitude: Double, longitude: Double) {
+    val uri = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude")
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+
+    if (intent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(intent)
+    } else {
+
+    }
+}
+
 @Composable
 fun GoogleMapView(
     modifier: Modifier,
