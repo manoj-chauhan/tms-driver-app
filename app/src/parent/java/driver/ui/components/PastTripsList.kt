@@ -1,7 +1,6 @@
 package driver.ui.components
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -51,7 +51,6 @@ fun pastTrips(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
                 .padding(top = 15.dp)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -176,6 +175,9 @@ fun past_trip(trip: ParentPastTrip) {
             .padding(13.dp)
     ) {
         Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp), shape = RoundedCornerShape(10.dp)

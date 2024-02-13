@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -188,8 +190,6 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-
-
                     Text(
                         text = "Driver",
                         style = TextStyle(
@@ -198,9 +198,6 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
                             fontWeight = FontWeight.Medium
                         )
                     )
-
-
-
                     Text(
                         text = "${trip.driverName}(${trip.vehicleNumber})",
                         style = TextStyle(
@@ -217,4 +214,129 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
         }
     }
 
+}
+
+
+@Composable
+fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit){
+    Box(
+        modifier = Modifier
+            .fillMaxSize(1f)
+            .clickable { onClick(trip) }
+            .padding(13.dp)
+    ) {
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(105.dp) ,shape = RoundedCornerShape(10.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+                    .height(100.dp),
+//                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = "Ankit Verma",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+
+
+                    Text(
+                        text = "12 Jun 19:00",
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(2.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Maharaja Agrasen Public School",
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = "2.5 kms",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+
+
+                    Text(
+                        text = "1 hour 20 Mins",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = "Running Late",
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.W500
+                        )
+                    )
+
+                        Text(
+                            text = "Arrival 9:00 am",
+                            style = TextStyle(
+                                color = Color.Gray,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.W500
+                            )
+                        )
+                }
+            }
+        }
+    }
 }

@@ -3,9 +3,6 @@ package driver.ui.pages
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,69 +37,12 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
-import dagger.hilt.android.AndroidEntryPoint
 import driver.ui.viewmodels.parentTripAssigned
 import driver.ui.viewmodels.placeDetailViewModel
 import kotlin.math.abs
 import kotlin.math.log2
 import kotlin.math.max
 
-@AndroidEntryPoint
-class MapsActivity : AppCompatActivity() {
-    private var operatorId: Int = 0
-    private var tripCode: String = ""
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        operatorId = intent.getIntExtra("operatorId", 0)
-        tripCode = intent.getStringExtra("tripCode").toString()
-
-        super.onCreate(savedInstanceState)
-
-        setContent {
-
-            val vm: parentTripAssigned = hiltViewModel()
-            val context = LocalContext.current
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .height(300.dp)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(13.dp, top = 36.dp),
-                            horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-
-                            Button(
-                                onClick = { vm.callApiAgain(context = context, operatorId, tripCode) },
-                                modifier = Modifier.padding(end = 16.dp)
-                            ) {
-                                Text("Reload")
-                            }
-                        }
-                        GoogleMapView(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            operatorId= operatorId,
-                            tripCode = tripCode,
-                            onMapLoaded = {}
-                        )
-
-                    }
-                }
-            }
-        }
-    }
-}
 @Composable
 fun MapsActivityContent(navController: NavHostController, operatorId: Int, tripCode: String, deb:String, bord:String) {
 
@@ -291,7 +230,7 @@ fun ReloadButton(onReloadClicked: () -> Unit) {
 }
 
 fun calculateZoomLevel(bounds: LatLngBounds): Float {
-    val ZOOM_LEVEL_CONSTANT = 10
+    val ZOOM_LEVEL_CONSTANT = 8
 
     val sw = bounds.southwest
     val ne = bounds.northeast
