@@ -50,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -278,6 +279,12 @@ class PhoneNumberActivity : ComponentActivity() {
             var buttonText by remember { mutableStateOf("Send OTP") }
             var otpSeconds by remember { mutableStateOf(30) }
             var isButtonEnabled by remember { mutableStateOf(true) }
+            val gradient = Brush.linearGradient(
+                listOf(
+                    Color(android.graphics.Color.parseColor("#FFFFFF")),
+                    Color(android.graphics.Color.parseColor("#E8F1F8"))
+                ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
+            )
 
 
             LaunchedEffect(otpSeconds) {
@@ -300,22 +307,14 @@ class PhoneNumberActivity : ComponentActivity() {
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)
-                    .padding(28.dp)
+                    .background(brush = gradient)
+                    .padding(18.dp)
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+                        .fillMaxSize().background(brush = gradient), horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.padding(10.dp))
-
-                    Text(
-                        text = "Welcome To", style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                    )
 
                     Spacer(modifier = Modifier.padding(16.dp))
 
@@ -343,11 +342,11 @@ class PhoneNumberActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(4.dp))
-                            .background(color = Color(0xFFF7F8F8)),
+                            .background(color = Color(android.graphics.Color.parseColor("#FFFFFF"))),
                         keyboardOptions =KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                         onValueChange = { text = it },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color(0xFF92A3FD),
+//                            focusedBorderColor = Color(0xFF92A3FD),
                             focusedLabelColor = Color(0xFF92A3FD),
                             cursorColor = Color(0xFF92A3FD)
                         ),
