@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class ParentTrip(
-    var tripCode: String = "5520",
+    var tripCode: String,
     var tripName: String,
     var driverName: String,
     var tripId: Int,

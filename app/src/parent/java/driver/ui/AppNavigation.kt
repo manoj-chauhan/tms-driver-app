@@ -20,6 +20,7 @@ import com.drishto.driver.ui.pages.UserProfile
 import driver.ui.components.pastTrips
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.MapsActivityContent
+import driver.ui.pages.PastActivityContent
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -55,6 +56,9 @@ fun AppNavigationHost(
         composable("current-assignment-detail") {
             MapsActivityContent(navController, operatorId, selectedAssignmentCode,deBoardingPlaceId, boardingPlaceId)
         }
+        composable("past-assignment-detail") {
+            PastActivityContent(navController, operatorId, selectedAssignmentCode)
+        }
         composable("user-profile") {
             UserProfile()
         }
@@ -68,6 +72,11 @@ fun AppNavigationHost(
                     deBoardingPlaceId= "MPS"
                     boardingPlaceId = "WYC"
                     navController.navigate("current-assignment-detail")
+                },
+                onPastTripSelected = {
+                    selectedAssignmentCode = it.tripCode
+                    operatorId = 20
+                    navController.navigate("past-assignment-detail")
                 }
             )
         }
@@ -76,7 +85,15 @@ fun AppNavigationHost(
         }
 
         composable("past-trips-list") {
-            pastTrips(navHostController = navController, screen = "app")
+            pastTrips(navHostController = navController, screen = "app",
+                onTripSelected = {
+                selectedAssignmentCode = it.tripCode
+                tripId = it.tripId
+                operatorId = 20
+                deBoardingPlaceId= "MPS"
+                boardingPlaceId = "WYC"
+                navController.navigate("current-assignment-detail")
+            })
 
         }
     }

@@ -1,15 +1,16 @@
 package driver.ui.components
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,11 +36,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import driver.models.ParentPastTrip
 import driver.ui.viewmodels.parentTripAssigned
+import java.text.SimpleDateFormat
 
 @Composable
 fun pastTrips(
     navHostController: NavHostController,
     screen: String,
+    onTripSelected: (assignment: ParentPastTrip) -> Unit,
     vm: parentTripAssigned = hiltViewModel()
 ) {
     val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
@@ -63,11 +66,11 @@ fun pastTrips(
                 ) {
 
                     Text(
-                        text = "Past Trips",
+                        text = "Past Trips ",
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.ExtraBold
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     )
                 }
@@ -76,7 +79,7 @@ fun pastTrips(
                     if (screen == "home") {
                         LazyColumn {
                             items(it.take(2)) { trip ->
-                                past_trip(trip)
+                                past_trip(trip, onTripSelected)
                             }
                         }
                         if (it.size >= 3) {
@@ -89,7 +92,7 @@ fun pastTrips(
                                             fontWeight = FontWeight.SemiBold
                                         )
                                     ) {
-                                        append("Load More...")
+                                        append("SEE MORE")
                                     }
                                 }
                             }
@@ -117,7 +120,7 @@ fun pastTrips(
                     } else {
                         LazyColumn {
                             items(it) { trip ->
-                                past_trip(trip)
+                                past_trip(trip, onClick = onTripSelected)
                             }
                         }
                     }
@@ -167,11 +170,18 @@ fun pastTrips(
 }
 
 @Composable
-fun past_trip(trip: ParentPastTrip) {
+fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) -> Unit) {
+
+    val inputFormat = SimpleDateFormat("yyyy-dd-MM")
+    val outputFormat = SimpleDateFormat("dd-MMM HH:mm")
+
+    val parsedDate = remember(trip.tripDate) { inputFormat.parse(trip.tripDate) }
+    val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
+
     Box(
         modifier = Modifier
             .fillMaxSize(1f)
-//                        .clickable { onClick(trip) }
+            .clickable { onClick(trip) }
             .padding(13.dp)
     ) {
         Card(
@@ -180,14 +190,15 @@ fun past_trip(trip: ParentPastTrip) {
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp), shape = RoundedCornerShape(10.dp)
+                .height(105.dp),
+            shape = RoundedCornerShape(10.dp),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
-                    .height(70.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .padding(12.dp)
+                    .height(100.dp),
+//                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -195,95 +206,77 @@ fun past_trip(trip: ParentPastTrip) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Box(
-                        modifier = Modifier
-                            .width(50.dp)
-                    ) {
-                        Text(
-                            text = trip.childName,
-
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
+                    Text(
+                        text = trip.childName,
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
                         )
-                    }
+                    )
 
-                    Box(
-                        modifier = Modifier
-                    ) {
-                        Text(
-                            text = trip.childStandard,
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
+
+                    Text(
+                        text = formattedDate,
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold
                         )
-                    }
-
-                    Box(
-                        modifier = Modifier
-                    ) {
-                        Text(
-                            text = trip.status,
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-
+                    )
                 }
+                Spacer(modifier = Modifier.height(2.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "School",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    )
                     Text(
                         text = trip.childSchool,
                         style = TextStyle(
-                            color = Color.Black,
+                            color = Color.Gray,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.SemiBold
                         )
                     )
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Text(
-                        text = "Driver",
+                        text = "Arrived at 12:00 pm",
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 12.sp,
+                            fontSize = 13.sp,
                             fontWeight = FontWeight.Medium
                         )
                     )
-
-                    Text(
-                        text = "${trip.driverName}(${trip.vehicleNumber})",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    )
-
                 }
 
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = "Boarded from Pitampura, Delhi",
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.W500
+                        )
+                    )
+                }
             }
         }
     }

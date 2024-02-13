@@ -1,8 +1,5 @@
 package driver.ui.pages
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -49,32 +45,17 @@ import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import driver.ui.viewmodels.parentTripAssigned
-import driver.ui.viewmodels.placeDetailViewModel
-import kotlin.math.abs
-import kotlin.math.log2
-import kotlin.math.max
 
 @Composable
-fun MapsActivityContent(
+fun PastActivityContent(
     navController: NavHostController,
     operatorId: Int,
     tripCode: String,
-    deb: String,
-    bord: String
+
 ) {
 
     val vm: parentTripAssigned = hiltViewModel()
     val context = LocalContext.current
-
-    val pt: placeDetailViewModel = hiltViewModel()
-    val currentPlaceInfo by pt.placeInfo.collectAsStateWithLifecycle()
-    val debcoord = pt.fetchPlaceCoordinates(deb)
-    val bordcoord = pt.fetchPlaceCoordinates(bord)
-
-    val places = listOf(
-        "Maharaja Agrasen " to debcoord,
-        "Western Yamuna kannal" to bordcoord
-    )
 
     val gradient = Brush.linearGradient(
         listOf(
@@ -99,7 +80,7 @@ fun MapsActivityContent(
                     .height(50.dp)
             ) {
                 Text(
-                    text = "Ongoing Trip ",
+                    text = "Past Trip ",
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 22.sp,
@@ -390,7 +371,7 @@ fun MapsActivityContent(
 
                         }
                     }
-                    GoogleMapView(
+                    PastGoogleMaps(
                         modifier = Modifier
                             .fillMaxWidth(),
                         operatorId = operatorId,
@@ -405,20 +386,8 @@ fun MapsActivityContent(
 
     }
 }
-
-fun openGoogleMapsForNavigation(context: Context, latitude: Double, longitude: Double) {
-    val uri = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude")
-    val intent = Intent(Intent.ACTION_VIEW, uri)
-
-    if (intent.resolveActivity(context.packageManager) != null) {
-        context.startActivity(intent)
-    } else {
-
-    }
-}
-
 @Composable
-fun GoogleMapView(
+fun PastGoogleMaps(
     modifier: Modifier,
     operatorId: Int,
     tripCode: String,
@@ -437,12 +406,12 @@ fun GoogleMapView(
     val processedPoints: List<LatLng>? =
         tripProcessCoord?.map { LatLng(it.latitude, it.longitude) }
     routePoints?.let {
-        process(it, processedPoints, onMapLoaded = {})
+        processedCoor(it, processedPoints, onMapLoaded = {})
     }
 }
 
 @Composable
-fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoaded: () -> Unit) {
+fun processedCoor(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoaded: () -> Unit) {
     val mapUiproperties by remember {
         mutableStateOf(
             MapProperties(
@@ -516,28 +485,4 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoad
         )
 
     }
-}
-
-@Composable
-fun ReloadButton(onReloadClicked: () -> Unit) {
-    Button(
-        onClick = onReloadClicked,
-        modifier = Modifier.padding(end = 16.dp)
-    ) {
-        Text("Reload")
-    }
-}
-
-fun calculateZoomLevel(bounds: LatLngBounds): Float {
-    val ZOOM_LEVEL_CONSTANT = 8
-
-    val sw = bounds.southwest
-    val ne = bounds.northeast
-
-    val latRatio = abs(sw.latitude - ne.latitude)
-    val lngRatio = abs(sw.longitude - ne.longitude)
-
-    val ratio = max(latRatio, lngRatio)
-
-    return (ZOOM_LEVEL_CONSTANT - log2(ratio)).toFloat()
 }

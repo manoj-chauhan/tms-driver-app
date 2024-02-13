@@ -17,6 +17,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import driver.models.ParentTrip
+import java.text.SimpleDateFormat
 
 @Composable
 fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
@@ -113,7 +115,7 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
 
                 }
 
-                if(trip.currentLocation != null) {
+                if (trip.currentLocation != null) {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -136,7 +138,7 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
                                 )
                             )
                         }
-                        if(trip.currentLocation != trip.deBoardingPlaceName) {
+                        if (trip.currentLocation != trip.deBoardingPlaceName) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -162,7 +164,7 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
                         }
 
                     }
-                }else{
+                } else {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -218,7 +220,13 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
 
 
 @Composable
-fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit){
+fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
+    val inputFormat = SimpleDateFormat("yyyy-dd-MM")
+    val outputFormat = SimpleDateFormat("dd-MMM HH:mm")
+
+    val parsedDate = remember(trip.tripDate) { inputFormat.parse(trip.tripDate) }
+    val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
+
     Box(
         modifier = Modifier
             .fillMaxSize(1f)
@@ -231,7 +239,8 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit){
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(105.dp) ,shape = RoundedCornerShape(10.dp),
+                .height(105.dp),
+            shape = RoundedCornerShape(10.dp),
         ) {
             Column(
                 modifier = Modifier
@@ -247,7 +256,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit){
                 ) {
 
                     Text(
-                        text = "Ankit Verma",
+                        text = trip.childName,
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 16.sp,
@@ -257,7 +266,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit){
 
 
                     Text(
-                        text = "12 Jun 19:00",
+                        text = formattedDate,
                         style = TextStyle(
                             color = Color.Gray,
                             fontSize = 13.sp,
@@ -273,7 +282,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit){
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Maharaja Agrasen Public School",
+                        text = trip.childSchool,
                         style = TextStyle(
                             color = Color.Gray,
                             fontSize = 12.sp,
@@ -327,14 +336,14 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit){
                         )
                     )
 
-                        Text(
-                            text = "Arrival 9:00 am",
-                            style = TextStyle(
-                                color = Color.Gray,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.W500
-                            )
+                    Text(
+                        text = "Arrival 9:00 am",
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.W500
                         )
+                    )
                 }
             }
         }
