@@ -236,22 +236,20 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
         modifier = Modifier
             .fillMaxSize(1f)
             .clickable { onClick(trip) }
-            .padding(13.dp, top = 13.dp, end = 13.dp)
+            .padding(13.dp, top = 10.dp, end = 13.dp)
     ){
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = Color.White,
             ),
             modifier = Modifier
-                .fillMaxWidth()
-                .height(105.dp),
+                .fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
-                    .height(100.dp),
+                    .padding(10.dp)
 //                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
@@ -264,7 +262,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                         text = trip.childName,
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 16.sp,
+                            fontSize = 14.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W700
                         )
@@ -275,7 +273,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                         text = formattedDate,
                         style = TextStyle(
                             color = gry,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W600
                         )
@@ -311,7 +309,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                         text = "2.5 kms",
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W600
                         )
@@ -322,7 +320,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                         text = "1 hour 20 Mins",
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W600
                         )
@@ -341,7 +339,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                         text = "Running Late",
                         style = TextStyle(
                             color = gry,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W400
                         )
@@ -351,7 +349,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                         text = "Arrival 9:00 am",
                         style = TextStyle(
                             color = gry,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W400
                         )

@@ -70,7 +70,7 @@ fun pastTrips(
                         text = "Past Trips ",
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 18.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     )
@@ -175,7 +175,7 @@ fun pastTrips(
 fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) -> Unit) {
 
     val inputFormat = SimpleDateFormat("yyyy-dd-MM")
-    val outputFormat = SimpleDateFormat("dd-MMM HH:mm")
+    val outputFormat = SimpleDateFormat("dd MMM HH:mm")
 
     val parsedDate = remember(trip.tripDate) { inputFormat.parse(trip.tripDate) }
     val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
@@ -188,22 +188,21 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
         modifier = Modifier
             .fillMaxSize(1f)
             .clickable { onClick(trip) }
-            .padding(13.dp, top = 13.dp, end = 13.dp)
-    ) {
+            .padding(13.dp, top = 10.dp, end = 13.dp)
+    ){
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = Color.White,
             ),
             modifier = Modifier
-                .fillMaxWidth()
-                .height(105.dp),
+                .fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
-                    .height(100.dp),
+                    .padding(10.dp)
+//                    .height(100.dp),
 //                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
@@ -216,7 +215,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                         text = trip.childName,
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 16.sp,
+                            fontSize = 14.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W700
                         )
@@ -227,7 +226,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                         text = formattedDate,
                         style = TextStyle(
                             color = gry,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W600
                         )
@@ -263,7 +262,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                         text = "2.5 kms",
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W600
                         )
@@ -274,7 +273,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                         text = "1 hour 20 Mins",
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W600
                         )
@@ -293,7 +292,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                         text = "Running Late",
                         style = TextStyle(
                             color = gry,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W400
                         )
@@ -303,7 +302,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                         text = "Arrival 9:00 am",
                         style = TextStyle(
                             color = gry,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W400
                         )

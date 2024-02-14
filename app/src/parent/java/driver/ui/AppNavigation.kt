@@ -16,7 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.getAccessToken
-import com.drishto.driver.ui.pages.UserProfile
+import com.drishto.driver.ui.pages.userProfileView
 import driver.ui.components.pastTrips
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.MapsActivityContent
@@ -60,7 +60,7 @@ fun AppNavigationHost(
             PastActivityContent(navController, operatorId, selectedAssignmentCode)
         }
         composable("user-profile") {
-            UserProfile()
+            userProfileView()
         }
         composable("home") {
             HomeScreen(

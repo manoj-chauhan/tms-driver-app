@@ -107,30 +107,23 @@ fun HomeScreen(
             .fillMaxSize()
     ) {
         Box(modifier = Modifier
-            .height(68.dp)){
+            .height(66.dp)){
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Image(painter = painterResource(id = R.drawable.atul),
+                Image(painter = painterResource(id = R.drawable.sir),
                     contentDescription = "",
                     modifier = Modifier
-                        .width(40.dp)
+                        .width(42.dp)
                         .clickable { navController.navigate("user-profile") }
-                        .height(100.dp)
+                        .height(102.dp)
                         .clip(CircleShape)
                         .border(width = 0.dp, Color.White, shape = CircleShape), contentScale = ContentScale.FillBounds
                 )
-//                Image(painter = painterResource(id = R.drawable.),
-//                    contentDescription = "",
-//                    modifier = Modifier
-//                        .height(30.dp)
-//                        .width(50.dp)
-//                        .zIndex(2f)
-//                )
 
                 Icon(imageVector = ImageVector.vectorResource(id = R.drawable.outline_notifications_24),
                     contentDescription = "" , modifier = Modifier
-                        .height(30.dp)
+                        .height(26.dp)
                         .width(50.dp)
                         .zIndex(2f)
                 )
@@ -157,7 +150,7 @@ fun HomeScreen(
                             text = "Ongoing Trips ",
                             style = TextStyle(
                                 color = Color.Black,
-                                fontSize = 18.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.W600,
                                 fontFamily = fontStyle
                             )
