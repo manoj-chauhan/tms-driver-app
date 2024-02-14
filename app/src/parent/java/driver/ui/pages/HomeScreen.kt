@@ -5,6 +5,8 @@ import android.net.ConnectivityManager
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,10 +16,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,14 +32,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -83,6 +95,8 @@ fun HomeScreen(
             Color(android.graphics.Color.parseColor("#E8F1F8"))
         ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
     )
+
+    val fontStyle:FontFamily = FontFamily.SansSerif
     Box(modifier = Modifier
         .fillMaxSize()
         .background(brush = gradient)){
@@ -97,17 +111,28 @@ fun HomeScreen(
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(R.drawable.history),
-                    contentDescription = "Round Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.height(40.dp)
-                )
-                Image(painter = painterResource(id = R.drawable.notification),
+                Image(painter = painterResource(id = R.drawable.atul),
                     contentDescription = "",
                     modifier = Modifier
-    //                    .clickable { navController.navigate("history_detail") }
-                        .height(40.dp).zIndex(2f)
+                        .width(40.dp)
+                        .clickable { navController.navigate("user-profile") }
+                        .height(100.dp)
+                        .clip(CircleShape)
+                        .border(width = 0.dp, Color.White, shape = CircleShape), contentScale = ContentScale.FillBounds
+                )
+//                Image(painter = painterResource(id = R.drawable.),
+//                    contentDescription = "",
+//                    modifier = Modifier
+//                        .height(30.dp)
+//                        .width(50.dp)
+//                        .zIndex(2f)
+//                )
+
+                Icon(imageVector = ImageVector.vectorResource(id = R.drawable.outline_notifications_24),
+                    contentDescription = "" , modifier = Modifier
+                        .height(30.dp)
+                        .width(50.dp)
+                        .zIndex(2f)
                 )
             }
         }
@@ -133,7 +158,8 @@ fun HomeScreen(
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.W600,
+                                fontFamily = fontStyle
                             )
                         )
                     }
@@ -154,6 +180,7 @@ fun HomeScreen(
                                     style = TextStyle(
                                         color = Color.Black,
                                         fontSize = 14.sp,
+                                        fontFamily = fontStyle,
                                         fontWeight = FontWeight.Medium
                                     )
                                 )
@@ -200,4 +227,70 @@ fun HomeScreen(
             userProfile = false
         }
     }
+}
+
+@Composable
+fun userPhoto(){
+
+    Box(modifier = Modifier
+        .height(68.dp)){
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+//                Image(
+//                    painter = painterResource(R.drawable.history),
+//                    contentDescription = "Round Image",
+//                    contentScale = ContentScale.Crop,
+//                    modifier = Modifier.height(40.dp).clickable { navController.navigate("user-profile") }
+//                )
+            val imageBitmap: ImageBitmap = ImageBitmap.imageResource(R.drawable.google)
+
+//            Canvas(modifier = Modifier.width(40.dp).height(80).zIndex(1f)) {
+//                val circleRadius = 70f
+//                drawCircle(
+//                    color = Color.Red,
+//                    radius = 70f,
+//                )
+//                clipRect(
+//                    left = center.x - circleRadius,
+//                    top = center.y - circleRadius,
+//                    right = center.x + circleRadius,
+//                    bottom = center.y + circleRadius
+//                ) {
+//                    drawImage(
+//                        image = imageBitmap,
+//                        topLeft = Offset(center.x - imageBitmap.width / 2f, center.y - imageBitmap.height / 2f),
+//                        alpha = 0.6f,
+//                        style = Fill,
+//                        colorFilter = ColorFilter.tint(Color.Blue),
+//                        blendMode = BlendMode.DstIn,
+//                    )
+//                }
+//
+//            }
+
+            Image(painter = painterResource(id = R.drawable.atul),
+                contentDescription = "",
+                modifier = Modifier
+                    .width(40.dp)
+                    .height(100.dp)
+                    .clip(CircleShape)
+                    .border(width = 0.dp, Color.White, shape = CircleShape), contentScale = ContentScale.FillBounds
+            )
+            Image(painter = painterResource(id = R.drawable.notification),
+                contentDescription = "",
+                modifier = Modifier
+                    .width(60.dp)
+                    .height(40.dp)
+                    .zIndex(2f)
+            )
+        }
+    }
+
+}
+
+@Composable
+@Preview
+fun userPhotoPreview(){
+    userPhoto()
 }

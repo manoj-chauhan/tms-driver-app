@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -54,7 +55,7 @@ fun pastTrips(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 15.dp)
+                .padding(top = 13.dp)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Row(
@@ -89,7 +90,7 @@ fun pastTrips(
                                         style = SpanStyle(
                                             color = Color.Blue,
                                             fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold
+                                            fontWeight = FontWeight.W400
                                         )
                                     ) {
                                         append("SEE MORE")
@@ -137,7 +138,7 @@ fun pastTrips(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(13.dp, top = 12.dp),
+                        .padding(13.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -147,7 +148,8 @@ fun pastTrips(
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 22.sp,
-                            fontWeight = FontWeight.ExtraBold
+                            fontWeight = FontWeight.W600,
+                            fontFamily = FontFamily.SansSerif
                         )
                     )
                 }
@@ -178,11 +180,15 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
     val parsedDate = remember(trip.tripDate) { inputFormat.parse(trip.tripDate) }
     val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
 
+    val gry=Color(android.graphics.Color.parseColor("#838383"))
+    val fontStyle:FontFamily = FontFamily.SansSerif
+
+
     Box(
         modifier = Modifier
             .fillMaxSize(1f)
             .clickable { onClick(trip) }
-            .padding(13.dp)
+            .padding(13.dp, top = 13.dp, end = 13.dp)
     ) {
         Card(
             colors = CardDefaults.cardColors(
@@ -211,7 +217,8 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W700
                         )
                     )
 
@@ -219,9 +226,10 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                     Text(
                         text = formattedDate,
                         style = TextStyle(
-                            color = Color.Gray,
+                            color = gry,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W600
                         )
                     )
                 }
@@ -235,9 +243,10 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                     Text(
                         text = trip.childSchool,
                         style = TextStyle(
-                            color = Color.Gray,
+                            color = gry,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W400
                         )
                     )
                 }
@@ -251,11 +260,23 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                 ) {
 
                     Text(
-                        text = "Arrived at 12:00 pm",
+                        text = "2.5 kms",
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W600
+                        )
+                    )
+
+
+                    Text(
+                        text = "1 hour 20 Mins",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 13.sp,
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W600
                         )
                     )
                 }
@@ -269,11 +290,22 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                 ) {
 
                     Text(
-                        text = "Boarded from Pitampura, Delhi",
+                        text = "Running Late",
                         style = TextStyle(
-                            color = Color.Gray,
+                            color = gry,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.W500
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W400
+                        )
+                    )
+
+                    Text(
+                        text = "Arrival 9:00 am",
+                        style = TextStyle(
+                            color = gry,
+                            fontSize = 13.sp,
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W400
                         )
                     )
                 }

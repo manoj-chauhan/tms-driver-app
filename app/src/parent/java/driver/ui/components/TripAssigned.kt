@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -222,17 +223,21 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
 @Composable
 fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
     val inputFormat = SimpleDateFormat("yyyy-dd-MM")
-    val outputFormat = SimpleDateFormat("dd-MMM HH:mm")
+    val outputFormat = SimpleDateFormat("dd MMM HH:mm")
 
     val parsedDate = remember(trip.tripDate) { inputFormat.parse(trip.tripDate) }
     val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
+
+    val fontStyle: FontFamily = FontFamily.SansSerif
+
+    val gry=Color(android.graphics.Color.parseColor("#838383"))
 
     Box(
         modifier = Modifier
             .fillMaxSize(1f)
             .clickable { onClick(trip) }
-            .padding(13.dp)
-    ) {
+            .padding(13.dp, top = 13.dp, end = 13.dp)
+    ){
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = Color.White,
@@ -260,7 +265,8 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W700
                         )
                     )
 
@@ -268,9 +274,10 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                     Text(
                         text = formattedDate,
                         style = TextStyle(
-                            color = Color.Gray,
+                            color = gry,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W600
                         )
                     )
                 }
@@ -284,9 +291,10 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                     Text(
                         text = trip.childSchool,
                         style = TextStyle(
-                            color = Color.Gray,
+                            color = gry,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W400
                         )
                     )
                 }
@@ -304,7 +312,8 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W600
                         )
                     )
 
@@ -314,7 +323,8 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W600
                         )
                     )
                 }
@@ -330,18 +340,20 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                     Text(
                         text = "Running Late",
                         style = TextStyle(
-                            color = Color.Gray,
+                            color = gry,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.W500
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W400
                         )
                     )
 
                     Text(
                         text = "Arrival 9:00 am",
                         style = TextStyle(
-                            color = Color.Gray,
+                            color = gry,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.W500
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W400
                         )
                     )
                 }
