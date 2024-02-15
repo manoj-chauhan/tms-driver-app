@@ -4,12 +4,14 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -37,12 +40,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,7 +66,7 @@ import java.lang.reflect.Field
 @Composable
 fun UserProfile() {
     val context = LocalContext.current
-   val vm: UserProfileViewModel = hiltViewModel()
+    val vm: UserProfileViewModel = hiltViewModel()
 
 
     val isDetailsSelected = remember { mutableStateOf(false); }
@@ -224,7 +230,7 @@ fun UserProfile() {
 
                     Log.d("TAG", "UserProfile: ${userDetail?.authProvider}")
 
-                    if(userDetail?.authProvider =="google.com") {
+                    if (userDetail?.authProvider == "google.com") {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.Bottom,
@@ -275,16 +281,16 @@ fun UserProfile() {
 
     if (isDetailsSelected.value) {
 
-            AddUserDetail(context,
-                setShowDialog = {
-                    isDetailsSelected.value = it
-                })
+        AddUserDetail(context,
+            setShowDialog = {
+                isDetailsSelected.value = it
+            })
 
     }
 
-    if(isEditNameSelected.value){
+    if (isEditNameSelected.value) {
         userDetail?.name?.let {
-            EditUserName(context,it,
+            EditUserName(context, it,
                 setShowDialog = {
                     isEditNameSelected.value = it
                 }
@@ -298,6 +304,7 @@ fun UserProfile() {
         context.startActivity(myIntent)
     }
 }
+
 @Composable
 fun childList() {
     val vm: ChildrenListViewModel = hiltViewModel()
@@ -309,10 +316,12 @@ fun childList() {
 
     Log.d("TAG", "childList: $childrensList")
 
-    Row{
-        Text(text = "Children List", style = TextStyle(
-            color = Color.Black, fontSize = 19.sp, fontWeight = FontWeight.Bold
-        ))
+    Row {
+        Text(
+            text = "Children List", style = TextStyle(
+                color = Color.Black, fontSize = 19.sp, fontWeight = FontWeight.Bold
+            )
+        )
     }
 
     Spacer(modifier = Modifier.height(10.dp))
@@ -337,14 +346,16 @@ fun childList() {
 
 @Composable
 fun companyList(filteredCompanies: List<CompanyPositions>) {
-    Row{
-        Text(text = "Companies List", style = TextStyle(
-            color = Color.Black, fontSize = 19.sp, fontWeight = FontWeight.Bold
-        ))
+    Row {
+        Text(
+            text = "Companies List", style = TextStyle(
+                color = Color.Black, fontSize = 19.sp, fontWeight = FontWeight.Bold
+            )
+        )
     }
 
     Spacer(modifier = Modifier.height(10.dp))
-    filteredCompanies?.forEach { company ->
+    filteredCompanies.forEach { company ->
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 text = company.companyCode, style = TextStyle(
@@ -365,36 +376,318 @@ fun companyList(filteredCompanies: List<CompanyPositions>) {
 
 
 @Composable
-fun userProfile(){
+fun userProfileView() {
     val gradient = Brush.linearGradient(
         listOf(
             Color(android.graphics.Color.parseColor("#FFFFFF")),
             Color(android.graphics.Color.parseColor("#E8F1F8"))
         ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
     )
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(brush = gradient)){
-            Column(
+
+    val gry=Color(android.graphics.Color.parseColor("#838383"))
+    val fontStyle: FontFamily = FontFamily.SansSerif
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(brush = gradient)
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(start = 16.dp, end = 16.dp, bottom = 10.dp)
         ) {
-            Box(modifier = Modifier
-                .fillMaxHeight(0.3f)){
+            Box(
+                modifier = Modifier
+                    .height(40.dp)
+                    .padding(top = 20.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        modifier = Modifier.width(30.dp),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.ArrowBack,
+                            contentDescription = "Edit Icon",
+                            modifier = Modifier
+                                .height(30.dp)
+                                .clickable {
+//                                navController.popBackStack()
+                                },
+                        )
+                    }
+                    Text(
+                        text = "Profile",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 18.sp,
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.W600
+                        )
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(17.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.23f)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.atul),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .width(150.dp)
+                            .height(150.dp)
+                            .clip(CircleShape)
+                            .border(width = 0.dp, Color.White, shape = CircleShape),
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .background(Color.Transparent)
+                        .padding(8.dp)
+                        .absoluteOffset(y = (85).dp, x = (-80).dp),
 
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.White, shape = CircleShape)
+                            .width(50.dp)
+                            .height(50.dp)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit Icon",
+                            modifier = Modifier
+                                .size(32.dp)
+                                .align(Alignment.Center)
+                        )
+                    }
+                }
             }
 
-            Box(modifier = Modifier
-                .fillMaxSize(1f)){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(1f)
+            ) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White,
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(1f),
+                    shape = RoundedCornerShape(10.dp),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(14.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(66.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Ankit Verma",
+                                style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 24.sp,
+                                    fontFamily = fontStyle,
+                                    fontWeight = FontWeight.W700
+                                )
+                            )
 
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit Icon",
+                                modifier = Modifier
+                                    .size(28.dp)
+                            )
+                        }
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(40.dp),
+                            verticalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(
+                                text = "Username",
+                                style = TextStyle(
+                                    color = gry,
+                                    fontSize = 14.sp,
+                                    fontFamily = fontStyle,
+                                    fontWeight = FontWeight.W400
+                                )
+                            )
+
+                            Text(
+                                text = "+91 8700059515",
+                                style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 14.sp,
+                                    fontFamily = fontStyle,
+                                    fontWeight = FontWeight.W400
+                                )
+                            )
+                        }
+                        
+                        Spacer(modifier = Modifier.height(45.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Children",
+                                style = TextStyle(
+                                    color = gry,
+                                    fontSize = 14.sp,
+                                    fontFamily = fontStyle,
+                                    fontWeight = FontWeight.W400
+                                )
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Krish Chauhan s/o Manoj Chauhan",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 14.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W600
+                                    )
+                                )
+
+                                Text(
+                                    text = "9yrs",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 14.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Govt. Boys Senior Secondary School",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 14.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                )
+
+                                Text(
+                                    text = "Xth Std",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 14.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Krish Chauhan s/o Manoj Chauhan",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 14.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W600
+                                    )
+                                )
+
+                                Text(
+                                    text = "9yrs",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 14.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Govt. Boys Senior Secondary School",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 14.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                )
+
+                                Text(
+                                    text = "Xth Std",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 14.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W400
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
             }
-
         }
     }
 }
 
 @Composable
 @Preview
-fun userProfilePreview(){
-    userProfile()
+fun userProfilePreview() {
+    userProfileView()
 }

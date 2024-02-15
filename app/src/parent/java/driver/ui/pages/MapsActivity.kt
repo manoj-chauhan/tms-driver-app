@@ -285,7 +285,7 @@ fun MapsActivityContent(
                                         color = back,
                                         shape = RoundedCornerShape(5.dp)
                                     )
-                                    .width(100.dp)
+                                    .width(140.dp)
                                     .padding(5.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                                     Text(
                                         text = "DL1SA1234",
