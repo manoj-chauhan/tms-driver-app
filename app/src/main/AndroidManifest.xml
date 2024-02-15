@@ -76,6 +76,10 @@
             android:name="driver.OTPActivity"
             android:exported="true">
         </activity>
+
+        <activity android:name="com.canhub.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
+
         <service
             android:name="LocationService"
             android:foregroundServiceType="location" />

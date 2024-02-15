@@ -1,7 +1,14 @@
 package com.drishto.driver.ui.pages
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +32,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
@@ -38,29 +46,37 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.drishto.driver.R
 import com.drishto.driver.ui.viewmodels.ChildrenListViewModel
 import com.drishto.driver.ui.viewmodels.CompanyPositions
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
 import driver.SetPasswordActivity
+import java.io.ByteArrayOutputStream
 import java.lang.reflect.Field
 
 @Composable
@@ -376,7 +392,7 @@ fun companyList(filteredCompanies: List<CompanyPositions>) {
 
 
 @Composable
-fun userProfileView() {
+fun userProfileView(navController: NavHostController) {
     val gradient = Brush.linearGradient(
         listOf(
             Color(android.graphics.Color.parseColor("#FFFFFF")),
@@ -384,8 +400,40 @@ fun userProfileView() {
         ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
     )
 
-    val gry=Color(android.graphics.Color.parseColor("#838383"))
+
+    val context = LocalContext.current
+    val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
+
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    var bitmap by remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            imageUri = result.uriContent
+        } else {
+            val exception = result.error
+        }
+    }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+        val cropOptions = CropImageContractOptions(uri, CropImageOptions())
+        imageCropLauncher.launch(cropOptions)
+    }
+
+    if (imageUri != null) {
+        if (Build.VERSION.SDK_INT < 28) {
+            bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+        } else {
+            val source = ImageDecoder.createSource(context.contentResolver, imageUri!!)
+            bitmap = ImageDecoder.decodeBitmap(source)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -414,22 +462,11 @@ fun userProfileView() {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Edit Icon",
-                            modifier = Modifier
-                                .height(30.dp)
-                                .clickable {
-//                                navController.popBackStack()
-                                },
+                            modifier = Modifier.height(25.dp).clickable {
+                                navController.popBackStack()
+                            },
                         )
                     }
-                    Text(
-                        text = "Profile",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 18.sp,
-                            fontFamily = FontFamily.SansSerif,
-                            fontWeight = FontWeight.W600
-                        )
-                    )
                 }
             }
             Spacer(modifier = Modifier.height(17.dp))
@@ -442,16 +479,32 @@ fun userProfileView() {
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.atul),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .width(150.dp)
-                            .height(150.dp)
-                            .clip(CircleShape)
-                            .border(width = 0.dp, Color.White, shape = CircleShape),
-                        contentScale = ContentScale.FillBounds
-                    )
+                    if(bitmap != null) {
+                        bitmap?.let { loadedBitmap ->
+                            Image(
+                                bitmap = loadedBitmap.asImageBitmap(),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .height(150.dp)
+                                    .clip(CircleShape)
+                                    .border(width = 0.dp, Color.White, shape = CircleShape),
+                                contentScale = ContentScale.FillBounds
+                            )
+                            sendToServer(loadedBitmap)
+                        }
+                    }else {
+                        Image(
+                            painter = painterResource(id = R.drawable.sir),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .width(150.dp)
+                                .height(150.dp)
+                                .clip(CircleShape)
+                                .border(width = 0.dp, Color.White, shape = CircleShape),
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
                 }
                 Row(
                     modifier = Modifier
@@ -472,10 +525,11 @@ fun userProfileView() {
                             .align(Alignment.CenterVertically)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Edit,
+                            imageVector = Icons.Default.Camera,
                             contentDescription = "Edit Icon",
                             modifier = Modifier
                                 .size(32.dp)
+                                .clickable { imagePickerLauncher.launch("image/*") }
                                 .align(Alignment.Center)
                         )
                     }
@@ -551,7 +605,7 @@ fun userProfileView() {
                                 )
                             )
                         }
-                        
+
                         Spacer(modifier = Modifier.height(45.dp))
                         Row(
                             modifier = Modifier
@@ -583,7 +637,7 @@ fun userProfileView() {
                                     text = "Krish Chauhan s/o Manoj Chauhan",
                                     style = TextStyle(
                                         color = Color.Black,
-                                        fontSize = 14.sp,
+                                        fontSize = 12.sp,
                                         fontFamily = fontStyle,
                                         fontWeight = FontWeight.W600
                                     )
@@ -593,7 +647,7 @@ fun userProfileView() {
                                     text = "9yrs",
                                     style = TextStyle(
                                         color = Color.Black,
-                                        fontSize = 14.sp,
+                                        fontSize = 12.sp,
                                         fontFamily = fontStyle,
                                         fontWeight = FontWeight.W400
                                     )
@@ -609,7 +663,7 @@ fun userProfileView() {
                                     text = "Govt. Boys Senior Secondary School",
                                     style = TextStyle(
                                         color = Color.Black,
-                                        fontSize = 14.sp,
+                                        fontSize = 12.sp,
                                         fontFamily = fontStyle,
                                         fontWeight = FontWeight.W400
                                     )
@@ -619,7 +673,7 @@ fun userProfileView() {
                                     text = "Xth Std",
                                     style = TextStyle(
                                         color = Color.Black,
-                                        fontSize = 14.sp,
+                                        fontSize = 12.sp,
                                         fontFamily = fontStyle,
                                         fontWeight = FontWeight.W400
                                     )
@@ -636,7 +690,7 @@ fun userProfileView() {
                                     text = "Krish Chauhan s/o Manoj Chauhan",
                                     style = TextStyle(
                                         color = Color.Black,
-                                        fontSize = 14.sp,
+                                        fontSize = 12.sp,
                                         fontFamily = fontStyle,
                                         fontWeight = FontWeight.W600
                                     )
@@ -646,7 +700,7 @@ fun userProfileView() {
                                     text = "9yrs",
                                     style = TextStyle(
                                         color = Color.Black,
-                                        fontSize = 14.sp,
+                                        fontSize = 12.sp,
                                         fontFamily = fontStyle,
                                         fontWeight = FontWeight.W400
                                     )
@@ -662,7 +716,7 @@ fun userProfileView() {
                                     text = "Govt. Boys Senior Secondary School",
                                     style = TextStyle(
                                         color = Color.Black,
-                                        fontSize = 14.sp,
+                                        fontSize = 12.sp,
                                         fontFamily = fontStyle,
                                         fontWeight = FontWeight.W400
                                     )
@@ -672,7 +726,7 @@ fun userProfileView() {
                                     text = "Xth Std",
                                     style = TextStyle(
                                         color = Color.Black,
-                                        fontSize = 14.sp,
+                                        fontSize = 12.sp,
                                         fontFamily = fontStyle,
                                         fontWeight = FontWeight.W400
                                     )
@@ -686,8 +740,56 @@ fun userProfileView() {
     }
 }
 
-@Composable
-@Preview
-fun userProfilePreview() {
-    userProfileView()
+fun sendToServer(bitmap: Bitmap) {
+    val outputStream = ByteArrayOutputStream()
+    bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+    val byteArray = outputStream.toByteArray()
+
+    Log.d("TAG", "userProfileView: $byteArray")
+
 }
+
+@Composable
+fun ImageCropScreen(
+    imageUri: Uri,
+    onSaveClick: (Bitmap) -> Unit,
+    onBackClick: () -> Unit
+) {
+    val context = LocalContext.current
+
+    val cropImageView = remember { CropImageView(context) }
+    cropImageView.setImageUriAsync(imageUri)
+
+    Button(
+        onClick = {
+            // Retrieve the cropped bitmap from CropImageView
+            val croppedBitmap = cropImageView.croppedImage
+            if (croppedBitmap != null) {
+                onSaveClick(croppedBitmap)
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(text = "Save")
+    }
+
+    // Back button
+    Button(
+        onClick = onBackClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(text = "Back")
+    }
+
+    // Display the CropImageView
+    AndroidView(
+        factory = { cropImageView },
+        modifier = Modifier
+            .fillMaxSize()
+    ) {}
+}
+

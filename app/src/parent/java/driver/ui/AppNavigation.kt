@@ -60,7 +60,7 @@ fun AppNavigationHost(
             PastActivityContent(navController, operatorId, selectedAssignmentCode)
         }
         composable("user-profile") {
-            userProfileView()
+            userProfileView(navController)
         }
         composable("home") {
             HomeScreen(

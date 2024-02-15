@@ -100,7 +100,7 @@ fun PastActivityContent(
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Edit Icon",
-                            modifier = Modifier.height(30.dp).clickable {
+                            modifier = Modifier.height(25.dp).clickable {
                                 navController.popBackStack()
                             },
                         )
@@ -109,7 +109,7 @@ fun PastActivityContent(
                         text = "Past Trip ",
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 24.sp,
+                            fontSize = 20.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W600
                         )
@@ -261,7 +261,7 @@ fun PastActivityContent(
                             Spacer(modifier = Modifier.height(27.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceAround,
+                                horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
 
@@ -270,7 +270,7 @@ fun PastActivityContent(
                                         color = back,
                                         shape = RoundedCornerShape(5.dp)
                                     )
-                                    .width(100.dp)
+                                    .width(140.dp)
                                     .padding(5.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                                     Text(
                                         text = "DL1SA1234",

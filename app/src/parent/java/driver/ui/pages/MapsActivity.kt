@@ -116,7 +116,7 @@ fun MapsActivityContent(
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Edit Icon",
-                            modifier = Modifier.height(30.dp).clickable {
+                            modifier = Modifier.height(25.dp).clickable {
                                 navController.popBackStack()
                             },
                         )
@@ -125,7 +125,7 @@ fun MapsActivityContent(
                         text = "Ongoing Trip ",
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 24.sp,
+                            fontSize = 20.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W600
                         )
@@ -276,7 +276,7 @@ fun MapsActivityContent(
                             Spacer(modifier = Modifier.height(27.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceAround,
+                                horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
 

@@ -187,5 +187,9 @@ dependencies {
     //swipe to refresh
     implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
 
+    //crop
+    implementation("com.github.CanHub:Android-Image-Cropper:4.0.0")
+
+
 
 }
