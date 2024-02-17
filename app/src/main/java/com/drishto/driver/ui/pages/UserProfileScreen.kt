@@ -78,6 +78,9 @@ import com.drishto.driver.ui.viewmodels.UserProfileViewModel
 import driver.SetPasswordActivity
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Field
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 @Composable
 fun UserProfile() {
@@ -319,6 +322,23 @@ fun UserProfile() {
         val myIntent = Intent(context, SetPasswordActivity::class.java)
         context.startActivity(myIntent)
     }
+
+}
+fun calculateAge(dateOfBirth: String): Number {
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+    val birthDate = LocalDate.parse(dateOfBirth, dateFormatter)
+
+    val currentDate = LocalDate.now()
+
+    val age = ChronoUnit.YEARS.between(birthDate, currentDate).toInt()
+
+    return age
+}
+@Composable
+fun AgeDisplay(dateOfBirth: String) :Number {
+    val age = calculateAge(dateOfBirth)
+    return age
 }
 
 @Composable
@@ -332,7 +352,7 @@ fun childList() {
 
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
-
+    var age:Number= 0
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -354,6 +374,10 @@ fun childList() {
 
     childrensList?.forEach { children ->
 
+        children.dateOfBirth.let {
+            age =AgeDisplay(dateOfBirth = it)
+        }
+
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
@@ -372,7 +396,7 @@ fun childList() {
                 )
 
                 Text(
-                    text = children.standard,
+                    text = "$age yrs",
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 12.sp,

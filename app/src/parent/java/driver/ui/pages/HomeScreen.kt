@@ -134,20 +134,33 @@ fun HomeScreen(
                 val currentAssignmentData by vm.parentTrip.collectAsStateWithLifecycle()
                 vm.fetchParentTrip(context = context)
 
+                val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
+                vm.fetchParentPastTrip()
+
                 Column(modifier = Modifier.fillMaxSize()) {
 
-                    Box(modifier = Modifier.fillMaxSize()){
-                            Column(modifier = Modifier.fillMaxSize(1f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                                Image(painter = painterResource(id = R.drawable.no_data_image),
+                    if(currentAssignmentData?.size == 0 && pastTrip?.size == 0  ) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(1f),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.no_data_image),
                                     contentDescription = "",
-                                    modifier = Modifier.padding(end = 12.dp)
-                                    ,contentScale = ContentScale.FillBounds
+                                    modifier = Modifier.padding(end = 12.dp),
+                                    contentScale = ContentScale.FillBounds
                                 )
-                                Text(text = "Welcome To Drishto",style = TextStyle(
-                                    color = Color.Black,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.W600,
-                                ))}
+                                Text(
+                                    text = "Welcome To Drishto", style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.W600,
+                                    )
+                                )
+                            }
+                        }
                     }
                     if (currentAssignmentData?.size != 0) {
                             Row(

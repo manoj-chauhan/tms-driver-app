@@ -1,6 +1,7 @@
 package driver.ui.components
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,18 +12,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -51,77 +58,188 @@ fun pastTrips(
 
     Log.d("PAST", "pastTrips:  $pastTrip")
 
+    val fontStyle: FontFamily = FontFamily.SansSerif
+    val gry=Color(android.graphics.Color.parseColor("#838383"))
+    val gradient = Brush.linearGradient(
+        listOf(
+            Color(android.graphics.Color.parseColor("#FFFFFF")),
+            Color(android.graphics.Color.parseColor("#E8F1F8"))
+        ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
+    )
+
     if (pastTrip?.size != 0) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 13.dp)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(13.dp, top = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+        if(screen == "home"){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 13.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(13.dp, top = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                    Text(
-                        text = "Past Trips ",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
+                        Text(
+                            text = "Past Trips ",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         )
-                    )
-                }
+                    }
 
-                pastTrip?.let {
-                    if (screen == "home") {
-                        LazyColumn {
-                            items(it.take(2)) { trip ->
-                                past_trip(trip, onTripSelected)
+                    pastTrip?.let {
+                        if (screen == "home") {
+                            LazyColumn {
+                                items(it.take(3)) { trip ->
+                                    past_trip(trip, onTripSelected)
+                                }
                             }
-                        }
-                        if (it.size >= 3) {
-                            val text = remember {
-                                buildAnnotatedString {
-                                    withStyle(
-                                        style = SpanStyle(
-                                            color = Color.Blue,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.W400
-                                        )
+                            if (it.size >= 3) {
+                                val text = remember {
+                                    buildAnnotatedString {
+                                        withStyle(
+                                            style = SpanStyle(
+                                                color = gry,
+                                                fontSize = 12.sp,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                        ) {
+                                            append("SEE ALL")
+                                        }
+                                    }
+                                }
+
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(13.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
                                     ) {
-                                        append("SEE MORE")
+
+                                        ClickableText(
+                                            text = text,
+                                            onClick = { offset ->
+                                                navHostController.navigate("past-trips-list")
+                                            }
+                                        )
                                     }
                                 }
                             }
-
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(13.dp)
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-
-                                    ClickableText(
-                                        text = text,
-                                        onClick = { offset ->
-                                            navHostController.navigate("past-trips-list")
-                                        }
-                                    )
+                        } else {
+                            LazyColumn {
+                                items(it) { trip ->
+                                    past_trip(trip, onClick = onTripSelected)
                                 }
                             }
                         }
-                    } else {
-                        LazyColumn {
-                            items(it) { trip ->
-                                past_trip(trip, onClick = onTripSelected)
+                    }
+                }
+            }
+        }else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(brush = gradient)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 13.dp)
+                ) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 18.dp)
+                                .height(30.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(
+                                    modifier = Modifier.width(30.dp),
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.ArrowBack,
+                                        contentDescription = "Edit Icon",
+                                        modifier = Modifier.height(25.dp).clickable {
+                                            navHostController.popBackStack()
+                                        },
+                                    )
+                                }
+                                Text(
+                                    text = "Past Trip ",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 20.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W600
+                                    )
+                                )
+                            }
+                        }
+
+                        pastTrip?.let {
+                            if (screen == "home") {
+                                LazyColumn {
+                                    items(it.take(3)) { trip ->
+                                        past_trip(trip, onTripSelected)
+                                    }
+                                }
+                                if (it.size >= 3) {
+                                    val text = remember {
+                                        buildAnnotatedString {
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    color = gry,
+                                                    fontSize = 12.sp,
+                                                    fontWeight = FontWeight.W400
+                                                )
+                                            ) {
+                                                append("SEE ALL")
+                                            }
+                                        }
+                                    }
+
+
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(13.dp)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.End
+                                        ) {
+
+                                            ClickableText(
+                                                text = text,
+                                                onClick = { offset ->
+                                                    navHostController.navigate("past-trips-list")
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                            } else {
+                                LazyColumn {
+                                    items(it) { trip ->
+                                        past_trip(trip, onClick = onTripSelected)
+                                    }
+                                }
                             }
                         }
                     }

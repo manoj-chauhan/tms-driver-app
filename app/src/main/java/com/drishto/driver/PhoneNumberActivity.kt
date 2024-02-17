@@ -337,7 +337,7 @@ class PhoneNumberActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.padding(20.dp))
 
 
-                    OutlinedTextField(label = { Text("Enter your Phone Number") },
+                    OutlinedTextField(label = { Text("Phone Number") },
                         value = text,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -347,7 +347,6 @@ class PhoneNumberActivity : ComponentActivity() {
                         onValueChange = { text = it },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
 //                            focusedBorderColor = Color(0xFF92A3FD),
-                            focusedLabelColor = Color(0xFF92A3FD),
                             cursorColor = Color(0xFF92A3FD)
                         ),
                         leadingIcon = {
@@ -417,13 +416,6 @@ class PhoneNumberActivity : ComponentActivity() {
                                 ), contentAlignment = Alignment.Center
                         ) {
                             Row(modifier = Modifier) {
-                                Icon(
-                                    imageVector = Icons.Default.Login,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.padding(start = 16.dp)
-                                )
-
                                 Spacer(modifier = Modifier.width(16.dp))
 
                                 Text(
@@ -491,7 +483,6 @@ class PhoneNumberActivity : ComponentActivity() {
                                                 }
                                         }
                                 )
-
                                 Text(
                                     text = "Google",
                                     style = TextStyle(color = Color.Black),
