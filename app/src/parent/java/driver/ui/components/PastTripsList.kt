@@ -128,46 +128,6 @@ fun pastTrips(
                 }
             }
         }
-    } else {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(13.dp)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(13.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Text(
-                        text = "Past Trips",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.W600,
-                            fontFamily = FontFamily.SansSerif
-                        )
-                    )
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "No trips assigned!!",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    )
-                }
-            }
-        }
     }
 }
 

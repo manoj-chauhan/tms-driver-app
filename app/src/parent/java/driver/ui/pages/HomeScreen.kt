@@ -36,17 +36,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -138,48 +135,40 @@ fun HomeScreen(
                 vm.fetchParentTrip(context = context)
 
                 Column(modifier = Modifier.fillMaxSize()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(13.dp, top = 20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
 
-                        Text(
-                            text = "Ongoing Trips ",
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.W600,
-                                fontFamily = fontStyle
-                            )
-                        )
+                    Box(modifier = Modifier.fillMaxSize()){
+                            Column(modifier = Modifier.fillMaxSize(1f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                                Image(painter = painterResource(id = R.drawable.no_data_image),
+                                    contentDescription = "",
+                                    modifier = Modifier.padding(end = 12.dp)
+                                    ,contentScale = ContentScale.FillBounds
+                                )
+                                Text(text = "Welcome To Drishto",style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.W600,
+                                ))}
                     }
-
-                    if (currentAssignmentData?.size == 0) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(13.dp)
-                                .align(Alignment.CenterHorizontally)
-                        ) {
+                    if (currentAssignmentData?.size != 0) {
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(13.dp, top = 20.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
+
                                 Text(
-                                    text = "No active trips!!",
+                                    text = "Ongoing Trips ",
                                     style = TextStyle(
                                         color = Color.Black,
-                                        fontSize = 14.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.Medium
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.W600,
+                                        fontFamily = fontStyle
                                     )
                                 )
                             }
                         }
-                    }
 
                     com.google.accompanist.swiperefresh.SwipeRefresh(
                         state = swipeRefreshState,
@@ -220,70 +209,4 @@ fun HomeScreen(
             userProfile = false
         }
     }
-}
-
-@Composable
-fun userPhoto(){
-
-    Box(modifier = Modifier
-        .height(68.dp)){
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-//                Image(
-//                    painter = painterResource(R.drawable.history),
-//                    contentDescription = "Round Image",
-//                    contentScale = ContentScale.Crop,
-//                    modifier = Modifier.height(40.dp).clickable { navController.navigate("user-profile") }
-//                )
-            val imageBitmap: ImageBitmap = ImageBitmap.imageResource(R.drawable.google)
-
-//            Canvas(modifier = Modifier.width(40.dp).height(80).zIndex(1f)) {
-//                val circleRadius = 70f
-//                drawCircle(
-//                    color = Color.Red,
-//                    radius = 70f,
-//                )
-//                clipRect(
-//                    left = center.x - circleRadius,
-//                    top = center.y - circleRadius,
-//                    right = center.x + circleRadius,
-//                    bottom = center.y + circleRadius
-//                ) {
-//                    drawImage(
-//                        image = imageBitmap,
-//                        topLeft = Offset(center.x - imageBitmap.width / 2f, center.y - imageBitmap.height / 2f),
-//                        alpha = 0.6f,
-//                        style = Fill,
-//                        colorFilter = ColorFilter.tint(Color.Blue),
-//                        blendMode = BlendMode.DstIn,
-//                    )
-//                }
-//
-//            }
-
-            Image(painter = painterResource(id = R.drawable.atul),
-                contentDescription = "",
-                modifier = Modifier
-                    .width(40.dp)
-                    .height(100.dp)
-                    .clip(CircleShape)
-                    .border(width = 0.dp, Color.White, shape = CircleShape), contentScale = ContentScale.FillBounds
-            )
-            Image(painter = painterResource(id = R.drawable.notification),
-                contentDescription = "",
-                modifier = Modifier
-                    .width(60.dp)
-                    .height(40.dp)
-                    .zIndex(2f)
-            )
-        }
-    }
-
-}
-
-@Composable
-@Preview
-fun userPhotoPreview(){
-    userPhoto()
 }
