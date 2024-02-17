@@ -32,7 +32,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
@@ -330,32 +330,84 @@ fun childList() {
         vm.getChildrenList()
     }
 
-    Log.d("TAG", "childList: $childrensList")
+    val gry = Color(android.graphics.Color.parseColor("#838383"))
+    val fontStyle: FontFamily = FontFamily.SansSerif
 
-    Row {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
-            text = "Children List", style = TextStyle(
-                color = Color.Black, fontSize = 19.sp, fontWeight = FontWeight.Bold
+            text = "Children",
+            style = TextStyle(
+                color = gry,
+                fontSize = 14.sp,
+                fontFamily = fontStyle,
+                fontWeight = FontWeight.W400
             )
         )
     }
-
     Spacer(modifier = Modifier.height(10.dp))
-    childrensList?.forEach { company ->
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(
-                text = company.name, style = TextStyle(
-                    color = Color.Gray,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
+
+    childrensList?.forEach { children ->
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "${children.name} s/o hard COded ",
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = fontStyle,
+                        fontWeight = FontWeight.W600
+                    )
                 )
-            )
-            Text(
-                text = company.standard, style = TextStyle(
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
+
+                Text(
+                    text = children.standard,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = fontStyle,
+                        fontWeight = FontWeight.W400
+                    )
                 )
-            )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = children.schoolName,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = fontStyle,
+                        fontWeight = FontWeight.W400
+                    )
+                )
+
+                Text(
+                    text = "${children.standard} Std",
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = fontStyle,
+                        fontWeight = FontWeight.W400
+                    )
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -372,7 +424,10 @@ fun companyList(filteredCompanies: List<CompanyPositions>) {
 
     Spacer(modifier = Modifier.height(10.dp))
     filteredCompanies.forEach { company ->
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Text(
                 text = company.companyCode, style = TextStyle(
                     color = Color.Gray,
@@ -402,6 +457,10 @@ fun userProfileView(navController: NavHostController) {
 
 
     val context = LocalContext.current
+    val vm: UserProfileViewModel = hiltViewModel()
+
+    val userDetail by vm.userDetail.collectAsStateWithLifecycle()
+    vm.userDetail(context = context)
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
 
@@ -421,10 +480,11 @@ fun userProfileView(navController: NavHostController) {
         }
     }
 
-    val imagePickerLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-        val cropOptions = CropImageContractOptions(uri, CropImageOptions())
-        imageCropLauncher.launch(cropOptions)
-    }
+    val imagePickerLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+            val cropOptions = CropImageContractOptions(uri, CropImageOptions())
+            imageCropLauncher.launch(cropOptions)
+        }
 
     if (imageUri != null) {
         if (Build.VERSION.SDK_INT < 28) {
@@ -434,6 +494,7 @@ fun userProfileView(navController: NavHostController) {
             bitmap = ImageDecoder.decodeBitmap(source)
         }
     }
+    bitmap?.let { sendToServer(it) }
 
     Box(
         modifier = Modifier
@@ -443,7 +504,7 @@ fun userProfileView(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, bottom = 10.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
             Box(
                 modifier = Modifier
@@ -462,9 +523,11 @@ fun userProfileView(navController: NavHostController) {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Edit Icon",
-                            modifier = Modifier.height(25.dp).clickable {
-                                navController.popBackStack()
-                            },
+                            modifier = Modifier
+                                .height(25.dp)
+                                .clickable {
+                                    navController.popBackStack()
+                                },
                         )
                     }
                 }
@@ -479,10 +542,29 @@ fun userProfileView(navController: NavHostController) {
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if(bitmap != null) {
-                        bitmap?.let { loadedBitmap ->
+                    Box(
+                        modifier = Modifier
+                            .background(Color.White, shape = CircleShape)
+                            .width(150.dp)
+                            .height(150.dp)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        if (bitmap != null) {
+                            bitmap?.let { loadedBitmap ->
+                                Image(
+                                    bitmap = loadedBitmap.asImageBitmap(),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .width(150.dp)
+                                        .height(150.dp)
+                                        .clip(CircleShape)
+                                        .border(width = 0.dp, Color.White, shape = CircleShape),
+                                    contentScale = ContentScale.FillBounds
+                                )
+                            }
+                        } else {
                             Image(
-                                bitmap = loadedBitmap.asImageBitmap(),
+                                painter = painterResource(id = R.drawable.sir),
                                 contentDescription = "",
                                 modifier = Modifier
                                     .width(150.dp)
@@ -491,19 +573,7 @@ fun userProfileView(navController: NavHostController) {
                                     .border(width = 0.dp, Color.White, shape = CircleShape),
                                 contentScale = ContentScale.FillBounds
                             )
-                            sendToServer(loadedBitmap)
                         }
-                    }else {
-                        Image(
-                            painter = painterResource(id = R.drawable.sir),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .width(150.dp)
-                                .height(150.dp)
-                                .clip(CircleShape)
-                                .border(width = 0.dp, Color.White, shape = CircleShape),
-                            contentScale = ContentScale.FillBounds
-                        )
                     }
                 }
                 Row(
@@ -525,10 +595,11 @@ fun userProfileView(navController: NavHostController) {
                             .align(Alignment.CenterVertically)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Camera,
+                            imageVector = Icons.Default.CameraAlt,
                             contentDescription = "Edit Icon",
+                            tint = gry,
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(28.dp)
                                 .clickable { imagePickerLauncher.launch("image/*") }
                                 .align(Alignment.Center)
                         )
@@ -561,19 +632,22 @@ fun userProfileView(navController: NavHostController) {
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "Ankit Verma",
-                                style = TextStyle(
-                                    color = Color.Black,
-                                    fontSize = 24.sp,
-                                    fontFamily = fontStyle,
-                                    fontWeight = FontWeight.W700
+                            userDetail?.name?.let {
+                                Text(
+                                    text = it,
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 24.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W700
+                                    )
                                 )
-                            )
+                            }
 
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Edit Icon",
+                                tint = gry,
                                 modifier = Modifier
                                     .size(28.dp)
                             )
@@ -595,151 +669,27 @@ fun userProfileView(navController: NavHostController) {
                                 )
                             )
 
-                            Text(
-                                text = "+91 8700059515",
-                                style = TextStyle(
-                                    color = Color.Black,
-                                    fontSize = 14.sp,
-                                    fontFamily = fontStyle,
-                                    fontWeight = FontWeight.W400
+                            userDetail?.userName?.let {
+                                Text(
+                                    text = it,
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 14.sp,
+                                        fontFamily = fontStyle,
+                                        fontWeight = FontWeight.W400
+                                    )
                                 )
-                            )
+                            }
                         }
-
                         Spacer(modifier = Modifier.height(45.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(20.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Children",
-                                style = TextStyle(
-                                    color = gry,
-                                    fontSize = 14.sp,
-                                    fontFamily = fontStyle,
-                                    fontWeight = FontWeight.W400
-                                )
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Krish Chauhan s/o Manoj Chauhan",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.W600
-                                    )
-                                )
-
-                                Text(
-                                    text = "9yrs",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Govt. Boys Senior Secondary School",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-
-                                Text(
-                                    text = "Xth Std",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Krish Chauhan s/o Manoj Chauhan",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.W600
-                                    )
-                                )
-
-                                Text(
-                                    text = "9yrs",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Govt. Boys Senior Secondary School",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-
-                                Text(
-                                    text = "Xth Std",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-                            }
-                        }
+                        childList()
                     }
                 }
             }
         }
     }
 }
-
+@Composable
 fun sendToServer(bitmap: Bitmap) {
     val outputStream = ByteArrayOutputStream()
     bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
