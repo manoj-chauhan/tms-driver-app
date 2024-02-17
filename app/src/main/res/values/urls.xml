@@ -26,6 +26,8 @@
     <string name="url_trip_history">&baseUrl;/driver/</string>
     <string name="edit_user_name">&baseUrl;/user/profile/edit</string>
     <string name="children_list">&baseUrl;/parents/children?page_no=0</string>
+    <string name="upload_photo">&baseUrl;/user/</string>
+
 
 
 

@@ -98,4 +98,30 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
             null
         }
     }
+
+    fun uploadProfileImage(image: ByteArray){
+        Log.d("Upload", "uploadProfileImage: $image")
+        try {
+            val url = context.resources.getString(R.string.upload_photo)+10+"/profile-photo"
+            Log.d("upload", "uploadProfileImage: $url")
+            getAccessToken(context)?.let {
+                val fuelManager = FuelManager()
+                val (_, response, result) = fuelManager.post(url).authentication().bearer(it).body(image)
+                    .response()
+
+                if (response.statusCode == 200) {
+                            Log.d("Funciton", "uploadProfileImage: ")
+                } else {
+                    result.fold(
+                        { _ ->
+
+                        },
+                        { error ->
+                        }
+                    )
+                }
+            }
+        } catch (e: Exception) {
+        }
+    }
 }

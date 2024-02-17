@@ -143,21 +143,22 @@ fun HomeScreen(
                         Box(modifier = Modifier.fillMaxSize()) {
                             Column(
                                 modifier = Modifier.fillMaxSize(1f),
-                                verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
+                                Row(modifier = Modifier.fillMaxWidth().height(200.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                                    Text(
+                                        text = "Welcome To Drishto", style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.W600,
+                                        )
+                                    )
+                                }
                                 Image(
-                                    painter = painterResource(id = R.drawable.no_data_image),
+                                    painter = painterResource(id = R.drawable.image),
                                     contentDescription = "",
                                     modifier = Modifier.padding(end = 12.dp),
                                     contentScale = ContentScale.FillBounds
-                                )
-                                Text(
-                                    text = "Welcome To Drishto", style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.W600,
-                                    )
                                 )
                             }
                         }

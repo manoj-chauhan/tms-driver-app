@@ -7,4 +7,6 @@ interface UserManager {
 fun editUserName(name:String)
 
 fun childrenList():List<Student>?
+
+fun uploadPhoto(image: ByteArray)
 }

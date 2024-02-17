@@ -93,4 +93,20 @@ class UserProfileViewModel @Inject constructor(private val userProfileManager: c
         }
     }
 
+    fun uploadImage(image: ByteArray?){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                Log.d("VIewmodel", "uploadImage: ")
+
+                if (image != null) {
+                    Log.d("New", "uploadImage: ")
+
+                    userProfileManager.uploadPhoto(image)
+                }
+            }catch (e:Exception){
+
+            }
+        }
+    }
+
 }

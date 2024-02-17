@@ -2,13 +2,14 @@ package com.drishto.driver.ui.pages
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
+import android.media.Image
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -62,7 +63,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -70,7 +70,6 @@ import androidx.navigation.NavHostController
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
-import com.canhub.cropper.CropImageView
 import com.drishto.driver.R
 import com.drishto.driver.ui.viewmodels.ChildrenListViewModel
 import com.drishto.driver.ui.viewmodels.CompanyPositions
@@ -470,6 +469,7 @@ fun companyList(filteredCompanies: List<CompanyPositions>) {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun userProfileView(navController: NavHostController) {
     val gradient = Brush.linearGradient(
@@ -496,6 +496,10 @@ fun userProfileView(navController: NavHostController) {
         mutableStateOf<Bitmap?>(null)
     }
 
+    var croppedImage by remember(imageUri) {
+        mutableStateOf<Image?>(null)
+    }
+
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             imageUri = result.uriContent
@@ -503,7 +507,6 @@ fun userProfileView(navController: NavHostController) {
             val exception = result.error
         }
     }
-
     val imagePickerLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             val cropOptions = CropImageContractOptions(uri, CropImageOptions())
@@ -511,15 +514,16 @@ fun userProfileView(navController: NavHostController) {
         }
 
     if (imageUri != null) {
-        if (Build.VERSION.SDK_INT < 28) {
-            bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
-        } else {
-            val source = ImageDecoder.createSource(context.contentResolver, imageUri!!)
-            bitmap = ImageDecoder.decodeBitmap(source)
-        }
+        Log.d("Hey", "imageUri: $imageUri")
+        val stream = ByteArrayOutputStream()
+        bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+        val byteArray: ByteArray = stream.toByteArray()
+        sendToServer(file = byteArray)
+    } else {
+        Log.e("Hey", "imageUri is null")
     }
-    bitmap?.let { sendToServer(it) }
-
+    
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -713,57 +717,10 @@ fun userProfileView(navController: NavHostController) {
         }
     }
 }
-@Composable
-fun sendToServer(bitmap: Bitmap) {
-    val outputStream = ByteArrayOutputStream()
-    bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-    val byteArray = outputStream.toByteArray()
 
-    Log.d("TAG", "userProfileView: $byteArray")
-
-}
 
 @Composable
-fun ImageCropScreen(
-    imageUri: Uri,
-    onSaveClick: (Bitmap) -> Unit,
-    onBackClick: () -> Unit
-) {
-    val context = LocalContext.current
-
-    val cropImageView = remember { CropImageView(context) }
-    cropImageView.setImageUriAsync(imageUri)
-
-    Button(
-        onClick = {
-            // Retrieve the cropped bitmap from CropImageView
-            val croppedBitmap = cropImageView.croppedImage
-            if (croppedBitmap != null) {
-                onSaveClick(croppedBitmap)
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        Text(text = "Save")
-    }
-
-    // Back button
-    Button(
-        onClick = onBackClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        Text(text = "Back")
-    }
-
-    // Display the CropImageView
-    AndroidView(
-        factory = { cropImageView },
-        modifier = Modifier
-            .fillMaxSize()
-    ) {}
+fun sendToServer(file: ByteArray?) {
+    val ui: UserProfileViewModel = hiltViewModel()
+    ui.uploadImage(file)
 }
-
