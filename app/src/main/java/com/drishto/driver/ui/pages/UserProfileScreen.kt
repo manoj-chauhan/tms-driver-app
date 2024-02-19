@@ -514,7 +514,15 @@ fun userProfileView(navController: NavHostController) {
     }
     val imagePickerLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-            val cropOptions = CropImageContractOptions(uri, CropImageOptions())
+            val cropOptions = CropImageContractOptions(uri, CropImageOptions().apply {
+                aspectRatioX = 4
+                aspectRatioY = 4
+                fixAspectRatio = false
+                maxCropResultWidth = 550
+                maxCropResultHeight = 550
+                minCropWindowWidth = 550
+                minCropWindowHeight = 550
+            })
             imageCropLauncher.launch(cropOptions)
         }
 

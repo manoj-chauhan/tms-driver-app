@@ -204,7 +204,7 @@ fun HomeScreen(
                                     ) {
                                         Text(
                                             text = "Welcome To Drishto", style = TextStyle(
-                                                color = Color.Black,
+                                                color = gry,
                                                 fontSize = 20.sp,
                                                 fontWeight = FontWeight.W600,
                                             )
@@ -213,7 +213,7 @@ fun HomeScreen(
                                     Image(
                                         painter = painterResource(id = R.drawable.image),
                                         contentDescription = "",
-                                        modifier = Modifier.padding(end = 12.dp),
+                                        modifier = Modifier.padding(end = 12.dp).height(250.dp).width(250.dp),
                                         contentScale = ContentScale.FillBounds
                                     )
                                 }
