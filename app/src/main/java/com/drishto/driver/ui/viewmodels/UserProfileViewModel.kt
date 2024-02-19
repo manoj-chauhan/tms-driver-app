@@ -1,6 +1,7 @@
 package com.drishto.driver.ui.viewmodels
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,6 +39,9 @@ data class CompanyPositions(
 class UserProfileViewModel @Inject constructor(private val userProfileManager: com.drishto.driver.usermgmt.UserManager) : ViewModel(){
     private val _userDetails: MutableStateFlow<UserProfile?> = MutableStateFlow(null)
     val userDetail: StateFlow<UserProfile?> = _userDetails.asStateFlow()
+
+    private val _userImage: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
+    val userImage: StateFlow<Bitmap?> = _userImage.asStateFlow()
 
     fun userDetail(context: Context){
         val channel1 = Channel<UserProfile>()
@@ -93,7 +97,7 @@ class UserProfileViewModel @Inject constructor(private val userProfileManager: c
         }
     }
 
-    fun uploadImage(image: ByteArray?){
+    fun uploadImage(image: ByteArray?, userId:Int){
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Log.d("VIewmodel", "uploadImage: ")
@@ -101,12 +105,25 @@ class UserProfileViewModel @Inject constructor(private val userProfileManager: c
                 if (image != null) {
                     Log.d("New", "uploadImage: ")
 
-                    userProfileManager.uploadPhoto(image)
+                    userProfileManager.uploadPhoto(image, userId)
+                    getUploadedImage(userId)
                 }
             }catch (e:Exception){
 
             }
         }
     }
+
+    fun getUploadedImage(id:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val imageBitmap = userProfileManager.getUploadedImage(id)
+                _userImage.value = imageBitmap
+            }catch (e:Exception){
+                Log.d("Uploaded", "getUploadedImage: $e")
+            }
+        }
+
+        }
 
 }

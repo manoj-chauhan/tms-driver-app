@@ -1,6 +1,7 @@
 package com.drishto.driver.usermgmt
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
 import com.drishto.driver.models.Student
 import com.drishto.driver.network.UserNetRepository
@@ -19,8 +20,12 @@ class UserManagerImpl @Inject constructor(
         return userNetRepository.getChildrenList()
     }
 
-    override fun uploadPhoto(image: ByteArray) {
+    override fun uploadPhoto(image: ByteArray, userId: Int) {
         Log.d("TAG", "uploadPhoto:${image} ")
-        return userNetRepository.uploadProfileImage(image)
+        return userNetRepository.uploadProfileImage(image, userId)
+    }
+
+    override fun getUploadedImage(userId:Int): Bitmap? {
+        return userNetRepository.getUploadedImage(userId)
     }
 }

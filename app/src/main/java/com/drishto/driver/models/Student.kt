@@ -19,3 +19,8 @@ class Student(
     val updatedBy: String,
     val lastUpdatedAt: String
 )
+
+@JsonClass(generateAdapter = true)
+data class ProfileImage(
+    val image: String
+)

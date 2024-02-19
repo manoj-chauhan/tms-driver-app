@@ -2,7 +2,6 @@ package com.drishto.driver.ui.pages
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.media.Image
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -35,6 +34,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -482,9 +482,18 @@ fun userProfileView(navController: NavHostController) {
 
     val context = LocalContext.current
     val vm: UserProfileViewModel = hiltViewModel()
-
     val userDetail by vm.userDetail.collectAsStateWithLifecycle()
-    vm.userDetail(context = context)
+
+    LaunchedEffect(Unit) {
+        vm.userDetail(context = context)
+        userDetail?.let { vm.getUploadedImage(it.id) }
+    }
+    val userProfile by vm.userImage.collectAsStateWithLifecycle()
+    LaunchedEffect(userDetail) {
+        userDetail?.let {
+            vm.getUploadedImage(it.id)
+        }
+    }
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
 
@@ -494,10 +503,6 @@ fun userProfileView(navController: NavHostController) {
 
     var bitmap by remember {
         mutableStateOf<Bitmap?>(null)
-    }
-
-    var croppedImage by remember(imageUri) {
-        mutableStateOf<Image?>(null)
     }
 
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
@@ -521,7 +526,7 @@ fun userProfileView(navController: NavHostController) {
         bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
         bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, stream)
         val byteArray: ByteArray = stream.toByteArray()
-        sendToServer(file = byteArray)
+        userDetail?.id?.let { sendToServer(file = byteArray, it) }
         imageUploadCompleted = true
     }
 
@@ -578,8 +583,8 @@ fun userProfileView(navController: NavHostController) {
                             .height(150.dp)
                             .align(Alignment.CenterVertically)
                     ) {
-                        if (bitmap != null) {
-                            bitmap?.let { loadedBitmap ->
+                        if (userProfile != null) {
+                            userProfile?.let { loadedBitmap ->
                                 Image(
                                     bitmap = loadedBitmap.asImageBitmap(),
                                     contentDescription = "",
@@ -592,16 +597,23 @@ fun userProfileView(navController: NavHostController) {
                                 )
                             }
                         } else {
-                            Image(
-                                painter = painterResource(id = R.drawable.sir),
-                                contentDescription = "",
+                            Box(
                                 modifier = Modifier
+                                    .background(Color.White, shape = CircleShape)
                                     .width(150.dp)
                                     .height(150.dp)
-                                    .clip(CircleShape)
-                                    .border(width = 0.dp, Color.White, shape = CircleShape),
-                                contentScale = ContentScale.FillBounds
-                            )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ImageSearch,
+                                    contentDescription = "Edit Icon",
+                                    tint = gry,
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                        .clickable { imagePickerLauncher.launch("image/*") }
+                                        .align(Alignment.Center)
+                                )
+                            }
+
                         }
                     }
                 }
@@ -721,7 +733,7 @@ fun userProfileView(navController: NavHostController) {
 
 
 @Composable
-fun sendToServer(file: ByteArray?) {
+fun sendToServer(file: ByteArray?, userId:Int) {
     val ui: UserProfileViewModel = hiltViewModel()
-    ui.uploadImage(file)
+    ui.uploadImage(file, userId = userId)
 }

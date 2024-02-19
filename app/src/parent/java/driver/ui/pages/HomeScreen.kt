@@ -192,7 +192,6 @@ fun HomeScreen(
                             LazyColumn {
                                 items(it) { trip ->
                                     tripList(trip, onClick = onTripSelected)
-//                                    AssignedTrip(trip, onClick = onTripSelected)
                                 }
                             }
                         }
