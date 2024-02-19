@@ -20,12 +20,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -53,6 +57,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.drishto.driver.R
 import com.drishto.driver.ui.viewmodels.SwipeRefresh
+import com.drishto.driver.ui.viewmodels.UserProfileViewModel
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import driver.models.ParentPastTrip
 import driver.models.ParentTrip
@@ -92,78 +97,129 @@ fun HomeScreen(
             Color(android.graphics.Color.parseColor("#E8F1F8"))
         ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
     )
+    val fontStyle: FontFamily = FontFamily.SansSerif
+    val gry = Color(android.graphics.Color.parseColor("#838383"))
 
-    val fontStyle:FontFamily = FontFamily.SansSerif
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(brush = gradient)){
-
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(brush = gradient)
     ) {
-        Box(modifier = Modifier
-            .height(66.dp)){
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Image(painter = painterResource(id = R.drawable.sir),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .width(42.dp)
-                        .clickable { navController.navigate("user-profile") }
-                        .height(102.dp)
-                        .clip(CircleShape)
-                        .border(width = 0.dp, Color.White, shape = CircleShape), contentScale = ContentScale.FillBounds
-                )
-
-                Icon(imageVector = ImageVector.vectorResource(id = R.drawable.outline_notifications_24),
-                    contentDescription = "" , modifier = Modifier
-                        .height(26.dp)
-                        .width(50.dp)
-                        .zIndex(2f)
-                )
-            }
-        }
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxSize(1f)
+                .fillMaxSize()
         ) {
-            if (isConnected) {
-                val currentAssignmentData by vm.parentTrip.collectAsStateWithLifecycle()
-                vm.fetchParentTrip(context = context)
+            if(isConnected) {
+                val vm: UserProfileViewModel = hiltViewModel()
+                val user by vm.userDetail.collectAsStateWithLifecycle()
 
-                val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
-                vm.fetchParentPastTrip()
-
-                Column(modifier = Modifier.fillMaxSize()) {
-
-                    if(currentAssignmentData?.size == 0 && pastTrip?.size == 0  ) {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            Column(
-                                modifier = Modifier.fillMaxSize(1f),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Row(modifier = Modifier.fillMaxWidth().height(200.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                                    Text(
-                                        text = "Welcome To Drishto", style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.W600,
-                                        )
-                                    )
-                                }
+                LaunchedEffect(Unit) {
+                    vm.userDetail(context = context)
+                    user?.let { vm.getUploadedImage(it.id) }
+                }
+                val profile by vm.userImage.collectAsStateWithLifecycle()
+                LaunchedEffect(user) {
+                    user?.let {
+                        vm.getUploadedImage(it.id)
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .height(66.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .background(Color.White, shape = CircleShape)
+                                .width(40.dp)
+                                .height(40.dp)
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            if (profile != null) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.image),
+                                    bitmap = profile!!.asImageBitmap(),
                                     contentDescription = "",
-                                    modifier = Modifier.padding(end = 12.dp),
+                                    modifier = Modifier
+                                        .width(40.dp)
+                                        .height(40.dp)
+                                        .clip(CircleShape)
+                                        .clickable { navController.navigate("user-profile") }
+                                        .border(width = 0.dp, Color.White, shape = CircleShape),
                                     contentScale = ContentScale.FillBounds
+                                )
+                            }else{
+                                Icon(
+                                    imageVector = Icons.Default.Image,
+                                    contentDescription = "Edit Icon",
+                                    tint = gry,
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                        .clickable { navController.navigate("user-profile") }
+                                        .align(Alignment.Center)
                                 )
                             }
                         }
+
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.outline_notifications_24),
+                            contentDescription = "", modifier = Modifier
+                                .height(26.dp)
+                                .width(50.dp)
+                                .zIndex(2f)
+                        )
                     }
-                    if (currentAssignmentData?.size != 0) {
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(1f)
+            ) {
+                if (isConnected) {
+                    val currentAssignmentData by vm.parentTrip.collectAsStateWithLifecycle()
+                    vm.fetchParentTrip(context = context)
+
+                    val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
+                    vm.fetchParentPastTrip()
+
+                    Column(modifier = Modifier.fillMaxSize()) {
+
+                        if (currentAssignmentData?.size == 0 && pastTrip?.size == 0) {
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                Column(
+                                    modifier = Modifier.fillMaxSize(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(200.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = "Welcome To Drishto", style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 20.sp,
+                                                fontWeight = FontWeight.W600,
+                                            )
+                                        )
+                                    }
+                                    Image(
+                                        painter = painterResource(id = R.drawable.image),
+                                        contentDescription = "",
+                                        modifier = Modifier.padding(end = 12.dp),
+                                        contentScale = ContentScale.FillBounds
+                                    )
+                                }
+                            }
+                        }
+                        if (currentAssignmentData?.size != 0) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -184,42 +240,38 @@ fun HomeScreen(
                             }
                         }
 
-                    com.google.accompanist.swiperefresh.SwipeRefresh(
-                        state = swipeRefreshState,
-                        onRefresh = vw::loadstuff
-                    ) {
-                        currentAssignmentData?.let {
-                            LazyColumn {
-                                items(it) { trip ->
-                                    tripList(trip, onClick = onTripSelected)
+                        com.google.accompanist.swiperefresh.SwipeRefresh(
+                            state = swipeRefreshState,
+                            onRefresh = vw::loadstuff
+                        ) {
+                            currentAssignmentData?.let {
+                                LazyColumn {
+                                    items(it) { trip ->
+                                        tripList(trip, onClick = onTripSelected)
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    pastTrips(navHostController = navController,"home", onPastTripSelected)
-                }
-            } else {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(48.dp)
-                    )
-                    Toast.makeText(
-                        context,
-                        "Please connect to a network and restart application",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        pastTrips(navHostController = navController, "home", onPastTripSelected)
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(48.dp)
+                        )
+                        Toast.makeText(
+                            context,
+                            "Please connect to a network and restart application",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
-        }
-    }
-        if (userProfile) {
-            navController.navigate("user-profile")
-            userProfile = false
         }
     }
 }
