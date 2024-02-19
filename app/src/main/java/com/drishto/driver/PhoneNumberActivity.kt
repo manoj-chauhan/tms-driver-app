@@ -329,28 +329,43 @@ class PhoneNumberActivity : ComponentActivity() {
                     Box(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .height(140.dp)
                             .fillMaxWidth()
                     ) {
+                        Column(modifier = Modifier.fillMaxWidth().height(240.dp)
+                            , horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+
                         Text(
-                            modifier = Modifier.align(Alignment.Center),
+                            modifier = Modifier,
                             text = "DRISHTO",
                             fontStyle = FontStyle.Normal,
                             fontFamily = FontFamily.SansSerif,
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 60.sp,
+                            fontSize = 48.sp,
                             color = Color.Red
                         )
+                        Spacer(modifier = Modifier.padding(10.dp))
+                        Text(
+                            modifier = Modifier,
+                            text = "An effort to make travel safer...",
+                            fontStyle = FontStyle.Normal,
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.W300,
+                            fontSize = 18.sp,
+                            color = Color.Black
+                        )
+                        }
                     }
-                    Spacer(modifier = Modifier.padding(20.dp))
+                    Spacer(modifier = Modifier.padding(10.dp))
 
 
                     OutlinedTextField(label = { Text("Phone Number") },
                         value = text,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.White).padding(bottom = 10.dp)
-                            .clip(RoundedCornerShape(4.dp)).align(Alignment.CenterHorizontally),
+                            .background(Color.White)
+                            .padding(bottom = 5.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .align(Alignment.CenterHorizontally),
                         keyboardOptions =KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                         onValueChange = { text = it },
                         colors = OutlinedTextFieldDefaults.colors(
@@ -436,105 +451,6 @@ class PhoneNumberActivity : ComponentActivity() {
                         }
                     }
 
-                    Spacer(modifier = Modifier.padding(20.dp))
-
-                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        Divider(modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f), color = Color.Gray, thickness = 1.dp)
-
-                        Text( text ="Or", style = TextStyle(fontSize = 18.sp, color = Color.Black), modifier = Modifier.padding(8.dp))
-
-                        Divider(modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f), color = Color.Gray, thickness = 1.dp)
-
-                    }
-
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .width(80.dp)
-                                .background(
-                                    color = Color(0xFFF7F8F8),
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .height(60.dp),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Box(modifier = Modifier.fillMaxWidth())
-                                Icon(
-                                    painter = painterResource(id = R.drawable.google),
-                                    contentDescription = "Home Icon",
-                                    modifier = Modifier
-                                        .size(32.dp)
-                                        .clickable {
-                                            oneTapClient
-                                                .beginSignIn(signInRequest)
-                                                .addOnSuccessListener { result ->
-                                                    Log.d("TAG", "OnOneTapClient Success")
-                                                    val intentSenderRequest =
-                                                        IntentSenderRequest
-                                                            .Builder(result.pendingIntent.intentSender)
-                                                            .build()
-                                                    resultLauncher.launch(intentSenderRequest)
-                                                }
-                                                .addOnFailureListener { e ->
-                                                    Log.d("TAG", e.localizedMessage)
-                                                }
-                                        }
-                                )
-                                Text(
-                                    text = "Google",
-                                    style = TextStyle(color = Color.Black),
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .width(80.dp)
-                                .background(
-                                    color = Color(0xFFF7F8F8),
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .height(60.dp),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Box(modifier = Modifier.fillMaxWidth())
-                                Icon(
-                                    imageVector = Icons.Default.Email,
-                                    contentDescription = "Home Icon",
-                                    modifier = Modifier
-                                        .size(32.dp)
-                                        .clickable {
-                                            startLoginActivity()
-                                        }
-                                )
-
-                                Text(
-                                    text = "Email",
-                                    style = TextStyle(color = Color.Black),
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
-                    }
                 }
             }
         }

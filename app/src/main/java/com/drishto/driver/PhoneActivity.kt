@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
@@ -139,6 +140,13 @@ class OTPActivity() : ComponentActivity() {
 
             var countdownSeconds by remember { mutableStateOf(30) }
             var isResendEnabled by remember { mutableStateOf(false) }
+            val gradient = Brush.linearGradient(
+                listOf(
+                    Color(android.graphics.Color.parseColor("#FFFFFF")),
+                    Color(android.graphics.Color.parseColor("#E8F1F8"))
+                ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
+            )
+
 
 
             LaunchedEffect(countdownSeconds) {
@@ -153,29 +161,47 @@ class OTPActivity() : ComponentActivity() {
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)
+                    .background(brush = gradient)
                     .padding(28.dp)
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
+                        .fillMaxSize().background(brush = gradient),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    Spacer(modifier = Modifier.padding(10.dp))
 
+                    Spacer(modifier = Modifier.padding(16.dp))
                     Box(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .height(120.dp)
                             .fillMaxWidth()
                     ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.Center),
-                            text = "DRISHTO",
-                            fontStyle = FontStyle.Normal,
-                            fontFamily = FontFamily.SansSerif,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 60.sp,
-                            color = Color.Red
-                        )
+                        Column(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(240.dp)
+                            , horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+
+                            Text(
+                                modifier = Modifier,
+                                text = "DRISHTO",
+                                fontStyle = FontStyle.Normal,
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 48.sp,
+                                color = Color.Red
+                            )
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            Text(
+                                modifier = Modifier,
+                                text = "An effort to make travel safer...",
+                                fontStyle = FontStyle.Normal,
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.W300,
+                                fontSize = 18.sp,
+                                color = Color.Black
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.padding(10.dp))
                     Box(
@@ -219,18 +245,23 @@ class OTPActivity() : ComponentActivity() {
                                     .weight(1f)
                                     .padding(4.dp)
                                     .onKeyEvent { event ->
-                                    if (event.key == Key.Backspace && text.text.isNotEmpty()) {
-                                        if (text.text.length == 1) {
-                                            text = TextFieldValue("")
+                                        if (event.key == Key.Backspace && text.text.isNotEmpty()) {
+                                            if (text.text.length == 1) {
+                                                text = TextFieldValue("")
+                                            } else {
+                                                focusManager.moveFocus(FocusDirection.Previous)
+                                                text = TextFieldValue(
+                                                    text.text.substring(
+                                                        0,
+                                                        text.text.length - 1
+                                                    )
+                                                )
+                                            }
+                                            true
                                         } else {
-                                            focusManager.moveFocus(FocusDirection.Previous)
-                                            text = TextFieldValue(text.text.substring(0, text.text.length - 1))
+                                            false
                                         }
-                                        true
-                                    } else {
-                                        false
-                                    }
-                                },
+                                    },
                                 keyboardOptions = KeyboardOptions.Default.copy(
                                     keyboardType = KeyboardType.Number,
                                     imeAction = ImeAction.Done
@@ -248,7 +279,7 @@ class OTPActivity() : ComponentActivity() {
                         }
                     }
 
-                    Spacer(modifier = Modifier.padding(5.dp))
+                    Spacer(modifier = Modifier.padding(3.dp))
 
                     if (isResendEnabled) {
                         Row(
@@ -277,7 +308,7 @@ class OTPActivity() : ComponentActivity() {
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.padding(15.dp))
+                    Spacer(modifier = Modifier.padding(10.dp))
 
 
 
