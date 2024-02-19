@@ -558,7 +558,7 @@ fun userProfileView(navController: NavHostController) {
                             imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Edit Icon",
                             modifier = Modifier
-                                .height(25.dp)
+                                .height(25.dp).size(25.dp)
                                 .clickable {
                                     navController.popBackStack()
                                 },
@@ -566,7 +566,7 @@ fun userProfileView(navController: NavHostController) {
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(17.dp))
+            Spacer(modifier = Modifier.height(14.dp))
             Box(
                 modifier = Modifier
                     .fillMaxHeight(0.23f)
@@ -647,7 +647,7 @@ fun userProfileView(navController: NavHostController) {
                     }
                 }
             }
-
+            Spacer(modifier = Modifier.height(6.dp))
             Box(
                 modifier = Modifier
                     .fillMaxSize(1f)
