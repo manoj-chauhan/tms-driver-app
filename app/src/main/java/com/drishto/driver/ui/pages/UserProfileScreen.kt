@@ -513,17 +513,18 @@ fun userProfileView(navController: NavHostController) {
             imageCropLauncher.launch(cropOptions)
         }
 
-    if (imageUri != null) {
+    var imageUploadCompleted by remember { mutableStateOf(false) }
+
+    if (imageUri != null && !imageUploadCompleted) {
         Log.d("Hey", "imageUri: $imageUri")
         val stream = ByteArrayOutputStream()
         bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
         bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, stream)
         val byteArray: ByteArray = stream.toByteArray()
         sendToServer(file = byteArray)
-    } else {
-        Log.e("Hey", "imageUri is null")
+        imageUploadCompleted = true
     }
-    
+
     Box(
         modifier = Modifier
             .fillMaxSize()
