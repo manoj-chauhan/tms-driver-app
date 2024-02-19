@@ -12,7 +12,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +41,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -53,12 +57,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -299,7 +305,8 @@ class PhoneNumberActivity : ComponentActivity() {
                     buttonText = "Send OTP"
                 }
             }
-
+            val primary = Color(0xFF92A3FD)
+            val secondary = Color(0XFF9DCEFF)
 
             val context = LocalContext.current
             val app_name: String =getString(R.string.app_name).toUpperCase()
@@ -312,7 +319,8 @@ class PhoneNumberActivity : ComponentActivity() {
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize().background(brush = gradient), horizontalAlignment = Alignment.CenterHorizontally
+                        .fillMaxSize()
+                        .background(brush = gradient), horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.padding(10.dp))
 
@@ -341,24 +349,28 @@ class PhoneNumberActivity : ComponentActivity() {
                         value = text,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(color = Color(android.graphics.Color.parseColor("#FFFFFF"))),
+                            .background(Color.White).padding(bottom = 10.dp)
+                            .clip(RoundedCornerShape(4.dp)).align(Alignment.CenterHorizontally),
                         keyboardOptions =KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                         onValueChange = { text = it },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-//                            focusedBorderColor = Color(0xFF92A3FD),
-                            cursorColor = Color(0xFF92A3FD)
+                        colors = OutlinedTextFieldDefaults.colors(
+                            cursorColor = primary,
+                            focusedBorderColor = primary,
+                            focusedLabelColor = primary,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedBorderColor = Color.White
                         ),
+                        maxLines = 1,
                         leadingIcon = {
                             Row(
-                                verticalAlignment = Alignment.CenterVertically,
+                                verticalAlignment = Alignment.Top,
                                 horizontalArrangement = Arrangement.Start
                             ) {
                                 Text(
                                     text = "+91",
                                     color = Color.Black,
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
+                                    fontSize = 15.sp,
                                     modifier = Modifier.padding(start = 16.dp)
                                 )
                             }
@@ -368,8 +380,6 @@ class PhoneNumberActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.padding(30.dp))
 
 
-                    val primary = Color(0xFF92A3FD)
-                    val secondary = Color(0XFF9DCEFF)
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
