@@ -351,22 +351,24 @@ fun childList() {
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
     var age:Number= 0
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(20.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "Children",
-            style = TextStyle(
-                color = gry,
-                fontSize = 14.sp,
-                fontFamily = fontStyle,
-                fontWeight = FontWeight.W400
+    if(childrensList?.size  != 0 ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Children",
+                style = TextStyle(
+                    color = gry,
+                    fontSize = 14.sp,
+                    fontFamily = fontStyle,
+                    fontWeight = FontWeight.W400
+                )
             )
-        )
+        }
     }
     Spacer(modifier = Modifier.height(10.dp))
 
@@ -549,32 +551,29 @@ fun userProfileView(navController: NavHostController) {
         ) {
             Box(
                 modifier = Modifier
-                    .height(40.dp)
-                    .padding(top = 20.dp)
+                    .height(50.dp)
+                    .align(Alignment.Start)
+                    .padding(top = 20.dp, end = 20.dp)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        modifier = Modifier.width(30.dp),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
-                            contentDescription = "Edit Icon",
-                            modifier = Modifier
-                                .height(25.dp)
-                                .size(25.dp)
-                                .clickable {
-                                    navController.popBackStack()
-                                },
-                        )
-                    }
+                Box(modifier = Modifier
+                    .width(50.dp)
+                    .padding(end = 20.dp)
+                    .fillMaxHeight()
+                    .clickable { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowBack,
+                        contentDescription = "Edit Icon",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .size(15.dp)
+                            .clickable {
+                                navController.popBackStack()
+                            },
+                    )
                 }
+
             }
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Box(
                 modifier = Modifier
                     .fillMaxHeight(0.23f)
@@ -626,7 +625,8 @@ fun userProfileView(navController: NavHostController) {
                             modifier = Modifier
                                 .background(Color.White, shape = CircleShape)
                                 .width(50.dp)
-                                .height(50.dp).align(Alignment.BottomEnd)
+                                .height(50.dp)
+                                .align(Alignment.BottomEnd)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.CameraAlt,
