@@ -36,6 +36,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -345,27 +346,29 @@ class PhoneNumberActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.padding(10.dp))
 
 
-                    OutlinedTextField(label = { Text("Phone Number") },
+                    OutlinedTextField(
                         value = text,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(50.dp)
+                            .clip(shape = RoundedCornerShape(4.dp))
                             .background(Color.White)
-                            .padding(bottom = 5.dp)
-                            .clip(RoundedCornerShape(4.dp))
                             .align(Alignment.CenterHorizontally),
-                        keyboardOptions =KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                         onValueChange = { text = it },
                         colors = OutlinedTextFieldDefaults.colors(
                             cursorColor = primary,
                             focusedBorderColor = primary,
                             focusedLabelColor = primary,
                             focusedContainerColor = Color.Transparent,
-                            unfocusedBorderColor = Color.White
+                            unfocusedBorderColor = Color.White,
+
                         ),
                         maxLines = 1,
                         leadingIcon = {
                             Row(
-                                verticalAlignment = Alignment.Top,
+                                modifier = Modifier,
+                                verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Start
                             ) {
                                 Text(
@@ -373,7 +376,7 @@ class PhoneNumberActivity : ComponentActivity() {
                                     color = Color.Black,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 15.sp,
-                                    modifier = Modifier.padding(start = 16.dp)
+                                    modifier = Modifier.padding(start = 8.dp, end = 8.dp)
                                 )
                             }
                         }
