@@ -21,6 +21,7 @@ import driver.ui.components.pastTrips
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
+import driver.ui.pages.notificationScreen
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -95,6 +96,9 @@ fun AppNavigationHost(
                 navController.navigate("current-assignment-detail")
             })
 
+        }
+        composable("notification"){
+            notificationScreen()
         }
     }
 }

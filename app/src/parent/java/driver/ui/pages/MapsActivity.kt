@@ -115,7 +115,7 @@ fun MapsActivityContent(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
-                            contentDescription = "Edit Icon",
+                            contentDescription = "",
                             modifier = Modifier.height(25.dp).clickable {
                                 navController.popBackStack()
                             },

@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,7 +33,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.ImageSearch
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -566,7 +565,8 @@ fun userProfileView(navController: NavHostController) {
                             imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Edit Icon",
                             modifier = Modifier
-                                .height(25.dp).size(25.dp)
+                                .height(25.dp)
+                                .size(25.dp)
                                 .clickable {
                                     navController.popBackStack()
                                 },
@@ -612,46 +612,32 @@ fun userProfileView(navController: NavHostController) {
                                     .height(150.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.ImageSearch,
+                                    imageVector = Icons.Default.Image,
                                     contentDescription = "Edit Icon",
                                     tint = gry,
                                     modifier = Modifier
                                         .size(28.dp)
-                                        .clickable { imagePickerLauncher.launch("image/*") }
                                         .align(Alignment.Center)
                                 )
                             }
 
                         }
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                        .background(Color.Transparent)
-                        .padding(8.dp)
-                        .absoluteOffset(y = (85).dp, x = (-80).dp),
-
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .background(Color.White, shape = CircleShape)
-                            .width(50.dp)
-                            .height(50.dp)
-                            .align(Alignment.CenterVertically)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.CameraAlt,
-                            contentDescription = "Edit Icon",
-                            tint = gry,
+                        Box(
                             modifier = Modifier
-                                .size(28.dp)
-                                .clickable { imagePickerLauncher.launch("image/*") }
-                                .align(Alignment.Center)
-                        )
+                                .background(Color.White, shape = CircleShape)
+                                .width(50.dp)
+                                .height(50.dp).align(Alignment.BottomEnd)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.CameraAlt,
+                                contentDescription = "Edit Icon",
+                                tint = gry,
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .clickable { imagePickerLauncher.launch("image/*") }
+                                    .align(Alignment.Center)
+                            )
+                        }
                     }
                 }
             }
@@ -692,7 +678,6 @@ fun userProfileView(navController: NavHostController) {
                                     )
                                 )
                             }
-
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Edit Icon",
