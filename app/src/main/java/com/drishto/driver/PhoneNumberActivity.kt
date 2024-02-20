@@ -57,7 +57,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,7 +97,6 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class PhoneNumberActivity : ComponentActivity() {
 
@@ -439,52 +437,111 @@ class PhoneNumberActivity : ComponentActivity() {
                             }
                         }
                     }
-                    Box(modifier = Modifier
-                        .fillMaxHeight(0.8f)
-                        .fillMaxWidth()){
-                        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
-                            val annotatedString = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        textDecoration = TextDecoration.Underline,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.W300,
-                                        fontFamily = FontFamily.SansSerif,
-                                    )
-                                ) {
-                                    append("Terms of Use")
-                                }
+                    Row(modifier = Modifier
+                        .fillMaxHeight(0.9f)
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.Bottom) {
+                        val agreementText = "By continuing you agree that you have read and accepted"
+
+                        val annotatedString = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color(android.graphics.Color.parseColor("#838383")),
+                                    fontSize = 12.sp,
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontWeight = FontWeight.W300,
+                                ),
+                            ) {
+                                append(agreementText)
                             }
+
+                        }
                             ClickableText(
                                 text = annotatedString,
-                                onClick = {
-                                    val url = "https://codingwithrashid.com/how-to-add-underlined-text-in-android-jetpack-compose/#:~:text=Here%20we%20use%20the%20Text,as%20underlining%2C%20strikethrough%2C%20etc."
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                    context.startActivity(intent)
+                                onClick = { offset ->
+//                                    clickHandler(offset)
                                 }
                             )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            val privacy = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        textDecoration = TextDecoration.Underline,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.W300,
-                                        fontFamily = FontFamily.SansSerif,
-                                    )
-                                ) {
-                                    append("Privacy Policy")
-                                }
+                    }
+
+                    Row(modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Center) {
+                        val agreementText = "our"
+                        val privacyPolicyText = "Privacy Policy"
+                        val termsOfUseText = "Terms of Use"
+
+                        val termsUrl = "https://samrish.com/policies/PrivacyPolicy.html"
+                        val privacyUrl = "https://samrish.com/policies/PrivacyPolicy.html"
+
+                        val annotatedString = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color(android.graphics.Color.parseColor("#838383")),
+                                    fontSize = 12.sp,
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontWeight = FontWeight.W300,
+                                ),
+                            ) {
+                                append(agreementText)
                             }
-                            ClickableText(
-                                text = privacy,
-                                onClick = {
-                                    val url = "https://samrish.com/policies/PrivacyPolicy.html"
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                    context.startActivity(intent)
-                                }
-                            )
+
+                            val startTerms = length
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    fontSize = 12.sp,
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontWeight = FontWeight.W300
+                                )
+                            ) {
+                                append(" $termsOfUseText")
+                            }
+
+                            addStringAnnotation("URL", termsUrl, startTerms, length)
+
+                            val startPrivacy = length
+
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color(android.graphics.Color.parseColor("#838383")),
+                                    fontSize = 12.sp,
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontWeight = FontWeight.W300
+                                )
+                            ) {
+                                append(" and ")
+                            }
+
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    fontSize = 12.sp,
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontWeight = FontWeight.W300
+                                )
+                            ) {
+                                append("$privacyPolicyText")
+                            }
+                            addStringAnnotation("URL", privacyUrl, startPrivacy, length)
                         }
+
+                        val clickHandler: (offset: Int) -> Unit = { offset ->
+                            val annotations = annotatedString.getStringAnnotations("URL", offset, offset)
+                            if (annotations.isNotEmpty()) {
+                                val url = annotations.first().item
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                context.startActivity(intent)
+                            }
+                        }
+
+                        ClickableText(
+                            text = annotatedString,
+                            onClick = { offset ->
+                                clickHandler(offset)
+                            }
+                        )
                     }
                 }
             }

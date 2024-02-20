@@ -213,7 +213,7 @@ fun HomeScreen(
                                     Image(
                                         painter = painterResource(id = R.drawable.image),
                                         contentDescription = "",
-                                        modifier = Modifier.padding(end = 12.dp).height(250.dp).width(250.dp),
+                                        modifier = Modifier.padding(end = 12.dp).height(250.dp).width(250.dp).clickable { navController.navigate("notification") },
                                         contentScale = ContentScale.FillBounds
                                     )
                                 }

@@ -109,7 +109,7 @@ fun PastActivityContent(
                         text = "Past Trip ",
                         style = TextStyle(
                             color = Color.Black,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontFamily = fontStyle,
                             fontWeight = FontWeight.W600
                         )
