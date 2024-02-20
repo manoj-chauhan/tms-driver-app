@@ -310,15 +310,6 @@ fun UserProfile() {
 
     }
 
-    if (isEditNameSelected.value) {
-        userDetail?.name?.let {
-            EditUserName(context, it,
-                setShowDialog = {
-                    isEditNameSelected.value = it
-                }
-            )
-        }
-    }
 
 
     if (isDialogVisible.value) {
@@ -500,6 +491,7 @@ fun userProfileView(navController: NavHostController) {
             vm.getUploadedImage(it.id)
         }
     }
+    val isEditNameSelected = remember { mutableStateOf(false); }
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
 
@@ -688,7 +680,7 @@ fun userProfileView(navController: NavHostController) {
                                 contentDescription = "Edit Icon",
                                 tint = gry,
                                 modifier = Modifier
-                                    .size(28.dp)
+                                    .size(28.dp).clickable { isEditNameSelected.value = true }
                             )
                         }
 
@@ -781,6 +773,16 @@ fun userProfileView(navController: NavHostController) {
                     }
                 }
             }
+        }
+    }
+
+    if (isEditNameSelected.value) {
+        userDetail?.name?.let {
+            EditUserName(context, it,
+                setShowDialog = {
+                    isEditNameSelected.value = it
+                }
+            )
         }
     }
 }
