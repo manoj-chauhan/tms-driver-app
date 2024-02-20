@@ -21,7 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -155,7 +155,7 @@ fun HomeScreen(
                                 )
                             }else{
                                 Icon(
-                                    imageVector = Icons.Default.Image,
+                                    imageVector = Icons.Default.Person,
                                     contentDescription = "Edit Icon",
                                     tint = gry,
                                     modifier = Modifier

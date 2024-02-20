@@ -16,12 +16,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,6 +38,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -69,7 +72,9 @@ import androidx.navigation.NavHostController
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
+import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.R
+import com.drishto.driver.network.clearSession
 import com.drishto.driver.ui.viewmodels.ChildrenListViewModel
 import com.drishto.driver.ui.viewmodels.CompanyPositions
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
@@ -687,32 +692,88 @@ fun userProfileView(navController: NavHostController) {
                             )
                         }
 
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(40.dp),
-                            verticalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            Text(
-                                text = "Username",
-                                style = TextStyle(
-                                    color = gry,
-                                    fontSize = 14.sp,
-                                    fontFamily = fontStyle,
-                                    fontWeight = FontWeight.W400
-                                )
-                            )
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                            userDetail?.userName?.let {
+                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.7f)
+                                    .height(40.dp),
+                                verticalArrangement = Arrangement.SpaceBetween,
+                            ) {
                                 Text(
-                                    text = it,
+                                    text = "Username",
                                     style = TextStyle(
-                                        color = Color.Black,
+                                        color = gry,
                                         fontSize = 14.sp,
                                         fontFamily = fontStyle,
                                         fontWeight = FontWeight.W400
                                     )
                                 )
+
+                                userDetail?.userName?.let {
+                                    Text(
+                                        text = it,
+                                        style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 14.sp,
+                                            fontFamily = fontStyle,
+                                            fontWeight = FontWeight.W400
+                                        )
+                                    )
+                                }
+                            }
+
+                            Row(modifier = Modifier.fillMaxWidth().height(40.dp), verticalAlignment = Alignment.Bottom) {
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxWidth().height(35.dp)
+                                        .align(Alignment.Bottom),
+                                    enabled = true,
+                                    onClick = {
+                                        val myIntent =
+                                            Intent(context, PhoneNumberActivity::class.java)
+                                        clearSession(context)
+                                        myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        context.startActivity(myIntent)
+                                    },
+                                    contentPadding = PaddingValues(),
+                                    colors = ButtonDefaults.buttonColors(
+                                        Color.Transparent
+                                    ),
+                                    shape = RoundedCornerShape(40.dp)
+                                ) {
+                                    val primary = Color(0xFF92A3FD)
+                                    val secondary = Color(0XFF9DCEFF)
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(35.dp).align(Alignment.Bottom)
+                                            .background(
+                                                brush = Brush.horizontalGradient(
+                                                    listOf(
+                                                        primary,
+                                                        secondary
+                                                    )
+                                                ),
+                                                shape = RoundedCornerShape(40.dp)
+                                            ), contentAlignment = Alignment.Center
+                                    ) {
+                                        Row(
+                                            modifier = Modifier,
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = "Logout",
+                                                style = TextStyle(
+                                                    fontSize = 14.sp,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(45.dp))
