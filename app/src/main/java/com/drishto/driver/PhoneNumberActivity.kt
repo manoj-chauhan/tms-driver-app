@@ -345,7 +345,6 @@ class PhoneNumberActivity : ComponentActivity() {
                     }
                     Spacer(modifier = Modifier.padding(10.dp))
 
-
                     OutlinedTextField(
                         value = text,
                         modifier = Modifier

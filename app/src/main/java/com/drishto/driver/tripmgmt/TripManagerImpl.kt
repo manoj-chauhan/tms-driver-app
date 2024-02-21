@@ -10,8 +10,8 @@ import com.drishto.driver.models.History
 import com.drishto.driver.models.Schedule
 import com.drishto.driver.models.TripDetail
 import com.drishto.driver.network.TripNetRepository
-import driver.ui.viewmodels.TripsAssigned
 import dagger.hilt.android.qualifiers.ApplicationContext
+import driver.ui.viewmodels.TripsAssigned
 import javax.inject.Inject
 
 class TripManagerImpl @Inject constructor(

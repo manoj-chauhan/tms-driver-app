@@ -1,6 +1,7 @@
 package driver.network
 
 import android.content.Context
+import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
@@ -13,6 +14,7 @@ import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
 import driver.models.ParentPastTrip
 import driver.models.ParentTrip
+import driver.models.ParentTripDetail
 import driver.models.ProcessedPoints
 import driver.models.point
 import kotlinx.coroutines.CoroutineScope
@@ -42,6 +44,7 @@ class ParentTripNetRepository @Inject constructor(
                     {
                     },
                     {error->
+                        Log.d("Error", "fetchActiveTrips: $error")
                         EventBus.getDefault().post("AUTH_FAILED")
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
                         if (error.response.statusCode == 401) {
@@ -165,6 +168,38 @@ class ParentTripNetRepository @Inject constructor(
             }
         } catch (e: Exception) {
             null
+        }
+    }
+
+    fun fetchParentTripDetail(passengerTripId: Int): ParentTripDetail {
+        val tripDetailUrl = context.resources.getString(R.string.url_trip_detail) + passengerTripId
+
+        return try {
+            getAccessToken(context)?.let {
+                val (request1, response1, result1) = tripDetailUrl.httpGet()
+                    .authentication().bearer(it)
+                    .responseObject(moshiDeserializerOf(ParentTripDetail::class.java))
+
+                result1.fold(
+                    { tripDetail ->
+                        tripDetail
+                    },
+                    { error ->
+                        Log.e(
+                            "Fuel",
+                            "Error $error"
+                        )
+                        throw Exception("Error fetching trip details")
+                    }
+                )
+            }
+                ?: throw Exception("Access token is null")
+        } catch (e: Exception) {
+            Log.e(
+                "Fuel",
+                "Exception $e"
+            )
+            throw Exception("Exception fetching trip details")
         }
     }
 }

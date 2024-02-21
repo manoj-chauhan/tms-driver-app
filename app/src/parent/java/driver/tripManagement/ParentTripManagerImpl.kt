@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import driver.models.ParentPastTrip
 import driver.models.ParentTrip
+import driver.models.ParentTripDetail
 import driver.models.PlaceInfo
 import driver.models.ProcessedPoints
 import driver.models.point
@@ -36,5 +37,9 @@ class ParentTripManagerImpl @Inject constructor(
 
     override fun getPlaceLatLng(placeCode: String): PlaceInfo {
         return placeInforepository.fetchPlaceLatitudeLongitude(placeCode)
+    }
+
+    override fun getTripDetail(passengerTripId:Int): ParentTripDetail {
+        return tripNetRepository.fetchParentTripDetail(passengerTripId)
     }
 }

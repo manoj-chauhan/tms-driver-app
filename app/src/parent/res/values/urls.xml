@@ -7,5 +7,6 @@
     <string name="url_trip_processed">&baseUrl;/matrix/processed/</string>
     <string name="url_past_trips">&baseUrl;/parents/pastTrips</string>
     <string name="url_place_info">&baseUrl;/places/</string>
+    <string name="url_trip_detail">&baseUrl;parents/activeTrips/</string>
 
 </resources>

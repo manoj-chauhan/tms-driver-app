@@ -8,7 +8,7 @@ data class ParentPastTrip (
      val childName :  String ,
      val childSchool :  String ,
      val childStandard :  String ,
-     val tripId : Int,
+     val passengerTripId: Int,
      val tripCode :  String ,
      val tripName :  String,
      val driverName : String?,

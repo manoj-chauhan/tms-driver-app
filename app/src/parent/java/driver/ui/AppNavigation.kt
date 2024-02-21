@@ -37,7 +37,7 @@ fun AppNavigationHost(
     var userProfile by remember { mutableStateOf(false) }
     var selectedAssignmentCode by remember { mutableStateOf("") }
     var operatorId by remember { mutableIntStateOf(0) }
-    var tripId by remember { mutableIntStateOf(0) }
+    var passengerTripId by remember { mutableIntStateOf(0) }
     var boardingPlaceId by remember { mutableStateOf("") }
     var deBoardingPlaceId by remember { mutableStateOf("") }
 
@@ -55,10 +55,10 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
-            MapsActivityContent(navController, operatorId, selectedAssignmentCode,deBoardingPlaceId, boardingPlaceId)
+            MapsActivityContent(navController, passengerTripId, selectedAssignmentCode,deBoardingPlaceId, boardingPlaceId)
         }
         composable("past-assignment-detail") {
-            PastActivityContent(navController, operatorId, selectedAssignmentCode)
+            PastActivityContent(navController, passengerTripId, selectedAssignmentCode)
         }
         composable("user-profile") {
             userProfileView(navController)
@@ -68,7 +68,7 @@ fun AppNavigationHost(
                 navController = navController,
                 onTripSelected = {
                     selectedAssignmentCode = it.tripCode
-                    tripId = it.tripId
+                    passengerTripId = it.passengerTripId
                     operatorId = it.companyId
                     deBoardingPlaceId= "MPS"
                     boardingPlaceId = "WYC"
@@ -89,7 +89,7 @@ fun AppNavigationHost(
             pastTrips(navHostController = navController, screen = "app",
                 onTripSelected = {
                 selectedAssignmentCode = it.tripCode
-                tripId = it.tripId
+                passengerTripId = it.passengerTripId
                 operatorId = 20
                 deBoardingPlaceId= "MPS"
                 boardingPlaceId = "WYC"

@@ -6,8 +6,8 @@ import com.squareup.moshi.JsonClass
 data class ParentTrip(
     var tripCode: String,
     var tripName: String,
+    var passengerTripId:Int,
     var driverName: String,
-    var tripId: Int,
     var vehicleNumber: String,
     var status: String,
     var companyId: Int = 20 ,
@@ -20,6 +20,8 @@ data class ParentTrip(
     val lastUpdateTime: String,
     val deBoardingPlaceName:String,
     val boardingPlaceName: String,
-//    val boardingPlaceId:String = "MPS",
-//    val deBoardingPlaceId:String
+    val boardingPlaceId:String ,
+    val deBoardingPlaceId:String,
+    val tripTime:String,
+    val routeId:Int,
 )

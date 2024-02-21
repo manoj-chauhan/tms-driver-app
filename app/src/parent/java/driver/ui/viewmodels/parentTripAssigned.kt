@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.models.ParentPastTrip
 import driver.models.ParentTrip
+import driver.models.ParentTripDetail
 import driver.models.ProcessedPoints
 import driver.models.point
 import driver.tripManagement.ParentTripManager
@@ -32,6 +33,18 @@ class parentTripAssigned @Inject constructor(private val parentTripManager: Pare
     private val  _pastTrips: MutableStateFlow<List<ParentPastTrip>?> = MutableStateFlow(null)
     val pastTripList: StateFlow<List<ParentPastTrip>?> = _pastTrips.asStateFlow()
 
+    private val _assignmentDetail: MutableStateFlow<ParentTripDetail?> = MutableStateFlow(null)
+    val assignmentDetail: StateFlow<ParentTripDetail?> = _assignmentDetail.asStateFlow()
+
+    fun fetchTripDetails(context: Context, passengerTripId:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            val tripDetail = parentTripManager.getTripDetail(passengerTripId)
+            _assignmentDetail.update { _ ->
+                tripDetail
+            }
+        }
+
+    }
 
     fun fetchParentTrip(context: Context){
 

@@ -30,9 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -76,9 +73,6 @@ fun HomeScreen(
 
 ) {
     val context = LocalContext.current
-
-    var expander by remember { mutableStateOf(false) }
-    var userProfile by remember { mutableStateOf(false) }
 
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -183,7 +177,6 @@ fun HomeScreen(
                 if (isConnected) {
                     val currentAssignmentData by vm.parentTrip.collectAsStateWithLifecycle()
                     vm.fetchParentTrip(context = context)
-
                     val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
                     vm.fetchParentPastTrip()
 
@@ -213,7 +206,11 @@ fun HomeScreen(
                                     Image(
                                         painter = painterResource(id = R.drawable.image),
                                         contentDescription = "",
-                                        modifier = Modifier.padding(end = 12.dp).height(250.dp).width(250.dp).clickable { navController.navigate("notification") },
+                                        modifier = Modifier
+                                            .padding(end = 12.dp)
+                                            .height(250.dp)
+                                            .width(250.dp)
+                                            .clickable { navController.navigate("notification") },
                                         contentScale = ContentScale.FillBounds
                                     )
                                 }

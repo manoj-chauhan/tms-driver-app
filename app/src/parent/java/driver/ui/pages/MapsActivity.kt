@@ -51,7 +51,6 @@ import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import driver.ui.viewmodels.parentTripAssigned
-import driver.ui.viewmodels.placeDetailViewModel
 import kotlin.math.abs
 import kotlin.math.log2
 import kotlin.math.max
@@ -59,7 +58,7 @@ import kotlin.math.max
 @Composable
 fun MapsActivityContent(
     navController: NavHostController,
-    operatorId: Int,
+    passengerTripId: Int,
     tripCode: String,
     deb: String,
     bord: String
@@ -68,15 +67,9 @@ fun MapsActivityContent(
     val vm: parentTripAssigned = hiltViewModel()
     val context = LocalContext.current
 
-    val pt: placeDetailViewModel = hiltViewModel()
-    val currentPlaceInfo by pt.placeInfo.collectAsStateWithLifecycle()
-    val debcoord = pt.fetchPlaceCoordinates(deb)
-    val bordcoord = pt.fetchPlaceCoordinates(bord)
+    val assignmentDetail by vm.assignmentDetail.collectAsStateWithLifecycle()
+    vm.fetchTripDetails(context, passengerTripId)
 
-    val places = listOf(
-        "Maharaja Agrasen " to debcoord,
-        "Western Yamuna kannal" to bordcoord
-    )
     val gradient = Brush.linearGradient(
         listOf(
             Color(android.graphics.Color.parseColor("#FFFFFF")),
@@ -432,12 +425,12 @@ fun MapsActivityContent(
 
                         }
                     }
-                    GoogleMapView(
-                        modifier = Modifier.fillMaxWidth(),
-                        operatorId = operatorId,
-                        tripCode = tripCode,
-                        onMapLoaded = {}
-                    )
+//                    GoogleMapView(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        passengerTripId = passengerTripId,
+//                        tripCode = tripCode,
+//                        onMapLoaded = {}
+//                    )
                 }
 
             }
