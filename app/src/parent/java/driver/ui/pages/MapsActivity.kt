@@ -155,19 +155,21 @@ fun MapsActivityContent(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = "Ankit Verma",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 14.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.W700
+                                assignmentDetail?.passengerName?.let {
+                                    Text(
+                                        text = it,
+                                        style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 14.sp,
+                                            fontFamily = fontStyle,
+                                            fontWeight = FontWeight.W700
+                                        )
                                     )
-                                )
+                                }
 
 
                                 Text(
-                                    text = "12 Jun 03:00 am",
+                                    text = assignmentDetail?.tripDate + assignmentDetail?.tripTime,
                                     style = TextStyle(
                                         color = gry,
                                         fontSize = 12.sp,
@@ -285,15 +287,17 @@ fun MapsActivityContent(
                                     )
                                     .width(140.dp)
                                     .padding(5.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                                    Text(
-                                        text = "DL1SA1234",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 11.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W400
+                                    assignmentDetail?.let {
+                                        Text(
+                                            text = it.vehicleNumber,
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 11.sp,
+                                                fontFamily = fontStyle,
+                                                fontWeight = FontWeight.W400
+                                            )
                                         )
-                                    )
+                                    }
                                 }
 
                                 Row(modifier = Modifier
@@ -303,15 +307,17 @@ fun MapsActivityContent(
                                     )
                                     .width(140.dp)
                                     .padding(5.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                                    Text(
-                                        text = "Suraj Maheshwari",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 11.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W400
+                                    assignmentDetail?.let {
+                                        Text(
+                                            text = it.driverName,
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 11.sp,
+                                                fontFamily = fontStyle,
+                                                fontWeight = FontWeight.W400
+                                            )
                                         )
-                                    )
+                                    }
                                 }
 
                             }
@@ -338,9 +344,9 @@ fun MapsActivityContent(
                                                     fontWeight = FontWeight.W400
                                                 )
                                             )
-
+                                            val estimatedDistance = assignmentDetail?.estDistance?.div(1000)
                                             Text(
-                                                text = "12 km",
+                                                text ="$estimatedDistance km",
                                                 style = TextStyle(
                                                     color = Color.Black,
                                                     fontSize = 12.sp,
@@ -359,9 +365,9 @@ fun MapsActivityContent(
                                                     fontWeight = FontWeight.W400
                                                 )
                                             )
-
+                                            val distanceCoveredKm = assignmentDetail?.distanceCovered?.div(1000)
                                             Text(
-                                                text = "12 km",
+                                                text = "$distanceCoveredKm km",
                                                 style = TextStyle(
                                                     color = Color.Black,
                                                     fontSize = 12.sp,
@@ -390,17 +396,41 @@ fun MapsActivityContent(
                                                     fontWeight = FontWeight.W400
                                                 )
                                             )
+                                            val estimatedTimeHours: Int? = assignmentDetail?.estTime?.div(60)?.toInt()
 
-
-                                            Text(
-                                                text = "1 hour",
-                                                style = TextStyle(
-                                                    color = Color.Black,
-                                                    fontSize = 12.sp,
-                                                    fontFamily = fontStyle,
-                                                    fontWeight = FontWeight.W400
+                                            if(estimatedTimeHours == 0){
+                                                Text(
+                                                    text = "${
+                                                        assignmentDetail?.estTime?.rem(
+                                                            60
+                                                        )?.toInt()
+                                                    }" + " min",
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 12.sp,
+                                                        fontFamily = fontStyle,
+                                                        fontWeight = FontWeight.W400
+                                                    )
                                                 )
-                                            )
+                                            }else {
+                                                Text(
+                                                    text = "${
+                                                        assignmentDetail?.estTime?.div(
+                                                            60
+                                                        )
+                                                    }" + " hr " + "${
+                                                        assignmentDetail?.estTime?.rem(
+                                                            60
+                                                        )
+                                                    }" + " min",
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 12.sp,
+                                                        fontFamily = fontStyle,
+                                                        fontWeight = FontWeight.W400
+                                                    )
+                                                )
+                                            }
                                         }
                                         Column(modifier = Modifier.fillMaxWidth()) {
                                             Text(
@@ -412,16 +442,41 @@ fun MapsActivityContent(
                                                     fontWeight = FontWeight.W400
                                                 )
                                             )
+                                            val travelTimeHours:Int? = assignmentDetail?.travelTime?.div(60)?.toInt()
 
-                                            Text(
-                                                text = "1 Hour 12 Mins",
-                                                style = TextStyle(
-                                                    color = Color.Black,
-                                                    fontSize = 12.sp,
-                                                    fontFamily = fontStyle,
-                                                    fontWeight = FontWeight.W400
+                                            if(travelTimeHours == 0){
+                                                Text(
+                                                    text = "${
+                                                        assignmentDetail?.travelTime?.rem(
+                                                            60
+                                                        )?.toInt()
+                                                    }" + " min",
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 12.sp,
+                                                        fontFamily = fontStyle,
+                                                        fontWeight = FontWeight.W400
+                                                    )
                                                 )
-                                            )
+                                            }else {
+                                                Text(
+                                                    text = "${
+                                                        assignmentDetail?.travelTime?.div(
+                                                            60
+                                                        )?.toInt()
+                                                    }" + " hr " + "${
+                                                        assignmentDetail?.travelTime?.rem(
+                                                            60
+                                                        )?.toInt()
+                                                    }" + " min",
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 12.sp,
+                                                        fontFamily = fontStyle,
+                                                        fontWeight = FontWeight.W400
+                                                    )
+                                                )
+                                            }
                                         }
 
                                     }
