@@ -1,5 +1,6 @@
 package driver.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -70,6 +71,8 @@ fun MapsActivityContent(
     val assignmentDetail by vm.assignmentDetail.collectAsStateWithLifecycle()
     vm.fetchTripDetails(context, passengerTripId)
 
+    Log.d("Detail", "MapsActivityContent: $assignmentDetail")
+
     val gradient = Brush.linearGradient(
         listOf(
             Color(android.graphics.Color.parseColor("#FFFFFF")),
@@ -109,9 +112,11 @@ fun MapsActivityContent(
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "",
-                            modifier = Modifier.height(25.dp).clickable {
-                                navController.popBackStack()
-                            },
+                            modifier = Modifier
+                                .height(25.dp)
+                                .clickable {
+                                    navController.popBackStack()
+                                },
                         )
                     }
                     Text(

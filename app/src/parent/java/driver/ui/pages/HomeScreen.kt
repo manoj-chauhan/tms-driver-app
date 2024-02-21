@@ -180,6 +180,12 @@ fun HomeScreen(
                     val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
                     vm.fetchParentPastTrip()
 
+                    if(currentAssignmentData == null){
+                        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                            LoadingAnimation()
+                        }
+                    }
+
                     Column(modifier = Modifier.fillMaxSize()) {
 
                         if (currentAssignmentData?.size == 0 && pastTrip?.size == 0) {
