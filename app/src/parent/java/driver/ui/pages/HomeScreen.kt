@@ -165,6 +165,7 @@ fun HomeScreen(
                             contentDescription = "", modifier = Modifier
                                 .height(26.dp)
                                 .width(50.dp)
+                                .clickable { navController.navigate("notification") }
                                 .zIndex(2f)
                         )
                     }
@@ -216,7 +217,7 @@ fun HomeScreen(
                                             .padding(end = 12.dp)
                                             .height(250.dp)
                                             .width(250.dp)
-                                            .clickable { navController.navigate("notification") },
+                                            .clickable {  },
                                         contentScale = ContentScale.FillBounds
                                     )
                                 }

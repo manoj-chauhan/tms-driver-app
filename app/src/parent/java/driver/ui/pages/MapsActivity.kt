@@ -638,7 +638,7 @@ fun currentDriverLoc(driverLatLng:LatLng, onMapLoaded: () -> Unit) {
     val context = LocalContext.current
 
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(driverLatLng, 13f)
+        position = CameraPosition.fromLatLngZoom(driverLatLng, 18f)
     }
     GoogleMap(
         modifier = Modifier
@@ -652,7 +652,6 @@ fun currentDriverLoc(driverLatLng:LatLng, onMapLoaded: () -> Unit) {
         Marker(
             state = rememberMarkerState(position = driverLatLng),
             title = "",
-            icon=BitmapFromVector(context, R.drawable.car)
         )
     }
 }
