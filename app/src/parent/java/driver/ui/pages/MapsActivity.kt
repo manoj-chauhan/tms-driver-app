@@ -362,8 +362,9 @@ fun MapsActivityContent(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center
                                     ) {
+                                        it.vehicleNumber?.let { it1 ->
                                             Text(
-                                                text = it.vehicleNumber,
+                                                text = it1,
                                                 style = TextStyle(
                                                     color = Color.Black,
                                                     fontSize = 11.sp,
@@ -371,6 +372,7 @@ fun MapsActivityContent(
                                                     fontWeight = FontWeight.W400
                                                 )
                                             )
+                                        }
                                     }
 
                                     Row(
@@ -384,8 +386,9 @@ fun MapsActivityContent(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center
                                     ) {
+                                        it.driverName?.let { it1 ->
                                             Text(
-                                                text = it.driverName,
+                                                text = it1,
                                                 style = TextStyle(
                                                     color = Color.Black,
                                                     fontSize = 11.sp,
@@ -393,6 +396,7 @@ fun MapsActivityContent(
                                                     fontWeight = FontWeight.W400
                                                 )
                                             )
+                                        }
                                     }
 
                                 }
@@ -580,6 +584,8 @@ fun GoogleMapView(
     onMapLoaded: () -> Unit,
     vm: parentTripDetail = hiltViewModel()
 ) {
+
+    Log.d("Google map", "GoogleMapView: $operatorId")
     val context = LocalContext.current
     vm.fetchTripRouteCoordinates(context = context, operatorId, tripCode)
     vm.fetchTripProcessedCoordinates(context, operatorId, tripCode)

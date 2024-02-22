@@ -61,7 +61,7 @@ fun AppNavigationHost(
             MapsActivityContent(navController, passengerTripId, selectedAssignmentCode,operatorId)
         }
         composable("past-assignment-detail") {
-            PastActivityContent(navController, 20, selectedAssignmentCode)
+            PastActivityContent(navController, 1,passengerTripId, selectedAssignmentCode)
         }
         composable("user-profile") {
             userProfileView(navController)
@@ -79,7 +79,8 @@ fun AppNavigationHost(
                 },
                 onPastTripSelected = {
                     selectedAssignmentCode = it.tripCode
-                    operatorId = 20
+                    operatorId = 1
+                    passengerTripId = it.passengerTripId
                     navController.navigate("past-assignment-detail")
                 }
             )
@@ -102,10 +103,10 @@ fun AppNavigationHost(
                 onTripSelected = {
                 selectedAssignmentCode = it.tripCode
                 passengerTripId = it.passengerTripId
-                operatorId = 20
+                operatorId = 1
                 deBoardingPlaceId= "MPS"
                 boardingPlaceId = "WYC"
-                navController.navigate("current-assignment-detail")
+                navController.navigate("past-assignment-detail")
             })
 
         }
