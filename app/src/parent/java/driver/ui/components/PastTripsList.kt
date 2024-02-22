@@ -135,12 +135,6 @@ fun pastTrips(
                                     }
                                 }
                             }
-                        } else {
-                            LazyColumn {
-                                items(it) { trip ->
-                                    past_trip(trip, onClick = onTripSelected)
-                                }
-                            }
                         }
                     }
                 }
@@ -160,7 +154,7 @@ fun pastTrips(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 16.dp, top = 18.dp)
+                                .padding(start = 16.dp, top = 14.dp)
                                 .height(30.dp)
                         ) {
                             Row(
@@ -174,72 +168,34 @@ fun pastTrips(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Outlined.ArrowBack,
-                                        contentDescription = "Edit Icon",
-                                        modifier = Modifier.height(25.dp).clickable {
-                                            navHostController.popBackStack()
-                                        },
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .height(25.dp)
+                                            .clickable {
+                                                navHostController.popBackStack()
+                                            },
                                     )
                                 }
-                                Text(
-                                    text = "Past Trip ",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 20.sp,
-                                        fontFamily = fontStyle,
-                                        fontWeight = FontWeight.W600
+                                Box(modifier = Modifier.fillMaxWidth(0.65f)) {
+                                    Text(
+                                        text = "Past Trips",
+                                        style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 18.sp,
+                                            fontFamily = fontStyle,
+                                            fontWeight = FontWeight.W600
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
 
                         pastTrip?.let {
-                            if (screen == "home") {
-                                LazyColumn {
-                                    items(it.take(3)) { trip ->
-                                        past_trip(trip, onTripSelected)
-                                    }
-                                }
-                                if (it.size >= 3) {
-                                    val text = remember {
-                                        buildAnnotatedString {
-                                            withStyle(
-                                                style = SpanStyle(
-                                                    color = gry,
-                                                    fontSize = 12.sp,
-                                                    fontWeight = FontWeight.W400
-                                                )
-                                            ) {
-                                                append("SEE ALL")
-                                            }
-                                        }
-                                    }
 
-
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(13.dp)
-                                    ) {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.End
-                                        ) {
-
-                                            ClickableText(
-                                                text = text,
-                                                onClick = { offset ->
-                                                    navHostController.navigate("past-trips-list")
-                                                }
-                                            )
-                                        }
-                                    }
-                                }
-                            } else {
                                 LazyColumn {
                                     items(it) { trip ->
                                         past_trip(trip, onClick = onTripSelected)
                                     }
-                                }
                             }
                         }
                     }
@@ -253,10 +209,16 @@ fun pastTrips(
 fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) -> Unit) {
 
     val inputFormat = SimpleDateFormat("yyyy-dd-MM")
-    val outputFormat = SimpleDateFormat("dd MMM HH:mm")
+    val outputFormat = SimpleDateFormat("dd MMM")
+
+    val tripTime = SimpleDateFormat("HH:mm:ss")
+    val outputtripTime = SimpleDateFormat(" HH:mm")
 
     val parsedDate = remember(trip.tripDate) { inputFormat.parse(trip.tripDate) }
     val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
+
+    val parsedTime = remember(trip.tripTime) {tripTime.parse(trip.tripTime) }
+    val formattedTime = remember(parsedTime) { outputtripTime.format(parsedTime) }
 
     val gry=Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle:FontFamily = FontFamily.SansSerif
@@ -301,7 +263,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
 
 
                     Text(
-                        text = formattedDate,
+                        text = formattedDate + formattedTime,
                         style = TextStyle(
                             color = gry,
                             fontSize = 12.sp,

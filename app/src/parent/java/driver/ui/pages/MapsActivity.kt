@@ -237,7 +237,7 @@ fun MapsActivityContent(
                                 val parsedDate = remember(it.tripDate) { inputFormat.parse(it.tripDate)}
                                 val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
                                 val parsedTime = remember(it.tripTime) {arrivalTime.parse(it.tripTime) }
-                                val formattedTime = remember(parsedDate) { outputArrivaltime.format(parsedTime) }
+                                val formattedTime = remember(parsedTime) { outputArrivaltime.format(parsedTime) }
 
                                     Text(
                                         text = formattedDate + formattedTime,

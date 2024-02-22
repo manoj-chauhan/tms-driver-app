@@ -223,10 +223,16 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
 @Composable
 fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
     val inputFormat = SimpleDateFormat("yyyy-dd-MM")
-    val outputFormat = SimpleDateFormat("dd MMM HH:mm")
+    val outputFormat = SimpleDateFormat("dd MMM")
+
+    val tripTime = SimpleDateFormat("HH:mm:ss")
+    val outputtripTime = SimpleDateFormat(" HH:mm")
 
     val parsedDate = remember(trip.tripDate) { inputFormat.parse(trip.tripDate) }
     val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
+
+    val parsedTime = remember(trip.tripTime) {tripTime.parse(trip.tripTime) }
+    val formattedTime = remember(parsedTime) { outputtripTime.format(parsedTime) }
 
     val fontStyle: FontFamily = FontFamily.SansSerif
 
@@ -270,7 +276,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
 
 
                     Text(
-                        text = formattedDate,
+                        text = formattedDate+ formattedTime,
                         style = TextStyle(
                             color = gry,
                             fontSize = 12.sp,
