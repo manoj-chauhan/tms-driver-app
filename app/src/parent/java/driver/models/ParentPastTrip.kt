@@ -19,5 +19,5 @@ data class ParentPastTrip (
      val tripDate :  String ,
      val tripTime :  String,
     val  routeId : Int,
-     val routeName : String
+     val routeName : String,
 )

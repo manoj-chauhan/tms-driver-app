@@ -50,6 +50,7 @@ import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import driver.ui.viewmodels.parentTripAssigned
+import driver.ui.viewmodels.parentTripDetail
 
 @Composable
 fun PastActivityContent(
@@ -417,7 +418,7 @@ fun PastActivityContent(
 
                         }
                     }
-                    GoogleMapView(
+                    PastGoogleMaps(
                         modifier = Modifier.fillMaxWidth(),
                         operatorId = operatorId,
                         tripCode = tripCode,
@@ -437,7 +438,7 @@ fun PastGoogleMaps(
     operatorId: Int,
     tripCode: String,
     onMapLoaded: () -> Unit,
-    vm: parentTripAssigned = hiltViewModel()
+    vm: parentTripDetail = hiltViewModel()
 ) {
     val context = LocalContext.current
     vm.fetchTripRouteCoordinates(context = context, operatorId, tripCode)

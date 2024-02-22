@@ -61,7 +61,7 @@ fun AppNavigationHost(
             MapsActivityContent(navController, passengerTripId, selectedAssignmentCode,operatorId)
         }
         composable("past-assignment-detail") {
-            PastActivityContent(navController, passengerTripId, selectedAssignmentCode)
+            PastActivityContent(navController, 20, selectedAssignmentCode)
         }
         composable("user-profile") {
             userProfileView(navController)

@@ -55,7 +55,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
-import driver.ui.viewmodels.parentTripAssigned
+import driver.ui.viewmodels.parentTripDetail
 import java.text.SimpleDateFormat
 import kotlin.math.abs
 import kotlin.math.log2
@@ -69,7 +69,7 @@ fun MapsActivityContent(
     operatorId: Int
 ) {
 
-    val vm: parentTripAssigned = hiltViewModel()
+    val vm: parentTripDetail = hiltViewModel()
     val context = LocalContext.current
 
     val assignmentDetail by vm.assignmentDetail.collectAsStateWithLifecycle()
@@ -578,7 +578,7 @@ fun GoogleMapView(
     operatorId: Int,
     tripCode: String,
     onMapLoaded: () -> Unit,
-    vm: parentTripAssigned = hiltViewModel()
+    vm: parentTripDetail = hiltViewModel()
 ) {
     val context = LocalContext.current
     vm.fetchTripRouteCoordinates(context = context, operatorId, tripCode)
@@ -615,6 +615,7 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoad
         )
     }
 
+    Log.d("List", "process:$routePoints ")
     val first = routePoints.first()
     val lastPoint = routePoints.last()
     val cameraPosition = if (processedPoints == null || processedPoints.isEmpty()) {
@@ -671,18 +672,8 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoad
     }
 }
 
-@Composable
-fun ReloadButton(onReloadClicked: () -> Unit) {
-    Button(
-        onClick = onReloadClicked,
-        modifier = Modifier.padding(end = 16.dp)
-    ) {
-        Text("Reload")
-    }
-}
-
 fun calculateZoomLevel(bounds: LatLngBounds): Float {
-    val ZOOM_LEVEL_CONSTANT = 5
+    val ZOOM_LEVEL_CONSTANT = 8.5
 
     val sw = bounds.southwest
     val ne = bounds.northeast
