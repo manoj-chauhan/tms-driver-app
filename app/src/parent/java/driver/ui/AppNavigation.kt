@@ -3,6 +3,7 @@ package driver.ui
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -10,6 +11,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,6 +20,7 @@ import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.ui.components.pastTrips
+import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
@@ -55,7 +58,7 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
-            MapsActivityContent(navController, passengerTripId, selectedAssignmentCode,deBoardingPlaceId, boardingPlaceId)
+            MapsActivityContent(navController, passengerTripId, selectedAssignmentCode,operatorId)
         }
         composable("past-assignment-detail") {
             PastActivityContent(navController, passengerTripId, selectedAssignmentCode)
@@ -83,6 +86,15 @@ fun AppNavigationHost(
         }
         composable("login") {
 
+        }
+
+        composable("map-screen"){
+            GoogleMapView(
+                modifier = Modifier.fillMaxWidth(),
+                operatorId = operatorId,
+                tripCode = selectedAssignmentCode,
+                onMapLoaded = {}
+            )
         }
 
         composable("past-trips-list") {

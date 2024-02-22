@@ -182,7 +182,7 @@ fun HomeScreen(
 
                     if(currentAssignmentData == null){
                         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                            LoadingAnimation()
+                            LoadingDialog()
                         }
                     }
 

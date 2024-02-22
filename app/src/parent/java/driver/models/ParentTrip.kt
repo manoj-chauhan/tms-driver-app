@@ -10,7 +10,7 @@ data class ParentTrip(
     var driverName: String,
     var vehicleNumber: String,
     var status: String,
-    var companyId: Int = 20 ,
+    var companyId: Int = 1 ,
     var tripDate: String,
     var routeName: String?,
     var childName: String,
