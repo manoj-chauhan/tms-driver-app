@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.models.ParentTripDetail
 import driver.models.ProcessedPoints
+import driver.models.currentDriverLocation
 import driver.models.point
 import driver.tripManagement.ParentTripManager
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,9 @@ import javax.inject.Inject
 class parentTripDetail @Inject constructor(private val parentTripManager: ParentTripManager) : ViewModel() {
     private val _assignmentDetail: MutableStateFlow<ParentTripDetail?> = MutableStateFlow(null)
     val assignmentDetail: StateFlow<ParentTripDetail?> = _assignmentDetail.asStateFlow()
+
+    private val _currentDriver: MutableStateFlow<currentDriverLocation?> = MutableStateFlow(null)
+    val currentDriver: StateFlow<currentDriverLocation?> = _currentDriver.asStateFlow()
 
     private val  _points: MutableStateFlow<List<point>?> = MutableStateFlow(null)
     val points: StateFlow<List<point>?> = _points.asStateFlow()
@@ -54,6 +58,15 @@ class parentTripDetail @Inject constructor(private val parentTripManager: Parent
             }
         }
 
+    }
+
+    fun fetchDriverLocation(passengerTripId: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            val driverLoc = parentTripManager.getDriverLoc(passengerTripId)
+            _currentDriver.update { _ ->
+                driverLoc
+            }
+        }
     }
 
 

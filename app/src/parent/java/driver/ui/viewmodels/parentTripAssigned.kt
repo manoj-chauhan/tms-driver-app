@@ -20,14 +20,8 @@ class parentTripAssigned @Inject constructor(private val parentTripManager: Pare
     private val  _parentTrip: MutableStateFlow<List<ParentTrip>?> = MutableStateFlow(null)
     val parentTrip: StateFlow<List<ParentTrip>?> = _parentTrip.asStateFlow()
 
-
-
-
     private val  _pastTrips: MutableStateFlow<List<ParentPastTrip>?> = MutableStateFlow(null)
     val pastTripList: StateFlow<List<ParentPastTrip>?> = _pastTrips.asStateFlow()
-
-
-
 
 
     fun fetchParentTrip(context: Context){
@@ -40,9 +34,6 @@ class parentTripAssigned @Inject constructor(private val parentTripManager: Pare
         }
 
     }
-
-
-
 
     fun fetchParentPastTrip() {
         viewModelScope.launch(Dispatchers.IO) {

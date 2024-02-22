@@ -7,6 +7,7 @@ import driver.models.ParentTrip
 import driver.models.ParentTripDetail
 import driver.models.PlaceInfo
 import driver.models.ProcessedPoints
+import driver.models.currentDriverLocation
 import driver.models.point
 import driver.network.ParentTripNetRepository
 import driver.network.PlaceInfoNetRepository
@@ -41,5 +42,9 @@ class ParentTripManagerImpl @Inject constructor(
 
     override fun getTripDetail(passengerTripId:Int): ParentTripDetail {
         return tripNetRepository.fetchParentTripDetail(passengerTripId)
+    }
+
+    override fun getDriverLoc(passengerTripId: Int): currentDriverLocation {
+        return tripNetRepository.fetchDriverLiveLoc(passengerTripId)
     }
 }

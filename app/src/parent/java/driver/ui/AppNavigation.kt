@@ -92,7 +92,7 @@ fun AppNavigationHost(
         composable("map-screen"){
             GoogleMapView(
                 modifier = Modifier.fillMaxWidth(),
-                operatorId = operatorId,
+                passengerTripId = passengerTripId,
                 tripCode = selectedAssignmentCode,
                 onMapLoaded = {}
             )

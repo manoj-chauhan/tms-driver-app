@@ -5,6 +5,7 @@ import driver.models.ParentTrip
 import driver.models.ParentTripDetail
 import driver.models.PlaceInfo
 import driver.models.ProcessedPoints
+import driver.models.currentDriverLocation
 import driver.models.point
 
 interface ParentTripManager {
@@ -18,5 +19,7 @@ interface ParentTripManager {
     fun getPlaceLatLng(placeCode:String): PlaceInfo
 
     fun getTripDetail(passengerTripId:Int): ParentTripDetail
+
+    fun getDriverLoc(passengerTripId: Int):currentDriverLocation
 
 }

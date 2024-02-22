@@ -16,6 +16,7 @@ import driver.models.ParentPastTrip
 import driver.models.ParentTrip
 import driver.models.ParentTripDetail
 import driver.models.ProcessedPoints
+import driver.models.currentDriverLocation
 import driver.models.point
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -190,6 +191,38 @@ class ParentTripNetRepository @Inject constructor(
                             "Error $error"
                         )
                         throw Exception("Error fetching trip details")
+                    }
+                )
+            }
+                ?: throw Exception("Access token is null")
+        } catch (e: Exception) {
+            Log.e(
+                "Fuel",
+                "Exception $e"
+            )
+            throw Exception("Exception fetching trip details")
+        }
+    }
+
+    fun fetchDriverLiveLoc(passengerTripId: Int): currentDriverLocation {
+        val driverLiveUrl = context.resources.getString(R.string.url_driver_location) + passengerTripId
+
+        return try {
+            getAccessToken(context)?.let {
+                val (request1, response1, result1) = driverLiveUrl.httpGet()
+                    .authentication().bearer(it)
+                    .responseObject(moshiDeserializerOf(currentDriverLocation::class.java))
+
+                result1.fold(
+                    { currentLocation ->
+                        currentLocation
+                    },
+                    { error ->
+                        Log.e(
+                            "Fuel",
+                            "Error $error"
+                        )
+                        throw Exception("Error fetching driver details")
                     }
                 )
             }
