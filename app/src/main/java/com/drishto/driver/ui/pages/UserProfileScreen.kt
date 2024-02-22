@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,7 +41,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,7 +57,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -73,7 +70,6 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.drishto.driver.PhoneNumberActivity
-import com.drishto.driver.R
 import com.drishto.driver.network.clearSession
 import com.drishto.driver.ui.viewmodels.ChildrenListViewModel
 import com.drishto.driver.ui.viewmodels.CompanyPositions
@@ -105,9 +101,58 @@ fun UserProfile() {
         "DRIVER" in company.roles
     }
 
+    val gry = Color(android.graphics.Color.parseColor("#838383"))
+
     val buildConfigClass: Class<*> = Class.forName("com.drishto.driver.BuildConfig")
     val buildVariantField: Field = buildConfigClass.getDeclaredField("BUILD_VARIANT")
     val buildVariantValue: String = buildVariantField.get(null) as String
+
+    val userProfile by vm.userImage.collectAsStateWithLifecycle()
+    LaunchedEffect(userDetail) {
+        userDetail?.let {
+            vm.getUploadedImage(it.id)
+        }
+    }
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    var bitmap by remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            imageUri = result.uriContent
+        } else {
+            val exception = result.error
+        }
+    }
+    val imagePickerLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+            val cropOptions = CropImageContractOptions(uri, CropImageOptions().apply {
+                aspectRatioX = 4
+                aspectRatioY = 4
+                fixAspectRatio = false
+                maxCropResultWidth = 550
+                maxCropResultHeight = 550
+                minCropWindowWidth = 550
+                minCropWindowHeight = 550
+            })
+            imageCropLauncher.launch(cropOptions)
+        }
+
+    var imageUploadCompleted by remember { mutableStateOf(false) }
+
+    if (imageUri != null && !imageUploadCompleted) {
+        Log.d("Hey", "imageUri: $imageUri")
+        val stream = ByteArrayOutputStream()
+        bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+        val byteArray: ByteArray = stream.toByteArray()
+        userDetail?.id?.let { sendToServer(file = byteArray, it) }
+        imageUploadCompleted = true
+    }
 
 
     Box(
@@ -122,23 +167,97 @@ fun UserProfile() {
         ) {
             Box(
                 modifier = Modifier
-                    .size(200.dp)
-                    .offset(y = 20.dp)
-                    .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
-                    .align(Alignment.CenterHorizontally)
-                    .zIndex(2f)
-
+                    .height(50.dp)
+                    .align(Alignment.Start)
+                    .padding(top = 20.dp, end = 20.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.signal),
+                Box(modifier = Modifier
+                    .width(50.dp)
+                    .padding(end = 20.dp)
+                    .fillMaxHeight()
+                    .clickable {
+//                        navController.popBackStack()
+                    }) {
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowBack,
+                        contentDescription = "Edit Icon",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .size(15.dp)
+                            .clickable {
+//                                navController.popBackStack()
+                            },
+                    )
+                }
 
-                    contentDescription = null, // Provide a proper content description
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .zIndex(2f)
-                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.23f)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.White, shape = CircleShape)
+                            .width(150.dp)
+                            .height(150.dp)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        if (userProfile != null) {
+                            userProfile?.let { loadedBitmap ->
+                                Image(
+                                    bitmap = loadedBitmap.asImageBitmap(),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .width(150.dp)
+                                        .height(150.dp)
+                                        .clip(CircleShape)
+                                        .border(width = 0.dp, Color.White, shape = CircleShape),
+                                    contentScale = ContentScale.FillBounds
+                                )
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .background(Color.White, shape = CircleShape)
+                                    .width(150.dp)
+                                    .height(150.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Image,
+                                    contentDescription = "Edit Icon",
+                                    tint = gry,
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                        .align(Alignment.Center)
+                                )
+                            }
 
-
+                        }
+                        Box(
+                            modifier = Modifier
+                                .background(Color.White, shape = CircleShape)
+                                .width(50.dp)
+                                .height(50.dp)
+                                .align(Alignment.BottomEnd)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.CameraAlt,
+                                contentDescription = "Edit Icon",
+                                tint = gry,
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .clickable { imagePickerLauncher.launch("image/*") }
+                                    .align(Alignment.Center)
+                            )
+                        }
+                    }
+                }
             }
             Card(
                 modifier = Modifier
@@ -382,7 +501,7 @@ fun childList() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${children.name} s/o hard COded ",
+                    text = "${children.name} s/o ${children.guardianName} ",
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 12.sp,

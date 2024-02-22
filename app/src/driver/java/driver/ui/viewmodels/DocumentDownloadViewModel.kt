@@ -13,10 +13,10 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.kittinunf.fuel.core.FuelManager
-import com.github.kittinunf.fuel.core.extensions.authentication
 import com.drishto.driver.R
 import com.drishto.driver.network.getAccessToken
+import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.core.extensions.authentication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -41,6 +41,7 @@ class DocumentDownloadViewModel : ViewModel() {
 
                         file.writeBytes(data)
                         showDownloadCompleteNotification(context, "Download Complete", "Your download Completed", file.toString())
+
                     Log.d("Fuel", "File downloaded and saved to: ${file.absolutePath}")
 
                 }

@@ -7,6 +7,7 @@ import com.squareup.moshi.JsonClass
 class Student(
     val name: String,
     val standard: String,
+    val guardianName:String,
     val dateOfBirth: String,
     val gender: String,
     val schoolName: String,
