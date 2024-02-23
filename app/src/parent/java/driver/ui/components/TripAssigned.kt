@@ -222,7 +222,7 @@ fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit)
 
 @Composable
 fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
-    val inputFormat = SimpleDateFormat("yyyy-dd-MM")
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd")
     val outputFormat = SimpleDateFormat("dd MMM")
 
     val tripTime = SimpleDateFormat("HH:mm:ss")

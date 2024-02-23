@@ -2,6 +2,7 @@ package driver.network
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
@@ -23,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
+
 
 class ParentTripNetRepository @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -207,11 +209,13 @@ class ParentTripNetRepository @Inject constructor(
     fun fetchDriverLiveLoc(passengerTripId: Int): currentDriverLocation {
         val driverLiveUrl = context.resources.getString(R.string.url_driver_location) + passengerTripId
 
+        Log.d("0","$driverLiveUrl")
         return try {
             getAccessToken(context)?.let {
                 val (request1, response1, result1) = driverLiveUrl.httpGet()
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(currentDriverLocation::class.java))
+                Log.d("TAG", "fetchDriverLiveLoc: $it")
 
                 result1.fold(
                     { currentLocation ->
@@ -222,6 +226,13 @@ class ParentTripNetRepository @Inject constructor(
                             "Fuel",
                             "Error $error"
                         )
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                        if (error.response.statusCode == 400) {
+                            Log.d("HERe is error", "fetchDriverLiveLoc: $errorResponse")
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    Toast.makeText(context, errorResponse, Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         throw Exception("Error fetching driver details")
                     }
                 )

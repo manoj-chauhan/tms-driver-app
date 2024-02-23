@@ -95,7 +95,7 @@ fun MapsActivityContent(
     val fontStyle: FontFamily = FontFamily.SansSerif
     val back = Color(android.graphics.Color.parseColor("#F5F5F5"))
 
-    val inputFormat = SimpleDateFormat("yyyy-dd-MM")
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd")
     val outputFormat = SimpleDateFormat("dd MMM")
 
     val arrivalTime = SimpleDateFormat("HH:mm:ss")
@@ -610,10 +610,9 @@ fun GoogleMapView(
 //        process(it, processedPoints, onMapLoaded = {})
 //    }
 
-    currentDriver?.let { currentDriverLoc(LatLng(it.latitude, it.longitude), onMapLoaded = {}) }
-
-
-
+    if(currentDriver != null) {
+        currentDriver?.let { currentDriverLoc(LatLng(it.latitude, it.longitude), onMapLoaded = {}) }
+    }
 }
 @Composable
 fun currentDriverLoc(driverLatLng:LatLng, onMapLoaded: () -> Unit) {

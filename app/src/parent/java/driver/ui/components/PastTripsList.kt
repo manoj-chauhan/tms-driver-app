@@ -208,7 +208,7 @@ fun pastTrips(
 @Composable
 fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) -> Unit) {
 
-    val inputFormat = SimpleDateFormat("yyyy-dd-MM")
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd")
     val outputFormat = SimpleDateFormat("dd MMM")
 
     val tripTime = SimpleDateFormat("HH:mm:ss")
