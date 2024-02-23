@@ -589,7 +589,8 @@ class PhoneNumberActivity : ComponentActivity() {
             }
 
             val token = task.result
-            Log.d("TAG", "updateUI: $token")
+            Log.d("LIFE", "FCM Token: $token")
+
 
             authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
                 val myIntent = Intent(this, MainActivity::class.java)

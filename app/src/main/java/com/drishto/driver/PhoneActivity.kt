@@ -494,7 +494,7 @@ class OTPActivity() : ComponentActivity() {
                 Log.w("Login", "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
             }
-            Log.d("TAG", "updateUI: Inside  ")
+            Log.d("TAG", "updateUI: ${task.result}  ")
             authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
                 val myIntent = Intent(this,MainActivity::class.java)
                 myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
