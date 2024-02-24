@@ -13,7 +13,7 @@ class Student(
     val schoolName: String,
     val schoolAddress: String,
     val primaryPhoneNumber: String,
-    val secondaryPhoneNumber: String,
+    val secondaryPhoneNumber: String?,
     val status: String,
     val createdBy: String,
     val createdAt: String,

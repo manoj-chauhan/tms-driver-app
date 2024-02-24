@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -459,7 +460,7 @@ fun childList() {
     val vm: ChildrenListViewModel = hiltViewModel()
 
     val childrensList by vm.childrensList.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
+    LaunchedEffect(childrensList) {
         vm.getChildrenList()
     }
 
@@ -493,60 +494,62 @@ fun childList() {
             age =AgeDisplay(dateOfBirth = it)
         }
 
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "${children.name} s/o ${children.guardianName} ",
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 12.sp,
-                        fontFamily = fontStyle,
-                        fontWeight = FontWeight.W600
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${children.name} s/o ${children.guardianName} ",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 12.sp,
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W600
+                        )
                     )
-                )
 
-                Text(
-                    text = "$age yrs",
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 12.sp,
-                        fontFamily = fontStyle,
-                        fontWeight = FontWeight.W400
+                    Text(
+                        text = "$age yrs",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 12.sp,
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W400
+                        )
                     )
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = children.schoolName,
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 12.sp,
-                        fontFamily = fontStyle,
-                        fontWeight = FontWeight.W400
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = children.schoolName,
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 12.sp,
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W400
+                        )
                     )
-                )
 
-                Text(
-                    text = "${children.standard} Std",
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 12.sp,
-                        fontFamily = fontStyle,
-                        fontWeight = FontWeight.W400
+                    Text(
+                        text = "${children.standard} Std",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 12.sp,
+                            fontFamily = fontStyle,
+                            fontWeight = FontWeight.W400
+                        )
                     )
-                )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
             }
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }

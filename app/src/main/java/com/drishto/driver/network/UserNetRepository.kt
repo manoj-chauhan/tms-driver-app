@@ -93,8 +93,9 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
                     {
 
                     },
-                    {
+                    {error->
                         EventBus.getDefault().post("AUTH_FAILED")
+                        Log.d("TAG", "getChildrenList: $error")
                     }
                 )
 
