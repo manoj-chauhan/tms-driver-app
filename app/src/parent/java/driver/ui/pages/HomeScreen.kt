@@ -103,7 +103,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            if(isConnected) {
+            if (isConnected) {
                 val vm: UserProfileViewModel = hiltViewModel()
                 val user by vm.userDetail.collectAsStateWithLifecycle()
 
@@ -147,7 +147,7 @@ fun HomeScreen(
                                         .border(width = 0.dp, Color.White, shape = CircleShape),
                                     contentScale = ContentScale.FillBounds
                                 )
-                            }else{
+                            } else {
                                 Icon(
                                     imageVector = Icons.Default.Person,
                                     contentDescription = "Edit Icon",
@@ -181,83 +181,90 @@ fun HomeScreen(
                     val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
                     vm.fetchParentPastTrip()
 
-                    if(currentAssignmentData == null){
-                        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    if (currentAssignmentData == null) {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             LoadingDialog()
                         }
                     }
-
-                    Column(modifier = Modifier.fillMaxSize()) {
-
-                        if (currentAssignmentData?.size == 0 && pastTrip?.size == 0) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Column(
-                                    modifier = Modifier.fillMaxSize(1f),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(200.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center
+                    com.google.accompanist.swiperefresh.SwipeRefresh(
+                        state = swipeRefreshState,
+                        onRefresh = vw::loadstuff
+                    ) {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            if (currentAssignmentData?.size == 0 && pastTrip?.size == 0) {
+                                Box(modifier = Modifier.fillMaxSize()) {
+                                    Column(
+                                        modifier = Modifier.fillMaxSize(1f),
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        Text(
-                                            text = "Welcome To Drishto", style = TextStyle(
-                                                color = gry,
-                                                fontSize = 20.sp,
-                                                fontWeight = FontWeight.W600,
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(200.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = "Welcome To Drishto", style = TextStyle(
+                                                    color = gry,
+                                                    fontSize = 20.sp,
+                                                    fontWeight = FontWeight.W600,
+                                                )
                                             )
+                                        }
+                                        Image(
+                                            painter = painterResource(id = R.drawable.image),
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .padding(end = 12.dp)
+                                                .height(250.dp)
+                                                .width(250.dp)
+                                                .clickable { },
+                                            contentScale = ContentScale.FillBounds
                                         )
                                     }
-                                    Image(
-                                        painter = painterResource(id = R.drawable.image),
-                                        contentDescription = "",
-                                        modifier = Modifier
-                                            .padding(end = 12.dp)
-                                            .height(250.dp)
-                                            .width(250.dp)
-                                            .clickable {  },
-                                        contentScale = ContentScale.FillBounds
+                                }
+                            }
+                            if (currentAssignmentData?.size != 0) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(13.dp, top = 20.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+
+                                    Text(
+                                        text = "Ongoing Trips ",
+                                        style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.W600,
+                                            fontFamily = fontStyle
+                                        )
                                     )
                                 }
                             }
-                        }
-                        if (currentAssignmentData?.size != 0) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(13.dp, top = 20.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-
-                                Text(
-                                    text = "Ongoing Trips ",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.W600,
-                                        fontFamily = fontStyle
-                                    )
+                            Column {
+                                currentAssignmentData?.let {
+                                    LazyColumn {
+                                        items(it) { trip ->
+                                            tripList(trip, onClick = onTripSelected)
+                                        }
+                                    }
+                                }
+                                pastTrips(
+                                    navHostController = navController,
+                                    "home",
+                                    onPastTripSelected
                                 )
                             }
                         }
 
-                        com.google.accompanist.swiperefresh.SwipeRefresh(
-                            state = swipeRefreshState,
-                            onRefresh = vw::loadstuff
-                        ) {
-                            currentAssignmentData?.let {
-                                LazyColumn {
-                                    items(it) { trip ->
-                                        tripList(trip, onClick = onTripSelected)
-                                    }
-                                }
-                            }
-                        }
-
-                        pastTrips(navHostController = navController, "home", onPastTripSelected)
                     }
                 } else {
                     Box(

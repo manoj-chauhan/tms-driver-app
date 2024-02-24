@@ -188,10 +188,11 @@ class ParentTripNetRepository @Inject constructor(
                         tripDetail
                     },
                     { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 500) {
+                            errorManager.getErrorDescription500(context, errorResponse)
+                        }
                         throw Exception("Error fetching trip details")
                     }
                 )
@@ -215,7 +216,6 @@ class ParentTripNetRepository @Inject constructor(
                 val (request1, response1, result1) = driverLiveUrl.httpGet()
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(currentDriverLocation::class.java))
-                Log.d("TAG", "fetchDriverLiveLoc: $it")
 
                 result1.fold(
                     { currentLocation ->
@@ -233,6 +233,9 @@ class ParentTripNetRepository @Inject constructor(
                                     Toast.makeText(context, errorResponse, Toast.LENGTH_SHORT).show()
                                 }
                             }
+                        if (error.response.statusCode == 500) {
+                            errorManager.getErrorDescription500(context, errorResponse)
+                        }
                         throw Exception("Error fetching driver details")
                     }
                 )
