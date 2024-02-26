@@ -1,6 +1,8 @@
 package driver.network
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import com.drishto.driver.R
@@ -176,6 +178,8 @@ class ParentTripNetRepository @Inject constructor(
 
     fun fetchParentTripDetail(passengerTripId: Int): ParentTripDetail {
         val tripDetailUrl = context.resources.getString(R.string.url_trip_detail) + passengerTripId
+        val handler = Handler(Looper.getMainLooper())
+
 
         return try {
             getAccessToken(context)?.let {
@@ -188,10 +192,9 @@ class ParentTripNetRepository @Inject constructor(
                         tripDetail
                     },
                     { error ->
-                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
-
-                        if (error.response.statusCode == 500) {
-                            errorManager.getErrorDescription500(context, errorResponse)
+                        Log.d("TAG", "fetchParentTripDetail:$error ")
+                        handler.post {
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                         }
                         throw Exception("Error fetching trip details")
                     }
