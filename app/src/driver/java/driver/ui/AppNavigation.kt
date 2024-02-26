@@ -5,6 +5,8 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,12 +30,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.drishto.driver.LocationService
 import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.clearSession
@@ -45,6 +51,13 @@ import driver.ui.pages.AssignmentDetailScreen
 import driver.ui.pages.History
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.MatrixLog
+
+
+const val MY_ARG= "message"
+const val MY_URI = "https://trip-details"
+const val trip_Id :Int = 0
+const val operatorI :Int= 0
+
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -239,5 +252,31 @@ fun AppNavigationHost(
         composable("login"){
 
         }
+        composable("assignment", arguments = listOf(
+            navArgument(MY_ARG) { type = NavType.StringType },
+        ),
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "$MY_URI/$MY_ARG={$MY_ARG}"
+            })
+        ){
+            Log.d("HEiiihihiii", "AppNavigationHost:")
+            val argument = it.arguments
+
+            argument?.getString(MY_ARG)?.let {
+                    DetailsScree(message = it )
+            }
+        }
     }
+}
+
+@Composable
+fun DetailsScree(message: String) {
+    Box(modifier = Modifier.fillMaxSize()){
+        Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+            Log.d("Hoooo", "DetailsScree: $operatorI, $trip_Id")
+            Text(text = "Came From notificationby $operatorI, $trip_Id")
+            
+        }
+    }
+
 }

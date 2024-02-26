@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,10 +22,13 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import com.drishto.driver.database.TelemetryRepository
 import com.drishto.driver.models.Telemetry
 import com.drishto.driver.network.TelemetryNetRepository
 import com.drishto.driver.telemetry.TelemetryManager
+import com.drishto.driver.ui.MY_ARG
+import com.drishto.driver.ui.MY_URI
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -89,12 +93,16 @@ class LocationService : Service(), LocationListener {
 
     private fun showNotification() {
 
-        val intent = Intent(applicationContext, driver.MainActivity::class.java)
+        val intent = Intent(Intent.ACTION_VIEW,"$MY_URI/$MY_ARG=MNNFD".toUri(),applicationContext, driver.MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(
-            applicationContext, 0, intent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
+//        val pendingIntent = PendingIntent.getActivity(
+//            applicationContext, 0, intent,
+//            PendingIntent.FLAG_IMMUTABLE
+//        )
+        val pendingIntent = TaskStackBuilder.create(applicationContext).run {
+            addNextIntentWithParentStack(intent)
+            getPendingIntent(1,PendingIntent.FLAG_IMMUTABLE)
+        }
 
         Log.d("show notification", "showNotification: ")
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
