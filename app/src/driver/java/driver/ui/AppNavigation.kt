@@ -55,8 +55,8 @@ import driver.ui.pages.MatrixLog
 
 const val MY_ARG= "message"
 const val MY_URI = "https://trip-details"
-const val trip_Id :Int = 0
-const val operatorI :Int= 0
+const val trip_Id :Int=0
+const val operatorI:Int = 0
 
 
 
@@ -253,28 +253,34 @@ fun AppNavigationHost(
 
         }
         composable("assignment", arguments = listOf(
-            navArgument(MY_ARG) { type = NavType.StringType },
-        ),
+            navArgument(MY_ARG) { type = NavType.StringType } ,
+            navArgument("$trip_Id") { type = NavType.IntType },
+            navArgument("$operatorI") { type = NavType.IntType },
+            ),
             deepLinks = listOf(navDeepLink {
-                uriPattern = "$MY_URI/$MY_ARG={$MY_ARG}"
+                uriPattern = "$MY_URI/$MY_ARG={$MY_ARG}/$trip_Id={$trip_Id}/$operatorI={$operatorI}"
             })
         ){
-            Log.d("HEiiihihiii", "AppNavigationHost:")
             val argument = it.arguments
+            if (argument != null) {
+                    val myArgValue = argument.getString(MY_ARG)
+                    val h = argument.getInt("$trip_Id")
+                    val o = argument.getInt("$operatorI")
 
-            argument?.getString(MY_ARG)?.let {
-                    DetailsScree(message = it )
+                    if (myArgValue != null) {
+                        DetailsScree(myArgValue, h,o)
+                    }
             }
         }
     }
 }
 
 @Composable
-fun DetailsScree(message: String) {
+fun DetailsScree(message: String,tripId:Int,operatorI:Int) {
     Box(modifier = Modifier.fillMaxSize()){
         Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-            Log.d("Hoooo", "DetailsScree: $operatorI, $trip_Id")
-            Text(text = "Came From notificationby $operatorI, $trip_Id")
+            Log.d("Hoooo", "DetailsScree: $operatorI, $tripId")
+            Text(text = "$message $tripId, $operatorI")
             
         }
     }

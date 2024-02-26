@@ -29,6 +29,8 @@ import com.drishto.driver.network.TelemetryNetRepository
 import com.drishto.driver.telemetry.TelemetryManager
 import com.drishto.driver.ui.MY_ARG
 import com.drishto.driver.ui.MY_URI
+import com.drishto.driver.ui.operatorI
+import com.drishto.driver.ui.trip_Id
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -93,7 +95,7 @@ class LocationService : Service(), LocationListener {
 
     private fun showNotification() {
 
-        val intent = Intent(Intent.ACTION_VIEW,"$MY_URI/$MY_ARG=MNNFD".toUri(),applicationContext, driver.MainActivity::class.java)
+        val intent = Intent(Intent.ACTION_VIEW,"$MY_URI/$MY_ARG=MNNFD/$trip_Id=78/$operatorI=1".toUri(),applicationContext, driver.MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 //        val pendingIntent = PendingIntent.getActivity(
 //            applicationContext, 0, intent,
