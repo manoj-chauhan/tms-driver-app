@@ -3,13 +3,13 @@ package com.drishto.driver
 import android.content.Intent
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.google.firebase.messaging.FirebaseMessagingService
-import com.google.firebase.messaging.RemoteMessage
 import com.drishto.driver.database.AppDatabase
 import com.drishto.driver.database.Trip
 import com.drishto.driver.tripmgmt.TripManager
-import driver.ui.viewmodels.TripsAssigned
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
+import driver.ui.viewmodels.TripsAssigned
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

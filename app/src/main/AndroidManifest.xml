@@ -42,9 +42,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <data
-                    android:host="trip-detail"
-                    android:scheme="https" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
