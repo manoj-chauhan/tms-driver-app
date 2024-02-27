@@ -95,15 +95,16 @@ class LocationService : Service(), LocationListener {
 
     private fun showNotification() {
 
-        val intent = Intent(Intent.ACTION_VIEW,"$MY_URI/$MY_ARG=MNNFD/$trip_Id=78/$operatorI=1".toUri(),applicationContext, driver.MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//        val pendingIntent = PendingIntent.getActivity(
-//            applicationContext, 0, intent,
-//            PendingIntent.FLAG_IMMUTABLE
-//        )
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = "$MY_URI/$MY_ARG=MNNFD/$trip_Id=78&$operatorI=1".toUri()
+            Log.d("TAG", "showNotification: ${data} ")
+            setClass(applicationContext, driver.MainActivity::class.java)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
         val pendingIntent = TaskStackBuilder.create(applicationContext).run {
             addNextIntentWithParentStack(intent)
-            getPendingIntent(1,PendingIntent.FLAG_IMMUTABLE)
+            getPendingIntent(1, PendingIntent.FLAG_IMMUTABLE)
         }
 
         Log.d("show notification", "showNotification: ")
@@ -111,7 +112,6 @@ class LocationService : Service(), LocationListener {
             .setContentTitle("You are operating a trip")
             .setSmallIcon(R.drawable.notification)
             .setContentIntent(pendingIntent)
-            .setContentText("Your location is being shared ")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         startForeground(1001, builder.build())
@@ -140,33 +140,6 @@ class LocationService : Service(), LocationListener {
                 }
             }
 
-//        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-//        val criteria = Criteria()
-//        provider = locationManager!!.getBestProvider(criteria, false)
-//        if (ActivityCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return
-//        }
-//        locationManager!!.requestLocationUpdates(
-//            provider!!,
-//            10000,
-//            0.03f,
-//            this@LocationService
-//        )
-
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
@@ -176,6 +149,7 @@ class LocationService : Service(), LocationListener {
                 }
             }
         }
+        startLocationUpdates()
 
         Thread {
             while (isRunning) {
@@ -220,7 +194,6 @@ class LocationService : Service(), LocationListener {
             }
         }.start()
 
-        startLocationUpdates()
 
     }
 

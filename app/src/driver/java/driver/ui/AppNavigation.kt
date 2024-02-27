@@ -56,7 +56,7 @@ import driver.ui.pages.MatrixLog
 const val MY_ARG= "message"
 const val MY_URI = "https://trip-details"
 const val trip_Id :Int=0
-const val operatorI:Int = 0
+const val operatorI:Int = 1
 
 
 
@@ -258,7 +258,7 @@ fun AppNavigationHost(
             navArgument("$operatorI") { type = NavType.IntType },
             ),
             deepLinks = listOf(navDeepLink {
-                uriPattern = "$MY_URI/$MY_ARG={$MY_ARG}/$trip_Id={$trip_Id}/$operatorI={$operatorI}"
+                uriPattern = "$MY_URI/$MY_ARG={$MY_ARG}/$trip_Id={$trip_Id}&$operatorI={$operatorI}"
             })
         ){
             val argument = it.arguments
