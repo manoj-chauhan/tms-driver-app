@@ -1,5 +1,6 @@
 package driver.tripManagement
 
+import androidx.navigation.NavHostController
 import driver.models.ParentPastTrip
 import driver.models.ParentTrip
 import driver.models.ParentTripDetail
@@ -18,8 +19,8 @@ interface ParentTripManager {
 
     fun getPlaceLatLng(placeCode:String): PlaceInfo
 
-    fun getTripDetail(passengerTripId:Int): ParentTripDetail
+    fun getTripDetail(passengerTripId:Int, navHostController: NavHostController): ParentTripDetail?
 
-    fun getDriverLoc(passengerTripId: Int):currentDriverLocation
+    fun getDriverLoc(passengerTripId: Int):currentDriverLocation?
 
 }

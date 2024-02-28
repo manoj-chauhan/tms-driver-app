@@ -3,6 +3,7 @@ package driver.ui.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.models.ParentTripDetail
 import driver.models.ProcessedPoints
@@ -50,11 +51,15 @@ class parentTripDetail @Inject constructor(private val parentTripManager: Parent
         }
     }
 
-    fun fetchTripDetails(context: Context, passengerTripId:Int){
+    fun fetchTripDetails(context: Context, passengerTripId:Int, navHostController: NavHostController){
         viewModelScope.launch(Dispatchers.IO) {
-            val tripDetail = parentTripManager.getTripDetail(passengerTripId)
-            _assignmentDetail.update { _ ->
-                tripDetail
+            val tripDetail = parentTripManager.getTripDetail(passengerTripId, navHostController)
+            if (tripDetail != null) {
+                _assignmentDetail.update { _ ->
+                    tripDetail
+                }
+            } else {
+
             }
         }
 
@@ -63,8 +68,12 @@ class parentTripDetail @Inject constructor(private val parentTripManager: Parent
     fun fetchDriverLocation(passengerTripId: Int){
         viewModelScope.launch(Dispatchers.IO) {
             val driverLoc = parentTripManager.getDriverLoc(passengerTripId)
-            _currentDriver.update { _ ->
-                driverLoc
+            if (driverLoc!=null) {
+                _currentDriver.update { _ ->
+                    driverLoc
+                }
+            }else{
+
             }
         }
     }

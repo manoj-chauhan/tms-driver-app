@@ -29,6 +29,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -80,8 +81,9 @@ fun MapsActivityContent(
     val context = LocalContext.current
 
     val assignmentDetail by vm.assignmentDetail.collectAsStateWithLifecycle()
-    vm.fetchTripDetails(context, passengerTripId)
-
+    LaunchedEffect(Unit) {
+        vm.fetchTripDetails(context, passengerTripId, navController)
+    }
     Log.d("Detail", "MapsActivityContent: $assignmentDetail")
 
     val gradient = Brush.linearGradient(

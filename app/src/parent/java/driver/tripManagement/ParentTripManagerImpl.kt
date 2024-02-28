@@ -1,6 +1,7 @@
 package driver.tripManagement
 
 import android.content.Context
+import androidx.navigation.NavHostController
 import dagger.hilt.android.qualifiers.ApplicationContext
 import driver.models.ParentPastTrip
 import driver.models.ParentTrip
@@ -40,11 +41,11 @@ class ParentTripManagerImpl @Inject constructor(
         return placeInforepository.fetchPlaceLatitudeLongitude(placeCode)
     }
 
-    override fun getTripDetail(passengerTripId:Int): ParentTripDetail {
-        return tripNetRepository.fetchParentTripDetail(passengerTripId)
+    override fun getTripDetail(passengerTripId:Int, navHostController: NavHostController): ParentTripDetail? {
+        return tripNetRepository.fetchParentTripDetail(passengerTripId, navHostController)
     }
 
-    override fun getDriverLoc(passengerTripId: Int): currentDriverLocation {
+    override fun getDriverLoc(passengerTripId: Int): currentDriverLocation? {
         return tripNetRepository.fetchDriverLiveLoc(passengerTripId)
     }
 }

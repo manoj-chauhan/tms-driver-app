@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import androidx.navigation.NavHostController
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
@@ -110,6 +111,8 @@ class ParentTripNetRepository @Inject constructor(
 
         val tripProcessedCoordinates =
             context.resources.getString(R.string.url_trip_processed) + tripCode
+        val handler = Handler(Looper.getMainLooper())
+
 
         return try {
             getAccessToken(context)?.let {
@@ -127,8 +130,12 @@ class ParentTripNetRepository @Inject constructor(
                             errorManager.getErrorDescription401(context, errorResponse)
                         }
 
-                        if (error.response.statusCode == 500) {
+                        else if (error.response.statusCode == 500) {
                             errorManager.getErrorDescription500(context, errorResponse)
+                        }else {
+                            handler.post {
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 )
@@ -176,80 +183,70 @@ class ParentTripNetRepository @Inject constructor(
         }
     }
 
-    fun fetchParentTripDetail(passengerTripId: Int): ParentTripDetail {
+    fun fetchParentTripDetail(passengerTripId: Int,navHostController: NavHostController): ParentTripDetail? {
         val tripDetailUrl = context.resources.getString(R.string.url_trip_detail) + passengerTripId
         val handler = Handler(Looper.getMainLooper())
 
-
         return try {
             getAccessToken(context)?.let {
-                val (request1, response1, result1) = tripDetailUrl.httpGet()
+                val (_, _, result) = tripDetailUrl.httpGet()
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(ParentTripDetail::class.java))
-
-                result1.fold(
-                    { tripDetail ->
-                        tripDetail
+                result.fold(
+                    {
+                        it
                     },
-                    { error ->
-                        Log.d("TAG", "fetchParentTripDetail:$error ")
+                    {error->
+                        EventBus.getDefault().post("AUTH_FAILED")
                         handler.post {
                             Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                         }
-                        throw Exception("Error fetching trip details")
+
                     }
                 )
+
+                result.get()
             }
-                ?: throw Exception("Access token is null")
         } catch (e: Exception) {
-            Log.e(
-                "Fuel",
-                "Exception $e"
-            )
-            throw Exception("Exception fetching trip details")
+            null
         }
     }
 
-    fun fetchDriverLiveLoc(passengerTripId: Int): currentDriverLocation {
+    fun fetchDriverLiveLoc(passengerTripId: Int): currentDriverLocation? {
         val driverLiveUrl = context.resources.getString(R.string.url_driver_location) + passengerTripId
 
-        Log.d("0","$driverLiveUrl")
+        val handler = Handler(Looper.getMainLooper())
+
         return try {
             getAccessToken(context)?.let {
-                val (request1, response1, result1) = driverLiveUrl.httpGet()
+                val (_, _, result) = driverLiveUrl.httpGet()
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(currentDriverLocation::class.java))
-
-                result1.fold(
-                    { currentLocation ->
-                        currentLocation
+                result.fold(
+                    {
+                        it
                     },
-                    { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
+                    {error->
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
                         if (error.response.statusCode == 400) {
-                            Log.d("HERe is error", "fetchDriverLiveLoc: $errorResponse")
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    Toast.makeText(context, errorResponse, Toast.LENGTH_SHORT).show()
-                                }
+                            CoroutineScope(Dispatchers.IO).launch {
+                                Toast.makeText(context, errorResponse, Toast.LENGTH_SHORT).show()
                             }
-                        if (error.response.statusCode == 500) {
-                            errorManager.getErrorDescription500(context, errorResponse)
                         }
-                        throw Exception("Error fetching driver details")
+                        else if (error.response.statusCode == 500) {
+                            errorManager.getErrorDescription500(context, errorResponse)
+                        }else{
+                            handler.post {
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 )
+
+                result.get()
             }
-                ?: throw Exception("Access token is null")
         } catch (e: Exception) {
-            Log.e(
-                "Fuel",
-                "Exception $e"
-            )
-            throw Exception("Exception fetching trip details")
+            null
         }
     }
 }
