@@ -39,7 +39,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -68,6 +70,7 @@ import java.text.SimpleDateFormat
 import kotlin.math.abs
 import kotlin.math.log2
 import kotlin.math.max
+
 
 @Composable
 fun MapsActivityContent(
@@ -590,6 +593,7 @@ fun GoogleMapView(
     modifier: Modifier,
     passengerTripId: Int,
     tripCode: String,
+    navController: NavHostController,
     onMapLoaded: () -> Unit,
     vm: parentTripDetail = hiltViewModel()
 ) {
@@ -613,11 +617,11 @@ fun GoogleMapView(
 //    }
 
     if(currentDriver != null) {
-        currentDriver?.let { currentDriverLoc(LatLng(it.latitude, it.longitude), onMapLoaded = {}) }
+        currentDriver?.let { currentDriverLoc(LatLng(it.latitude, it.longitude),navController, onMapLoaded = {}) }
     }
 }
 @Composable
-fun currentDriverLoc(driverLatLng:LatLng, onMapLoaded: () -> Unit) {
+fun currentDriverLoc(driverLatLng:LatLng,navController: NavHostController, onMapLoaded: () -> Unit) {
     Log.d("TAG", "currentDriverLoc: $driverLatLng")
     val mapUiproperties by remember {
         mutableStateOf(
@@ -641,19 +645,84 @@ fun currentDriverLoc(driverLatLng:LatLng, onMapLoaded: () -> Unit) {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(driverLatLng, 18f)
     }
-    GoogleMap(
-        modifier = Modifier
-            .fillMaxWidth(),
-        onMapLoaded = onMapLoaded,
-        cameraPositionState = cameraPositionState,
-        uiSettings = mapUiSetting,
-        properties = mapUiproperties
+    val gradient = Brush.linearGradient(
+        listOf(
+            Color(android.graphics.Color.parseColor("#FFFFFF")),
+            Color(android.graphics.Color.parseColor("#E8F1F8"))
+        ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
     )
-    {
-        Marker(
-            state = rememberMarkerState(position = driverLatLng),
-            title = "",
-        )
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(brush = gradient)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 18.dp)
+                    .height(50.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        modifier = Modifier.width(30.dp),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.ArrowBack,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .height(25.dp)
+                                .clickable {
+                                    navController.popBackStack()
+                                },
+                        )
+                    }
+                    Box(modifier = Modifier.fillMaxWidth(0.65f)) {
+                        Text(
+                            text = "Trip map ",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 18.sp,
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.W600
+                            )
+                        )
+                    }
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 10.dp)
+            )
+            {
+                GoogleMap(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    onMapLoaded = onMapLoaded,
+                    cameraPositionState = cameraPositionState,
+                    uiSettings = mapUiSetting,
+                    properties = mapUiproperties
+                )
+                {
+                    Marker(
+                        state = rememberMarkerState(position = driverLatLng),
+                        title = "",
+                        icon = createCustomCircleMarker()
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -774,4 +843,40 @@ fun calculateZoomLevel(bounds: LatLngBounds): Float {
     val ratio = max(latRatio, lngRatio)
 
     return (ZOOM_LEVEL_CONSTANT - log2(ratio)).toFloat()
+}
+@Composable
+fun createCustomCircleMarker(): BitmapDescriptor {
+    val density = LocalDensity.current.density
+    val radius = 9
+    val diameter = radius * 2 * density
+    val diameterPx = diameter.toInt()
+
+    return remember(diameterPx) {
+        BitmapDescriptorFactory.fromBitmap(
+            Bitmap.createBitmap(diameterPx, diameterPx, Bitmap.Config.ARGB_8888).apply {
+                Canvas(this).apply {
+                    drawCircle(
+                        diameter / 2,
+                        diameter / 2,
+                        diameter / 2,
+                        android.graphics.Paint().apply {
+                            color = Color.Blue.toArgb()
+                            style = android.graphics.Paint.Style.FILL
+                        }
+                    )
+
+                    drawCircle(
+                        diameter / 2,
+                        diameter / 2,
+                        diameter / 2 - 2.0f,
+                        android.graphics.Paint().apply {
+                            color = Color.White.toArgb()
+                            style = android.graphics.Paint.Style.STROKE
+                            strokeWidth = 5.0f
+                        }
+                    )
+                }
+            }
+        )
+    }
 }

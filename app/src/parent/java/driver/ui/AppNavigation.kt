@@ -94,6 +94,7 @@ fun AppNavigationHost(
                 modifier = Modifier.fillMaxWidth(),
                 passengerTripId = passengerTripId,
                 tripCode = selectedAssignmentCode,
+                navController,
                 onMapLoaded = {}
             )
         }
