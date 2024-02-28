@@ -95,8 +95,8 @@ fun pastTrips(
 
                     pastTrip?.let {
                         if (screen == "home") {
-                            LazyColumn {
-                                items(it.take(3)) { trip ->
+                            Column {
+                                it.take(4).forEach { trip ->
                                     past_trip(trip, onTripSelected)
                                 }
                             }

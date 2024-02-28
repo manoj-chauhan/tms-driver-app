@@ -442,7 +442,7 @@ class PhoneNumberActivity : ComponentActivity() {
                     Row(modifier = Modifier
                         .fillMaxHeight(0.9f)
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.Bottom) {
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Center) {
                         val agreementText = "By continuing you agree that you have read and accepted"
 
                         val annotatedString = buildAnnotatedString {
