@@ -17,9 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CircularProgressIndicator
@@ -174,115 +173,121 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize(1f)
-                    .verticalScroll(rememberScrollState())
             ) {
-                if (isConnected) {
-                    val currentAssignmentData by vm.parentTrip.collectAsStateWithLifecycle()
-                    vm.fetchParentTrip(context = context)
-                    val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
-                    vm.fetchParentPastTrip()
+                com.google.accompanist.swiperefresh.SwipeRefresh(
+                    state = swipeRefreshState,
+                    onRefresh = vw::loadstuff
+                ) {
+                    LazyColumn {
+                        item {
+                            if (isConnected) {
+                                val currentAssignmentData by vm.parentTrip.collectAsStateWithLifecycle()
+                                vm.fetchParentTrip(context = context)
+                                val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
+                                vm.fetchParentPastTrip()
 
-                    if (currentAssignmentData == null) {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            LoadingDialog()
-                        }
-                    }
-                    com.google.accompanist.swiperefresh.SwipeRefresh(
-                        state = swipeRefreshState,
-                        onRefresh = vw::loadstuff
-                    ) {
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            if (currentAssignmentData?.size == 0 && pastTrip?.size == 0) {
-                                Box(modifier = Modifier.fillMaxSize()) {
+                                if (currentAssignmentData == null) {
                                     Column(
-                                        modifier = Modifier.fillMaxSize(1f),
+                                        modifier = Modifier.fillMaxSize(),
+                                        verticalArrangement = Arrangement.Center,
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
+                                        LoadingDialog()
+                                    }
+                                }
+
+                                Column(modifier = Modifier.fillMaxSize()) {
+                                    if (currentAssignmentData?.size == 0 && pastTrip?.size == 0) {
+                                        Box(modifier = Modifier.fillMaxSize()) {
+                                            Column(
+                                                modifier = Modifier.fillMaxSize(1f),
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(200.dp),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = "Welcome To Drishto",
+                                                        style = TextStyle(
+                                                            color = gry,
+                                                            fontSize = 20.sp,
+                                                            fontWeight = FontWeight.W600,
+                                                        )
+                                                    )
+                                                }
+                                                Image(
+                                                    painter = painterResource(id = R.drawable.image),
+                                                    contentDescription = "",
+                                                    modifier = Modifier
+                                                        .padding(end = 12.dp)
+                                                        .height(250.dp)
+                                                        .width(250.dp)
+                                                        .clickable { },
+                                                    contentScale = ContentScale.FillBounds
+                                                )
+                                            }
+                                        }
+                                    }
+                                    if (currentAssignmentData?.size != 0) {
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .height(200.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
+                                                .padding(13.dp, top = 20.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
+
                                             Text(
-                                                text = "Welcome To Drishto", style = TextStyle(
-                                                    color = gry,
-                                                    fontSize = 20.sp,
+                                                text = "Ongoing Trips ",
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 16.sp,
                                                     fontWeight = FontWeight.W600,
+                                                    fontFamily = fontStyle
                                                 )
                                             )
                                         }
-                                        Image(
-                                            painter = painterResource(id = R.drawable.image),
-                                            contentDescription = "",
-                                            modifier = Modifier
-                                                .padding(end = 12.dp)
-                                                .height(250.dp)
-                                                .width(250.dp)
-                                                .clickable { },
-                                            contentScale = ContentScale.FillBounds
-                                        )
                                     }
-                                }
-                            }
-                            if (currentAssignmentData?.size != 0) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(13.dp, top = 20.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-
-                                    Text(
-                                        text = "Ongoing Trips ",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.W600,
-                                            fontFamily = fontStyle
-                                        )
-                                    )
-                                }
-                            }
-                            Column {
-                                currentAssignmentData?.let {
                                     Column {
-                                        it.take(5).forEach { trip ->
-                                            tripList(trip, onTripSelected)
+                                        currentAssignmentData?.let {
+                                            Column {
+                                                it.take(5).forEach { trip ->
+                                                    tripList(trip, onTripSelected)
+                                                }
+                                            }
                                         }
+                                        pastTrips(
+                                            navHostController = navController,
+                                            "home",
+                                            onPastTripSelected
+                                        )
                                     }
                                 }
-                                pastTrips(
-                                    navHostController = navController,
-                                    "home",
-                                    onPastTripSelected
-                                )
+
+                            } else {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(48.dp)
+                                    )
+                                    Toast.makeText(
+                                        context,
+                                        "Please connect to a network and restart application",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         }
-
-                    }
-                } else {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(48.dp)
-                        )
-                        Toast.makeText(
-                            context,
-                            "Please connect to a network and restart application",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
                 }
+
             }
         }
     }
