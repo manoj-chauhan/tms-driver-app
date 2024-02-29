@@ -617,11 +617,11 @@ fun GoogleMapView(
 //    }
 
     if(currentDriver != null) {
-        currentDriver?.let { currentDriverLoc(LatLng(it.latitude, it.longitude),navController, onMapLoaded = {}) }
+        currentDriver?.let { currentDriverLoc(LatLng(it.latitude, it.longitude),passengerTripId,navController, onMapLoaded = {}) }
     }
 }
 @Composable
-fun currentDriverLoc(driverLatLng:LatLng,navController: NavHostController, onMapLoaded: () -> Unit) {
+fun currentDriverLoc(driverLatLng:LatLng,passengerTripId: Int,navController: NavHostController, onMapLoaded: () -> Unit) {
     Log.d("TAG", "currentDriverLoc: $driverLatLng")
     val mapUiproperties by remember {
         mutableStateOf(
@@ -640,6 +640,7 @@ fun currentDriverLoc(driverLatLng:LatLng,navController: NavHostController, onMap
         )
     }
 
+    val vm: parentTripDetail = hiltViewModel()
     val context = LocalContext.current
 
     val cameraPositionState = rememberCameraPositionState {
@@ -697,6 +698,57 @@ fun currentDriverLoc(driverLatLng:LatLng,navController: NavHostController, onMap
                                 fontWeight = FontWeight.W600
                             )
                         )
+                    }
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 16.dp), verticalAlignment = Alignment.Bottom) {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(25.dp)
+                                .align(Alignment.Bottom),
+                            enabled = true,
+                            onClick = {
+                                vm.reload(passengerTripId = passengerTripId)
+                            },
+                            contentPadding = PaddingValues(),
+                            colors = ButtonDefaults.buttonColors(
+                                Color.Transparent
+                            ),
+                            shape = RoundedCornerShape(40.dp)
+                        ) {
+                            val primary = Color(0xFF92A3FD)
+                            val secondary = Color(0XFF9DCEFF)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(35.dp)
+                                    .align(Alignment.Bottom)
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            listOf(
+                                                primary,
+                                                secondary
+                                            )
+                                        ),
+                                        shape = RoundedCornerShape(40.dp)
+                                    ), contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    modifier = Modifier,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Reload",
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -847,7 +899,7 @@ fun calculateZoomLevel(bounds: LatLngBounds): Float {
 @Composable
 fun createCustomCircleMarker(): BitmapDescriptor {
     val density = LocalDensity.current.density
-    val radius = 9
+    val radius = 10
     val diameter = radius * 2 * density
     val diameterPx = diameter.toInt()
 

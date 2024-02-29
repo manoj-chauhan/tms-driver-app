@@ -225,6 +225,7 @@ class ParentTripNetRepository @Inject constructor(
                 result.fold(
                     {
                         it
+        Log.d("DRIVER IS HERE", "fetchDriverLiveLoc: $result")
                     },
                     {error->
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)

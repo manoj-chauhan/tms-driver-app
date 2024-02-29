@@ -23,10 +23,12 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
+import com.drishto.driver.database.AppDatabase
 import com.drishto.driver.database.TelemetryRepository
 import com.drishto.driver.models.Telemetry
 import com.drishto.driver.network.TelemetryNetRepository
 import com.drishto.driver.telemetry.TelemetryManager
+import com.drishto.driver.tripmgmt.TripManager
 import com.drishto.driver.ui.MY_ARG
 import com.drishto.driver.ui.MY_URI
 import com.drishto.driver.ui.operatorI
@@ -37,6 +39,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import dagger.hilt.android.AndroidEntryPoint
+import driver.ui.viewmodels.TripsAssigned
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -63,6 +66,12 @@ class LocationService : Service(), LocationListener {
 
     @Volatile
     private var isRunning = true
+
+    @Inject
+    lateinit var tripManager: TripManager
+
+    @Inject
+    lateinit var database : AppDatabase
 
     private lateinit var locationCallback: LocationCallback
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -95,26 +104,40 @@ class LocationService : Service(), LocationListener {
 
     private fun showNotification() {
 
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            data = "$MY_URI/$MY_ARG=MNNFD/$trip_Id=78&$operatorI=1".toUri()
-            Log.d("TAG", "showNotification: ${data} ")
-            setClass(applicationContext, driver.MainActivity::class.java)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val fetchedAssignedTrips: List<TripsAssigned>? = tripManager.getActiveTrips()
+            val tripNetRepo = database.tripRepository()
+            fetchedAssignedTrips?.let { tripList ->
+                run {
+                    Log.i("FirebaseMessagingService", "Assigned Trips Fetched: ${tripList.count()}")
+
+                    //Clearing Cache in DB
+                    Log.d("show notification", "showNotification: ")
+                    tripList.forEach { trip ->
+                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                            data = "$MY_URI/$MY_ARG=${trip.tripCode}/$trip_Id=${trip.tripId}&$operatorI=${trip.operatorCompanyId}".toUri()
+                            Log.d("TAG", "showNotification: ${data} ")
+                            setClass(applicationContext, driver.MainActivity::class.java)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
+
+                        val pendingIntent = TaskStackBuilder.create(applicationContext).run {
+                            addNextIntentWithParentStack(intent)
+                            getPendingIntent(1, PendingIntent.FLAG_IMMUTABLE)
+                        }
+                        val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                            .setContentTitle("You are operating a trip")
+                            .setSmallIcon(R.drawable.notification)
+                            .setContentIntent(pendingIntent)
+                            .setContentText("Tap to see more details. ")
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        startForeground(1001, builder.build())
+                    }
+
+                }
+            }
         }
-
-        val pendingIntent = TaskStackBuilder.create(applicationContext).run {
-            addNextIntentWithParentStack(intent)
-            getPendingIntent(1, PendingIntent.FLAG_IMMUTABLE)
-        }
-
-        Log.d("show notification", "showNotification: ")
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("You are operating a trip")
-            .setSmallIcon(R.drawable.notification)
-            .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-
-        startForeground(1001, builder.build())
     }
 
     @RequiresApi(Build.VERSION_CODES.S)

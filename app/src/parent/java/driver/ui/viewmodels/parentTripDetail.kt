@@ -78,5 +78,9 @@ class parentTripDetail @Inject constructor(private val parentTripManager: Parent
         }
     }
 
+    fun reload(passengerTripId: Int){
+            fetchDriverLocation(passengerTripId)
+    }
+
 
 }
