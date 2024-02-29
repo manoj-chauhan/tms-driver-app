@@ -90,9 +90,7 @@ fun HomeScreen(
         activeNetworkInfo != null && activeNetworkInfo.isConnected
     }.getOrDefault(false)
 
-    var expander by remember {
-        mutableStateOf(false)
-    }
+
 
     var locations by remember {
         mutableStateOf(false)
@@ -114,77 +112,11 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
-            Scaffold(topBar = {
-                TopAppBar(
-                    modifier = Modifier.padding(end = 13.dp),
-                    title = { Text(text = "Assigned Trips") },
-                    navigationIcon = {
-//                IconButton(onClick = { /*TODO*/ }) {
-//                    Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
-//                }
-                    },
-                    actions = {
-                        IconButton(onClick = { expander = true }) {
-                            Icon(imageVector = Icons.Filled.MoreVert, contentDescription = null)
-                        }
-
-                        DropdownMenu(
-                            expanded = expander,
-                            onDismissRequest = { expander = false }) {
-                            DropdownMenuItem(text = { Text(text = "User Profile") },
-                                onClick = { userProfile = true; expander = false },
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Filled.Person,
-                                        contentDescription = null
-                                    )
-                                })
-
-                            DropdownMenuItem(text = { Text(text = "Locations") },
-                                onClick = { locations = true; expander = false },
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Filled.Place,
-                                        contentDescription = null
-                                    )
-                                })
-
-                            DropdownMenuItem(text = { Text(text = "History") },
-                                onClick = { history = true; expander = false },
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Filled.History,
-                                        contentDescription = null
-                                    )
-                                })
-
-                            DropdownMenuItem(text = { Text(text = "Log out") },
-                                onClick = {
-                                    val myIntent =
-                                        Intent(context, PhoneNumberActivity::class.java)
-                                    clearSession(context)
-                                    myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    val location = Intent(context, LocationService::class.java)
-                                    context.stopService(location)
-                                    context.startActivity(myIntent)
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Filled.Logout,
-                                        contentDescription = null
-                                    )
-                                })
-                        }
-                    }
-                )
-            }, content = {
-                it
-
-            }
-
-            )
+        var expander by remember {
+            mutableStateOf(false)
         }
+//        Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically)
+//        }
         Box(modifier = Modifier.fillMaxSize()) {
             com.google.accompanist.swiperefresh.SwipeRefresh(
                 state = swipeRefreshState,
@@ -218,22 +150,82 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .fillMaxSize()
                             ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 16.dp, bottom = 16.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = " ",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 22.sp,
-                                            fontWeight = FontWeight.ExtraBold
-                                        )
+                                Row(modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                                Scaffold(topBar = {
+                                    TopAppBar(
+                                        modifier = Modifier.padding(end = 13.dp),
+                                        title = { Text(text = "Assigned Trips") },
+                                        navigationIcon = {
+//                IconButton(onClick = { /*TODO*/ }) {
+//                    Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
+//                }
+                                        },
+                                        actions = {
+                                            IconButton(onClick = { expander = true }) {
+                                                Icon(imageVector = Icons.Filled.MoreVert, contentDescription = null)
+                                            }
+
+                                            DropdownMenu(
+                                                expanded = expander,
+                                                onDismissRequest = { expander = false }) {
+                                                DropdownMenuItem(text = { Text(text = "User Profile") },
+                                                    onClick = { userProfile = true; expander = false },
+                                                    leadingIcon = {
+                                                        Icon(
+                                                            imageVector = Icons.Filled.Person,
+                                                            contentDescription = null
+                                                        )
+                                                    })
+
+                                                DropdownMenuItem(text = { Text(text = "Locations") },
+                                                    onClick = { locations = true; expander = false },
+                                                    leadingIcon = {
+                                                        Icon(
+                                                            imageVector = Icons.Filled.Place,
+                                                            contentDescription = null
+                                                        )
+                                                    })
+
+                                                DropdownMenuItem(text = { Text(text = "History") },
+                                                    onClick = { history = true; expander = false },
+                                                    leadingIcon = {
+                                                        Icon(
+                                                            imageVector = Icons.Filled.History,
+                                                            contentDescription = null
+                                                        )
+                                                    })
+
+                                                DropdownMenuItem(text = { Text(text = "Log out") },
+                                                    onClick = {
+                                                        val myIntent =
+                                                            Intent(context, PhoneNumberActivity::class.java)
+                                                        clearSession(context)
+                                                        myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                        val location = Intent(context, LocationService::class.java)
+                                                        context.stopService(location)
+                                                        context.startActivity(myIntent)
+                                                    },
+                                                    leadingIcon = {
+                                                        Icon(
+                                                            imageVector = Icons.Filled.Logout,
+                                                            contentDescription = null
+                                                        )
+                                                    })
+                                            }
+                                        }
                                     )
+                                }, content = {
+                                    it
+
                                 }
+
+                                )
+                                }
+                                Row(modifier = Modifier.fillMaxSize()) {
+
+
                                 currentAssignmentData?.let {
 //                        LocationPermissionScreen()
                                     RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
@@ -387,6 +379,7 @@ fun HomeScreen(
                                             }
                                         }
                                     }
+                                }
                                 }
                             }
 

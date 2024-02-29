@@ -28,10 +28,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
@@ -108,6 +106,8 @@ fun UserProfile() {
     val buildVariantField: Field = buildConfigClass.getDeclaredField("BUILD_VARIANT")
     val buildVariantValue: String = buildVariantField.get(null) as String
 
+    Log.d("This is value ", "UserProfile: $buildVariantValue")
+
     val userProfile by vm.userImage.collectAsStateWithLifecycle()
     LaunchedEffect(userDetail) {
         userDetail?.let {
@@ -164,7 +164,6 @@ fun UserProfile() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
             Box(
                 modifier = Modifier
@@ -321,9 +320,6 @@ fun UserProfile() {
                             companyList(filteredCompanies)
                             Log.d("Variant", "UserProfile: $buildVariantValue")
                         }
-                    } else {
-                        childList()
-
                     }
                     Spacer(modifier = Modifier.height(15.dp))
 
@@ -802,7 +798,8 @@ fun userProfileView(navController: NavHostController) {
                                 contentDescription = "Edit Icon",
                                 tint = gry,
                                 modifier = Modifier
-                                    .size(28.dp).clickable { isEditNameSelected.value = true }
+                                    .size(28.dp)
+                                    .clickable { isEditNameSelected.value = true }
                             )
                         }
 
@@ -838,10 +835,13 @@ fun userProfileView(navController: NavHostController) {
                                 }
                             }
 
-                            Row(modifier = Modifier.fillMaxWidth().height(40.dp), verticalAlignment = Alignment.Bottom) {
+                            Row(modifier = Modifier
+                                .fillMaxWidth()
+                                .height(40.dp), verticalAlignment = Alignment.Bottom) {
                                 Button(
                                     modifier = Modifier
-                                        .fillMaxWidth().height(35.dp)
+                                        .fillMaxWidth()
+                                        .height(35.dp)
                                         .align(Alignment.Bottom),
                                     enabled = true,
                                     onClick = {
@@ -862,7 +862,8 @@ fun userProfileView(navController: NavHostController) {
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .heightIn(35.dp).align(Alignment.Bottom)
+                                            .heightIn(35.dp)
+                                            .align(Alignment.Bottom)
                                             .background(
                                                 brush = Brush.horizontalGradient(
                                                     listOf(
