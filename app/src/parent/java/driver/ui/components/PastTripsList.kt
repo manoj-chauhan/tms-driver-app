@@ -299,18 +299,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                 ) {
 
                     Text(
-                        text = "2.5 kms",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 12.sp,
-                            fontFamily = fontStyle,
-                            fontWeight = FontWeight.W600
-                        )
-                    )
-
-
-                    Text(
-                        text = "1 hour 20 Mins",
+                        text = "Arrived at 12:00 AM",
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 12.sp,
@@ -329,17 +318,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                 ) {
 
                     Text(
-                        text = "Running Late",
-                        style = TextStyle(
-                            color = gry,
-                            fontSize = 12.sp,
-                            fontFamily = fontStyle,
-                            fontWeight = FontWeight.W400
-                        )
-                    )
-
-                    Text(
-                        text = "Arrival 9:00 am",
+                        text = "Boarded from Pitampura, Delhi",
                         style = TextStyle(
                             color = gry,
                             fontSize = 12.sp,
