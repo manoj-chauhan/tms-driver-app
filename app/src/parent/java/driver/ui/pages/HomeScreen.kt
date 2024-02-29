@@ -255,7 +255,7 @@ fun HomeScreen(
                                     Column {
                                         currentAssignmentData?.let {
                                             Column {
-                                                it.take(5).forEach { trip ->
+                                                it.take(it.size).forEach { trip ->
                                                     tripList(trip, onTripSelected)
                                                 }
                                             }

@@ -228,19 +228,10 @@ class ParentTripNetRepository @Inject constructor(
         Log.d("DRIVER IS HERE", "fetchDriverLiveLoc: $result")
                     },
                     {error->
-                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                        if (error.response.statusCode == 400) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                Toast.makeText(context, errorResponse, Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        else if (error.response.statusCode == 500) {
-                            errorManager.getErrorDescription500(context, errorResponse)
-                        }else{
                             handler.post {
-                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
+                                    .show()
                             }
-                        }
                     }
                 )
 

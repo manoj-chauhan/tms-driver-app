@@ -311,8 +311,11 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
+                    val distanceCovered =
+                        trip.estDistance.div(1000)
+
                     Text(
-                        text = "2.5 kms",
+                        text = "$distanceCovered km",
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 12.sp,
@@ -322,16 +325,44 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                     )
 
 
-                    Text(
-                        text = "1 hour 20 Mins",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 12.sp,
-                            fontFamily = fontStyle,
-                            fontWeight = FontWeight.W600
+                    val estimatedTimeHours: Int =
+                        trip.estTime.div(60).toInt()
+
+                    if (estimatedTimeHours == 0) {
+                        Text(
+                            text = "${
+                                trip.estTime.rem(
+                                    60
+                                ).toInt()
+                            }" + " min",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontFamily = fontStyle,
+                                fontWeight = FontWeight.W600
+                            )
                         )
-                    )
+                    } else {
+                        Text(
+                            text = "${
+                                trip.estTime.div(
+                                    60
+                                )
+                            }" + " hr " + "${
+                                trip.estTime.rem(
+                                    60
+                                )
+                            }" + " min",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontFamily = fontStyle,
+                                fontWeight = FontWeight.W600
+                            )
+                        )
+                    }
                 }
+
 
                 Spacer(modifier = Modifier.height(4.dp))
 
