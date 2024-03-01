@@ -69,18 +69,19 @@ class ParentTripNetRepository @Inject constructor(
             null
         }
     }
-    fun fetchTripRouteCoor(operatorId: Int, tripCode: String): List<point> {
+    fun fetchTripRouteCoor(passengerTripId: Int): List<point> {
         val assignedTripType = Types.newParameterizedType(List::class.java, point::class.java)
         val adapter: JsonAdapter<List<point>> = Moshi.Builder().build().adapter(assignedTripType)
 
         val tripAssignmentUrl =
-            context.resources.getString(R.string.url_trip_lat_lon) + tripCode
+            context.resources.getString(R.string.url_trip_lat_lon) + passengerTripId
+        val handler = Handler(Looper.getMainLooper())
+
 
         return try {
             getAccessToken(context)?.let {
                 val (_, _, result) = tripAssignmentUrl.httpGet()
                     .authentication().bearer(it)
-                    .header("Company-Id", operatorId)
                     .responseObject(moshiDeserializerOf(adapter))
                 result.fold(
                     {
@@ -93,8 +94,8 @@ class ParentTripNetRepository @Inject constructor(
                             errorManager.getErrorDescription401(context, errorResponse)
                         }
 
-                        if (error.response.statusCode == 500) {
-                            errorManager.getErrorDescription500(context, errorResponse)
+                        handler.post {
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                         }
                         emptyList()
                     }

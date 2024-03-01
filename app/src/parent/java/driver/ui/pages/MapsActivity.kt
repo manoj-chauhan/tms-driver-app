@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +52,6 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.drishto.driver.R
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -601,15 +601,13 @@ fun GoogleMapView(
     val context = LocalContext.current
     val currentDriver by vm.currentDriver.collectAsStateWithLifecycle()
     vm.fetchDriverLocation(passengerTripId = passengerTripId)
-//    vm.fetchTripRouteCoordinates(context = context, operatorId, tripCode)
+    val tripRoute by vm.points.collectAsStateWithLifecycle()
+    vm.fetchTripRouteCoordinates(passengerTripId)
+    val routePoints: List<LatLng>? = tripRoute?.map { LatLng(it.latitude, it.longitude) }
 //    vm.fetchTripProcessedCoordinates(context, operatorId, tripCode)
 //
-//    val tripRoute by vm.points.collectAsStateWithLifecycle()
-//    val tripProcessCoord by vm.processedpoints.collectAsStateWithLifecycle()
 
 
-//    val routePoints: List<LatLng>? =
-//        tripRoute?.map { LatLng(it.latitude, it.longitude) }
 //    val processedPoints: List<LatLng>? =
 //        tripProcessCoord?.map { LatLng(it.latitude, it.longitude) }
 //    routePoints?.let {
@@ -617,11 +615,17 @@ fun GoogleMapView(
 //    }
 
     if(currentDriver != null) {
-        currentDriver?.let { currentDriverLoc(LatLng(it.latitude, it.longitude),passengerTripId,navController, onMapLoaded = {}) }
+        currentDriver?.let {
+            if (routePoints != null) {
+                currentDriverLoc(LatLng(it.latitude, it.longitude),routePoints,passengerTripId,navController, onMapLoaded = {})
+            }else{
+                Toast.makeText(context,"Something went wrong", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
 @Composable
-fun currentDriverLoc(driverLatLng:LatLng,passengerTripId: Int,navController: NavHostController, onMapLoaded: () -> Unit) {
+fun currentDriverLoc(driverLatLng:LatLng,routePoints: List<LatLng>,passengerTripId: Int,navController: NavHostController, onMapLoaded: () -> Unit) {
     Log.d("TAG", "currentDriverLoc: $driverLatLng")
     val mapUiproperties by remember {
         mutableStateOf(
@@ -652,6 +656,8 @@ fun currentDriverLoc(driverLatLng:LatLng,passengerTripId: Int,navController: Nav
             Color(android.graphics.Color.parseColor("#E8F1F8"))
         ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
     )
+    val first = routePoints.first()
+    val lastPoint = routePoints.last()
 
     Box(
         modifier = Modifier
@@ -740,7 +746,7 @@ fun currentDriverLoc(driverLatLng:LatLng,passengerTripId: Int,navController: Nav
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        text = "Reload",
+                                        text = "Refresh",
                                         style = TextStyle(
                                             fontSize = 14.sp,
                                             fontWeight = FontWeight.Bold
@@ -767,10 +773,23 @@ fun currentDriverLoc(driverLatLng:LatLng,passengerTripId: Int,navController: Nav
                     properties = mapUiproperties
                 )
                 {
+                    Polyline(
+                        points = routePoints,
+                        color = Color.Gray,
+                        width = 10f
+                    )
                     Marker(
                         state = rememberMarkerState(position = driverLatLng),
                         title = "",
                         icon = createCustomCircleMarker()
+                    )
+                    Marker(
+                        state = rememberMarkerState(position = first),
+                        title = "Last Position",
+                    )
+                    Marker(
+                        state = rememberMarkerState(position = lastPoint),
+                        title = "Last Position",
                     )
                 }
             }
@@ -779,7 +798,7 @@ fun currentDriverLoc(driverLatLng:LatLng,passengerTripId: Int,navController: Nav
 }
 
 @Composable
-fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoaded: () -> Unit) {
+fun process(routePoints: List<LatLng>, onMapLoaded: () -> Unit) {
     val mapUiproperties by remember {
         mutableStateOf(
             MapProperties(
@@ -802,19 +821,12 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoad
     Log.d("List", "process:$routePoints ")
     val first = routePoints.first()
     val lastPoint = routePoints.last()
-    val cameraPosition = if (processedPoints == null || processedPoints.isEmpty()) {
-        val bounds = LatLngBounds.builder().include(first).include(lastPoint).build()
-        CameraPosition.Builder()
-            .target(bounds.center)
-            .zoom(calculateZoomLevel(bounds))
-            .build()
-    } else {
-        val bounds = LatLngBounds.builder().include(processedPoints.last()).build()
-        CameraPosition.Builder()
-            .target(bounds.center)
-            .zoom(calculateZoomLevel(bounds))
-            .build()
-    }
+    val bounds = LatLngBounds.builder().include(first).include(lastPoint).build()
+
+    val cameraPosition = CameraPosition.Builder()
+        .target(bounds.center)
+        .zoom(calculateZoomLevel(bounds))
+        .build()
 
     val cameraPositionState = rememberCameraPositionState {
         position = cameraPosition
@@ -835,16 +847,6 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoad
             width = 8f
         )
 
-        val singapore = processedPoints?.last()
-
-        if (processedPoints != null) {
-            Polyline(
-                points = processedPoints,
-                color = Color.Blue,
-                width = 10f
-            )
-        }
-
             Marker(
                 state = rememberMarkerState(position = first),
                 title = "Last Position",
@@ -853,15 +855,6 @@ fun process(routePoints: List<LatLng>, processedPoints: List<LatLng>?, onMapLoad
             state = rememberMarkerState(position = lastPoint),
             title = "Last Position",
         )
-
-        if(singapore!=null){
-            Marker(
-                state = rememberMarkerState(position = singapore),
-                title = "Last Position",
-                icon=BitmapFromVector(context, R.drawable.car)
-            )
-        }
-
     }
 }
 

@@ -560,8 +560,9 @@ fun ChildrenPlanDetail() {
 }
 
 
-@Composable
+
 @Preview
+@Composable
 fun ChildrenPreview() {
     ChildrenPlanDetail()
 }

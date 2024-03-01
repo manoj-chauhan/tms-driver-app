@@ -42,9 +42,9 @@ class parentTripDetail @Inject constructor(private val parentTripManager: Parent
         }
     }
 
-    fun fetchTripRouteCoordinates(context: Context, operatorId:Int, tripCode:String) {
+    fun fetchTripRouteCoordinates(passengerTripId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val pointList = parentTripManager.getTripLatLon(operatorId, tripCode)
+            val pointList = parentTripManager.getTripLatLon(passengerTripId)
             _points.update { _ ->
                 pointList
             }
