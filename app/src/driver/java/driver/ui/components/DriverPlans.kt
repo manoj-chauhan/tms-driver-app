@@ -1,8 +1,11 @@
 package driver.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -15,7 +18,7 @@ import com.drishto.driver.models.DriverPlans
 import java.text.SimpleDateFormat
 
 @Composable
-fun AssignedPlans(plan: DriverPlans) {
+fun AssignedPlans(plan: DriverPlans, onClick: (driverPlans: DriverPlans) -> Unit) {
     val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm")
     val outputFormat = SimpleDateFormat("dd MMMM, yyyy HH:mm a")
 
@@ -26,11 +29,8 @@ fun AssignedPlans(plan: DriverPlans) {
     val parsedTillDate = remember(plan.till) { inputFormat.parse(plan.till) }
     val formattedTillDate = remember(parsedTillDate) { outputFormat.format(parsedTillDate) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
+    Box(modifier = Modifier.fillMaxSize().clickable { onClick(plan) }
     ) {
-
         Card(
             Modifier
                 .fillMaxWidth()
@@ -67,7 +67,7 @@ fun AssignedPlans(plan: DriverPlans) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Trip start time "+plan.startTime)
+                    Text(text = "Trip start time " + plan.startTime)
 
                 }
             }

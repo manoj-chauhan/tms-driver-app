@@ -25,6 +25,7 @@ import com.drishto.driver.ui.pages.HistoryScreen
 import com.drishto.driver.ui.pages.UserProfile
 import com.samrish.driver.ui.pages.PastAssignmentDetailScreen
 import driver.ui.pages.AssignmentDetailScreen
+import driver.ui.pages.ChildrenPlanDetail
 import driver.ui.pages.History
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.MatrixLog
@@ -129,8 +130,16 @@ fun AppNavigationHost(
                     operatorId = it.operatorCompanyId
                     tripId = it.tripId
                     navController.navigate("current-assignment-detail")
+                },
+                onAssignedPlansSelected = {
+                    operatorId = it.companyId
+                    navController.navigate("driver-plans-details")
                 }
             )
+        }
+
+        composable("driver-plans-details"){
+            ChildrenPlanDetail()
         }
 
         composable("history_detail"){

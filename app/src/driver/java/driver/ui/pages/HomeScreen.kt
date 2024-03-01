@@ -64,6 +64,7 @@ import androidx.navigation.NavHostController
 import com.drishto.driver.LocationService
 import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.R
+import com.drishto.driver.models.DriverPlans
 import com.drishto.driver.network.clearSession
 import com.drishto.driver.ui.viewmodels.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -84,7 +85,9 @@ fun HomeScreen(
     navController: NavHostController,
     vm: HomeViewModel = hiltViewModel(),
     mv: MatrixLogViewModel = hiltViewModel(),
-    onTripSelected: (assignment: TripsAssigned) -> Unit
+    onTripSelected: (assignment: TripsAssigned) -> Unit,
+    onAssignedPlansSelected: (plans: DriverPlans) -> Unit
+
 ) {
 
     val matList by mv.matrixList.collectAsStateWithLifecycle()
@@ -177,10 +180,16 @@ fun HomeScreen(
                                 Scaffold(topBar = {
                                     TopAppBar(
                                         modifier = Modifier.padding(end = 13.dp),
-                                        title = { Text(text = "Assigned Trips") },
+                                        title = { Text(text = "DRISHTO",style = TextStyle(
+                                                color = Color.Red,
+                                            fontSize = 28.sp,
+                                            fontWeight = FontWeight.W600,
+                                            fontFamily = FontFamily.SansSerif
+                                        )) },
                                         navigationIcon = {
 //                IconButton(onClick = { /*TODO*/ }) {
-//                    Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
+//
+                                                         //                     Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
 //                }
                                         },
                                         actions = {
@@ -345,28 +354,28 @@ fun HomeScreen(
 //                                                }
 //                                            }
 
-                                            if (it.trips.size == 0 && driverPlanData?.size!! == 0) {
-                                                Box(
-                                                    modifier = Modifier
-                                                        .fillMaxSize()
-                                                        .padding(13.dp)
-                                                        .align(Alignment.CenterHorizontally)
-                                                ) {
-                                                    Row(
-                                                        modifier = Modifier.fillMaxSize(),
-                                                        horizontalArrangement = Arrangement.Center,
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-                                                        Text(
-                                                            text = "No trips assigned!!",
-                                                            style = TextStyle(
-                                                                color = Color.Black,
-                                                                fontSize = 14.sp,
-                                                                fontWeight = FontWeight.Medium
-                                                            )
-                                                        )
-                                                    }
-                                                }
+                                            if (it.trips.size == 0) {
+//                                                Box(
+//                                                    modifier = Modifier
+//                                                        .fillMaxSize()
+//                                                        .padding(13.dp)
+//                                                        .align(Alignment.CenterHorizontally)
+//                                                ) {
+//                                                    Row(
+//                                                        modifier = Modifier.fillMaxSize(),
+//                                                        horizontalArrangement = Arrangement.Center,
+//                                                        verticalAlignment = Alignment.CenterVertically
+//                                                    ) {
+//                                                        Text(
+//                                                            text = "No trips assigned!!",
+//                                                            style = TextStyle(
+//                                                                color = Color.Black,
+//                                                                fontSize = 14.sp,
+//                                                                fontWeight = FontWeight.Medium
+//                                                            )
+//                                                        )
+//                                                    }
+//                                                }
                                                 val location =
                                                     Intent(
                                                         context,
@@ -426,23 +435,25 @@ fun HomeScreen(
                                                     }
                                                 }
                                                 Column {
-                                                    Row(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .padding(13.dp, top = 20.dp),
-                                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
+                                                    if(it.trips.size >0) {
+                                                        Row(
+                                                            modifier = Modifier
+                                                                .fillMaxWidth()
+                                                                .padding(13.dp, top = 20.dp),
+                                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                                            verticalAlignment = Alignment.CenterVertically
+                                                        ) {
 
-                                                        Text(
-                                                            text = "Assigned Trips ",
-                                                            style = TextStyle(
-                                                                color = Color.Black,
-                                                                fontSize = 16.sp,
-                                                                fontWeight = FontWeight.W600,
-                                                                fontFamily = FontFamily.SansSerif
+                                                            Text(
+                                                                text = "Assigned Trips ",
+                                                                style = TextStyle(
+                                                                    color = Color.Black,
+                                                                    fontSize = 16.sp,
+                                                                    fontWeight = FontWeight.W600,
+                                                                    fontFamily = FontFamily.SansSerif
+                                                                )
                                                             )
-                                                        )
+                                                        }
                                                     }
                                                     it.trips.take(it.trips.size)
                                                         .forEach { trip ->
@@ -478,7 +489,7 @@ fun HomeScreen(
                                                     driverPlanData?.forEach { plan ->
                                                         AssignedPlans(
                                                             plan,
-//                                                            onTripSelected
+                                                            onAssignedPlansSelected
                                                         )
                                                     }
                                                 }
