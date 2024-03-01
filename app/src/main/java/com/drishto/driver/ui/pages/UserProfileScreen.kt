@@ -100,6 +100,8 @@ fun UserProfile() {
         "DRIVER" in company.roles
     }
 
+    Log.d("Companies", "UserProfile: $filteredCompanies")
+
     val gry = Color(android.graphics.Color.parseColor("#838383"))
 
     val buildConfigClass: Class<*> = Class.forName("com.drishto.driver.BuildConfig")
@@ -279,22 +281,12 @@ fun UserProfile() {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.End
-                    ) {
-
-                        Button(onClick = { isDetailsSelected.value = true }) {
-                            Text(text = "Add Details")
-                        }
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.Bottom,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
                             text = "${userDetail?.name}", style = TextStyle(
 
-                                color = Color.Black, fontSize = 32.sp, fontWeight = FontWeight.Bold
+                                color = Color.Black, fontSize = 26.sp, fontWeight = FontWeight.Bold
                             )
                         )
                         Icon(
@@ -314,104 +306,11 @@ fun UserProfile() {
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(15.dp))
-                    if (buildVariantValue == "driver") {
-                        if (filteredCompanies != null) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    if (filteredCompanies != null) {
                             companyList(filteredCompanies)
                             Log.d("Variant", "UserProfile: $buildVariantValue")
                         }
-                    }
-                    Spacer(modifier = Modifier.height(15.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Age", style = TextStyle(
-                                color = Color.Gray, fontSize = 14.sp, fontWeight = FontWeight.Bold
-                            )
-                        )
-
-                        Icon(
-                            imageVector = Icons.Default.Edit, // Use the Edit icon from Icons.Default
-                            contentDescription = "Edit Icon",
-                            modifier = Modifier.size(20.dp) // Adjust the size as needed
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Box(modifier = Modifier.width(300.dp)) {
-                            Text(
-                                text = "Address ",
-                                style = TextStyle(
-                                    color = Color.Gray,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                        }
-
-                        Icon(
-                            imageVector = Icons.Default.Edit, // Use the Edit icon from Icons.Default
-                            contentDescription = "Edit Icon",
-                            modifier = Modifier.size(20.dp) // Adjust the size as needed
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Log.d("TAG", "UserProfile: ${userDetail?.authProvider}")
-
-                    if (userDetail?.authProvider == "google.com") {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Button(
-                                onClick = { isDialogVisible.value = true }
-                            ) {
-                                Text("Set Password")
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Driving License", style = TextStyle(
-                                    color = Color.Gray,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                            Icon(
-                                imageVector = Icons.Default.Edit, // Use the Edit icon from Icons.Default
-                                contentDescription = "Edit Icon",
-                                modifier = Modifier.size(25.dp) // Adjust the size as needed
-                            )
-
-                        }
-
-                    }
-
                 }
             }
         }
@@ -425,9 +324,15 @@ fun UserProfile() {
             })
 
     }
-
-
-
+    if (isEditNameSelected.value) {
+        userDetail?.name?.let {
+            EditUserName(context, it,
+                setShowDialog = {
+                    isEditNameSelected.value = it
+                }
+            )
+        }
+    }
     if (isDialogVisible.value) {
         val myIntent = Intent(context, SetPasswordActivity::class.java)
         context.startActivity(myIntent)
@@ -570,16 +475,27 @@ fun companyList(filteredCompanies: List<CompanyPositions>) {
                 text = company.companyCode, style = TextStyle(
                     color = Color.Gray,
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.W600
                 )
             )
             Text(
                 text = company.companyName, style = TextStyle(
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.W600
                 )
             )
         }
+        Spacer(modifier = Modifier.height(5.dp))
+        Row (modifier = Modifier.fillMaxWidth()){
+            Text(
+                text = "MPS-WYC-DSQ-HPS-MDC-DBL-YMC-SPS", style = TextStyle(
+                    color = Color.Gray,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.W400
+                )
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
     }
 }
 
