@@ -4,9 +4,13 @@ import android.Manifest
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.os.Build
+import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +29,7 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -40,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +53,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,6 +67,7 @@ import com.drishto.driver.R
 import com.drishto.driver.network.clearSession
 import com.drishto.driver.ui.viewmodels.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import driver.ui.components.AssignedPlans
 import driver.ui.components.AssignedTrip
 import driver.ui.components.AssignedVehicle
 import driver.ui.components.GeneratedCodeDialog
@@ -90,6 +98,10 @@ fun HomeScreen(
         activeNetworkInfo != null && activeNetworkInfo.isConnected
     }.getOrDefault(false)
 
+    val driverPlanData by vm.driverPlan.collectAsStateWithLifecycle()
+    vm.driverPlanAssignment(context = context)
+
+    Log.d("TAG", "HomeScreen: $driverPlanData")
 
 
     var locations by remember {
@@ -102,6 +114,15 @@ fun HomeScreen(
 
     var history by remember {
         mutableStateOf(false)
+    }
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    val locationEnabledState = rememberUpdatedState(isLocationEnabled)
+
+    if (!locationEnabledState.value) {
+        LocationDisabledDialog()
+    } else {
+        Log.e("Location", "LocationPermissionCheck: dialog is disabledd ",)
     }
 
 
@@ -242,6 +263,24 @@ fun HomeScreen(
 //                                        }
 //                                    }
                                                 Column {
+                                                    Row(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .padding(13.dp, top = 20.dp),
+                                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+
+                                                        Text(
+                                                            text = "Vehicle Assigned ",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 16.sp,
+                                                                fontWeight = FontWeight.W600,
+                                                                fontFamily = FontFamily.SansSerif
+                                                            )
+                                                        )
+                                                    }
                                                     vList.take(vList.size)
                                                         .forEach { vehicleAssignment ->
                                                             AssignedVehicle(
@@ -278,7 +317,35 @@ fun HomeScreen(
                                                 }
                                             }
 
-                                            if (it.trips.size == 0) {
+//                                            Column {
+//                                                Row(
+//                                                    modifier = Modifier
+//                                                        .fillMaxWidth()
+//                                                        .padding(13.dp, top = 20.dp),
+//                                                    horizontalArrangement = Arrangement.SpaceBetween,
+//                                                    verticalAlignment = Alignment.CenterVertically
+//                                                ) {
+//
+//                                                    Text(
+//                                                        text = "Plans Associated ",
+//                                                        style = TextStyle(
+//                                                            color = Color.Black,
+//                                                            fontSize = 16.sp,
+//                                                            fontWeight = FontWeight.W600,
+//                                                            fontFamily = FontFamily.SansSerif
+//                                                        )
+//                                                    )
+//                                                }
+//
+//                                                driverPlanData?.forEach { plan->
+//                                                    AssignedPlans(
+//                                                        plan,
+////                                                            onTripSelected
+//                                                    )
+//                                                }
+//                                            }
+
+                                            if (it.trips.size == 0 && driverPlanData?.size!! == 0) {
                                                 Box(
                                                     modifier = Modifier
                                                         .fillMaxSize()
@@ -358,13 +425,25 @@ fun HomeScreen(
                                                         }
                                                     }
                                                 }
-//                                    LazyColumn {
-//                                        items(it.trips) { trip ->
-//                                            AssignedTrip(trip, onClick = onTripSelected)
-//                                        }
-//                                    }
-
                                                 Column {
+                                                    Row(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .padding(13.dp, top = 20.dp),
+                                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+
+                                                        Text(
+                                                            text = "Assigned Trips ",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 16.sp,
+                                                                fontWeight = FontWeight.W600,
+                                                                fontFamily = FontFamily.SansSerif
+                                                            )
+                                                        )
+                                                    }
                                                     it.trips.take(it.trips.size)
                                                         .forEach { trip ->
                                                             AssignedTrip(
@@ -372,6 +451,36 @@ fun HomeScreen(
                                                                 onTripSelected
                                                             )
                                                         }
+                                                }
+
+                                            }
+                                            if(driverPlanData?.size!! >0) {
+                                                Column {
+                                                    Row(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .padding(13.dp, top = 20.dp),
+                                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+
+                                                        Text(
+                                                            text = "Plans Associated ",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 16.sp,
+                                                                fontWeight = FontWeight.W600,
+                                                                fontFamily = FontFamily.SansSerif
+                                                            )
+                                                        )
+                                                    }
+
+                                                    driverPlanData?.forEach { plan ->
+                                                        AssignedPlans(
+                                                            plan,
+//                                                            onTripSelected
+                                                        )
+                                                    }
                                                 }
                                             }
                                             if (it.userLocationVisible) {
@@ -423,3 +532,37 @@ fun HomeScreen(
 
 }
 
+@Composable
+fun LocationDisabledDialog() {
+
+    val context = LocalContext.current
+    val alertDialogShown = remember { mutableStateOf(true) }
+
+    if (alertDialogShown.value) {
+        AlertDialog(
+            onDismissRequest = {
+                val locationManager =
+                    context.getSystemService(ComponentActivity.LOCATION_SERVICE) as LocationManager
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    alertDialogShown.value = false
+                }
+            },
+            title = { Text("Location is disabled") },
+            text = {
+                Column {
+                    Text("Please enable location to use this app.")
+                    Text("Go to Settings to enable location.")
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    }
+                ) {
+                    Text("Go to Settings")
+                }
+            }
+        )
+    }
+}

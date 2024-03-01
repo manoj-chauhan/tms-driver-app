@@ -129,7 +129,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private @Composable
+    @Composable
     fun LocationDisabledDialog() {
 
         val context = LocalContext.current

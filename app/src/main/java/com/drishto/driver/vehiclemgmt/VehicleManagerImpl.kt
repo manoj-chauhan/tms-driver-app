@@ -1,6 +1,7 @@
 package com.drishto.driver.vehiclemgmt
 
 import android.content.Context
+import com.drishto.driver.models.DriverPlans
 import com.drishto.driver.network.VehicleNetRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -16,6 +17,10 @@ class VehicleManagerImpl @Inject constructor(
 
     override fun getAssignmentCode(): String {
         return vehicleNetRepository.generateAssignmentCode()!!
+    }
+
+    override fun getDriverPlan(context: Context): List<DriverPlans>? {
+        return vehicleNetRepository.getDriverPlans()
     }
 
 }

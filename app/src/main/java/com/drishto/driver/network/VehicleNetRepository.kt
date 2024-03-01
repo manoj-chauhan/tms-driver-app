@@ -1,12 +1,21 @@
 package com.drishto.driver.network
 
 import android.content.Context
+import android.util.Log
+import com.drishto.driver.R
+import com.drishto.driver.models.DriverPlans
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
-import com.drishto.driver.R
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @JsonClass(generateAdapter = true)
@@ -27,5 +36,42 @@ class VehicleNetRepository @Inject constructor(@ApplicationContext private val c
         }
 
         return null
+    }
+
+    fun getDriverPlans():List<DriverPlans>?{
+        val assignedTripType =
+            Types.newParameterizedType(List::class.java, DriverPlans::class.java)
+        val adapter: JsonAdapter<List<DriverPlans>> =
+            Moshi.Builder().build().adapter(assignedTripType)
+
+        val tripAssignmentUrl = context.resources.getString(R.string.url_driver_trip_plan)
+
+        return try {
+            getAccessToken(context)?.let {
+                val (_, _, result) = tripAssignmentUrl.httpGet()
+                    .authentication().bearer(it)
+                    .responseObject(moshiDeserializerOf(adapter))
+                result.fold(
+                    {
+                    },
+                    {error->
+                        Log.d("Error", "fetchActiveTrips: $error")
+                        EventBus.getDefault().post("AUTH_FAILED")
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                        if (error.response.statusCode == 401) {
+//                            errorManager.getErrorDescription401(context, errorResponse)
+                        }
+
+                        CoroutineScope(Dispatchers.IO).launch(Dispatchers.Main) {
+//                            errorManager.handleErrorResponse(context, errorResponse)
+                        }
+                    }
+                )
+
+                result.get()
+            }
+        } catch (e: Exception) {
+            null
+        }
     }
 }

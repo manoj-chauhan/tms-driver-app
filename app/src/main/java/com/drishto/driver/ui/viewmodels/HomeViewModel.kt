@@ -3,13 +3,14 @@ package driver.ui.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drishto.driver.R
+import com.drishto.driver.errormgmt.ErrManager
+import com.drishto.driver.models.DriverPlans
+import com.drishto.driver.network.getAccessToken
+import com.drishto.driver.vehiclemgmt.VehicleManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
-import com.drishto.driver.R
-import com.drishto.driver.errormgmt.ErrManager
-import com.drishto.driver.network.getAccessToken
-import com.drishto.driver.vehiclemgmt.VehicleManager
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
@@ -70,7 +71,8 @@ data class CurrentAssignmentData (
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManager, private  val errorManager: ErrManager) : ViewModel() {
-
+    private val  _driverPlan: MutableStateFlow<List<DriverPlans>?> = MutableStateFlow(null)
+    val driverPlan: StateFlow<List<DriverPlans>?> = _driverPlan.asStateFlow()
 
     private val _currentAssignment: MutableStateFlow<CurrentAssignmentData?> =
         MutableStateFlow(null)
@@ -144,6 +146,7 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
         viewModelScope.launch(Dispatchers.IO) {
             val vehicleAssignments = channel1.receive();
             val tripsAssignments = channel2.receive();
+
             _currentAssignment.update { old ->
                 CurrentAssignmentData(
                     userLocationVisible = old?.userLocationVisible ?: false,
@@ -152,6 +155,15 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
                     assignmentCode = old?.assignmentCode?: "Not Available",
                     isAssignmentCodeVisible = old?.isAssignmentCodeVisible?:false
                 )
+            }
+        }
+    }
+
+    fun driverPlanAssignment(context: Context){
+        viewModelScope.launch(Dispatchers.IO) {
+            val planList = vehicleManager.getDriverPlan(context)
+            _driverPlan.update {
+                planList
             }
         }
     }

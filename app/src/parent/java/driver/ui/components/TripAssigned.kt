@@ -371,7 +371,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if(trip.status != "TRIP_STARTED" || trip.status !="TRIP_CREATED") {
+                    if(trip.status != "TRIP CREATED" && trip.status != "TRIP STARTED") {
                         if(trip.delay >0 ) {
                             Text(
                                 text = "Running Late",
