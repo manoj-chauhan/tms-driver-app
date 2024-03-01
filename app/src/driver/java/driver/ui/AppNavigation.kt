@@ -59,6 +59,10 @@ fun AppNavigationHost(
         mutableIntStateOf(0)
     }
 
+    var planId by remember {
+        mutableIntStateOf(0)
+    }
+
 
     var startScreen:String
 
@@ -133,6 +137,7 @@ fun AppNavigationHost(
                 },
                 onAssignedPlansSelected = {
                     operatorId = it.companyId
+                    planId = it.id
                     navController.navigate("driver-plans-details")
                 }
             )
