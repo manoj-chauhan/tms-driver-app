@@ -371,16 +371,39 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
-                    Text(
-                        text = "Running Late",
-                        style = TextStyle(
-                            color = gry,
-                            fontSize = 12.sp,
-                            fontFamily = fontStyle,
-                            fontWeight = FontWeight.W400
+                    if(trip.status != "TRIP_STARTED" || trip.status !="TRIP_CREATED") {
+                        if(trip.delay >0 ) {
+                            Text(
+                                text = "Running Late",
+                                style = TextStyle(
+                                    color = gry,
+                                    fontSize = 12.sp,
+                                    fontFamily = fontStyle,
+                                    fontWeight = FontWeight.W400
+                                )
+                            )
+                        }else{
+                            Text(
+                                text = "Reaching Early",
+                                style = TextStyle(
+                                    color = gry,
+                                    fontSize = 12.sp,
+                                    fontFamily = fontStyle,
+                                    fontWeight = FontWeight.W400
+                                )
+                            )
+                        }
+                    }else{
+                        Text(
+                            text = trip.status,
+                            style = TextStyle(
+                                color = gry,
+                                fontSize = 12.sp,
+                                fontFamily = fontStyle,
+                                fontWeight = FontWeight.W400
+                            )
                         )
-                    )
+                    }
 
                     Text(
                         text = "Arrival 9:00 am",
