@@ -155,7 +155,13 @@ class LocationService : Service(), LocationListener {
         )
         createNotificationChannel()
         showNotification()
+        val location =
+            Intent(
+                applicationContext,
+                LocationService::class.java
+            )
 
+        startForegroundService(location)
         wakeLock =
             (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
                 newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "DriverApp::LocationService").apply {
