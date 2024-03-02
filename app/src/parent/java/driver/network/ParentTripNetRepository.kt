@@ -229,6 +229,7 @@ class ParentTripNetRepository @Inject constructor(
         Log.d("DRIVER IS HERE", "fetchDriverLiveLoc: $result")
                     },
                     {error->
+                        Log.d("TAG", "fetchDriverLiveLoc: $error")
                             handler.post {
                                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
                                     .show()

@@ -104,7 +104,10 @@ fun MapsActivityContent(
     val outputFormat = SimpleDateFormat("dd MMM")
 
     val arrivalTime = SimpleDateFormat("HH:mm:ss")
-    val outputArrivaltime = SimpleDateFormat(" HH:mm")
+    val outputArrivaltime = SimpleDateFormat(" HH:mm a")
+
+    val boardingTime = SimpleDateFormat("HH:mm:ss")
+    val outputboardingTime = SimpleDateFormat(" HH:mm a")
 
     var map by remember { mutableStateOf(false) }
 
@@ -251,6 +254,8 @@ fun MapsActivityContent(
                                 val parsedTime = remember(it.tripTime) {arrivalTime.parse(it.tripTime) }
                                 val formattedTime = remember(parsedTime) { outputArrivaltime.format(parsedTime) }
 
+
+
                                     Text(
                                         text = formattedDate + formattedTime,
                                         style = TextStyle(
@@ -335,7 +340,7 @@ fun MapsActivityContent(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "Maharaja Agrasen Public School ",
+                                        text = it.boardingPlaceName,
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 12.sp,
@@ -344,9 +349,11 @@ fun MapsActivityContent(
                                         )
                                     )
 
+                                    val parsedBoardingTime = remember(it.boardingTime) {boardingTime.parse(it.boardingTime) }
+                                    val formattedBoardingTime = remember(parsedBoardingTime) { outputboardingTime.format(parsedBoardingTime) }
 
                                     Text(
-                                        text = "03:00 am",
+                                        text = formattedBoardingTime,
                                         style = TextStyle(
                                             color = Color.Gray,
                                             fontSize = 12.sp,
