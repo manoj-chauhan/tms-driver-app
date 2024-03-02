@@ -7,15 +7,8 @@
         android:name="android.hardware.telephony"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.READ_SMS" />
-
     <application
-        android:name="DrishtoApplication"
+        android:name=".DrishtoApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
@@ -53,7 +46,7 @@
         </activity>
 
         <activity
-            android:name="PhoneNumberActivity"
+            android:name=".PhoneNumberActivity"
             android:exported="true">
         </activity>
 
@@ -69,7 +62,21 @@
         <activity android:name="com.canhub.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/>
 
-        <receiver android:name="OtpVerification" android:exported="true"
+<!--        <service-->
+<!--            android:name="LocationService"-->
+<!--            android:foregroundServiceType="location" />-->
+
+<!--        <service-->
+<!--            android:name="FCMService"-->
+<!--            android:exported="false"-->
+<!--            tools:ignore = "Instantiable"-->
+<!--            >-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
+
+        <receiver android:name=".OtpVerification" android:exported="true"
             android:permission="com.google.android.gms.auth.api.phone.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED"/>

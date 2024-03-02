@@ -50,3 +50,9 @@ https://github.com/android/views-widgets
 
 Patches are encouraged, and may be submitted by forking this project and
 submitting a pull request through GitHub. Please see CONTRIBUTING.md for more details.
+
+# Steps for creating bundle 
+- First open the menu tab 
+- go to build option in menu
+- then go to option generate Signed Bundle option 
+- Password to create signed bundle -: chandrayan
