@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,17 +30,28 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.drishto.driver.models.ChildrenList
+import com.drishto.driver.models.TripSchedulesList
 import com.drishto.driver.ui.pages.AgeDisplay
 import driver.ui.viewmodels.DriverPlanDetailsViewModel
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun ChildrenPlanDetail(operatorId:Int, planId:Int) {
-    val ch : DriverPlanDetailsViewModel = hiltViewModel()
+fun ChildrenPlanDetail(operatorId: Int, planId: Int) {
+    val ch: DriverPlanDetailsViewModel = hiltViewModel()
     val childrens by ch.childrenList.collectAsStateWithLifecycle()
     ch.fetchParentTrip(context = LocalContext.current, operatorId, planId)
+
+    val context = LocalContext.current
+
+    val schedules by ch.planList.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        ch.fetchSchedule(context = context, operatorId, planId)
+
+    }
+    Log.d("Plan list", "ChildrenPlanDetail: $schedules")
 
     Log.d("TAG", "ChildrenPlanDetail: $childrens")
     Box(
@@ -76,8 +88,6 @@ fun ChildrenPlanDetail(operatorId:Int, planId:Int) {
                         )
                     )
                 }
-
-
             }
             Box(
                 modifier = Modifier
@@ -102,313 +112,13 @@ fun ChildrenPlanDetail(operatorId:Int, planId:Int) {
 
                     Spacer(modifier = Modifier.padding(8.dp))
 
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-
-                            Text(
-                                text = "SPS - ", style = TextStyle(
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 8.dp)
-                            ) {
-
-                                Text(
-                                    text = "Samrish Technology Pvt. Ltd.", style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(modifier = Modifier.width(50.dp)) {
-                                Text(
-                                    text = "  ", style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                            Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-
-                                Text(
-                                    text = "Arrival", style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                            Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-
-                                Text(
-                                    text = "Departure", style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(modifier = Modifier.width(50.dp)) {
-
-                                Text(
-                                    text = "Planned", style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                            Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-                                Text(
-                                    text = "17-08-2002", style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                            Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-                                Text(
-                                    text = "15-9-1223", style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(modifier = Modifier.width(50.dp)) {
-
-                                Text(
-                                    text = "Actual", style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                            Box(
-                                modifier = Modifier.width(100.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "12-04-2003",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                            Box(
-                                modifier = Modifier.width(100.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "12-9-2023",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                        }
+                    schedules?.tripPlanScheduleList?.forEachIndexed { index, schedule ->
+                        schedulesList(
+                            schedule, index, schedules?.tripPlanScheduleList!!,
+                            schedules!!.startTime
+                        )
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-
-                            Text(
-                                text = "SPS - ", style = TextStyle(
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 8.dp)
-                            ) {
-
-                                Text(
-                                    text = "Samrish Technology Pvt. Ltd.", style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(modifier = Modifier.width(50.dp)) {
-                                Text(
-                                    text = "  ", style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                            Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-
-                                Text(
-                                    text = "Arrival", style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                            Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-
-                                Text(
-                                    text = "Departure", style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(modifier = Modifier.width(50.dp)) {
-
-                                Text(
-                                    text = "Planned", style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                            Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-                                Text(
-                                    text = "17-08-2002", style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                            Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-                                Text(
-                                    text = "15-9-1223", style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(modifier = Modifier.width(50.dp)) {
-
-                                Text(
-                                    text = "Actual", style = TextStyle(
-                                        color = Color.Gray,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                            Box(
-                                modifier = Modifier.width(100.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "12-04-2003",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                            Box(
-                                modifier = Modifier.width(100.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "12-9-2023",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                )
-                            }
-                        }
-                    }
                 }
             }
 
@@ -433,7 +143,7 @@ fun ChildrenPlanDetail(operatorId:Int, planId:Int) {
                     }
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    childrens?.forEach{children->
+                    childrens?.forEach { children ->
                         ChildrensList(children)
                     }
                 }
@@ -442,6 +152,206 @@ fun ChildrenPlanDetail(operatorId:Int, planId:Int) {
     }
 
 }
+
+@Composable
+fun schedulesList(
+    schedule: TripSchedulesList,
+    index: Int,
+    schedules: List<TripSchedulesList>,
+    startTime: String
+) {
+    val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    val newformatter = DateTimeFormatter.ofPattern("HH:mm")
+
+
+    Log.d("TAG", "schedulesList:$startTime ")
+
+
+    if (index == 0) {
+        schedule.departure = LocalTime.parse(startTime, formatter)
+            .plusMinutes(schedule.haltTime.toLong())
+            .format(newformatter)
+    } else {
+        val previousSchedule = schedules[index - 1]
+        val travelTime = previousSchedule.travelTime
+        val arrivalTime = LocalTime.parse(previousSchedule.departure, newformatter)
+            .plusMinutes(travelTime.toLong())
+        schedule.arrival = arrivalTime.toString()
+        schedule.departure = schedule.arrival.let {
+            LocalTime.parse(it, newformatter).plusMinutes(schedule.haltTime.toLong()).toString()
+        }
+    }
+    Log.d("departure", "schedulesList: ${schedule.departure}")
+    Log.d("arrival", "schedulesList: ${schedule.arrival}")
+    Log.d("arrival", "schedulesList: ${schedules.size}")
+
+
+
+//    var departure: String= ""
+//    var arrival: String =""
+//
+//    if (index == 0) {
+//        departure = LocalTime.parse(startTime, formatter)
+//            .plusMinutes(schedule.haltTime.toLong())
+//            .format(formatter)
+//    } else {
+//        val previousSchedule = schedules[index - 1]
+//        val travelTime = previousSchedule.travelTime
+//        val arrivalTime = LocalTime.parse(departure, formatter)
+//            .plusMinutes(travelTime.toLong())
+//        arrival = arrivalTime.toString()
+//
+//        departure = arrival.let {
+//            LocalTime.parse(it, formatter).plusMinutes(schedule.haltTime.toLong()).toString()
+//        }
+//    }
+
+//    Log.d("arrival", "schedulesList: $arrival")
+//    Log.d("departure", "schedulesList: $departure")
+
+    Spacer(modifier = Modifier.padding(8.dp))
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            Text(
+                text = "${schedule.placeCode} - ", style = TextStyle(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp)
+            ) {
+
+                Text(
+                    text = "${schedule.placeName}", style = TextStyle(
+                        color = Color.Gray,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier.width(50.dp)) {
+                Text(
+                    text = "  ", style = TextStyle(
+                        color = Color.Gray,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+            Box(modifier = Modifier.width(100.dp), Alignment.Center) {
+
+                Text(
+                    text = "Arrival", style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+            Box(modifier = Modifier.width(100.dp), Alignment.Center) {
+
+                Text(
+                    text = "Departure", style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier.width(50.dp)) {
+
+                Text(
+                    text = "Planned", style = TextStyle(
+                        color = Color.Gray,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+
+            if(index == 0 ){
+                Box(modifier = Modifier.width(100.dp), Alignment.Center) {
+                    Text(
+                        text = "--", style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
+
+            }else {
+
+                Box(modifier = Modifier.width(100.dp), Alignment.Center) {
+                    schedule.arrival?.let {
+                        Text(
+                            text = it, style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
+                }
+            }
+
+            if(index == (schedules.size-1)) {
+                Box(modifier = Modifier.width(100.dp), Alignment.Center) {
+                    Text(
+                        text = "--", style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
+            }else{
+                Box(modifier = Modifier.width(100.dp), Alignment.Center) {
+                    schedule.departure?.let {
+                        Text(
+                            text = it, style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
+                }
+            }
+
+        }
+    }
+}
+
 fun calculateAge(dateOfBirth: String): Number {
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -453,26 +363,29 @@ fun calculateAge(dateOfBirth: String): Number {
 
     return age
 }
+
 @Composable
-fun AgeDisplay(dateOfBirth: String) :Number {
+fun AgeDisplay(dateOfBirth: String): Number {
     val age = calculateAge(dateOfBirth)
     return age
 }
+
 @Composable
 fun ChildrensList(children: ChildrenList) {
 
-    var age:Number= 0
+    var age: Number = 0
     children.dateOfBirth.let {
         age = AgeDisplay(dateOfBirth = it)
     }
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .background(
-            Color.LightGray,
-            shape = RoundedCornerShape(10.dp)
-        )
-        .padding(8.dp),
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Color.LightGray,
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -536,7 +449,7 @@ fun ChildrensList(children: ChildrenList) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Boarding Place" ,
+                    text = "Boarding Place",
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 12.sp,
@@ -563,7 +476,7 @@ fun ChildrensList(children: ChildrenList) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "DeBoarding Place" ,
+                    text = "DeBoarding Place",
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 12.sp,
@@ -591,7 +504,7 @@ fun ChildrensList(children: ChildrenList) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Phone Number - ${children.primaryPhoneNumber} " ,
+                    text = "Phone Number - ${children.primaryPhoneNumber} ",
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 12.sp,
@@ -602,7 +515,7 @@ fun ChildrensList(children: ChildrenList) {
 
 
 
-                if(children.secondaryPhoneNumber?.length!! > 0){
+                if (children.secondaryPhoneNumber?.length!! > 0) {
                     children.secondaryPhoneNumber?.let {
                         Text(
                             text = ",$it",

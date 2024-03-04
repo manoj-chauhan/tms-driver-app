@@ -54,7 +54,7 @@ data class TripSchedulesList(
        var placeId  : Int,
        var placeCode  :   String  ,
        var placeName  :   String  ,
-       var stopOrder  : Int,
+       var stopOrder  : Int?,
        var travelTime  : Int,
        var haltTime  : Int,
        var travelDistance  : Double,
@@ -63,5 +63,7 @@ data class TripSchedulesList(
        var createdAt  :   String  ,
        var updaterName  :  String  ,
        var updaterId  : Int,
-       var updatedAt  :   String
+       var updatedAt  :   String,
+    var departure:String?,
+    var arrival:String?
 )

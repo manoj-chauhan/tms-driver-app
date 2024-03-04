@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.drishto.driver.DriverPlan.DriverPlanManager
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ChildrenList
+import com.drishto.driver.models.scheduleList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,10 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
     private val  _childrenList: MutableStateFlow<List<ChildrenList>?> = MutableStateFlow(null)
     val childrenList: StateFlow<List<ChildrenList>?> = _childrenList.asStateFlow()
 
+
+    private val  _planList: MutableStateFlow<scheduleList?> = MutableStateFlow(null)
+    val planList: StateFlow<scheduleList?> = _planList.asStateFlow()
+
     fun fetchParentTrip(context: Context, operatorId:Int, planId:Int){
         viewModelScope.launch(Dispatchers.IO) {
             val tripList = driverPlan.getChildrenList(operatorId, planId)
@@ -28,6 +33,18 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
                 tripList
             }
                 Log.d("TAG", "fetchParentTrip: $tripList")
+        }
+
+    }
+
+
+    fun fetchSchedule(context: Context, operatorId:Int, planId:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            val planList = driverPlan.getTripSchedule(operatorId, planId)
+            _planList.update { _ ->
+                planList
+            }
+            Log.d("TAG", "fetchParentTrip: $planList")
         }
 
     }
