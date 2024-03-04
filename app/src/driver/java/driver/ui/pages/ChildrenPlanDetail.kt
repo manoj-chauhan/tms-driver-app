@@ -24,18 +24,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.drishto.driver.models.ChildrenList
+import com.drishto.driver.ui.pages.AgeDisplay
 import driver.ui.viewmodels.DriverPlanDetailsViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 @Composable
-fun ChildrenPlanDetail() {
+fun ChildrenPlanDetail(operatorId:Int, planId:Int) {
     val ch : DriverPlanDetailsViewModel = hiltViewModel()
     val childrens by ch.childrenList.collectAsStateWithLifecycle()
-    ch.fetchParentTrip(context = LocalContext.current)
+    ch.fetchParentTrip(context = LocalContext.current, operatorId, planId)
 
     Log.d("TAG", "ChildrenPlanDetail: $childrens")
     Box(
@@ -429,139 +433,8 @@ fun ChildrenPlanDetail() {
                     }
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Color.LightGray,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .padding(8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Atul Thapliyal s/o Mr. Dinesh Prasad ",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        fontWeight = FontWeight.W600
-                                    )
-                                )
-
-                                Text(
-                                    text = "22 yrs",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Mother Divine Public School",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-
-                                Text(
-                                    text = "7th Std",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-                            }
-
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Color.LightGray,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .padding(8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(modifier = Modifier.fillMaxWidth()) {
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Atul Thapliyal s/o Mr. Dinesh Prasad ",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        fontWeight = FontWeight.W600
-                                    )
-                                )
-
-                                Text(
-                                    text = "22 yrs",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Mother Divine Public School",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-
-                                Text(
-                                    text = "7th Std",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 12.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-                            }
-                        }
+                    childrens?.forEach{children->
+                        ChildrensList(children)
                     }
                 }
             }
@@ -569,11 +442,181 @@ fun ChildrenPlanDetail() {
     }
 
 }
+fun calculateAge(dateOfBirth: String): Number {
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
+    val birthDate = LocalDate.parse(dateOfBirth, dateFormatter)
 
+    val currentDate = LocalDate.now()
 
-@Preview
+    val age = ChronoUnit.YEARS.between(birthDate, currentDate).toInt()
+
+    return age
+}
 @Composable
-fun ChildrenPreview() {
-    ChildrenPlanDetail()
+fun AgeDisplay(dateOfBirth: String) :Number {
+    val age = calculateAge(dateOfBirth)
+    return age
+}
+@Composable
+fun ChildrensList(children: ChildrenList) {
+
+    var age:Number= 0
+    children.dateOfBirth.let {
+        age = AgeDisplay(dateOfBirth = it)
+    }
+
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .background(
+            Color.LightGray,
+            shape = RoundedCornerShape(10.dp)
+        )
+        .padding(8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "${children.name} s/o ${children.guardianName} ",
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.W600
+                    )
+                )
+
+                Text(
+                    text = "$age yrs",
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.W400
+                    )
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = children.schoolName,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.W400
+                    )
+                )
+
+                Text(
+                    text = "${children.standard} Std",
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.W400
+                    )
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Boarding Place" ,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.W400
+                    )
+                )
+
+                Text(
+                    text = children.boardingPlaceName,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.W400
+                    )
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "DeBoarding Place" ,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.W400
+                    )
+                )
+
+                children.deBoardingPlaceName?.let {
+                    Text(
+                        text = it,
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.W400
+                        )
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Phone Number - ${children.primaryPhoneNumber} " ,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.W400
+                    )
+                )
+
+
+
+                if(children.secondaryPhoneNumber?.length!! > 0){
+                    children.secondaryPhoneNumber?.let {
+                        Text(
+                            text = ",$it",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.W400
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+    Spacer(modifier = Modifier.height(12.dp))
 }

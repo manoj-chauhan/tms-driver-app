@@ -21,9 +21,9 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
     private val  _childrenList: MutableStateFlow<List<ChildrenList>?> = MutableStateFlow(null)
     val childrenList: StateFlow<List<ChildrenList>?> = _childrenList.asStateFlow()
 
-    fun fetchParentTrip(context: Context){
+    fun fetchParentTrip(context: Context, operatorId:Int, planId:Int){
         viewModelScope.launch(Dispatchers.IO) {
-            val tripList = driverPlan.getChildrenList(1, 34)
+            val tripList = driverPlan.getChildrenList(operatorId, planId)
             _childrenList.update { _ ->
                 tripList
             }
@@ -31,5 +31,7 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
         }
 
     }
+
+
 
 }

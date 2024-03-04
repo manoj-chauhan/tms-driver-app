@@ -144,7 +144,7 @@ fun AppNavigationHost(
         }
 
         composable("driver-plans-details"){
-            ChildrenPlanDetail()
+            ChildrenPlanDetail(operatorId, planId)
         }
 
         composable("history_detail"){

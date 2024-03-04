@@ -5,6 +5,7 @@ import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ChildrenList
+import com.drishto.driver.models.scheduleList
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
@@ -49,4 +50,38 @@ class DriverNetRepository @Inject constructor(
             null
         }
     }
+
+    fun fetchSchedules(planId: Int, operatorId: Int): scheduleList{
+            val tripDetailUrl = context.resources.getString(R.string.url_schedule_plan) + planId
+
+            return try {
+                getAccessToken(context)?.let {
+                    val (request1, response1, result1) = tripDetailUrl.httpGet()
+                        .authentication().bearer(it)
+                        .header("Company-Id", operatorId)
+                        .responseObject(moshiDeserializerOf(scheduleList::class.java))
+
+                    result1.fold(
+                        { schedule ->
+                            schedule
+                        },
+                        { error ->
+                            Log.e(
+                                "Fuel",
+                                "Error $error"
+                            )
+                            throw Exception("Error fetching trip schedule" )
+                        }
+                    )
+                }
+                    ?: throw Exception("Access token is null") // Throw an exception if access token is null
+            } catch (e: Exception) {
+                Log.e(
+                    "Fuel",
+                    "Exception $e"
+                )
+                throw Exception("Exception fetching trip details")
+            }
+    }
+
 }

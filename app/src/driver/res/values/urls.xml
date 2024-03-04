@@ -24,5 +24,7 @@
     <string name="url_trip_document">&baseUrl;/trips/document/</string>
     <string name="url_download_document">&baseUrl;/file/</string>
     <string name="url_trip_history">&baseUrl;/driver/</string>
+    <string name="url_schedule_plan">&baseUrl;/tripPlan/</string>
+
 
 </resources>
