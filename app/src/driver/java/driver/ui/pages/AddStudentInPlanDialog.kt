@@ -1,10 +1,12 @@
 package driver.ui.pages
 
 import android.app.DatePickerDialog
+import android.util.Log
 import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,10 +16,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -25,7 +28,9 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,24 +40,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.text.SimpleDateFormat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import driver.ui.viewmodels.DriverPlanDetailsViewModel
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun addStudentInPlan() {
+fun addStudentInPlan(operatorId: Int, planId: Int) {
 
-    var name by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val ch: DriverPlanDetailsViewModel = hiltViewModel()
+    val schedules by ch.planList.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        ch.fetchSchedule(context = context, operatorId, planId)
+    }
 
+
+    Log.d("Dialog", "addStudentInPlan: $operatorId, $planId ")
+    var name by remember { mutableStateOf("") }
+    var schoolName by remember { mutableStateOf("") }
+    var schoolAddress by remember { mutableStateOf("") }
+    var primaryPhone by remember { mutableStateOf("") }
+    var secondaryPhone by remember { mutableStateOf("") }
+    var primarynumber: String = ""
+    var secondarynumber: String = ""
+    
+    var selectedDate by remember { mutableStateOf("") }
     val calendar = Calendar.getInstance()
     val year: Int = calendar.get(Calendar.YEAR)
     val month: Int = calendar.get(Calendar.MONTH)
@@ -61,17 +81,25 @@ fun addStudentInPlan() {
 
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed: Boolean by interactionSource.collectIsPressedAsState()
-
     var expanded by remember { mutableStateOf(false) }
+    var standardexpander by remember { mutableStateOf(false) }
+    var boardinglocationexpander by remember { mutableStateOf(false) }
+    var deboardinglocationexpander by remember { mutableStateOf(false) }
+
+
     var selectedText by remember { mutableStateOf("") }
 
     var gender by remember { mutableStateOf("") }
+    var standard by remember { mutableStateOf("") }
+    var boardingPlaceName by remember { mutableStateOf("") }
+    var boardingPlaceId by remember { mutableIntStateOf(0) }
 
-    val icon = if (expanded)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
+    var deboardingPlaceName by remember { mutableStateOf("") }
+    var deboardingPlaceId by remember { mutableIntStateOf(0) }
 
+
+    val schoolStandard =
+        arrayOf("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII")
 
 
     Box(
@@ -100,7 +128,7 @@ fun addStudentInPlan() {
                             style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W500)
                         )
                     }
-                    Column {
+                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -171,7 +199,6 @@ fun addStudentInPlan() {
                                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                                     expanded = false
                                 }, modifier = Modifier.background(Color.White)) {
-
                                     DropdownMenuItem(text = { Text(text = "Male") }, onClick = {
                                         gender = "Male"
                                         selectedText = "M"
@@ -185,8 +212,6 @@ fun addStudentInPlan() {
                                     })
                                 }
                             }
-
-
                         }
 
                         Spacer(modifier = Modifier.height(26.dp))
@@ -198,26 +223,48 @@ fun addStudentInPlan() {
                             )
                         }
                         Column(modifier = Modifier) {
+                            ExposedDropdownMenuBox(
+                                expanded = standardexpander, modifier = Modifier.fillMaxWidth(),
+                                onExpandedChange = { standardexpander = it }) {
+                                OutlinedTextField(
+                                    value = standard,
+                                    label = { Text(text = "Standard") },
+                                    onValueChange = {},
+                                    readOnly = true, trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = standardexpander)
+                                    },
+                                    modifier = Modifier.menuAnchor()
+                                )
+
+                                ExposedDropdownMenu(
+                                    expanded = standardexpander,
+                                    onDismissRequest = {
+                                        standardexpander = false
+                                    },
+                                    modifier = Modifier.background(Color.White)
+                                ) {
+                                    schoolStandard.forEach { standardClass ->
+                                        DropdownMenuItem(
+                                            text = { Text(text = standardClass) },
+                                            onClick = {
+                                                standard = standardClass
+                                                standardexpander = false
+                                            })
+                                    }
+                                }
+                            }
                             OutlinedTextField(
-                                value = name,
-                                onValueChange = { name = it },
-                                label = { Text("UerName") },
+                                value = schoolName,
+                                onValueChange = { schoolName = it },
+                                label = { Text("School Name") },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(bottom = 1.dp)
                             )
                             OutlinedTextField(
-                                value = name,
-                                onValueChange = { name = it },
-                                label = { Text("UerName") },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 1.dp)
-                            )
-                            OutlinedTextField(
-                                value = name,
-                                onValueChange = { name = it },
-                                label = { Text("UerName") },
+                                value = schoolAddress,
+                                onValueChange = { schoolAddress = it },
+                                label = { Text("School Address") },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(bottom = 1.dp)
@@ -236,20 +283,54 @@ fun addStudentInPlan() {
                         }
                         Column(modifier = Modifier) {
                             OutlinedTextField(
-                                value = name,
-                                onValueChange = { name = it },
-                                label = { Text("UerName") },
+                                value = primaryPhone,
+                                onValueChange = { primaryPhone = it },
+                                label = { Text("Primary Phone Number") },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = 1.dp)
+                                    .padding(bottom = 1.dp),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done
+                                ),
+                                leadingIcon = {
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Start
+                                    ) {
+                                        Text(
+                                            text = "+91",
+                                            color = Color.Black,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 15.sp,
+                                            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                                        )
+                                    }
+                                }
                             )
                             OutlinedTextField(
-                                value = name,
-                                onValueChange = { name = it },
-                                label = { Text("UerName") },
+                                value = secondaryPhone,
+                                onValueChange = { secondaryPhone = it },
+                                label = { Text("Secondary Phone Number") },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = 1.dp)
+                                    .padding(bottom = 1.dp),
+                                leadingIcon = {
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Start
+                                    ) {
+                                        Text(
+                                            text = "+91",
+                                            color = Color.Black,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 15.sp,
+                                            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                                        )
+                                    }
+                                }
                             )
 
 
@@ -257,42 +338,83 @@ fun addStudentInPlan() {
 
                         Spacer(modifier = Modifier.height(26.dp))
 
-//                        Row(modifier = Modifier.fillMaxWidth(1f)) {
-//                            Text(
-//                                text = "Locations",
-//                                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.W500)
-//                            )
-//                        }
-//                        Column(modifier = Modifier) {
-//                            OutlinedTextField(
-//                                value = name,
-//                                onValueChange = { name = it },
-//                                label = { Text("UerName") },
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(bottom = 1.dp)
-//                            )
-//                            OutlinedTextField(
-//                                value = name,
-//                                onValueChange = { name = it },
-//                                label = { Text("UerName") },
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(bottom = 1.dp)
-//                            )
-//
-//
-//                        }
+                        Row(modifier = Modifier.fillMaxWidth(1f)) {
+                            Text(
+                                text = "Locations",
+                                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.W500)
+                            )
+                        }
+                        Column(modifier = Modifier) {
+                            ExposedDropdownMenuBox(
+                                expanded = boardinglocationexpander, modifier = Modifier.fillMaxWidth(),
+                                onExpandedChange = { boardinglocationexpander = it }) {
+                                OutlinedTextField(
+                                    value = boardingPlaceName,
+                                    label = { Text(text = "Boarding Location") },
+                                    onValueChange = {},
+                                    readOnly = true, trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = boardinglocationexpander)
+                                    },
+                                    modifier = Modifier.menuAnchor()
+                                )
+
+                                ExposedDropdownMenu(
+                                    expanded = boardinglocationexpander,
+                                    onDismissRequest = {
+                                        boardinglocationexpander = false
+                                    },
+                                    modifier = Modifier.background(Color.White)
+                                ) {
+                                    schedules?.tripPlanScheduleList?.forEach { place ->
+                                        DropdownMenuItem(
+                                            text = { Text(text = place.placeName) },
+                                            onClick = {
+                                                boardingPlaceName= place.placeName
+                                                boardingPlaceId= place.placeId
+                                                Log.d("Dialog", "addStudentInPlan: $boardingPlaceId ")
+
+                                                boardinglocationexpander = false
+                                            })
+                                    }
+                                }
+                            }
+                            ExposedDropdownMenuBox(
+                                expanded = deboardinglocationexpander, modifier = Modifier.fillMaxWidth(),
+                                onExpandedChange = { deboardinglocationexpander = it }) {
+                                OutlinedTextField(
+                                    value = deboardingPlaceName,
+                                    label = { Text(text = "DeBoarding Location") },
+                                    onValueChange = {},
+                                    readOnly = true, trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = deboardinglocationexpander)
+                                    },
+                                    modifier = Modifier.menuAnchor()
+                                )
+
+                                ExposedDropdownMenu(
+                                    expanded = deboardinglocationexpander,
+                                    onDismissRequest = {
+                                        deboardinglocationexpander = false
+                                    },
+                                    modifier = Modifier.background(Color.White)
+                                ) {
+                                    schedules?.tripPlanScheduleList?.forEach { place ->
+                                        DropdownMenuItem(
+                                            text = { Text(text = place.placeName) },
+                                            onClick = {
+                                                deboardingPlaceName= place.placeName
+                                                deboardingPlaceId= place.placeId
+                                                Log.d("Dialog", "addStudentInPlan: $deboardingPlaceId ")
+                                                deboardinglocationexpander = false
+                                            })
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
 
         }
     }
-}
-
-@Composable
-@Preview
-fun addStudentInPlanPreview() {
-    addStudentInPlan()
 }

@@ -53,7 +53,6 @@ fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostC
     val schedules by ch.planList.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         ch.fetchSchedule(context = context, operatorId, planId)
-
     }
     Log.d("Plan list", "ChildrenPlanDetail: $schedules")
 
@@ -150,7 +149,7 @@ fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostC
                                 .align(Alignment.Bottom),
                             enabled = true,
                             onClick = {
-                                navHostController.navigate("add-children")
+                                navHostController.navigate("add-children/$operatorId/$planId")
                             },
                             contentPadding = PaddingValues(),
                             colors = ButtonDefaults.buttonColors(

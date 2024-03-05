@@ -36,6 +36,9 @@ const val MY_ARG= "message"
 const val MY_URI = "https://trip-details"
 const val trip_Id :Int=0
 const val operatorI:Int = 1
+const val planoperatorId:Int = 1
+const val Id:Int = 1
+
 
 
 
@@ -155,8 +158,13 @@ fun AppNavigationHost(
         composable("login"){
 
         }
-        composable("add-children"){
-            addStudentInPlan()
+        composable("add-children/{operatorId}/{planId}", arguments = listOf(
+            navArgument("operatorId") { type = NavType.IntType },
+            navArgument("planId") { type = NavType.IntType }
+        )) { backStackEntry ->
+            val companyId = backStackEntry.arguments?.getInt("operatorId") ?: 0
+            val planid = backStackEntry.arguments?.getInt("planId") ?: 0
+            addStudentInPlan(companyId, planid)
         }
         composable("assignment", arguments = listOf(
             navArgument(MY_ARG) { type = NavType.StringType } ,
