@@ -91,6 +91,7 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-location:21.1.0")
     implementation("com.google.firebase:firebase-appcheck-debug:17.1.1")
+    implementation("androidx.compose.material3:material3-android:1.2.0")
     val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
     val firebaseBom = platform("com.google.firebase:firebase-bom:32.5.0")
     val lifecycleVersion = "2.6.2"

@@ -29,6 +29,7 @@ import driver.ui.pages.ChildrenPlanDetail
 import driver.ui.pages.History
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.MatrixLog
+import driver.ui.pages.addStudentInPlan
 
 
 const val MY_ARG= "message"
@@ -144,7 +145,7 @@ fun AppNavigationHost(
         }
 
         composable("driver-plans-details"){
-            ChildrenPlanDetail(operatorId, planId)
+            ChildrenPlanDetail(operatorId, planId, navController)
         }
 
         composable("history_detail"){
@@ -153,6 +154,9 @@ fun AppNavigationHost(
 
         composable("login"){
 
+        }
+        composable("add-children"){
+            addStudentInPlan()
         }
         composable("assignment", arguments = listOf(
             navArgument(MY_ARG) { type = NavType.StringType } ,

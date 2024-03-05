@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.drishto.driver.models.ChildrenList
 import com.drishto.driver.models.TripSchedulesList
 import com.drishto.driver.ui.pages.AgeDisplay
@@ -39,7 +43,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun ChildrenPlanDetail(operatorId: Int, planId: Int) {
+fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostController) {
     val ch: DriverPlanDetailsViewModel = hiltViewModel()
     val childrens by ch.childrenList.collectAsStateWithLifecycle()
     ch.fetchParentTrip(context = LocalContext.current, operatorId, planId)
@@ -140,6 +144,45 @@ fun ChildrenPlanDetail(operatorId: Int, planId: Int) {
                                 fontWeight = FontWeight.Bold
                             )
                         )
+                        Button(
+                            modifier = Modifier
+                                .height(25.dp)
+                                .align(Alignment.Bottom),
+                            enabled = true,
+                            onClick = {
+                                navHostController.navigate("add-children")
+                            },
+                            contentPadding = PaddingValues(),
+                            colors = ButtonDefaults.buttonColors(
+                                Color.Transparent
+                            ),
+                            shape = RoundedCornerShape(40.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .heightIn(35.dp)
+                                    .width(100.dp)
+                                    .align(Alignment.Bottom)
+                                    .background(
+                                        color = Color.LightGray,
+                                        shape = RoundedCornerShape(40.dp)
+                                    ), contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    modifier = Modifier,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Add Student",
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                }
+                            }
+                        }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
 
@@ -184,7 +227,6 @@ fun schedulesList(
     Log.d("departure", "schedulesList: ${schedule.departure}")
     Log.d("arrival", "schedulesList: ${schedule.arrival}")
     Log.d("arrival", "schedulesList: ${schedules.size}")
-
 
 
 //    var departure: String= ""
@@ -298,7 +340,7 @@ fun schedulesList(
                 )
             }
 
-            if(index == 0 ){
+            if (index == 0) {
                 Box(modifier = Modifier.width(100.dp), Alignment.Center) {
                     Text(
                         text = "--", style = TextStyle(
@@ -309,7 +351,7 @@ fun schedulesList(
                     )
                 }
 
-            }else {
+            } else {
 
                 Box(modifier = Modifier.width(100.dp), Alignment.Center) {
                     schedule.arrival?.let {
@@ -324,7 +366,7 @@ fun schedulesList(
                 }
             }
 
-            if(index == (schedules.size-1)) {
+            if (index == (schedules.size - 1)) {
                 Box(modifier = Modifier.width(100.dp), Alignment.Center) {
                     Text(
                         text = "--", style = TextStyle(
@@ -334,7 +376,7 @@ fun schedulesList(
                         )
                     )
                 }
-            }else{
+            } else {
                 Box(modifier = Modifier.width(100.dp), Alignment.Center) {
                     schedule.departure?.let {
                         Text(
