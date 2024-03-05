@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,6 +28,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -614,9 +616,13 @@ fun GoogleMapView(
     vm: parentTripDetail = hiltViewModel()
 ) {
 
+    var isLoading by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
     val currentDriver by vm.currentDriver.collectAsStateWithLifecycle()
-    vm.fetchDriverLocation(passengerTripId = passengerTripId)
+    if(currentDriver?.bool != true) {
+        vm.fetchDriverLocation(passengerTripId = passengerTripId)
+    }
     val tripRoute by vm.points.collectAsStateWithLifecycle()
     vm.fetchTripRouteCoordinates(passengerTripId)
     val routePoints: List<LatLng>? = tripRoute?.map { LatLng(it.latitude, it.longitude) }
@@ -680,53 +686,66 @@ fun GoogleMapView(
                             .fillMaxWidth()
                             .padding(end = 16.dp), verticalAlignment = Alignment.Bottom
                     ) {
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(25.dp)
-                                .align(Alignment.Bottom),
-                            enabled = true,
-                            onClick = {
-                                vm.reload(passengerTripId = passengerTripId)
-                            },
-                            contentPadding = PaddingValues(),
-                            colors = ButtonDefaults.buttonColors(
-                                Color.Transparent
-                            ),
-                            shape = RoundedCornerShape(40.dp)
-                        ) {
-                            val primary = Color(0xFF92A3FD)
-                            val secondary = Color(0XFF9DCEFF)
-                            Box(
+                        if (isLoading) {
+                            if(currentDriver?.bool == true) {
+                                Log.d("TAG", "GoogleMapView: here")
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                )
+                            }
+                            isLoading = false
+                        } else{
+                            Button(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .heightIn(35.dp)
-                                    .align(Alignment.Bottom)
-                                    .background(
-                                        brush = Brush.horizontalGradient(
-                                            listOf(
-                                                primary,
-                                                secondary
-                                            )
-                                        ),
-                                        shape = RoundedCornerShape(40.dp)
-                                    ), contentAlignment = Alignment.Center
+                                    .height(25.dp)
+                                    .align(Alignment.Bottom),
+                                enabled = true,
+                                onClick = {
+                                    isLoading = true
+                                    Log.d("Loaduii", "GoogleMapView:$isLoading ")
+                                    vm.reload(passengerTripId = passengerTripId)
+                                },
+                                contentPadding = PaddingValues(),
+                                colors = ButtonDefaults.buttonColors(
+                                    Color.Transparent
+                                ),
+                                shape = RoundedCornerShape(40.dp)
                             ) {
-                                Row(
-                                    modifier = Modifier,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
+                                val primary = Color(0xFF92A3FD)
+                                val secondary = Color(0XFF9DCEFF)
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(35.dp)
+                                        .align(Alignment.Bottom)
+                                        .background(
+                                            brush = Brush.horizontalGradient(
+                                                listOf(
+                                                    primary,
+                                                    secondary
+                                                )
+                                            ),
+                                            shape = RoundedCornerShape(40.dp)
+                                        ), contentAlignment = Alignment.Center
                                 ) {
-                                    Text(
-                                        text = "Refresh",
-                                        style = TextStyle(
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.Bold
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = "Refresh",
+                                            style = TextStyle(
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             }
-                        }
+                    }
                     }
                 }
             }
@@ -742,20 +761,22 @@ fun GoogleMapView(
                             if (first != null) {
                                 if (lastPoint != null) {
                                     currentDriverLoc(
-                                        LatLng(it.latitude, it.longitude),
+                                        LatLng(it.driver.latitude, it.driver.longitude),
                                         routePoints,
                                         first, lastPoint,
                                         onMapLoaded = {})
                                 }
                             }
                         } else {
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 }
             }
         }
     }
+
 }
 
 @Composable

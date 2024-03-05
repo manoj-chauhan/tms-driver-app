@@ -17,3 +17,9 @@ data class currentDriverLocation(
      val longitude : Double,
      val time :  String
 )
+
+@JsonClass(generateAdapter = true)
+data class loaderMap(
+     val driver :  currentDriverLocation,
+     val bool:Boolean = false
+)

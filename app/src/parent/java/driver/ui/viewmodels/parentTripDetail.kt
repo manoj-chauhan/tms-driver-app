@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.models.ParentTripDetail
 import driver.models.ProcessedPoints
-import driver.models.currentDriverLocation
+import driver.models.loaderMap
 import driver.models.point
 import driver.tripManagement.ParentTripManager
 import kotlinx.coroutines.Dispatchers
@@ -23,8 +23,8 @@ class parentTripDetail @Inject constructor(private val parentTripManager: Parent
     private val _assignmentDetail: MutableStateFlow<ParentTripDetail?> = MutableStateFlow(null)
     val assignmentDetail: StateFlow<ParentTripDetail?> = _assignmentDetail.asStateFlow()
 
-    private val _currentDriver: MutableStateFlow<currentDriverLocation?> = MutableStateFlow(null)
-    val currentDriver: StateFlow<currentDriverLocation?> = _currentDriver.asStateFlow()
+    private val _currentDriver: MutableStateFlow<loaderMap?> = MutableStateFlow(null)
+    val currentDriver: StateFlow<loaderMap?> = _currentDriver.asStateFlow()
 
     private val  _points: MutableStateFlow<List<point>?> = MutableStateFlow(null)
     val points: StateFlow<List<point>?> = _points.asStateFlow()
@@ -70,7 +70,10 @@ class parentTripDetail @Inject constructor(private val parentTripManager: Parent
             val driverLoc = parentTripManager.getDriverLoc(passengerTripId)
             if (driverLoc!=null) {
                 _currentDriver.update { _ ->
-                    driverLoc
+                    loaderMap(
+                        driverLoc,
+                        true
+                    )
                 }
             }else{
 
