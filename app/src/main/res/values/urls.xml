@@ -28,7 +28,9 @@
     <string name="edit_user_name">&baseUrl;/user/profile/edit</string>
     <string name="children_list">&baseUrl;/parents/children?page_no=0</string>
     <string name="upload_photo">&baseUrl;/user/</string>
+    <string name="url_schedule_plan">&baseUrl;/tripPlan/</string>
     <string name="url_student_list">&baseUrl;/tripPlan/</string>
+
 
 
 

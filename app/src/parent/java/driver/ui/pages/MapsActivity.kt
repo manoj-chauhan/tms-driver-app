@@ -96,7 +96,7 @@ fun MapsActivityContent(
         ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
     )
 
-    val gry=Color(android.graphics.Color.parseColor("#838383"))
+    val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
     val back = Color(android.graphics.Color.parseColor("#F5F5F5"))
 
@@ -159,9 +159,11 @@ fun MapsActivityContent(
                         )
                     }
 
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 16.dp), verticalAlignment = Alignment.Bottom) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 16.dp), verticalAlignment = Alignment.Bottom
+                    ) {
                         Button(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -169,7 +171,7 @@ fun MapsActivityContent(
                                 .align(Alignment.Bottom),
                             enabled = true,
                             onClick = {
-                                      navController.navigate("map-screen")
+                                navController.navigate("map-screen")
                             },
                             contentPadding = PaddingValues(),
                             colors = ButtonDefaults.buttonColors(
@@ -225,7 +227,7 @@ fun MapsActivityContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.46f),
-                        shape = RoundedCornerShape( topEnd = 10.dp, topStart = 10.dp),
+                        shape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp),
                     ) {
                         assignmentDetail?.let {
 
@@ -239,20 +241,24 @@ fun MapsActivityContent(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                        Text(
-                                            text = it.passengerName,
-                                            style = TextStyle(
-                                                color = Color.Black,
-                                                fontSize = 14.sp,
-                                                fontFamily = fontStyle,
-                                                fontWeight = FontWeight.W700
-                                            )
+                                    Text(
+                                        text = it.passengerName,
+                                        style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 14.sp,
+                                            fontFamily = fontStyle,
+                                            fontWeight = FontWeight.W700
                                         )
+                                    )
 
-                                val parsedDate = remember(it.tripDate) { inputFormat.parse(it.tripDate)}
-                                val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
-                                val parsedTime = remember(it.tripTime) {arrivalTime.parse(it.tripTime) }
-                                val formattedTime = remember(parsedTime) { outputArrivaltime.format(parsedTime) }
+                                    val parsedDate =
+                                        remember(it.tripDate) { inputFormat.parse(it.tripDate) }
+                                    val formattedDate =
+                                        remember(parsedDate) { outputFormat.format(parsedDate) }
+                                    val parsedTime =
+                                        remember(it.tripTime) { arrivalTime.parse(it.tripTime) }
+                                    val formattedTime =
+                                        remember(parsedTime) { outputArrivaltime.format(parsedTime) }
 
 
 
@@ -349,8 +355,11 @@ fun MapsActivityContent(
                                         )
                                     )
 
-                                    val parsedBoardingTime = remember(it.boardingTime) {boardingTime.parse(it.boardingTime) }
-                                    val formattedBoardingTime = remember(parsedBoardingTime) { outputboardingTime.format(parsedBoardingTime) }
+                                    val parsedBoardingTime =
+                                        remember(it.boardingTime) { boardingTime.parse(it.boardingTime) }
+                                    val formattedBoardingTime = remember(parsedBoardingTime) {
+                                        outputboardingTime.format(parsedBoardingTime)
+                                    }
 
                                     Text(
                                         text = formattedBoardingTime,
@@ -611,60 +620,14 @@ fun GoogleMapView(
     val tripRoute by vm.points.collectAsStateWithLifecycle()
     vm.fetchTripRouteCoordinates(passengerTripId)
     val routePoints: List<LatLng>? = tripRoute?.map { LatLng(it.latitude, it.longitude) }
-//    vm.fetchTripProcessedCoordinates(context, operatorId, tripCode)
-//
-
-
-//    val processedPoints: List<LatLng>? =
-//        tripProcessCoord?.map { LatLng(it.latitude, it.longitude) }
-//    routePoints?.let {
-//        process(it, processedPoints, onMapLoaded = {})
-//    }
-
-    if(currentDriver != null) {
-        currentDriver?.let {
-            if (routePoints != null) {
-                currentDriverLoc(LatLng(it.latitude, it.longitude),routePoints,passengerTripId,navController, onMapLoaded = {})
-            }else{
-                Toast.makeText(context,"Something went wrong", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-}
-@Composable
-fun currentDriverLoc(driverLatLng:LatLng,routePoints: List<LatLng>,passengerTripId: Int,navController: NavHostController, onMapLoaded: () -> Unit) {
-    Log.d("TAG", "currentDriverLoc: $driverLatLng")
-    val mapUiproperties by remember {
-        mutableStateOf(
-            MapProperties(
-                mapType = MapType.NORMAL
-            )
-        )
-    }
-
-
-    val mapUiSetting by remember {
-        mutableStateOf(
-            MapUiSettings(
-                compassEnabled = false
-            )
-        )
-    }
-
-    val vm: parentTripDetail = hiltViewModel()
-    val context = LocalContext.current
-
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(driverLatLng, 18f)
-    }
     val gradient = Brush.linearGradient(
         listOf(
             Color(android.graphics.Color.parseColor("#FFFFFF")),
             Color(android.graphics.Color.parseColor("#E8F1F8"))
         ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
     )
-    val first = routePoints.first()
-    val lastPoint = routePoints.last()
+    val first = routePoints?.first()
+    val lastPoint = routePoints?.last()
 
     Box(
         modifier = Modifier
@@ -712,9 +675,11 @@ fun currentDriverLoc(driverLatLng:LatLng,routePoints: List<LatLng>,passengerTrip
                             )
                         )
                     }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 16.dp), verticalAlignment = Alignment.Bottom) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 16.dp), verticalAlignment = Alignment.Bottom
+                    ) {
                         Button(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -771,36 +736,87 @@ fun currentDriverLoc(driverLatLng:LatLng,routePoints: List<LatLng>,passengerTrip
                     .padding(start = 16.dp, end = 16.dp, bottom = 10.dp)
             )
             {
-                GoogleMap(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    onMapLoaded = onMapLoaded,
-                    cameraPositionState = cameraPositionState,
-                    uiSettings = mapUiSetting,
-                    properties = mapUiproperties
-                )
-                {
-                    Polyline(
-                        points = routePoints,
-                        color = Color.Gray,
-                        width = 10f
-                    )
-                    Marker(
-                        state = rememberMarkerState(position = driverLatLng),
-                        title = "",
-                        icon = createCustomCircleMarker()
-                    )
-                    Marker(
-                        state = rememberMarkerState(position = first),
-                        title = "Last Position",
-                    )
-                    Marker(
-                        state = rememberMarkerState(position = lastPoint),
-                        title = "Last Position",
-                    )
+                if (currentDriver != null) {
+                    currentDriver?.let {
+                        if (routePoints != null) {
+                            if (first != null) {
+                                if (lastPoint != null) {
+                                    currentDriverLoc(
+                                        LatLng(it.latitude, it.longitude),
+                                        routePoints,
+                                        first, lastPoint,
+                                        onMapLoaded = {})
+                                }
+                            }
+                        } else {
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun currentDriverLoc(
+    driverLatLng: LatLng,
+    routePoints: List<LatLng>,
+    first: LatLng,
+    lastPoint: LatLng,
+    onMapLoaded: () -> Unit
+) {
+    Log.d("TAG", "currentDriverLoc: $driverLatLng")
+    val mapUiproperties by remember {
+        mutableStateOf(
+            MapProperties(
+                mapType = MapType.NORMAL
+            )
+        )
+    }
+
+
+    val mapUiSetting by remember {
+        mutableStateOf(
+            MapUiSettings(
+                compassEnabled = false
+            )
+        )
+    }
+
+    val vm: parentTripDetail = hiltViewModel()
+    val context = LocalContext.current
+
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(driverLatLng, 18f)
+    }
+    GoogleMap(
+        modifier = Modifier
+            .fillMaxWidth(),
+        onMapLoaded = onMapLoaded,
+        cameraPositionState = cameraPositionState,
+        uiSettings = mapUiSetting,
+        properties = mapUiproperties
+    )
+    {
+        Polyline(
+            points = routePoints,
+            color = Color.Gray,
+            width = 10f
+        )
+        Marker(
+            state = rememberMarkerState(position = driverLatLng),
+            title = "",
+            icon = createCustomCircleMarker()
+        )
+        Marker(
+            state = rememberMarkerState(position = first),
+            title = "Last Position",
+        )
+        Marker(
+            state = rememberMarkerState(position = lastPoint),
+            title = "Last Position",
+        )
     }
 }
 
@@ -854,10 +870,10 @@ fun process(routePoints: List<LatLng>, onMapLoaded: () -> Unit) {
             width = 8f
         )
 
-            Marker(
-                state = rememberMarkerState(position = first),
-                title = "Last Position",
-            )
+        Marker(
+            state = rememberMarkerState(position = first),
+            title = "Last Position",
+        )
         Marker(
             state = rememberMarkerState(position = lastPoint),
             title = "Last Position",
@@ -896,6 +912,7 @@ fun calculateZoomLevel(bounds: LatLngBounds): Float {
 
     return (ZOOM_LEVEL_CONSTANT - log2(ratio)).toFloat()
 }
+
 @Composable
 fun createCustomCircleMarker(): BitmapDescriptor {
     val density = LocalDensity.current.density
