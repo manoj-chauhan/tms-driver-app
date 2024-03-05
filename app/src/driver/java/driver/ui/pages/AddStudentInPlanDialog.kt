@@ -9,18 +9,23 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -36,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -65,13 +71,14 @@ fun addStudentInPlan(operatorId: Int, planId: Int) {
 
     Log.d("Dialog", "addStudentInPlan: $operatorId, $planId ")
     var name by remember { mutableStateOf("") }
+    var guardianName by remember { mutableStateOf("") }
     var schoolName by remember { mutableStateOf("") }
     var schoolAddress by remember { mutableStateOf("") }
     var primaryPhone by remember { mutableStateOf("") }
     var secondaryPhone by remember { mutableStateOf("") }
     var primarynumber: String = ""
     var secondarynumber: String = ""
-    
+
     var selectedDate by remember { mutableStateOf("") }
     val calendar = Calendar.getInstance()
     val year: Int = calendar.get(Calendar.YEAR)
@@ -148,8 +155,8 @@ fun addStudentInPlan(operatorId: Int, planId: Int) {
                                     .padding(bottom = 1.dp)
                             )
                             OutlinedTextField(
-                                value = name,
-                                onValueChange = { name = it },
+                                value = guardianName,
+                                onValueChange = { guardianName = it },
                                 label = { Text("Guardian Name") },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -161,9 +168,10 @@ fun addStudentInPlan(operatorId: Int, planId: Int) {
                                 DatePickerDialog(
                                     context,
                                     { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-                                        val newDate = Calendar.getInstance()
-                                        newDate.set(year, month, dayOfMonth)
-                                        selectedDate = " ${month} / $dayOfMonth / $year"
+                                        val formattedMonth = (month + 1).toString().padStart(2, '0')
+                                        val formattedDay = dayOfMonth.toString().padStart(2, '0') // Adjust day formatting
+
+                                        selectedDate = "$formattedDay-$formattedMonth-$year"
                                     },
                                     year,
                                     month,
@@ -346,7 +354,8 @@ fun addStudentInPlan(operatorId: Int, planId: Int) {
                         }
                         Column(modifier = Modifier) {
                             ExposedDropdownMenuBox(
-                                expanded = boardinglocationexpander, modifier = Modifier.fillMaxWidth(),
+                                expanded = boardinglocationexpander,
+                                modifier = Modifier.fillMaxWidth(),
                                 onExpandedChange = { boardinglocationexpander = it }) {
                                 OutlinedTextField(
                                     value = boardingPlaceName,
@@ -369,9 +378,12 @@ fun addStudentInPlan(operatorId: Int, planId: Int) {
                                         DropdownMenuItem(
                                             text = { Text(text = place.placeName) },
                                             onClick = {
-                                                boardingPlaceName= place.placeName
-                                                boardingPlaceId= place.placeId
-                                                Log.d("Dialog", "addStudentInPlan: $boardingPlaceId ")
+                                                boardingPlaceName = place.placeName
+                                                boardingPlaceId = place.placeId
+                                                Log.d(
+                                                    "Dialog",
+                                                    "addStudentInPlan: $boardingPlaceId "
+                                                )
 
                                                 boardinglocationexpander = false
                                             })
@@ -379,7 +391,8 @@ fun addStudentInPlan(operatorId: Int, planId: Int) {
                                 }
                             }
                             ExposedDropdownMenuBox(
-                                expanded = deboardinglocationexpander, modifier = Modifier.fillMaxWidth(),
+                                expanded = deboardinglocationexpander,
+                                modifier = Modifier.fillMaxWidth(),
                                 onExpandedChange = { deboardinglocationexpander = it }) {
                                 OutlinedTextField(
                                     value = deboardingPlaceName,
@@ -402,11 +415,74 @@ fun addStudentInPlan(operatorId: Int, planId: Int) {
                                         DropdownMenuItem(
                                             text = { Text(text = place.placeName) },
                                             onClick = {
-                                                deboardingPlaceName= place.placeName
-                                                deboardingPlaceId= place.placeId
-                                                Log.d("Dialog", "addStudentInPlan: $deboardingPlaceId ")
+                                                deboardingPlaceName = place.placeName
+                                                deboardingPlaceId = place.placeId
+                                                Log.d(
+                                                    "Dialog",
+                                                    "addStudentInPlan: $deboardingPlaceId "
+                                                )
                                                 deboardinglocationexpander = false
                                             })
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(26.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                ,verticalAlignment = Alignment.Bottom
+                        ) {
+                            primarynumber = "+91$primaryPhone"
+                            if(secondaryPhone.isNotEmpty()) {
+                                secondarynumber = "+91$secondaryPhone"
+                            }else{
+                                secondarynumber = ""
+                            }
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(40.dp)
+                                    .align(Alignment.Bottom),
+                                enabled = true,
+                                onClick = {
+                                    ch.addStudentInPlan(name, guardianName,selectedDate, selectedText, standard, schoolName, schoolAddress, primarynumber, secondarynumber, boardingPlaceId, deboardingPlaceId, planId, operatorId)
+                                },
+                                contentPadding = PaddingValues(),
+                                colors = ButtonDefaults.buttonColors(
+                                    Color.Transparent
+                                ),
+                                shape = RoundedCornerShape(40.dp)
+                            ) {
+                                val primary = Color(0xFF92A3FD)
+                                val secondary = Color(0XFF9DCEFF)
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(35.dp)
+                                        .align(Alignment.Bottom)
+                                        .background(
+                                            brush = Brush.horizontalGradient(
+                                                listOf(
+                                                    primary,
+                                                    secondary
+                                                )
+                                            ),
+                                            shape = RoundedCornerShape(40.dp)
+                                        ), contentAlignment = Alignment.Center
+                                ) {
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = "Add Student",
+                                            style = TextStyle(
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        )
                                     }
                                 }
                             }

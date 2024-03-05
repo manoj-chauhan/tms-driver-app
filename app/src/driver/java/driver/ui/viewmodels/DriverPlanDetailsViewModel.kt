@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.drishto.driver.DriverPlan.DriverPlanManager
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ChildrenList
+import com.drishto.driver.models.childrenAddPlan
 import com.drishto.driver.models.scheduleList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +50,35 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
 
     }
 
+    fun addStudentInPlan(
+        name: String,
+        guardianName: String,
+        selectedDate: String,
+        selectedText: String,
+        standard: String,
+        schoolName: String,
+        schoolAddress: String,
+        primarynumber: String,
+        secondarynumber: String,
+        boardingPlaceId: Int,
+        deboardingPlaceId: Int,
+        planId: Int,
+        operatorId: Int
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = childrenAddPlan(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId)
+
+            Log.d("Dialog", "addStudentInPlan: $list")
+
+            try {
+                driverPlan.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId)
+            } catch(e:Exception){
+
+            }
+        }
+
+
+    }
 
 
 }

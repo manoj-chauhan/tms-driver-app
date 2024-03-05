@@ -2,17 +2,23 @@ package com.drishto.driver.network
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ChildrenList
+import com.drishto.driver.models.childrenAddPlan
 import com.drishto.driver.models.scheduleList
+import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
+import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
@@ -82,6 +88,69 @@ class DriverNetRepository @Inject constructor(
                 )
                 throw Exception("Exception fetching trip details")
             }
+    }
+
+    fun addStudent(
+        name: String,
+        schoolName: String,
+        primarynumber: String,
+        standard: String,
+        selectedText: String,
+        secondarynumber: String,
+        selectedDate: String,
+        guardianName: String,
+        schoolAddress: String,
+        planId: Int,
+        boardingPlaceId: Int,
+        deboardingPlaceId: Int,
+        operatorId: Int
+    ) {
+
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+        try {
+            val studentRequest = childrenAddPlan(name, schoolName,  primarynumber, standard, selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId)
+            val moshi = Moshi.Builder().build()
+            val jsonAdapter: JsonAdapter<childrenAddPlan> = moshi.adapter(childrenAddPlan::class.java)
+            val requestBody = jsonAdapter.toJson(studentRequest)
+
+            val url = context.resources.getString(R.string.url_addStudent_plan)
+
+            getAccessToken(context)?.let {
+                val fuelManager = FuelManager()
+                val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
+                    .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
+                    .response()
+
+                if (response.statusCode == 200) {
+                    // The request was successful, handle the response here
+
+                } else {
+                    result.fold(
+                        { _ ->
+                        },
+                        { error ->
+                            if (error.response.statusCode == 401) {
+                                errorManager.getErrorDescription(context)
+                            }
+
+                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                            Log.d("Error", "addStudent: $error")
+                        }
+                    )
+                }
+            }
+
+            Toast.makeText(
+                context,
+                "Student Added Successfully",
+                Toast.LENGTH_SHORT
+            ).show()
+
+        } catch(e:Exception){
+
+        }
+
+
     }
 
 }

@@ -21,4 +21,22 @@ class DriverPlanImpl @Inject constructor(
         return planNetRepository.fetchSchedules(planId, operatorId)
     }
 
+    override fun addStudent(
+        name: String,
+        schoolName: String,
+        primarynumber: String,
+        standard: String,
+        selectedText: String,
+        secondarynumber: String,
+        selectedDate: String,
+        guardianName: String,
+        schoolAddress: String,
+        planId: Int,
+        boardingPlaceId: Int,
+        deboardingPlaceId: Int,
+        operatorId: Int
+    ) {
+        return planNetRepository.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId)
+    }
+
 }
