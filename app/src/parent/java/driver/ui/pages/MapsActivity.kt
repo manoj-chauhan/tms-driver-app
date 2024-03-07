@@ -64,6 +64,7 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
@@ -616,13 +617,14 @@ fun GoogleMapView(
     vm: parentTripDetail = hiltViewModel()
 ) {
 
-    var isLoading by remember { mutableStateOf(false) }
-
     val context = LocalContext.current
     val currentDriver by vm.currentDriver.collectAsStateWithLifecycle()
-    if(currentDriver?.bool != true) {
+    if (currentDriver?.isloading != true) {
         vm.fetchDriverLocation(passengerTripId = passengerTripId)
     }
+
+    var circularIndicator by remember { mutableStateOf(false) }
+
     val tripRoute by vm.points.collectAsStateWithLifecycle()
     vm.fetchTripRouteCoordinates(passengerTripId)
     val routePoints: List<LatLng>? = tripRoute?.map { LatLng(it.latitude, it.longitude) }
@@ -686,16 +688,17 @@ fun GoogleMapView(
                             .fillMaxWidth()
                             .padding(end = 16.dp), verticalAlignment = Alignment.Bottom
                     ) {
-                        if (isLoading) {
-                            if(currentDriver?.bool == true) {
-                                Log.d("TAG", "GoogleMapView: here")
-                                CircularProgressIndicator(
-                                    modifier = Modifier
-                                        .size(30.dp)
-                                )
+                        if (circularIndicator) {
+                            Log.d("TAG", "GoogleMapView: here")
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(30.dp)
+                            )
+                            if(currentDriver?.isloading == true)
+                            {
+                                circularIndicator = false
                             }
-                            isLoading = false
-                        } else{
+                        } else {
                             Button(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -703,9 +706,10 @@ fun GoogleMapView(
                                     .align(Alignment.Bottom),
                                 enabled = true,
                                 onClick = {
-                                    isLoading = true
-                                    Log.d("Loaduii", "GoogleMapView:$isLoading ")
+                                    currentDriver?.isloading = false
+                                    circularIndicator = true
                                     vm.reload(passengerTripId = passengerTripId)
+                                    Log.d("Loaduii", "GoogleMapView:${currentDriver?.isloading} ")
                                 },
                                 contentPadding = PaddingValues(),
                                 colors = ButtonDefaults.buttonColors(
@@ -745,7 +749,7 @@ fun GoogleMapView(
                                     }
                                 }
                             }
-                    }
+                        }
                     }
                 }
             }
@@ -811,6 +815,11 @@ fun currentDriverLoc(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(driverLatLng, 18f)
     }
+
+    val driverMarkerState = remember(key1 = driverLatLng) {
+        MarkerState(position = driverLatLng)
+    }
+
     GoogleMap(
         modifier = Modifier
             .fillMaxWidth(),
@@ -826,8 +835,8 @@ fun currentDriverLoc(
             width = 10f
         )
         Marker(
-            state = rememberMarkerState(position = driverLatLng),
-            title = "",
+            state = driverMarkerState,
+            title = "Driver Location",
             icon = createCustomCircleMarker()
         )
         Marker(

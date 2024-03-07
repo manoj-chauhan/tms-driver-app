@@ -21,5 +21,5 @@ data class currentDriverLocation(
 @JsonClass(generateAdapter = true)
 data class loaderMap(
      val driver :  currentDriverLocation,
-     val bool:Boolean = false
+     var isloading:Boolean = false
 )
