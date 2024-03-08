@@ -164,7 +164,7 @@ fun AppNavigationHost(
         )) { backStackEntry ->
             val companyId = backStackEntry.arguments?.getInt("operatorId") ?: 0
             val planid = backStackEntry.arguments?.getInt("planId") ?: 0
-            addStudentInPlan(companyId, planid)
+            addStudentInPlan(companyId, planid, navController)
         }
         composable("assignment", arguments = listOf(
             navArgument(MY_ARG) { type = NavType.StringType } ,

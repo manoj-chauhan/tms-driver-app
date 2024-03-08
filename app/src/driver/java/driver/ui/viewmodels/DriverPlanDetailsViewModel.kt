@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.drishto.driver.DriverPlan.DriverPlanManager
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ChildrenList
@@ -63,7 +64,8 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
         boardingPlaceId: Int,
         deboardingPlaceId: Int,
         planId: Int,
-        operatorId: Int
+        operatorId: Int,
+        navController: NavHostController
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val list = childrenAddPlan(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId)
@@ -71,7 +73,7 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
             Log.d("Dialog", "addStudentInPlan: $list")
 
             try {
-                driverPlan.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId)
+                driverPlan.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId, navController)
             } catch(e:Exception){
 
             }

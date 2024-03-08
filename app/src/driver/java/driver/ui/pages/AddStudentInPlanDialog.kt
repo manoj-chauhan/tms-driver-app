@@ -52,13 +52,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import driver.ui.viewmodels.DriverPlanDetailsViewModel
 import java.util.Calendar
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun addStudentInPlan(operatorId: Int, planId: Int) {
+fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostController) {
 
     val context = LocalContext.current
 
@@ -446,7 +447,8 @@ fun addStudentInPlan(operatorId: Int, planId: Int) {
                                     .align(Alignment.Bottom),
                                 enabled = true,
                                 onClick = {
-                                    ch.addStudentInPlan(name, guardianName,selectedDate, selectedText, standard, schoolName, schoolAddress, primarynumber, secondarynumber, boardingPlaceId, deboardingPlaceId, planId, operatorId)
+                                    ch.addStudentInPlan(name, guardianName,selectedDate, selectedText, standard, schoolName, schoolAddress, primarynumber, secondarynumber, boardingPlaceId, deboardingPlaceId, planId, operatorId, navController)
+                                    navController.popBackStack()
                                 },
                                 contentPadding = PaddingValues(),
                                 colors = ButtonDefaults.buttonColors(

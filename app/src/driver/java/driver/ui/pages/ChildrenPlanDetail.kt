@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -54,9 +56,6 @@ fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostC
     LaunchedEffect(Unit) {
         ch.fetchSchedule(context = context, operatorId, planId)
     }
-    Log.d("Plan list", "ChildrenPlanDetail: $schedules")
-
-    Log.d("TAG", "ChildrenPlanDetail: $childrens")
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -65,7 +64,8 @@ fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostC
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp)
+                .padding(12.dp).verticalScroll(
+                    rememberScrollState())
         ) {
             Box(
                 modifier = Modifier

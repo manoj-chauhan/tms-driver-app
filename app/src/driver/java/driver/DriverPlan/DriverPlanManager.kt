@@ -1,5 +1,6 @@
 package com.drishto.driver.DriverPlan
 
+import androidx.navigation.NavHostController
 import com.drishto.driver.models.ChildrenList
 import com.drishto.driver.models.scheduleList
 
@@ -20,6 +21,7 @@ interface DriverPlanManager {
         planId: Int,
         boardingPlaceId: Int,
         deboardingPlaceId: Int,
-        operatorId: Int
+        operatorId: Int,
+        navHostController: NavHostController
     )
 }

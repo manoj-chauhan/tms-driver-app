@@ -69,6 +69,7 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.drishto.driver.PhoneNumberActivity
+import com.drishto.driver.models.Student
 import com.drishto.driver.network.clearSession
 import com.drishto.driver.ui.viewmodels.ChildrenListViewModel
 import com.drishto.driver.ui.viewmodels.CompanyPositions
@@ -357,13 +358,8 @@ fun AgeDisplay(dateOfBirth: String) :Number {
 }
 
 @Composable
-fun childList() {
-    val vm: ChildrenListViewModel = hiltViewModel()
+fun childList(childrensList :List<Student>) {
 
-    val childrensList by vm.childrensList.collectAsStateWithLifecycle()
-    LaunchedEffect(childrensList) {
-        vm.getChildrenList()
-    }
 
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
@@ -514,6 +510,8 @@ fun userProfileView(navController: NavHostController) {
     val context = LocalContext.current
     val vm: UserProfileViewModel = hiltViewModel()
     val userDetail by vm.userDetail.collectAsStateWithLifecycle()
+    val cl: ChildrenListViewModel = hiltViewModel()
+
 
     LaunchedEffect(Unit) {
         vm.userDetail(context = context)
@@ -525,6 +523,12 @@ fun userProfileView(navController: NavHostController) {
             vm.getUploadedImage(it.id)
         }
     }
+
+    val childrensList by cl.childrensList.collectAsStateWithLifecycle()
+    LaunchedEffect(childrensList) {
+        cl.getChildrenList()
+    }
+
     val isEditNameSelected = remember { mutableStateOf(false); }
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
@@ -808,7 +812,7 @@ fun userProfileView(navController: NavHostController) {
                             }
                         }
                         Spacer(modifier = Modifier.height(45.dp))
-                        childList()
+                        childrensList?.let { childList(it) }
                     }
                 }
             }

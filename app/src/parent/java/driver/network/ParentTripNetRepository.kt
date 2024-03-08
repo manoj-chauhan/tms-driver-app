@@ -202,6 +202,7 @@ class ParentTripNetRepository @Inject constructor(
                         handler.post {
                             Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                         }
+                        Log.e("TAG", "fetchParentTripDetail: $error", )
 
                     }
                 )
