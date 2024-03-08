@@ -376,13 +376,15 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                     .fillMaxWidth()
                                     .padding(bottom = 1.dp)
                             )
-                            Text(
-                                    modifier = Modifier.padding(start = 8.dp),
-                            text = schoolNameError,
-                            fontSize = 14.sp,
-                            color = Color.Red
-                            )
+                            if (schoolName.isEmpty()) {
 
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    text = schoolNameError,
+                                    fontSize = 14.sp,
+                                    color = Color.Red
+                                )
+                            }
                             OutlinedTextField(
                                 value = schoolAddress,
                                 onValueChange = { schoolAddress = it },
@@ -391,13 +393,14 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                     .fillMaxWidth()
                                     .padding(bottom = 1.dp)
                             )
-                            Text(
-                                modifier = Modifier.padding(start = 8.dp),
-                                text = schoolAddressError,
-                                fontSize = 14.sp,
-                                color = Color.Red
-                            )
-
+                            if(schoolAddress.isEmpty()) {
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    text = schoolAddressError,
+                                    fontSize = 14.sp,
+                                    color = Color.Red
+                                )
+                            }
                         }
 
 
@@ -574,28 +577,29 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                     .height(40.dp)
                                     .align(Alignment.Bottom),
                                 onClick = {
-                                    if (!(validatePrimaryPhone()) && validateName() && validateGuardianName() && validateSchoolAddress() && validateSchoolName()) {
+                                    if (!(validatePrimaryPhone()) && validateName() && validateGuardianName()  && validateSchoolName() && validateSchoolAddress()) {
                                         Log.d("true", "addStudentInPlan: ")
+                                        ch.addStudentInPlan(
+                                            name,
+                                            guardianName,
+                                            selectedDate,
+                                            selectedText,
+                                            standard,
+                                            schoolName,
+                                            schoolAddress,
+                                            primarynumber,
+                                            secondarynumber,
+                                            boardingPlaceId,
+                                            deboardingPlaceId,
+                                            planId,
+                                            operatorId,
+                                            navController
+                                        )
+                                        navController.popBackStack()
                                     } else {
                                         Log.d("false", "addStudentInPlan: ")
                                     }
-//                                    ch.addStudentInPlan(
-//                                        name,
-//                                        guardianName,
-//                                        selectedDate,
-//                                        selectedText,
-//                                        standard,
-//                                        schoolName,
-//                                        schoolAddress,
-//                                        primarynumber,
-//                                        secondarynumber,
-//                                        boardingPlaceId,
-//                                        deboardingPlaceId,
-//                                        planId,
-//                                        operatorId,
-//                                        navController
-//                                    )
-//                                    navController.popBackStack()
+
                                 },
                                 contentPadding = PaddingValues(),
                                 colors = ButtonDefaults.buttonColors(
