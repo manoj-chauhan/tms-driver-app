@@ -80,6 +80,45 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
     var primarynumber: String = ""
     var secondarynumber: String = ""
 
+    var isPrimaryNumberNotValid by remember {
+        mutableStateOf(false)
+    }
+    var primaryPhoneError by remember {
+        mutableStateOf("")
+    }
+
+    var isNameValid by remember {
+        mutableStateOf(false)
+    }
+    var nameError by remember {
+        mutableStateOf("")
+    }
+
+
+    var guardianValid by remember {
+        mutableStateOf(false)
+    }
+    var guardianError by remember {
+        mutableStateOf("")
+    }
+
+
+    var schoolNameValid by remember {
+        mutableStateOf(false)
+    }
+    var schoolNameError by remember {
+        mutableStateOf("")
+    }
+
+
+    var schoolAddressValid by remember {
+        mutableStateOf(false)
+    }
+    var schoolAddressError by remember {
+        mutableStateOf("")
+    }
+
+
     var selectedDate by remember { mutableStateOf("") }
     val calendar = Calendar.getInstance()
     val year: Int = calendar.get(Calendar.YEAR)
@@ -108,6 +147,59 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
 
     val schoolStandard =
         arrayOf("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII")
+
+
+    fun validatePrimaryPhone(): Boolean {
+        if (primaryPhone.length < 10) {
+            isPrimaryNumberNotValid = true
+            primaryPhoneError = "Phone Number is not valid"
+            return true
+        } else {
+            isPrimaryNumberNotValid = false
+            primaryPhoneError = ""
+            return false
+        }
+    }
+    fun validateName(): Boolean {
+         if (name.isNotEmpty()) {
+            isNameValid = true
+            return true
+        } else {
+            isNameValid = false
+            nameError = "Enter the student name"
+            return false
+        }
+    }
+    fun validateGuardianName(): Boolean {
+        if (guardianName.isNotEmpty()) {
+            guardianValid = true
+            return true
+        } else {
+            guardianValid = false
+            guardianError = "Enter the Guardian name"
+            return false
+        }
+    }
+    fun validateSchoolName(): Boolean {
+        if (schoolName.isNotEmpty()) {
+            schoolNameValid = true
+            return true
+        } else {
+            schoolNameValid = false
+            schoolNameError = "Enter the school name"
+            return false
+        }
+    }
+    fun validateSchoolAddress(): Boolean {
+        if (schoolAddress.isNotEmpty()) {
+            schoolAddressValid = true
+            return true
+        } else {
+            schoolAddressValid = false
+            schoolAddressError = "Enter the School address"
+            return false
+        }
+    }
 
 
     Box(
@@ -150,11 +242,19 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                             OutlinedTextField(
                                 value = name,
                                 onValueChange = { name = it },
-                                label = { Text("Student Name") },
+                                label = { Text("Student Name *") },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(bottom = 1.dp)
                             )
+                            if (name.isEmpty()) {
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    text = nameError,
+                                    fontSize = 14.sp,
+                                    color = Color.Red
+                                )
+                            }
                             OutlinedTextField(
                                 value = guardianName,
                                 onValueChange = { guardianName = it },
@@ -163,14 +263,21 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                     .fillMaxWidth()
                                     .padding(bottom = 1.dp)
                             )
-
-
+                            if (guardianName.isEmpty()) {
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    text = guardianError,
+                                    fontSize = 14.sp,
+                                    color = Color.Red
+                                )
+                            }
                             val datePickerDialog =
                                 DatePickerDialog(
                                     context,
                                     { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
                                         val formattedMonth = (month + 1).toString().padStart(2, '0')
-                                        val formattedDay = dayOfMonth.toString().padStart(2, '0') // Adjust day formatting
+                                        val formattedDay = dayOfMonth.toString()
+                                            .padStart(2, '0')
 
                                         selectedDate = "$formattedDay-$formattedMonth-$year"
                                     },
@@ -178,7 +285,6 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                     month,
                                     day
                                 )
-
                             OutlinedTextField(
                                 modifier = Modifier.fillMaxWidth(),
                                 readOnly = true,
@@ -270,6 +376,13 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                     .fillMaxWidth()
                                     .padding(bottom = 1.dp)
                             )
+                            Text(
+                                    modifier = Modifier.padding(start = 8.dp),
+                            text = schoolNameError,
+                            fontSize = 14.sp,
+                            color = Color.Red
+                            )
+
                             OutlinedTextField(
                                 value = schoolAddress,
                                 onValueChange = { schoolAddress = it },
@@ -277,6 +390,12 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(bottom = 1.dp)
+                            )
+                            Text(
+                                modifier = Modifier.padding(start = 8.dp),
+                                text = schoolAddressError,
+                                fontSize = 14.sp,
+                                color = Color.Red
                             )
 
                         }
@@ -293,7 +412,11 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                         Column(modifier = Modifier) {
                             OutlinedTextField(
                                 value = primaryPhone,
-                                onValueChange = { primaryPhone = it },
+                                onValueChange = { newValue ->
+                                    if (newValue.length <= 10) {
+                                        primaryPhone = newValue
+                                    }
+                                },
                                 label = { Text("Primary Phone Number") },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -317,6 +440,12 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                         )
                                     }
                                 }
+                            )
+                            Text(
+                                modifier = Modifier.padding(start = 8.dp),
+                                text = primaryPhoneError,
+                                fontSize = 14.sp,
+                                color = Color.Red
                             )
                             OutlinedTextField(
                                 value = secondaryPhone,
@@ -431,13 +560,12 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                         Spacer(modifier = Modifier.height(26.dp))
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                ,verticalAlignment = Alignment.Bottom
+                                .fillMaxWidth(), verticalAlignment = Alignment.Bottom
                         ) {
                             primarynumber = "+91$primaryPhone"
-                            if(secondaryPhone.isNotEmpty()) {
+                            if (secondaryPhone.isNotEmpty()) {
                                 secondarynumber = "+91$secondaryPhone"
-                            }else{
+                            } else {
                                 secondarynumber = ""
                             }
                             Button(
@@ -445,10 +573,29 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                     .fillMaxWidth()
                                     .height(40.dp)
                                     .align(Alignment.Bottom),
-                                enabled = true,
                                 onClick = {
-                                    ch.addStudentInPlan(name, guardianName,selectedDate, selectedText, standard, schoolName, schoolAddress, primarynumber, secondarynumber, boardingPlaceId, deboardingPlaceId, planId, operatorId, navController)
-                                    navController.popBackStack()
+                                    if (!(validatePrimaryPhone()) && validateName() && validateGuardianName() && validateSchoolAddress() && validateSchoolName()) {
+                                        Log.d("true", "addStudentInPlan: ")
+                                    } else {
+                                        Log.d("false", "addStudentInPlan: ")
+                                    }
+//                                    ch.addStudentInPlan(
+//                                        name,
+//                                        guardianName,
+//                                        selectedDate,
+//                                        selectedText,
+//                                        standard,
+//                                        schoolName,
+//                                        schoolAddress,
+//                                        primarynumber,
+//                                        secondarynumber,
+//                                        boardingPlaceId,
+//                                        deboardingPlaceId,
+//                                        planId,
+//                                        operatorId,
+//                                        navController
+//                                    )
+//                                    navController.popBackStack()
                                 },
                                 contentPadding = PaddingValues(),
                                 colors = ButtonDefaults.buttonColors(
@@ -461,7 +608,7 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .heightIn(35.dp)
+                                        .heightIn(38.dp)
                                         .align(Alignment.Bottom)
                                         .background(
                                             brush = Brush.horizontalGradient(
