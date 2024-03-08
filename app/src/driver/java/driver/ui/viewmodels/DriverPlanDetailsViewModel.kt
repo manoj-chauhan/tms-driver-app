@@ -9,7 +9,6 @@ import androidx.navigation.NavHostController
 import com.drishto.driver.DriverPlan.DriverPlanManager
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ChildrenList
-import com.drishto.driver.models.childrenAddPlan
 import com.drishto.driver.models.scheduleList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @HiltViewModel
 class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: ErrManager, application: Application, private val driverPlan: DriverPlanManager): AndroidViewModel(application)  {
     private val  _childrenList: MutableStateFlow<List<ChildrenList>?> = MutableStateFlow(null)
@@ -65,15 +65,10 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
         deboardingPlaceId: Int,
         planId: Int,
         operatorId: Int,
-        navController: NavHostController
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = childrenAddPlan(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId)
-
-            Log.d("Dialog", "addStudentInPlan: $list")
-
             try {
-                driverPlan.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId, navController)
+                driverPlan.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId,)
             } catch(e:Exception){
 
             }

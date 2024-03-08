@@ -59,7 +59,7 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostController) {
+fun addStudentInPlan(operatorId: Int, planId: Int, navHostController: NavHostController) {
 
     val context = LocalContext.current
 
@@ -117,7 +117,26 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
     var schoolAddressError by remember {
         mutableStateOf("")
     }
+    var standardSelected by remember {
+        mutableStateOf(false)
+    }
+    var standardSelectedError by remember {
+        mutableStateOf("")
+    }
 
+    var boardingSelected by remember {
+        mutableStateOf(false)
+    }
+    var boardingSelectedError by remember {
+        mutableStateOf("")
+    }
+
+    var deboardingSelected by remember {
+        mutableStateOf(false)
+    }
+    var deboardingSelectedError by remember {
+        mutableStateOf("")
+    }
 
     var selectedDate by remember { mutableStateOf("") }
     val calendar = Calendar.getInstance()
@@ -168,6 +187,36 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
             isNameValid = false
             nameError = "Enter the student name"
             return false
+        }
+    }
+    fun standardSelected(): Boolean {
+        if (standard.isBlank()) {
+            standardSelected = false
+            standardSelectedError = "Select the standard"
+            return false
+        } else {
+            standardSelected = true
+            return true
+        }
+    }
+    fun boardingSelected(): Boolean {
+        if (boardingPlaceName.isEmpty()) {
+            boardingSelected = false
+            boardingSelectedError = "Select the boarding place"
+            return false
+        } else {
+            boardingSelected = true
+            return true
+        }
+    }
+    fun deboardingSelected(): Boolean {
+        if (deboardingPlaceName.isEmpty()) {
+            deboardingSelected = false
+            deboardingSelectedError = "Select the deboarding place"
+            return false
+        } else {
+            deboardingSelected = true
+            return true
         }
     }
     fun validateGuardianName(): Boolean {
@@ -340,7 +389,8 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                         Column(modifier = Modifier) {
                             ExposedDropdownMenuBox(
                                 expanded = standardexpander, modifier = Modifier.fillMaxWidth(),
-                                onExpandedChange = { standardexpander = it }) {
+                                onExpandedChange = { standardexpander = it }
+                            ) {
                                 OutlinedTextField(
                                     value = standard,
                                     label = { Text(text = "Standard") },
@@ -367,6 +417,14 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                             })
                                     }
                                 }
+                            }
+                            if (standard.isBlank()) {
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    text = standardSelectedError,
+                                    fontSize = 14.sp,
+                                    color = Color.Red
+                                )
                             }
                             OutlinedTextField(
                                 value = schoolName,
@@ -489,7 +547,8 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                             ExposedDropdownMenuBox(
                                 expanded = boardinglocationexpander,
                                 modifier = Modifier.fillMaxWidth(),
-                                onExpandedChange = { boardinglocationexpander = it }) {
+                                onExpandedChange = { boardinglocationexpander = it }
+                            ) {
                                 OutlinedTextField(
                                     value = boardingPlaceName,
                                     label = { Text(text = "Boarding Location") },
@@ -523,10 +582,19 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                     }
                                 }
                             }
+                            if (boardingPlaceName.isEmpty()) {
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    text = boardingSelectedError,
+                                    fontSize = 14.sp,
+                                    color = Color.Red
+                                )
+                            }
                             ExposedDropdownMenuBox(
                                 expanded = deboardinglocationexpander,
                                 modifier = Modifier.fillMaxWidth(),
-                                onExpandedChange = { deboardinglocationexpander = it }) {
+                                onExpandedChange = { deboardinglocationexpander = it }
+                            ){
                                 OutlinedTextField(
                                     value = deboardingPlaceName,
                                     label = { Text(text = "DeBoarding Location") },
@@ -559,6 +627,14 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                     }
                                 }
                             }
+                            if (deboardingPlaceName.isEmpty()) {
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    text = deboardingSelectedError,
+                                    fontSize = 14.sp,
+                                    color = Color.Red
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(26.dp))
                         Row(
@@ -577,7 +653,7 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                     .height(40.dp)
                                     .align(Alignment.Bottom),
                                 onClick = {
-                                    if (!(validatePrimaryPhone()) && validateName() && validateGuardianName()  && validateSchoolName() && validateSchoolAddress()) {
+//                                    if (!(validatePrimaryPhone()) && validateName() && validateGuardianName()  && validateSchoolName() && validateSchoolAddress() && standardSelected() && boardingSelected() && deboardingSelected()) {
                                         Log.d("true", "addStudentInPlan: ")
                                         ch.addStudentInPlan(
                                             name,
@@ -592,20 +668,15 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navController: NavHostControl
                                             boardingPlaceId,
                                             deboardingPlaceId,
                                             planId,
-                                            operatorId,
-                                            navController
+                                            operatorId
                                         )
-                                        navController.popBackStack()
-                                    } else {
-                                        Log.d("false", "addStudentInPlan: ")
-                                    }
-
+//                                        navHostController.navigate("home")
+//                                    }
                                 },
                                 contentPadding = PaddingValues(),
                                 colors = ButtonDefaults.buttonColors(
                                     Color.Transparent
                                 ),
-                                shape = RoundedCornerShape(40.dp)
                             ) {
                                 val primary = Color(0xFF92A3FD)
                                 val secondary = Color(0XFF9DCEFF)

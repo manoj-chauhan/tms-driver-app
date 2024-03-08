@@ -3,7 +3,6 @@ package com.drishto.driver.network
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.navigation.NavHostController
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ChildrenList
@@ -105,7 +104,6 @@ class DriverNetRepository @Inject constructor(
         boardingPlaceId: Int,
         deboardingPlaceId: Int,
         operatorId: Int,
-        navHostController: NavHostController
     ) {
 
         val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -124,12 +122,9 @@ class DriverNetRepository @Inject constructor(
                     .response()
 
                 if (response.statusCode == 200) {
-                    // The request was successful, handle the response here
-
                 } else {
                     result.fold(
                         { _ ->
-                            navHostController.popBackStack()
                         },
                         { error ->
                             if (error.response.statusCode == 401) {

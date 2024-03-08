@@ -36,9 +36,8 @@ class DriverPlanImpl @Inject constructor(
         boardingPlaceId: Int,
         deboardingPlaceId: Int,
         operatorId: Int,
-        navHostController: NavHostController
     ) {
-        return planNetRepository.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId, navHostController)
+        return planNetRepository.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId)
     }
 
 }

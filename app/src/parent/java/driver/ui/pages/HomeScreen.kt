@@ -158,15 +158,6 @@ fun HomeScreen(
                                 )
                             }
                         }
-
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.outline_notifications_24),
-                            contentDescription = "", modifier = Modifier
-                                .height(26.dp)
-                                .width(50.dp)
-                                .clickable { navController.navigate("notification") }
-                                .zIndex(2f)
-                        )
                     }
                 }
             }

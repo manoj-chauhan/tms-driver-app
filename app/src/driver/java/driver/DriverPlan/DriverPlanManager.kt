@@ -1,6 +1,5 @@
 package com.drishto.driver.DriverPlan
 
-import androidx.navigation.NavHostController
 import com.drishto.driver.models.ChildrenList
 import com.drishto.driver.models.scheduleList
 
@@ -9,19 +8,18 @@ interface DriverPlanManager {
 
     fun getTripSchedule(operatorId: Int, planId: Int):scheduleList
      fun addStudent(
-        name: String,
-        schoolName: String,
-        primarynumber: String,
-        standard: String,
-        selectedText: String,
-        secondarynumber: String,
-        selectedDate: String,
-        guardianName: String,
-        schoolAddress: String,
-        planId: Int,
-        boardingPlaceId: Int,
-        deboardingPlaceId: Int,
-        operatorId: Int,
-        navHostController: NavHostController
+         name: String,
+         schoolName: String,
+         primarynumber: String,
+         standard: String,
+         selectedText: String,
+         secondarynumber: String,
+         selectedDate: String,
+         guardianName: String,
+         schoolAddress: String,
+         planId: Int,
+         boardingPlaceId: Int,
+         deboardingPlaceId: Int,
+         operatorId: Int,
     )
 }
