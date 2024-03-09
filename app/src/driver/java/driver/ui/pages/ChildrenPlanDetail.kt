@@ -45,8 +45,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostController) {
-    val ch: DriverPlanDetailsViewModel = hiltViewModel()
+fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostController,  ch: DriverPlanDetailsViewModel = hiltViewModel()) {
     val childrens by ch.childrenList.collectAsStateWithLifecycle()
     ch.fetchParentTrip(context = LocalContext.current, operatorId, planId)
 
@@ -149,7 +148,7 @@ fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostC
                                 .align(Alignment.Bottom),
                             enabled = true,
                             onClick = {
-                                navHostController.navigate("add-children/$operatorId/$planId")
+                                navHostController.navigate("add-children")
                             },
                             contentPadding = PaddingValues(),
                             colors = ButtonDefaults.buttonColors(
@@ -223,32 +222,6 @@ fun schedulesList(
             LocalTime.parse(it, newformatter).plusMinutes(schedule.haltTime.toLong()).toString()
         }
     }
-    Log.d("departure", "schedulesList: ${schedule.departure}")
-    Log.d("arrival", "schedulesList: ${schedule.arrival}")
-    Log.d("arrival", "schedulesList: ${schedules.size}")
-
-
-//    var departure: String= ""
-//    var arrival: String =""
-//
-//    if (index == 0) {
-//        departure = LocalTime.parse(startTime, formatter)
-//            .plusMinutes(schedule.haltTime.toLong())
-//            .format(formatter)
-//    } else {
-//        val previousSchedule = schedules[index - 1]
-//        val travelTime = previousSchedule.travelTime
-//        val arrivalTime = LocalTime.parse(departure, formatter)
-//            .plusMinutes(travelTime.toLong())
-//        arrival = arrivalTime.toString()
-//
-//        departure = arrival.let {
-//            LocalTime.parse(it, formatter).plusMinutes(schedule.haltTime.toLong()).toString()
-//        }
-//    }
-
-//    Log.d("arrival", "schedulesList: $arrival")
-//    Log.d("departure", "schedulesList: $departure")
 
     Spacer(modifier = Modifier.padding(8.dp))
 

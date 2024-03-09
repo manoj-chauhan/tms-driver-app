@@ -98,7 +98,7 @@ dependencies {
     val appCompatVersion = "1.6.1"
     val constraintLayoutVersion = "2.1.4"
     val activityVersion = "1.8.0"
-    val nav_version = "2.7.4"
+    val nav_version = "2.7.7"
     val room_version = "2.6.0"
 
     implementation(firebaseBom)

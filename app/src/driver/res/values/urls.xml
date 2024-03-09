@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [<!ENTITY baseUrl "https://api.drishto.com">]>
+<!DOCTYPE resources [<!ENTITY baseUrl "https://api.test.drishto.com">]>
 <resources>
     <string name="url_authenticate">&baseUrl;/auth/connect</string>
     <string name="url_login">&baseUrl;/auth/login</string>

@@ -158,13 +158,8 @@ fun AppNavigationHost(
         composable("login"){
 
         }
-        composable("add-children/{operatorId}/{planId}", arguments = listOf(
-            navArgument("operatorId") { type = NavType.IntType },
-            navArgument("planId") { type = NavType.IntType }
-        )) { backStackEntry ->
-            val companyId = backStackEntry.arguments?.getInt("operatorId") ?: 0
-            val planid = backStackEntry.arguments?.getInt("planId") ?: 0
-            addStudentInPlan(companyId, planid, navController)
+        composable("add-children") {
+            addStudentInPlan(operatorId, planId, navController=navController)
         }
         composable("assignment", arguments = listOf(
             navArgument(MY_ARG) { type = NavType.StringType } ,

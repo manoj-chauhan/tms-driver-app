@@ -59,7 +59,7 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun addStudentInPlan(operatorId: Int, planId: Int, navHostController: NavHostController) {
+fun addStudentInPlan(operatorId: Int, planId: Int,  navController: NavHostController) {
 
     val context = LocalContext.current
 
@@ -670,8 +670,7 @@ fun addStudentInPlan(operatorId: Int, planId: Int, navHostController: NavHostCon
                                             planId,
                                             operatorId
                                         )
-//                                        navHostController.navigate("home")
-//                                    }
+                                    }
                                 },
                                 contentPadding = PaddingValues(),
                                 colors = ButtonDefaults.buttonColors(
