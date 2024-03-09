@@ -227,10 +227,12 @@ class ParentTripNetRepository @Inject constructor(
                 result.fold(
                     {
                         it
-        Log.d("DRIVER IS HERE", "fetchDriverLiveLoc: $result")
+                        Log.d("DRIVER IS HERE", "fetchDriverLiveLoc: $result")
                     },
                     {error->
                         Log.d("TAG", "fetchDriverLiveLoc: $error")
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                        if(error.response.statusCode != 400)
                             handler.post {
                                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
                                     .show()

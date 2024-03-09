@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -694,8 +693,7 @@ fun GoogleMapView(
                                 modifier = Modifier
                                     .size(30.dp)
                             )
-                            if(currentDriver?.isloading == true)
-                            {
+                            if (currentDriver?.isloading == true) {
                                 circularIndicator = false
                             }
                         } else {
@@ -771,16 +769,16 @@ fun GoogleMapView(
                                         onMapLoaded = {})
                                 }
                             }
-                        } else {
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
-                                .show()
                         }
+                    }
+                } else {
+                    if (routePoints != null && first != null && lastPoint != null) {
+                                process(routePoints = routePoints, first, lastPoint, onMapLoaded= {})
                     }
                 }
             }
         }
     }
-
 }
 
 @Composable
@@ -816,6 +814,17 @@ fun currentDriverLoc(
         position = CameraPosition.fromLatLngZoom(driverLatLng, 18f)
     }
 
+    val bounds = LatLngBounds.builder().include(first).include(lastPoint).build()
+
+    val cameraPosition = CameraPosition.Builder()
+        .target(bounds.center)
+        .zoom(calculateZoomLevel(bounds))
+        .build()
+
+    val cameraState = rememberCameraPositionState {
+        position = cameraPosition
+    }
+
     val driverMarkerState = remember(key1 = driverLatLng) {
         MarkerState(position = driverLatLng)
     }
@@ -824,7 +833,7 @@ fun currentDriverLoc(
         modifier = Modifier
             .fillMaxWidth(),
         onMapLoaded = onMapLoaded,
-        cameraPositionState = cameraPositionState,
+        cameraPositionState = cameraState,
         uiSettings = mapUiSetting,
         properties = mapUiproperties
     )
@@ -851,7 +860,7 @@ fun currentDriverLoc(
 }
 
 @Composable
-fun process(routePoints: List<LatLng>, onMapLoaded: () -> Unit) {
+fun process(routePoints: List<LatLng>,first: LatLng,  lastPoint: LatLng, onMapLoaded: () -> Unit) {
     val mapUiproperties by remember {
         mutableStateOf(
             MapProperties(
@@ -859,8 +868,6 @@ fun process(routePoints: List<LatLng>, onMapLoaded: () -> Unit) {
             )
         )
     }
-
-
     val mapUiSetting by remember {
         mutableStateOf(
             MapUiSettings(
@@ -869,11 +876,6 @@ fun process(routePoints: List<LatLng>, onMapLoaded: () -> Unit) {
         )
     }
 
-    val context = LocalContext.current
-
-    Log.d("List", "process:$routePoints ")
-    val first = routePoints.first()
-    val lastPoint = routePoints.last()
     val bounds = LatLngBounds.builder().include(first).include(lastPoint).build()
 
     val cameraPosition = CameraPosition.Builder()
