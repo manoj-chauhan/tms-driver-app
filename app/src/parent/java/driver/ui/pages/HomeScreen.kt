@@ -2,6 +2,7 @@ package driver.ui.pages
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Feedback
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,11 +38,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.drishto.driver.R
+import com.drishto.driver.models.UserProfile
 import com.drishto.driver.ui.viewmodels.SwipeRefresh
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -69,7 +70,6 @@ fun HomeScreen(
     vm: parentTripAssigned = hiltViewModel(),
     onTripSelected: (assignment: ParentTrip) -> Unit,
     onPastTripSelected: (assignment: ParentPastTrip) -> Unit
-
 ) {
     val context = LocalContext.current
 
@@ -116,6 +116,7 @@ fun HomeScreen(
                         vm.getUploadedImage(it.id)
                     }
                 }
+                Log.d("TAG", "HomeScreen: ${user?.id}")
                 Box(
                     modifier = Modifier
                         .height(66.dp)
@@ -158,6 +159,15 @@ fun HomeScreen(
                                 )
                             }
                         }
+
+                        Icon(
+                            imageVector = Icons.Default.Feedback,
+                            contentDescription = "", modifier = Modifier
+                                .height(26.dp)
+                                .width(50.dp)
+                                .clickable { navController.navigate("notification/${user?.id}") }
+                                .zIndex(2f)
+                        )
                     }
                 }
             }

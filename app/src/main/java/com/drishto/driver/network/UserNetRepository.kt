@@ -8,7 +8,7 @@ import android.widget.Toast
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.Student
-import com.drishto.driver.models.UserProfile
+import com.drishto.driver.models.User
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
@@ -29,11 +29,11 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
     fun editUserName(name: String) {
         val coroutineScope = CoroutineScope(Dispatchers.IO)
         try {
-            val request = UserProfile(name)
+            val request = User(name)
 
             val moshi = Moshi.Builder().build()
-            val jsonAdapter: JsonAdapter<UserProfile> =
-                moshi.adapter(UserProfile::class.java)
+            val jsonAdapter: JsonAdapter<User> =
+                moshi.adapter(User::class.java)
             val requestBody: String = jsonAdapter.toJson(request)
 
             val url = context.resources.getString(R.string.edit_user_name) + "?name=" + name

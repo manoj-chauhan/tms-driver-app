@@ -14,8 +14,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.userProfileView
@@ -41,6 +43,8 @@ fun AppNavigationHost(
     var selectedAssignmentCode by remember { mutableStateOf("") }
     var operatorId by remember { mutableIntStateOf(0) }
     var passengerTripId by remember { mutableIntStateOf(0) }
+    var userId by remember { mutableIntStateOf(0) }
+
     var boardingPlaceId by remember { mutableStateOf("") }
     var deBoardingPlaceId by remember { mutableStateOf("") }
 
@@ -58,10 +62,10 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
-            MapsActivityContent(navController, passengerTripId, selectedAssignmentCode,operatorId)
+            MapsActivityContent(navController, passengerTripId, selectedAssignmentCode, operatorId)
         }
         composable("past-assignment-detail") {
-            PastActivityContent(navController, 1,passengerTripId, selectedAssignmentCode)
+            PastActivityContent(navController, 1, passengerTripId, selectedAssignmentCode)
         }
         composable("user-profile") {
             userProfileView(navController)
@@ -73,7 +77,7 @@ fun AppNavigationHost(
                     selectedAssignmentCode = it.tripCode
                     passengerTripId = it.passengerTripId
                     operatorId = it.companyId
-                    deBoardingPlaceId= "MPS"
+                    deBoardingPlaceId = "MPS"
                     boardingPlaceId = "WYC"
                     navController.navigate("current-assignment-detail")
                 },
@@ -89,7 +93,7 @@ fun AppNavigationHost(
 
         }
 
-        composable("map-screen"){
+        composable("map-screen") {
             GoogleMapView(
                 modifier = Modifier.fillMaxWidth(),
                 passengerTripId = passengerTripId,
@@ -102,17 +106,22 @@ fun AppNavigationHost(
         composable("past-trips-list") {
             pastTrips(navHostController = navController, screen = "app",
                 onTripSelected = {
-                selectedAssignmentCode = it.tripCode
-                passengerTripId = it.passengerTripId
-                operatorId = 1
-                deBoardingPlaceId= "MPS"
-                boardingPlaceId = "WYC"
-                navController.navigate("past-assignment-detail")
-            })
+                    selectedAssignmentCode = it.tripCode
+                    passengerTripId = it.passengerTripId
+                    operatorId = 1
+                    deBoardingPlaceId = "MPS"
+                    boardingPlaceId = "WYC"
+                    navController.navigate("past-assignment-detail")
+                })
 
         }
-        composable("notification"){
-            notificationScreen()
+        composable(
+            "notification/{userId}", arguments = listOf(
+                navArgument("userId") { type = NavType.IntType },
+            )
+        ) { backStackEntry ->
+            val idUser = backStackEntry.arguments?.getInt("userId") ?: 0
+            notificationScreen(idUser, navController)
         }
     }
 }

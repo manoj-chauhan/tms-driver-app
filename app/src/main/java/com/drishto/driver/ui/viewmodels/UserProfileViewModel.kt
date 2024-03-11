@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drishto.driver.R
+import com.drishto.driver.models.UserProfile
 import com.drishto.driver.network.getAccessToken
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
@@ -21,14 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@JsonClass(generateAdapter = true)
-data class UserProfile(
-    val name: String, 
-    val userName: String,
-    val companiesList: List<CompanyPositions>,
-    var authProvider:String,
-    val id:Int
-)
+
 @JsonClass(generateAdapter = true)
 data class CompanyPositions(
     val companyCode: String,

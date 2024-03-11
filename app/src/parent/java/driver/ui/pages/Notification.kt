@@ -1,12 +1,15 @@
 package driver.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,11 +18,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -28,12 +38,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 @Composable
-fun notificationScreen() {
+fun notificationScreen(idUser:Int,navHostController: NavHostController) {
     val gradient = Brush.linearGradient(
         listOf(
             Color(android.graphics.Color.parseColor("#FFFFFF")),
@@ -41,13 +51,16 @@ fun notificationScreen() {
         ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
     )
 
-    val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
-    val back = Color(android.graphics.Color.parseColor("#F5F5F5"))
+    val primary = Color(0xFF92A3FD)
+    val secondary = Color(0XFF9DCEFF)
+
+    var message by remember { mutableStateOf("") }
+
+    Log.d("TAG", "notificationScreen: $idUser")
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
 
         Column(
@@ -67,8 +80,7 @@ fun notificationScreen() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
-                        modifier = Modifier.width(30.dp),
-                        horizontalArrangement = Arrangement.Start
+                        modifier = Modifier.width(30.dp), horizontalArrangement = Arrangement.Start
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
@@ -76,13 +88,12 @@ fun notificationScreen() {
                             modifier = Modifier
                                 .height(25.dp)
                                 .clickable {
-//                                navController.popBackStack()
+                                    navHostController.popBackStack()
                                 },
                         )
                     }
                     Text(
-                        text = "Notifications",
-                        style = TextStyle(
+                        text = "Feedback Form", style = TextStyle(
                             color = Color.Black,
                             fontSize = 20.sp,
                             fontFamily = fontStyle,
@@ -93,217 +104,93 @@ fun notificationScreen() {
             }
             Box(
                 modifier = Modifier.fillMaxSize()
-            )
-            {
+            ) {
                 Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 10.dp)) {
                     val fontStyle: FontFamily = FontFamily.SansSerif
 
-                    val gry=Color(android.graphics.Color.parseColor("#838383"))
+                    val gry = Color(android.graphics.Color.parseColor("#838383"))
 
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize(1f)
-//                            .clickable { onClick(trip) }
+                        modifier = Modifier.fillMaxSize(1f)
                     ) {
-                        Column(modifier = Modifier.fillMaxWidth()) {
-
+                        Column(
+                            modifier = Modifier.fillMaxSize(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
                             Card(
                                 colors = CardDefaults.cardColors(
                                     containerColor = Color.White,
                                 ),
-                                modifier = Modifier
-                                    .fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(10.dp),
                             ) {
                                 Column(
                                     modifier = Modifier
-                                        .fillMaxWidth()
+                                        .fillMaxWidth(1f)
+                                        .fillMaxHeight(0.5f)
                                         .padding(10.dp)
-//                verticalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-
-                                        Text(
-                                            text = "Driver Assigned",
-                                            style = TextStyle(
-                                                color = Color.Black,
-                                                fontSize = 14.sp,
-                                                fontFamily = fontStyle,
-                                                fontWeight = FontWeight.W700
-                                            )
+                                    Text(
+                                        text = "Add Details", style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 20.sp,
+                                            fontFamily = fontStyle,
+                                            fontWeight = FontWeight.W600
                                         )
+                                    )
+                                    Spacer(modifier = Modifier.height(16.dp))
 
-
-                                        Text(
-                                            text = "19 Feb 2024, 13:00 pm",
-                                            style = TextStyle(
-                                                color = gry,
-                                                fontSize = 12.sp,
-                                                fontFamily = fontStyle,
-                                                fontWeight = FontWeight.W600
-                                            )
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(2.dp))
-
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(
-                                            text = "Atul was assigned by Atul Thapliyal",
-                                            style = TextStyle(
-                                                color = gry,
-                                                fontSize = 12.sp,
-                                                fontFamily = fontStyle,
-                                                fontWeight = FontWeight.W400
-                                            )
-                                        )
-                                    }
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            Card(
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Color.White,
-                                ),
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                shape = RoundedCornerShape(10.dp),
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(10.dp)
-//                verticalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-
-                                        Text(
-                                            text = "Driver Assigned",
-                                            style = TextStyle(
-                                                color = Color.Black,
-                                                fontSize = 14.sp,
-                                                fontFamily = fontStyle,
-                                                fontWeight = FontWeight.W700
-                                            )
-                                        )
-
-
-                                        Text(
-                                            text = "19 Feb 2024, 13:00 pm",
-                                            style = TextStyle(
-                                                color = gry,
-                                                fontSize = 12.sp,
-                                                fontFamily = fontStyle,
-                                                fontWeight = FontWeight.W600
-                                            )
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(2.dp))
-
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(
-                                            text = "Atul was assigned by Atul Thapliyal",
-                                            style = TextStyle(
-                                                color = gry,
-                                                fontSize = 12.sp,
-                                                fontFamily = fontStyle,
-                                                fontWeight = FontWeight.W400
-                                            )
-                                        )
-                                    }
-                                }
-                            }
-                                Spacer(modifier = Modifier.height(16.dp))
-
-                                Card(
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = Color.White,
-                                    ),
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    shape = RoundedCornerShape(10.dp),
-                                ) {
-                                    Column(
+                                    OutlinedTextField(
+                                        value = message,
+                                        onValueChange = { message = it },
+                                        label = { Text("Message") },
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(10.dp)
-//                verticalArrangement = Arrangement.SpaceBetween
+                                            .height(220.dp)
+                                            .padding(bottom = 16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Button(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        onClick = {
+                                            navHostController.popBackStack()
+
+                                        },
+                                        enabled = if (message.isNotEmpty()) {
+                                            true
+                                        } else {
+                                            false
+                                        },
+                                        contentPadding = PaddingValues(),
+                                        colors = ButtonDefaults.buttonColors(Color.Transparent),
                                     ) {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.CenterVertically
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(40.dp)
+                                                .background(
+                                                    brush = Brush.horizontalGradient(
+                                                        listOf(
+                                                            primary,
+                                                            secondary
+                                                        )
+                                                    ), shape = RoundedCornerShape(40.dp)
+                                                ),
+                                            contentAlignment = Alignment.Center,
                                         ) {
-
-                                            Text(
-                                                text = "Driver has reached ",
-                                                style = TextStyle(
-                                                    color = Color.Black,
-                                                    fontSize = 14.sp,
-                                                    fontFamily = fontStyle,
-                                                    fontWeight = FontWeight.W700
-                                                )
-                                            )
-
-
-                                            Text(
-                                                text = "19 Feb 2024, 13:00 pm",
-                                                style = TextStyle(
-                                                    color = gry,
-                                                    fontSize = 12.sp,
-                                                    fontFamily = fontStyle,
-                                                    fontWeight = FontWeight.W600
-                                                )
-                                            )
-                                        }
-                                        Spacer(modifier = Modifier.height(2.dp))
-
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Text(
-                                                text = "Reached at final Destination",
-                                                style = TextStyle(
-                                                    color = gry,
-                                                    fontSize = 12.sp,
-                                                    fontFamily = fontStyle,
-                                                    fontWeight = FontWeight.W400
-                                                )
-                                            )
+                                            Text(text = "Send")
                                         }
                                     }
                                 }
                             }
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
                 }
             }
         }
     }
-
-
-
-@Composable
-@Preview
-fun notificationScreenPreview(){
-    notificationScreen()
 }
