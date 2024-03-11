@@ -40,7 +40,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import driver.ui.viewmodels.FeedbackVIewModel
 
 @Composable
 fun notificationScreen(idUser:Int,navHostController: NavHostController) {
@@ -54,6 +56,8 @@ fun notificationScreen(idUser:Int,navHostController: NavHostController) {
     val fontStyle: FontFamily = FontFamily.SansSerif
     val primary = Color(0xFF92A3FD)
     val secondary = Color(0XFF9DCEFF)
+
+    val fd:FeedbackVIewModel = hiltViewModel()
 
     var message by remember { mutableStateOf("") }
 
@@ -156,6 +160,7 @@ fun notificationScreen(idUser:Int,navHostController: NavHostController) {
                                             .fillMaxWidth()
                                             .padding(8.dp),
                                         onClick = {
+                                            fd.sendFeedback(idUser, message)
                                             navHostController.popBackStack()
 
                                         },

@@ -22,5 +22,7 @@ interface ParentTripManager {
     fun getTripDetail(passengerTripId:Int, navHostController: NavHostController): ParentTripDetail?
 
     fun getDriverLoc(passengerTripId: Int):currentDriverLocation?
+    fun sendFeedback(userId: Int, message: String)
+
 
 }

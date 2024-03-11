@@ -30,10 +30,4 @@
     <string name="upload_photo">&baseUrl;/user/</string>
     <string name="url_schedule_plan">&baseUrl;/tripPlan/</string>
     <string name="url_student_list">&baseUrl;/tripPlan/</string>
-
-
-
-
-
-
 </resources>
