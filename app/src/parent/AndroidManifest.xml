@@ -64,6 +64,10 @@
             android:exported="true">
         </activity>
 
+        <activity
+            android:name="driver.AppUpdateActivity"
+            android:exported="true">
+        </activity>
         <activity android:name="com.canhub.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/>
 

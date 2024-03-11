@@ -16,7 +16,7 @@ android {
         applicationId = "com.drishto"
         minSdk = 26
         targetSdk = 34
-        versionCode = 5
+        versionCode = 9
         versionName = "1.0-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -190,6 +190,12 @@ dependencies {
 
     //crop
     implementation("com.github.CanHub:Android-Image-Cropper:4.0.0")
+
+    //inappupdate
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
+    implementation ("com.google.android.play:app-update:2.1.0")
+
+
 
 
 

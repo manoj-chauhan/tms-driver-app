@@ -23,7 +23,7 @@ data class ParentTrip(
     val boardingPlaceId:String ,
     val deBoardingPlaceId:String,
     val tripTime:String,
-    val routeId:Int,
+    val routeId:Int?,
     val delay: Int,
     val estDistance: Int,
     val estTime: Int
