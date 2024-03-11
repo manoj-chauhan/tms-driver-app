@@ -68,6 +68,7 @@ import androidx.navigation.NavHostController
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.models.Student
 import com.drishto.driver.network.clearSession
@@ -551,13 +552,10 @@ fun userProfileView(navController: NavHostController) {
     val imagePickerLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             val cropOptions = CropImageContractOptions(uri, CropImageOptions().apply {
-                aspectRatioX = 4
-                aspectRatioY = 4
-                fixAspectRatio = false
-                maxCropResultWidth = 550
-                maxCropResultHeight = 550
-                minCropWindowWidth = 550
-                minCropWindowHeight = 550
+                aspectRatioX = 2
+                aspectRatioY = 2
+                fixAspectRatio = true
+                cropShape = CropImageView.CropShape.RECTANGLE
             })
             imageCropLauncher.launch(cropOptions)
         }
