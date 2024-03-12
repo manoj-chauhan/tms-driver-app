@@ -27,7 +27,7 @@ class ParentTripManagerImpl @Inject constructor(
         return tripNetRepository.fetchActiveTrips()
     }
 
-    override fun getTripLatLon(passengerTripId: Int): List<point> {
+    override fun getTripLatLon(passengerTripId: Int): List<point>? {
         return tripNetRepository.fetchTripRouteCoor(passengerTripId)
     }
 

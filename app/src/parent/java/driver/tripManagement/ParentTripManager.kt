@@ -12,7 +12,7 @@ import driver.models.point
 interface ParentTripManager {
 
     fun getActiveTrips(): List<ParentTrip>?
-    fun getTripLatLon(passengerTripId: Int): List<point>
+    fun getTripLatLon(passengerTripId: Int): List<point>?
 
     fun getTripProcessedCoor(operatorId: Int, tripCode: String): List<ProcessedPoints>?
     fun getPastTrips(): List<ParentPastTrip>?

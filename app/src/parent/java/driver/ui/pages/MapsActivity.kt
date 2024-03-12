@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -622,10 +623,14 @@ fun GoogleMapView(
         vm.fetchDriverLocation(passengerTripId = passengerTripId)
     }
 
+    val tripRoute by vm.points.collectAsStateWithLifecycle()
+    LaunchedEffect(currentDriver) {
+        vm.fetchTripRouteCoordinates(passengerTripId)
+    }
+
     var circularIndicator by remember { mutableStateOf(false) }
 
-    val tripRoute by vm.points.collectAsStateWithLifecycle()
-    vm.fetchTripRouteCoordinates(passengerTripId)
+
     val routePoints: List<LatLng>? = tripRoute?.map { LatLng(it.latitude, it.longitude) }
     val gradient = Brush.linearGradient(
         listOf(
@@ -633,151 +638,153 @@ fun GoogleMapView(
             Color(android.graphics.Color.parseColor("#E8F1F8"))
         ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
     )
-    val first = routePoints?.first()
-    val lastPoint = routePoints?.last()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    var first: LatLng? = null
+    var lastPoint: LatLng? = null
+    if (routePoints != null) {
+        first = routePoints.first()
+        lastPoint = routePoints.last()
 
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(brush = gradient)
         ) {
-            Box(
+
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 18.dp)
-                    .height(50.dp)
+                    .fillMaxSize()
+                    .background(brush = gradient)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 18.dp)
+                        .height(50.dp)
                 ) {
                     Row(
-                        modifier = Modifier.width(30.dp),
-                        horizontalArrangement = Arrangement.Start
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .height(25.dp)
-                                .clickable {
-                                    navController.popBackStack()
-                                },
-                        )
-                    }
-                    Box(modifier = Modifier.fillMaxWidth(0.65f)) {
-                        Text(
-                            text = "Trip map ",
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 18.sp,
-                                fontFamily = FontFamily.SansSerif,
-                                fontWeight = FontWeight.W600
-                            )
-                        )
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 16.dp), verticalAlignment = Alignment.Bottom
-                    ) {
-                        if (circularIndicator) {
-                            Log.d("TAG", "GoogleMapView: here")
-                            CircularProgressIndicator(
+                        Row(
+                            modifier = Modifier.width(30.dp),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.ArrowBack,
+                                contentDescription = "",
                                 modifier = Modifier
-                                    .size(30.dp)
-                            )
-                            if (currentDriver?.isloading == true) {
-                                circularIndicator = false
-                            }
-                        } else {
-                            Button(
-                                modifier = Modifier
-                                    .fillMaxWidth()
                                     .height(25.dp)
-                                    .align(Alignment.Bottom),
-                                enabled = true,
-                                onClick = {
-                                    currentDriver?.isloading = false
-                                    circularIndicator = true
-                                    vm.reload(passengerTripId = passengerTripId)
-                                    Log.d("Loaduii", "GoogleMapView:${currentDriver?.isloading} ")
-                                },
-                                contentPadding = PaddingValues(),
-                                colors = ButtonDefaults.buttonColors(
-                                    Color.Transparent
-                                ),
-                                shape = RoundedCornerShape(40.dp)
-                            ) {
-                                val primary = Color(0xFF92A3FD)
-                                val secondary = Color(0XFF9DCEFF)
-                                Box(
+                                    .clickable {
+                                        navController.popBackStack()
+                                    },
+                            )
+                        }
+                        Box(modifier = Modifier.fillMaxWidth(0.65f)) {
+                            Text(
+                                text = "Trip map ",
+                                style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 18.sp,
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontWeight = FontWeight.W600
+                                )
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 16.dp), verticalAlignment = Alignment.Bottom
+                        ) {
+                            if (circularIndicator) {
+                                Log.d("TAG", "GoogleMapView: here")
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                )
+                                if (currentDriver?.isloading == true) {
+                                    circularIndicator = false
+                                }
+                            } else {
+                                Button(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .heightIn(35.dp)
-                                        .align(Alignment.Bottom)
-                                        .background(
-                                            brush = Brush.horizontalGradient(
-                                                listOf(
-                                                    primary,
-                                                    secondary
-                                                )
-                                            ),
-                                            shape = RoundedCornerShape(40.dp)
-                                        ), contentAlignment = Alignment.Center
-                                ) {
-                                    Row(
-                                        modifier = Modifier,
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(
-                                            text = "Refresh",
-                                            style = TextStyle(
-                                                fontSize = 14.sp,
-                                                fontWeight = FontWeight.Bold
-                                            )
+                                        .height(25.dp)
+                                        .align(Alignment.Bottom),
+                                    enabled = true,
+                                    onClick = {
+                                        currentDriver?.isloading = false
+                                        circularIndicator = true
+                                        vm.reload(passengerTripId = passengerTripId)
+                                        Log.d(
+                                            "Loaduii",
+                                            "GoogleMapView:${currentDriver?.isloading} "
                                         )
+                                    },
+                                    contentPadding = PaddingValues(),
+                                    colors = ButtonDefaults.buttonColors(
+                                        Color.Transparent
+                                    ),
+                                    shape = RoundedCornerShape(40.dp)
+                                ) {
+                                    val primary = Color(0xFF92A3FD)
+                                    val secondary = Color(0XFF9DCEFF)
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(35.dp)
+                                            .align(Alignment.Bottom)
+                                            .background(
+                                                brush = Brush.horizontalGradient(
+                                                    listOf(
+                                                        primary,
+                                                        secondary
+                                                    )
+                                                ),
+                                                shape = RoundedCornerShape(40.dp)
+                                            ), contentAlignment = Alignment.Center
+                                    ) {
+                                        Row(
+                                            modifier = Modifier,
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = "Refresh",
+                                                style = TextStyle(
+                                                    fontSize = 14.sp,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 10.dp)
-            )
-            {
-                if (currentDriver != null) {
-                    currentDriver?.let {
-                        if (routePoints != null) {
-                            if (first != null) {
-                                if (lastPoint != null) {
-                                    currentDriverLoc(
-                                        LatLng(it.driver.latitude, it.driver.longitude),
-                                        routePoints,
-                                        first, lastPoint,
-                                        onMapLoaded = {})
-                                }
-                            }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 10.dp)
+                )
+                {
+                    if (currentDriver != null) {
+                        currentDriver?.let {
+                            currentDriverLoc(
+                                LatLng(it.driver.latitude, it.driver.longitude),
+                                routePoints,
+                                first, lastPoint,
+                                onMapLoaded = {})
                         }
-                    }
-                } else {
-                    if (routePoints != null && first != null && lastPoint != null) {
-                                process(routePoints = routePoints, first, lastPoint, onMapLoaded= {})
+                    } else {
+                        process(routePoints = routePoints, first, lastPoint, onMapLoaded = {})
                     }
                 }
             }
         }
+    } else {
+        Toast.makeText(context, "Something Went wrong", Toast.LENGTH_LONG).show()
     }
 }
 
@@ -860,7 +867,7 @@ fun currentDriverLoc(
 }
 
 @Composable
-fun process(routePoints: List<LatLng>,first: LatLng,  lastPoint: LatLng, onMapLoaded: () -> Unit) {
+fun process(routePoints: List<LatLng>, first: LatLng, lastPoint: LatLng, onMapLoaded: () -> Unit) {
     val mapUiproperties by remember {
         mutableStateOf(
             MapProperties(

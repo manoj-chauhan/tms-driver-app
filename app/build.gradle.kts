@@ -16,8 +16,8 @@ android {
         applicationId = "com.drishto"
         minSdk = 26
         targetSdk = 34
-        versionCode = 9
-        versionName = "1.0-alpha"
+        versionCode = 13
+        versionName = "2.0-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -193,7 +193,6 @@ dependencies {
 
     //inappupdate
     implementation("com.google.android.play:app-update-ktx:2.1.0")
-    implementation ("com.google.android.play:app-update:2.1.0")
 
 
 

@@ -69,14 +69,13 @@ class ParentTripNetRepository @Inject constructor(
             null
         }
     }
-    fun fetchTripRouteCoor(passengerTripId: Int): List<point> {
+    fun fetchTripRouteCoor(passengerTripId: Int): List<point>? {
         val assignedTripType = Types.newParameterizedType(List::class.java, point::class.java)
         val adapter: JsonAdapter<List<point>> = Moshi.Builder().build().adapter(assignedTripType)
 
         val tripAssignmentUrl =
             context.resources.getString(R.string.url_trip_lat_lon) + passengerTripId
         val handler = Handler(Looper.getMainLooper())
-
 
         return try {
             getAccessToken(context)?.let {
@@ -85,24 +84,26 @@ class ParentTripNetRepository @Inject constructor(
                     .responseObject(moshiDeserializerOf(adapter))
                 result.fold(
                     {
-                        it ?: emptyList() // Return empty list if the result is null
                     },
-                    {error ->
+                    {error->
                         EventBus.getDefault().post("AUTH_FAILED")
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
                         if (error.response.statusCode == 401) {
                             errorManager.getErrorDescription401(context, errorResponse)
                         }
 
-                        handler.post {
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-                        }
-                        emptyList()
+
+                            handler.post {
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                     }
                 )
-            } ?: emptyList() // Return empty list if access token is null
+
+                result.get()
+            }
         } catch (e: Exception) {
-            emptyList() // Return empty list in case of any exception
+            null
         }
     }
 
@@ -231,8 +232,6 @@ class ParentTripNetRepository @Inject constructor(
                     },
                     {error->
                         Log.d("TAG", "fetchDriverLiveLoc: $error")
-                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                        if(error.response.statusCode != 400)
                             handler.post {
                                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
                                     .show()
