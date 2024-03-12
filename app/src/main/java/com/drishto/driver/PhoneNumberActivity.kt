@@ -202,7 +202,7 @@ class PhoneNumberActivity : ComponentActivity() {
         }
 
         auth = Firebase.auth
-        auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
+
         super.onCreate(savedInstanceState)
 
         oneTapClient = Identity.getSignInClient(this)
