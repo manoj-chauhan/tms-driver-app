@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -126,24 +125,14 @@ fun notificationScreen(idUser:Int,navHostController: NavHostController) {
                                 colors = CardDefaults.cardColors(
                                     containerColor = Color.White,
                                 ),
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.fillMaxSize(),
                                 shape = RoundedCornerShape(10.dp),
                             ) {
                                 Column(
                                     modifier = Modifier
-                                        .fillMaxWidth(1f)
-                                        .fillMaxHeight(0.5f)
-                                        .padding(10.dp)
+                                        .fillMaxSize(1f)
+                                        .padding(10.dp), verticalArrangement = Arrangement.Center
                                 ) {
-                                    Text(
-                                        text = "Add Details", style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 20.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W600
-                                        )
-                                    )
-                                    Spacer(modifier = Modifier.height(16.dp))
 
                                     OutlinedTextField(
                                         value = message,
