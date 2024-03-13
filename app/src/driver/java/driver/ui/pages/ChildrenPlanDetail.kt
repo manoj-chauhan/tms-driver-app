@@ -83,12 +83,14 @@ fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostC
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Text(
-                        text = "Mother Divine Public School", style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 18.sp
+                    schedules?.companyName?.let {
+                        Text(
+                            text = it, style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 18.sp
+                            )
                         )
-                    )
+                    }
                 }
             }
             Box(

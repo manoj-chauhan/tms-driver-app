@@ -64,26 +64,8 @@
             android:exported="true">
         </activity>
 
-        <activity
-            android:name="driver.AppUpdateActivity"
-            android:exported="true">
-        </activity>
         <activity android:name="com.canhub.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/>
-
-<!--        <service-->
-<!--            android:name="LocationService"-->
-<!--            android:foregroundServiceType="location" />-->
-
-<!--        <service-->
-<!--            android:name="FCMService"-->
-<!--            android:exported="false"-->
-<!--            tools:ignore = "Instantiable"-->
-<!--            >-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
 
         <receiver android:name=".OtpVerification" android:exported="true"
             android:permission="com.google.android.gms.auth.api.phone.permission.SEND">
