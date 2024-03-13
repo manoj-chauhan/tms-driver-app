@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -784,7 +783,7 @@ fun GoogleMapView(
             }
         }
     } else {
-        Toast.makeText(context, "Something Went wrong", Toast.LENGTH_LONG).show()
+//        Toast.makeText(context, "Something Went wrong", Toast.LENGTH_LONG).show()
     }
 }
 

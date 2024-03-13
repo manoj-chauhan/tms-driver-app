@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.models.ParentTripDetail
-import driver.models.ProcessedPoints
 import driver.models.loaderMap
 import driver.models.point
 import driver.tripManagement.ParentTripManager
@@ -29,18 +28,6 @@ class parentTripDetail @Inject constructor(private val parentTripManager: Parent
     private val  _points: MutableStateFlow<List<point>?> = MutableStateFlow(null)
     val points: StateFlow<List<point>?> = _points.asStateFlow()
 
-    private val  _processedpoints: MutableStateFlow<List<ProcessedPoints>?> = MutableStateFlow(null)
-    val processedpoints: StateFlow<List<ProcessedPoints>?> = _processedpoints.asStateFlow()
-
-
-    fun fetchTripProcessedCoordinates(context: Context, operatorId:Int, tripCode:String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val pointList = parentTripManager.getTripProcessedCoor(operatorId, tripCode)
-            _processedpoints.update { _ ->
-                pointList
-            }
-        }
-    }
 
     fun fetchTripRouteCoordinates(passengerTripId: Int) {
         viewModelScope.launch(Dispatchers.IO) {

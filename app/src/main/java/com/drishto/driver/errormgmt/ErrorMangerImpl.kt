@@ -29,7 +29,7 @@ class ErrorMangerImpl @Inject constructor(
             val errorResponse = adapter.fromJson(error)
 
             if (errorResponse != null) {
-                Toast.makeText(context, errorResponse.errorDescription, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "API Request Failed", Toast.LENGTH_SHORT).show()
             }

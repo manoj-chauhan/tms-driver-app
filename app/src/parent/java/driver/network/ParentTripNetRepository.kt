@@ -19,7 +19,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import driver.models.ParentPastTrip
 import driver.models.ParentTrip
 import driver.models.ParentTripDetail
-import driver.models.ProcessedPoints
 import driver.models.currentDriverLocation
 import driver.models.point
 import kotlinx.coroutines.CoroutineScope
@@ -49,7 +48,7 @@ class ParentTripNetRepository @Inject constructor(
                 result.fold(
                     {
                     },
-                    {error->
+                    { error ->
                         Log.d("Error", "fetchActiveTrips: $error")
                         EventBus.getDefault().post("AUTH_FAILED")
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
@@ -69,6 +68,7 @@ class ParentTripNetRepository @Inject constructor(
             null
         }
     }
+
     fun fetchTripRouteCoor(passengerTripId: Int): List<point>? {
         val assignedTripType = Types.newParameterizedType(List::class.java, point::class.java)
         val adapter: JsonAdapter<List<point>> = Moshi.Builder().build().adapter(assignedTripType)
@@ -85,59 +85,12 @@ class ParentTripNetRepository @Inject constructor(
                 result.fold(
                     {
                     },
-                    {error->
+                    { error ->
                         EventBus.getDefault().post("AUTH_FAILED")
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
                         if (error.response.statusCode == 401) {
                             errorManager.getErrorDescription401(context, errorResponse)
-                        }
-
-
-                            handler.post {
-                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                    }
-                )
-
-                result.get()
-            }
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    fun fetchTripProcessed(operatorId: Int, tripCode: String): List<ProcessedPoints>? {
-        val tripCoor = Types.newParameterizedType(List::class.java, ProcessedPoints::class.java)
-        val adapter: JsonAdapter<List<ProcessedPoints>> = Moshi.Builder().build().adapter(tripCoor)
-
-        val tripProcessedCoordinates =
-            context.resources.getString(R.string.url_trip_processed) + tripCode
-        val handler = Handler(Looper.getMainLooper())
-
-
-        return try {
-            getAccessToken(context)?.let {
-                val (_, _, result) = tripProcessedCoordinates.httpGet()
-                    .authentication().bearer(it)
-                    .header("Company-Id", operatorId)
-                    .responseObject(moshiDeserializerOf(adapter))
-                result.fold(
-                    {
-                    },
-                    {error->
-                        EventBus.getDefault().post("AUTH_FAILED")
-                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                        if (error.response.statusCode == 401) {
-                            errorManager.getErrorDescription401(context, errorResponse)
-                        }
-
-                        else if (error.response.statusCode == 500) {
-                            errorManager.getErrorDescription500(context, errorResponse)
-                        }else {
-                            handler.post {
-                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-                            }
+                           return null
                         }
                     }
                 )
@@ -148,7 +101,6 @@ class ParentTripNetRepository @Inject constructor(
             null
         }
     }
-
     fun fetchPastTrips(): List<ParentPastTrip>? {
         val pastTrip = Types.newParameterizedType(List::class.java, ParentPastTrip::class.java)
         val adapter: JsonAdapter<List<ParentPastTrip>> = Moshi.Builder().build().adapter(pastTrip)
@@ -163,9 +115,9 @@ class ParentTripNetRepository @Inject constructor(
                     .responseObject(moshiDeserializerOf(adapter))
                 result.fold(
                     {
-                    it
+                        it
                     },
-                    {error->
+                    { error ->
                         EventBus.getDefault().post("AUTH_FAILED")
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
                         if (error.response.statusCode == 401) {
@@ -185,7 +137,10 @@ class ParentTripNetRepository @Inject constructor(
         }
     }
 
-    fun fetchParentTripDetail(passengerTripId: Int,navHostController: NavHostController): ParentTripDetail? {
+    fun fetchParentTripDetail(
+        passengerTripId: Int,
+        navHostController: NavHostController
+    ): ParentTripDetail? {
         val tripDetailUrl = context.resources.getString(R.string.url_trip_detail) + passengerTripId
         val handler = Handler(Looper.getMainLooper())
 
@@ -198,12 +153,13 @@ class ParentTripNetRepository @Inject constructor(
                     {
                         it
                     },
-                    {error->
+                    { error ->
                         EventBus.getDefault().post("AUTH_FAILED")
                         handler.post {
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
+                                .show()
                         }
-                        Log.e("TAG", "fetchParentTripDetail: $error", )
+                        Log.e("TAG", "fetchParentTripDetail: $error")
 
                     }
                 )
@@ -216,7 +172,8 @@ class ParentTripNetRepository @Inject constructor(
     }
 
     fun fetchDriverLiveLoc(passengerTripId: Int): currentDriverLocation? {
-        val driverLiveUrl = context.resources.getString(R.string.url_driver_location) + passengerTripId
+        val driverLiveUrl =
+            context.resources.getString(R.string.url_driver_location) + passengerTripId
 
         val handler = Handler(Looper.getMainLooper())
 
@@ -230,12 +187,13 @@ class ParentTripNetRepository @Inject constructor(
                         it
                         Log.d("DRIVER IS HERE", "fetchDriverLiveLoc: $result")
                     },
-                    {error->
-                        Log.d("TAG", "fetchDriverLiveLoc: $error")
-                            handler.post {
-                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
-                                    .show()
+                    { error ->
+                        if(error.response.statusCode == 500){
+                            if (error.response.statusCode == 500) {
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
                             }
+                        }
+                      return null
                     }
                 )
 

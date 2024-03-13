@@ -31,10 +31,6 @@ class ParentTripManagerImpl @Inject constructor(
         return tripNetRepository.fetchTripRouteCoor(passengerTripId)
     }
 
-    override fun getTripProcessedCoor(operatorId: Int, tripCode: String): List<ProcessedPoints>? {
-        return tripNetRepository.fetchTripProcessed(operatorId, tripCode)
-    }
-
     override fun getPastTrips(): List<ParentPastTrip>? {
         return tripNetRepository.fetchPastTrips()
     }
