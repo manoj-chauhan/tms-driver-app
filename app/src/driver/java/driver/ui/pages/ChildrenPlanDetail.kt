@@ -148,7 +148,7 @@ fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostC
                                 .align(Alignment.Bottom),
                             enabled = true,
                             onClick = {
-                                navHostController.navigate("add-children")
+                                navHostController.navigate("student-addition/$operatorId/$planId")
                             },
                             contentPadding = PaddingValues(),
                             colors = ButtonDefaults.buttonColors(

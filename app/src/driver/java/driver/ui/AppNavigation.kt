@@ -24,12 +24,12 @@ import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.HistoryScreen
 import com.drishto.driver.ui.pages.UserProfile
 import com.samrish.driver.ui.pages.PastAssignmentDetailScreen
+import driver.ui.components.StudentInPlan
 import driver.ui.pages.AssignmentDetailScreen
 import driver.ui.pages.ChildrenPlanDetail
 import driver.ui.pages.History
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.MatrixLog
-import driver.ui.pages.addStudentInPlan
 
 
 const val MY_ARG= "message"
@@ -147,6 +147,14 @@ fun AppNavigationHost(
             )
         }
 
+        composable("student-addition/{operatorId}/{planId}", arguments = listOf(
+            navArgument("operatorId") { type = NavType.IntType},
+            navArgument("planId") { type = NavType.IntType}
+        )){entry ->
+            val operator = entry.arguments?.getInt("operatorId") ?: 0
+            val plan = entry.arguments?.getInt("planId") ?: 0
+            StudentInPlan(operator,plan,navController)
+        }
         composable("driver-plans-details"){
             ChildrenPlanDetail(operatorId, planId, navController)
         }
@@ -158,9 +166,7 @@ fun AppNavigationHost(
         composable("login"){
 
         }
-        composable("add-children") {
-            addStudentInPlan(operatorId, planId, navController=navController)
-        }
+
         composable("assignment", arguments = listOf(
             navArgument(MY_ARG) { type = NavType.StringType } ,
             navArgument("$trip_Id") { type = NavType.IntType },

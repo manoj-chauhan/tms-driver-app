@@ -37,7 +37,7 @@ data class scheduleList (
       var startTime :  String ,
       var from :  String ,
       var till : String ,
-      var days :  String ,
+      var days: Map<String, Boolean>,
       var status :  String ,
       var createdAt :  String,
       var createdById : Int,

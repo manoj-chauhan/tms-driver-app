@@ -1,4 +1,4 @@
-package driver.ui.pages
+package driver.ui.components
 
 import android.app.DatePickerDialog
 import android.util.Log
@@ -33,7 +33,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -59,15 +58,13 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun addStudentInPlan(operatorId: Int, planId: Int,  navController: NavHostController) {
-
+fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostController) {
+    Log.d("Dialog", "addStudentInPlan: $operatorId, $planId ")
     val context = LocalContext.current
 
     val ch: DriverPlanDetailsViewModel = hiltViewModel()
     val schedules by ch.planList.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
-        ch.fetchSchedule(context = context, operatorId, planId)
-    }
+    ch.fetchSchedule(context = context, operatorId, planId)
 
 
     Log.d("Dialog", "addStudentInPlan: $operatorId, $planId ")
@@ -180,7 +177,7 @@ fun addStudentInPlan(operatorId: Int, planId: Int,  navController: NavHostContro
         }
     }
     fun validateName(): Boolean {
-         if (name.isNotEmpty()) {
+        if (name.isNotEmpty()) {
             isNameValid = true
             return true
         } else {
@@ -653,7 +650,7 @@ fun addStudentInPlan(operatorId: Int, planId: Int,  navController: NavHostContro
                                     .height(40.dp)
                                     .align(Alignment.Bottom),
                                 onClick = {
-//                                    if (!(validatePrimaryPhone()) && validateName() && validateGuardianName()  && validateSchoolName() && validateSchoolAddress() && standardSelected() && boardingSelected() && deboardingSelected()) {
+                                    if (!(validatePrimaryPhone()) && validateName() && validateGuardianName()  && validateSchoolName() && validateSchoolAddress() && standardSelected() && boardingSelected() && deboardingSelected()) {
                                         Log.d("true", "addStudentInPlan: ")
                                         ch.addStudentInPlan(
                                             name,
@@ -670,7 +667,9 @@ fun addStudentInPlan(operatorId: Int, planId: Int,  navController: NavHostContro
                                             planId,
                                             operatorId
                                         )
+                                        navController.popBackStack()
                                     }
+
                                 },
                                 contentPadding = PaddingValues(),
                                 colors = ButtonDefaults.buttonColors(
@@ -716,4 +715,5 @@ fun addStudentInPlan(operatorId: Int, planId: Int,  navController: NavHostContro
 
         }
     }
+
 }
