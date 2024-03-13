@@ -1,9 +1,11 @@
 package driver.ui.pages
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.net.ConnectivityManager
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,7 +54,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.drishto.driver.R
-import com.drishto.driver.models.UserProfile
 import com.drishto.driver.ui.viewmodels.SwipeRefresh
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -69,8 +70,11 @@ fun HomeScreen(
     navController: NavHostController,
     vm: parentTripAssigned = hiltViewModel(),
     onTripSelected: (assignment: ParentTrip) -> Unit,
-    onPastTripSelected: (assignment: ParentPastTrip) -> Unit
+    onPastTripSelected: (assignment: ParentPastTrip) -> Unit,
+    activity: ComponentActivity
 ) {
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
     val context = LocalContext.current
 
     val connectivityManager =

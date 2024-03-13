@@ -2,6 +2,7 @@ package driver.ui
 
 import android.content.Intent
 import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -62,15 +63,19 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
-            MapsActivityContent(navController, passengerTripId, selectedAssignmentCode, operatorId)
+            val activity = LocalContext.current as? ComponentActivity
+            MapsActivityContent(navController, passengerTripId, selectedAssignmentCode, operatorId,activity = activity ?: return@composable)
         }
         composable("past-assignment-detail") {
-            PastActivityContent(navController, 1, passengerTripId, selectedAssignmentCode)
+            val activity = LocalContext.current as? ComponentActivity
+
+            PastActivityContent(navController, 1, passengerTripId, selectedAssignmentCode,activity = activity ?: return@composable)
         }
         composable("user-profile") {
             userProfileView(navController)
         }
         composable("home") {
+            val activity = LocalContext.current as? ComponentActivity
             HomeScreen(
                 navController = navController,
                 onTripSelected = {
@@ -86,7 +91,8 @@ fun AppNavigationHost(
                     operatorId = 1
                     passengerTripId = it.passengerTripId
                     navController.navigate("past-assignment-detail")
-                }
+                },
+                activity = activity ?: return@composable
             )
         }
         composable("login") {
@@ -94,12 +100,15 @@ fun AppNavigationHost(
         }
 
         composable("map-screen") {
+            val activity = LocalContext.current as? ComponentActivity
+
             GoogleMapView(
                 modifier = Modifier.fillMaxWidth(),
                 passengerTripId = passengerTripId,
                 tripCode = selectedAssignmentCode,
                 navController,
-                onMapLoaded = {}
+                onMapLoaded = {},
+                activity = activity ?: return@composable
             )
         }
 

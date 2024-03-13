@@ -1,6 +1,8 @@
 package driver.ui.pages
 
+import android.content.pm.ActivityInfo
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,7 +56,9 @@ fun PastActivityContent(
     operatorId: Int,
     passengerTripId:Int,
     tripCode: String,
+    activity: ComponentActivity
 ) {
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     val vm: parentTripDetail = hiltViewModel()
     val context = LocalContext.current

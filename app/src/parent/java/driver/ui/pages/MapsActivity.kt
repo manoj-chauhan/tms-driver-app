@@ -1,9 +1,11 @@
 package driver.ui.pages
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -79,8 +81,10 @@ fun MapsActivityContent(
     navController: NavHostController,
     passengerTripId: Int,
     tripCode: String,
-    operatorId: Int
+    operatorId: Int,
+    activity: ComponentActivity
 ) {
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     val vm: parentTripDetail = hiltViewModel()
     val context = LocalContext.current
@@ -613,8 +617,11 @@ fun GoogleMapView(
     tripCode: String,
     navController: NavHostController,
     onMapLoaded: () -> Unit,
-    vm: parentTripDetail = hiltViewModel()
+    vm: parentTripDetail = hiltViewModel(),
+    activity: ComponentActivity
 ) {
+
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     val context = LocalContext.current
     val currentDriver by vm.currentDriver.collectAsStateWithLifecycle()
