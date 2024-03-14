@@ -379,60 +379,62 @@ fun MapsActivityContent(
                                 }
 
                                 Spacer(modifier = Modifier.height(27.dp))
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-
+                                if (it.vehicleNumber != null && it.driverName != null) {
                                     Row(
-                                        modifier = Modifier
-                                            .background(
-                                                color = back,
-                                                shape = RoundedCornerShape(5.dp)
-                                            )
-                                            .width(140.dp)
-                                            .padding(5.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        it.vehicleNumber?.let { it1 ->
-                                            Text(
-                                                text = it1,
-                                                style = TextStyle(
-                                                    color = Color.Black,
-                                                    fontSize = 11.sp,
-                                                    fontFamily = fontStyle,
-                                                    fontWeight = FontWeight.W400
-                                                )
-                                            )
-                                        }
-                                    }
 
-                                    Row(
-                                        modifier = Modifier
-                                            .background(
-                                                color = back,
-                                                shape = RoundedCornerShape(5.dp)
-                                            )
-                                            .width(140.dp)
-                                            .padding(5.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        it.driverName?.let { it1 ->
-                                            Text(
-                                                text = it1,
-                                                style = TextStyle(
-                                                    color = Color.Black,
-                                                    fontSize = 11.sp,
-                                                    fontFamily = fontStyle,
-                                                    fontWeight = FontWeight.W400
+                                        Row(
+                                            modifier = Modifier
+                                                .background(
+                                                    color = back,
+                                                    shape = RoundedCornerShape(5.dp)
                                                 )
-                                            )
+                                                .width(140.dp)
+                                                .padding(5.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            it.vehicleNumber?.let { it1 ->
+                                                Text(
+                                                    text = it1,
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 11.sp,
+                                                        fontFamily = fontStyle,
+                                                        fontWeight = FontWeight.W400
+                                                    )
+                                                )
+                                            }
                                         }
-                                    }
 
+                                        Row(
+                                            modifier = Modifier
+                                                .background(
+                                                    color = back,
+                                                    shape = RoundedCornerShape(5.dp)
+                                                )
+                                                .width(140.dp)
+                                                .padding(5.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            it.driverName?.let { it1 ->
+                                                Text(
+                                                    text = it1,
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 11.sp,
+                                                        fontFamily = fontStyle,
+                                                        fontWeight = FontWeight.W400
+                                                    )
+                                                )
+                                            }
+                                        }
+
+                                    }
                                 }
 
                                 Spacer(modifier = Modifier.height(27.dp))

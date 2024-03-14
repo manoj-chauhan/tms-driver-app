@@ -94,11 +94,7 @@ class UserProfileViewModel @Inject constructor(private val userProfileManager: c
     fun uploadImage(image: ByteArray?, userId:Int){
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                Log.d("VIewmodel", "uploadImage: ")
-
                 if (image != null) {
-                    Log.d("New", "uploadImage: ")
-
                     userProfileManager.uploadPhoto(image, userId)
                     getUploadedImage(userId)
                 }
@@ -114,7 +110,6 @@ class UserProfileViewModel @Inject constructor(private val userProfileManager: c
                 val imageBitmap = userProfileManager.getUploadedImage(id)
                 _userImage.value = imageBitmap
             }catch (e:Exception){
-                Log.d("Uploaded", "getUploadedImage: $e")
             }
         }
 
