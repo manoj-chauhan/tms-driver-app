@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import com.drishto.driver.DriverPlan.DriverPlanManager
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ChildrenList
@@ -77,5 +76,31 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
 
     }
 
+
+    fun editStudent(
+        name: String,
+        guardianName: String,
+        selectedDate: String,
+        selectedText: String,
+        standard: String,
+        schoolName: String,
+        schoolAddress: String,
+        primarynumber: String,
+        secondarynumber: String,
+        boardingPlaceId: Int,
+        deboardingPlaceId: Int,
+        operatorId: Int,
+        studentId:Int
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                driverPlan.editStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, boardingPlaceId, deboardingPlaceId, operatorId,studentId)
+            } catch(e:Exception){
+
+            }
+        }
+
+
+    }
 
 }

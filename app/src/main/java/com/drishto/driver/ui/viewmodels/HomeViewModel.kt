@@ -47,6 +47,12 @@ data class errorDescription(
 )
 
 @JsonClass(generateAdapter = true)
+data class errorDescription500(
+    val message:String
+)
+
+
+@JsonClass(generateAdapter = true)
 data class TripsAssigned(
     var tripCode: String,
     var tripName:String,

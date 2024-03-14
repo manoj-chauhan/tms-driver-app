@@ -1,7 +1,6 @@
 package com.drishto.driver.DriverPlan
 
 import android.content.Context
-import androidx.navigation.NavHostController
 import com.drishto.driver.auth.AuthManager
 import com.drishto.driver.models.ChildrenList
 import com.drishto.driver.models.scheduleList
@@ -38,6 +37,24 @@ class DriverPlanImpl @Inject constructor(
         operatorId: Int,
     ) {
         return planNetRepository.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId)
+    }
+
+    override fun editStudent(
+        name: String,
+        schoolName: String,
+        primarynumber: String,
+        standard: String,
+        selectedText: String,
+        secondarynumber: String,
+        selectedDate: String,
+        guardianName: String,
+        schoolAddress: String,
+        boardingPlaceId: Int,
+        deboardingPlaceId: Int,
+        operatorId: Int,
+        studentId: Int
+    ) {
+        return planNetRepository.editStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, boardingPlaceId, deboardingPlaceId, operatorId, studentId)
     }
 
 }

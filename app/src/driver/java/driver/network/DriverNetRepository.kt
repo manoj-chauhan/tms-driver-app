@@ -7,6 +7,7 @@ import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ChildrenList
 import com.drishto.driver.models.childrenAddPlan
+import com.drishto.driver.models.childrenEditPlan
 import com.drishto.driver.models.scheduleList
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
@@ -133,6 +134,71 @@ class DriverNetRepository @Inject constructor(
 
                             val errorResponse = error.response.data.toString(Charsets.UTF_8)
                             Log.d("Error", "addStudent: $error")
+                        }
+                    )
+                }
+            }
+
+            Toast.makeText(
+                context,
+                "Student Added Successfully",
+                Toast.LENGTH_SHORT
+            ).show()
+
+        } catch(e:Exception){
+
+        }
+
+
+    }
+
+    fun editStudent(
+        name: String,
+        schoolName: String,
+        primarynumber: String,
+        standard: String,
+        selectedText: String,
+        secondarynumber: String,
+        selectedDate: String,
+        guardianName: String,
+        schoolAddress: String,
+        boardingPlaceId: Int,
+        deboardingPlaceId: Int,
+        operatorId: Int,
+        studentId:Int
+    ) {
+
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+        try {
+            val studentRequest = childrenEditPlan(name, schoolName,  primarynumber, standard, selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, boardingPlaceId, deboardingPlaceId)
+            val moshi = Moshi.Builder().build()
+            val jsonAdapter: JsonAdapter<childrenEditPlan> = moshi.adapter(childrenEditPlan::class.java)
+            val requestBody = jsonAdapter.toJson(studentRequest)
+
+            val url = context.resources.getString(R.string.url_editStudent_detail)+studentId
+
+            getAccessToken(context)?.let {
+                val fuelManager = FuelManager()
+                val (_, response, result) = fuelManager.put(url).authentication().bearer(it)
+                    .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
+                    .response()
+
+                if (response.statusCode == 200) {
+                } else {
+                    result.fold(
+                        { _ ->
+                        },
+                        { error ->
+                            Log.d("Error", "addStudent: $error")
+                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                            if (error.response.statusCode == 401) {
+                                errorManager.getErrorDescription(context)
+                            }
+                            if(error.response.statusCode == 500){
+                                Log.d("Error", "edit $error")
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
+                            }
+
                         }
                     )
                 }

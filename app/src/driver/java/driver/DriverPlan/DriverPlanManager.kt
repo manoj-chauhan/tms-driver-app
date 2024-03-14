@@ -4,22 +4,38 @@ import com.drishto.driver.models.ChildrenList
 import com.drishto.driver.models.scheduleList
 
 interface DriverPlanManager {
-    fun getChildrenList(operatorId:Int, planId:Int): List<ChildrenList>?
+    fun getChildrenList(operatorId: Int, planId: Int): List<ChildrenList>?
 
-    fun getTripSchedule(operatorId: Int, planId: Int):scheduleList
-     fun addStudent(
-         name: String,
-         schoolName: String,
-         primarynumber: String,
-         standard: String,
-         selectedText: String,
-         secondarynumber: String,
-         selectedDate: String,
-         guardianName: String,
-         schoolAddress: String,
-         planId: Int,
-         boardingPlaceId: Int,
-         deboardingPlaceId: Int,
-         operatorId: Int,
+    fun getTripSchedule(operatorId: Int, planId: Int): scheduleList
+    fun addStudent(
+        name: String,
+        schoolName: String,
+        primarynumber: String,
+        standard: String,
+        selectedText: String,
+        secondarynumber: String,
+        selectedDate: String,
+        guardianName: String,
+        schoolAddress: String,
+        planId: Int,
+        boardingPlaceId: Int,
+        deboardingPlaceId: Int,
+        operatorId: Int,
+    )
+
+    fun editStudent(
+        name: String,
+        schoolName: String,
+        primarynumber: String,
+        standard: String,
+        selectedText: String,
+        secondarynumber: String,
+        selectedDate: String,
+        guardianName: String,
+        schoolAddress: String,
+        boardingPlaceId: Int,
+        deboardingPlaceId: Int,
+        operatorId: Int,
+        studentId: Int
     )
 }

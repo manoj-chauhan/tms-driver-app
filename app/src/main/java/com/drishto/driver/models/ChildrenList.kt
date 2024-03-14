@@ -84,3 +84,18 @@ data class childrenAddPlan(
     var boardingPlaceId: Int,
     var deBoardingPlaceId: Int
 )
+
+@JsonClass(generateAdapter = true)
+data class childrenEditPlan(
+    var name: String,
+    var schoolName: String,
+    var primaryPhoneNumber: String,
+    var standard: String,
+    var gender: String,
+    var secondaryPhoneNumber: String,
+    var dateOfBirth: String,
+    var guardianName: String,
+    var schoolAddress: String,
+    var boardingPlaceId: Int,
+    var deBoardingPlaceId: Int
+)

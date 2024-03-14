@@ -53,7 +53,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.drishto.driver.models.ChildrenList
-import com.drishto.driver.models.childrenAddPlan
 import driver.ui.viewmodels.DriverPlanDetailsViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -718,9 +717,8 @@ fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: I
                                         .align(Alignment.Bottom),
                                     onClick = {
                                         if (!(validatePrimaryPhone()) && validateName() && validateGuardianName() && validateSchoolName() && validateSchoolAddress() && standardSelected() && boardingSelected() && deboardingSelected()) {
-                                            val studentRequest = childrenAddPlan(name, schoolName,  primarynumber, standard, selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId)
-                                            Log.d("TAG", "EditChildrenDetails: $studentRequest")
-//                                            navController.popBackStack()
+                                            ch.editStudent(name, schoolName,  primarynumber, standard, selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, boardingPlaceId, deboardingPlaceId, operatorId, childrenDetail.id)
+                                            navController.popBackStack()
                                         }
 
                                     },
