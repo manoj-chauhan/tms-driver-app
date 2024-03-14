@@ -25,6 +25,7 @@ import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.HistoryScreen
 import com.drishto.driver.ui.pages.UserProfile
 import com.samrish.driver.ui.pages.PastAssignmentDetailScreen
+import driver.ui.components.EditChildrenDetails
 import driver.ui.components.StudentInPlan
 import driver.ui.pages.AssignmentDetailScreen
 import driver.ui.pages.ChildrenPlanDetail
@@ -166,7 +167,7 @@ fun AppNavigationHost(
         }
 
         composable("children-details"){
-            EditChildrenDetails(childrenList)
+            childrenList?.let { it1 -> EditChildrenDetails(it1, operatorId, planId, navController) }
         }
 
         composable("history_detail"){
