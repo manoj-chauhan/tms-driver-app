@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.drishto.driver.DriverPlan.DriverPlanManager
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.ChildrenList
+import com.drishto.driver.models.childrenEditPlan
 import com.drishto.driver.models.scheduleList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,27 +20,31 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: ErrManager, application: Application, private val driverPlan: DriverPlanManager): AndroidViewModel(application)  {
-    private val  _childrenList: MutableStateFlow<List<ChildrenList>?> = MutableStateFlow(null)
+class DriverPlanDetailsViewModel @Inject constructor(
+    private val errorManager: ErrManager,
+    application: Application,
+    private val driverPlan: DriverPlanManager
+) : AndroidViewModel(application) {
+    private val _childrenList: MutableStateFlow<List<ChildrenList>?> = MutableStateFlow(null)
     val childrenList: StateFlow<List<ChildrenList>?> = _childrenList.asStateFlow()
 
 
-    private val  _planList: MutableStateFlow<scheduleList?> = MutableStateFlow(null)
+    private val _planList: MutableStateFlow<scheduleList?> = MutableStateFlow(null)
     val planList: StateFlow<scheduleList?> = _planList.asStateFlow()
 
-    fun fetchParentTrip(context: Context, operatorId:Int, planId:Int){
+    fun fetchParentTrip(context: Context, operatorId: Int, planId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val tripList = driverPlan.getChildrenList(operatorId, planId)
             _childrenList.update { _ ->
                 tripList
             }
-                Log.d("TAG", "fetchParentTrip: $tripList")
+            Log.d("TAG", "fetchParentTrip: $tripList")
         }
 
     }
 
 
-    fun fetchSchedule(context: Context, operatorId:Int, planId:Int){
+    fun fetchSchedule(context: Context, operatorId: Int, planId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val planList = driverPlan.getTripSchedule(operatorId, planId)
             _planList.update { _ ->
@@ -67,8 +72,22 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                driverPlan.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId,)
-            } catch(e:Exception){
+                driverPlan.addStudent(
+                    name,
+                    schoolName,
+                    primarynumber,
+                    standard,
+                    selectedText,
+                    secondarynumber,
+                    selectedDate,
+                    guardianName,
+                    schoolAddress,
+                    planId,
+                    boardingPlaceId,
+                    deboardingPlaceId,
+                    operatorId,
+                )
+            } catch (e: Exception) {
 
             }
         }
@@ -78,24 +97,18 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
 
 
     fun editStudent(
-        name: String,
-        guardianName: String,
-        selectedDate: String,
-        selectedText: String,
-        standard: String,
-        schoolName: String,
-        schoolAddress: String,
-        primarynumber: String,
-        secondarynumber: String,
-        boardingPlaceId: Int,
-        deboardingPlaceId: Int,
+        children: childrenEditPlan,
         operatorId: Int,
-        studentId:Int
+        studentId: Int
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                driverPlan.editStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, boardingPlaceId, deboardingPlaceId, operatorId,studentId)
-            } catch(e:Exception){
+                driverPlan.editStudent(
+                    children,
+                    operatorId,
+                    studentId
+                )
+            } catch (e: Exception) {
 
             }
         }
@@ -104,3 +117,5 @@ class DriverPlanDetailsViewModel @Inject constructor(private  val errorManager: 
     }
 
 }
+
+// childrenEditPlan(name=Atul Thapliyal, schoolName=, primaryPhoneNumber=Mr. Dinesh Prasad, standard=M, gender=IX, secondaryPhoneNumber=Rohini, Delhi , dateOfBirth=+918700059515, guardianName=Mother Divine Public school, schoolAddress=2002-06-17, boardingPlaceId=31, deBoardingPlaceId=30)

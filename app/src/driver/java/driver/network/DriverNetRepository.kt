@@ -195,28 +195,18 @@ class DriverNetRepository @Inject constructor(
     }
 
     fun editStudent(
-        name: String,
-        schoolName: String,
-        primarynumber: String,
-        standard: String,
-        selectedText: String,
-        secondarynumber: String,
-        selectedDate: String,
-        guardianName: String,
-        schoolAddress: String,
-        boardingPlaceId: Int,
-        deboardingPlaceId: Int,
+        children: childrenEditPlan,
         operatorId: Int,
         studentId:Int
     ) {
 
         val coroutineScope = CoroutineScope(Dispatchers.IO)
         try {
-            val studentRequest = childrenEditPlan(name, schoolName,  primarynumber, standard, selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, boardingPlaceId, deboardingPlaceId)
             val moshi = Moshi.Builder().build()
             val jsonAdapter: JsonAdapter<childrenEditPlan> = moshi.adapter(childrenEditPlan::class.java)
-            val requestBody = jsonAdapter.toJson(studentRequest)
+            val requestBody = jsonAdapter.toJson(children)
 
+            Log.d("Hello", "editStudent: $requestBody")
             val url = context.resources.getString(R.string.url_editStudent_detail)+studentId
 
             getAccessToken(context)?.let {

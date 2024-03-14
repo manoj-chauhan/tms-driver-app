@@ -3,6 +3,7 @@ package com.drishto.driver.DriverPlan
 import android.content.Context
 import com.drishto.driver.auth.AuthManager
 import com.drishto.driver.models.ChildrenList
+import com.drishto.driver.models.childrenEditPlan
 import com.drishto.driver.models.scheduleList
 import com.drishto.driver.network.DriverNetRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -40,21 +41,11 @@ class DriverPlanImpl @Inject constructor(
     }
 
     override fun editStudent(
-        name: String,
-        schoolName: String,
-        primarynumber: String,
-        standard: String,
-        selectedText: String,
-        secondarynumber: String,
-        selectedDate: String,
-        guardianName: String,
-        schoolAddress: String,
-        boardingPlaceId: Int,
-        deboardingPlaceId: Int,
+        children: childrenEditPlan,
         operatorId: Int,
         studentId: Int
     ) {
-        return planNetRepository.editStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, boardingPlaceId, deboardingPlaceId, operatorId, studentId)
+        return planNetRepository.editStudent(children, operatorId, studentId)
     }
 
 }

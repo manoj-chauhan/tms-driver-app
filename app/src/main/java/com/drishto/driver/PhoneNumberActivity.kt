@@ -354,7 +354,11 @@ class PhoneNumberActivity : ComponentActivity() {
                             .background(Color.White)
                             .align(Alignment.CenterHorizontally),
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
-                        onValueChange = { text = it },
+                        onValueChange = { newValue ->
+                            if (newValue.text.length <= 10) {
+                                text = newValue
+                            }
+                        },
                         colors = OutlinedTextFieldDefaults.colors(
                             cursorColor = primary,
                             focusedBorderColor = primary,
