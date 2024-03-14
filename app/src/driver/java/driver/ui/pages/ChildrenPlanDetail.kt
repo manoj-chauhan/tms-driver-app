@@ -2,6 +2,7 @@ package driver.ui.pages
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,7 +46,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostController,  ch: DriverPlanDetailsViewModel = hiltViewModel()) {
+fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostController, onStudentSelected: (assignment: ChildrenList) -> Unit,ch: DriverPlanDetailsViewModel = hiltViewModel()) {
     val childrens by ch.childrenList.collectAsStateWithLifecycle()
     ch.fetchParentTrip(context = LocalContext.current, operatorId, planId)
 
@@ -187,7 +188,7 @@ fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostC
                     Spacer(modifier = Modifier.height(10.dp))
 
                     childrens?.forEach { children ->
-                        ChildrensList(children)
+                        ChildrensList(children, onStudentSelected)
                     }
                 }
             }
@@ -387,7 +388,7 @@ fun AgeDisplay(dateOfBirth: String): Number {
 }
 
 @Composable
-fun ChildrensList(children: ChildrenList) {
+fun ChildrensList(children: ChildrenList,  onClick: (children: ChildrenList) -> Unit) {
 
     var age: Number = 0
     children.dateOfBirth.let {
@@ -401,6 +402,7 @@ fun ChildrensList(children: ChildrenList) {
                 Color.LightGray,
                 shape = RoundedCornerShape(10.dp)
             )
+            .clickable { onClick(children) }
             .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {

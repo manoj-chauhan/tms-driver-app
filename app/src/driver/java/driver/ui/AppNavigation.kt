@@ -20,6 +20,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.drishto.driver.LocationService
 import com.drishto.driver.PhoneNumberActivity
+import com.drishto.driver.models.ChildrenList
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.HistoryScreen
 import com.drishto.driver.ui.pages.UserProfile
@@ -66,6 +67,8 @@ fun AppNavigationHost(
     var planId by remember {
         mutableIntStateOf(0)
     }
+
+    var childrenList : ChildrenList? = null
 
 
     var startScreen:String
@@ -156,7 +159,14 @@ fun AppNavigationHost(
             StudentInPlan(operator,plan,navController)
         }
         composable("driver-plans-details"){
-            ChildrenPlanDetail(operatorId, planId, navController)
+            ChildrenPlanDetail(operatorId, planId, navController, onStudentSelected = {
+                childrenList = it
+                navController.navigate("children-details")
+            })
+        }
+
+        composable("children-details"){
+            EditChildrenDetails(childrenList)
         }
 
         composable("history_detail"){

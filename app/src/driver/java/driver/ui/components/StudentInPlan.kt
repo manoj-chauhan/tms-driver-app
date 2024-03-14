@@ -712,8 +712,6 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
                     }
                 }
             }
-
         }
     }
-
 }
