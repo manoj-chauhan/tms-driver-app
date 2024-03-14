@@ -54,8 +54,25 @@ class TripNetRepository @Inject constructor(
                     {
 
                     },
-                    {
+                    {error ->
                         EventBus.getDefault().post("AUTH_FAILED")
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                     }
                 )
 
@@ -86,10 +103,25 @@ class TripNetRepository @Inject constructor(
                     {
 
                     },
-                    {
-                        val errorResponse = it.response.responseMessage
-                        Log.d("TAG", "fetchTripHistory: $errorResponse")
+                    {error ->
                         EventBus.getDefault().post("AUTH_FAILED")
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                     }
                 )
 
@@ -118,13 +150,26 @@ class TripNetRepository @Inject constructor(
 
             result.fold(
                 {
-//                        historyDetail -> channel4.send(historyDetail)
+
                 },
                 { error ->
-                    Log.e(
-                        "Fuel",
-                        "Error $error"
-                    )
+                    if (error.response.statusCode == 401 ) {
+                        errorManager.getErrorDescription(context)
+                    }
+
+                    val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                    if (error.response.statusCode == 403 ) {
+                        errorManager.getErrorDescription403(context, errorResponse)
+                    }
+
+                    if (error.response.statusCode == 404 ) {
+                        errorManager.getErrorDescription404(context, "No url found")
+                    }
+
+                    if(error.response.statusCode == 500){
+                        errorManager.getErrorDescription500(context, "Something Went Wrong")
+                    }
                 }
 
             )
@@ -155,10 +200,23 @@ class TripNetRepository @Inject constructor(
 
                     },
                     { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                     }
                 )
                 result.get()
@@ -183,10 +241,23 @@ class TripNetRepository @Inject constructor(
                         tripDetail
                     },
                     { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                         throw Exception("Error fetching trip details")
                     }
                 )
@@ -217,10 +288,23 @@ class TripNetRepository @Inject constructor(
                         activeDetail
                     },
                     { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                         throw Exception("Error fetching trip details")
                     }
                 )
@@ -251,10 +335,23 @@ class TripNetRepository @Inject constructor(
                         activeDetail
                     },
                     { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                         throw Exception("Error fetching trip details")
                     }
                 )
@@ -295,19 +392,22 @@ class TripNetRepository @Inject constructor(
 
                         },
                         { error ->
-                            if (error.response.statusCode == 401) {
+                            if (error.response.statusCode == 401 ) {
                                 errorManager.getErrorDescription(context)
-                            }
-                            if(error.response.statusCode == 500) {
-                                coroutineScope.launch(Dispatchers.Main) {
-                                    Toast.makeText(context, "Trip not started", Toast.LENGTH_SHORT)
-                                }
                             }
 
                             val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                            Log.d("Error", "fetchAssignmentDetail: $errorResponse")
-                            coroutineScope.launch(Dispatchers.Main) {
-                                errorManager.handleErrorResponse(context, errorResponse)
+
+                            if (error.response.statusCode == 403 ) {
+                                errorManager.getErrorDescription403(context, errorResponse)
+                            }
+
+                            if (error.response.statusCode == 404 ) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if(error.response.statusCode == 500){
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
                             }
                         }
                     )
@@ -343,19 +443,22 @@ class TripNetRepository @Inject constructor(
 
                         },
                         { error ->
-                            if (error.response.statusCode == 401) {
+                            if (error.response.statusCode == 401 ) {
                                 errorManager.getErrorDescription(context)
-                            }
-                            if(error.response.statusCode == 500) {
-                                coroutineScope.launch(Dispatchers.Main) {
-                                    Toast.makeText(context, "Trip not checked in", Toast.LENGTH_SHORT)
-                                }
                             }
 
                             val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                            Log.d("Error", "fetchAssignmentDetail: $errorResponse")
-                            coroutineScope.launch(Dispatchers.Main) {
-                                errorManager.handleErrorResponse(context, errorResponse)
+
+                            if (error.response.statusCode == 403 ) {
+                                errorManager.getErrorDescription403(context, errorResponse)
+                            }
+
+                            if (error.response.statusCode == 404 ) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if(error.response.statusCode == 500){
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
                             }
                         }
                     )
@@ -393,20 +496,22 @@ class TripNetRepository @Inject constructor(
 
                         },
                         { error ->
-                            if (error.response.statusCode == 401) {
+                            if (error.response.statusCode == 401 ) {
                                 errorManager.getErrorDescription(context)
                             }
 
-                            if(error.response.statusCode == 500) {
-                                coroutineScope.launch(Dispatchers.Main) {
-                                    Toast.makeText(context, "Trip Depart not Completed", Toast.LENGTH_SHORT)
-                                }
+                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                            if (error.response.statusCode == 403 ) {
+                                errorManager.getErrorDescription403(context, errorResponse)
                             }
 
-                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                            Log.d("Error", "fetchAssignmentDetail: $errorResponse")
-                            coroutineScope.launch(Dispatchers.Main) {
-                                errorManager.handleErrorResponse(context, errorResponse)
+                            if (error.response.statusCode == 404 ) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if(error.response.statusCode == 500){
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
                             }
                         }
                     )
@@ -447,20 +552,22 @@ class TripNetRepository @Inject constructor(
 
                         },
                         { error ->
-                            if (error.response.statusCode == 401) {
+                            if (error.response.statusCode == 401 ) {
                                 errorManager.getErrorDescription(context)
                             }
 
-                            if(error.response.statusCode == 500) {
-                                coroutineScope.launch(Dispatchers.Main) {
-                                    Toast.makeText(context, "Trip not cancelled", Toast.LENGTH_SHORT)
-                                }
+                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                            if (error.response.statusCode == 403 ) {
+                                errorManager.getErrorDescription403(context, errorResponse)
                             }
 
-                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                            Log.d("Error", "fetchAssignmentDetail: $errorResponse")
-                            coroutineScope.launch(Dispatchers.Main) {
-                                errorManager.handleErrorResponse(context, errorResponse)
+                            if (error.response.statusCode == 404 ) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if(error.response.statusCode == 500){
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
                             }
                         }
                     )
@@ -502,19 +609,22 @@ class TripNetRepository @Inject constructor(
                         { _ ->
                         },
                         { error ->
-                            if (error.response.statusCode == 401) {
+                            if (error.response.statusCode == 401 ) {
                                 errorManager.getErrorDescription(context)
                             }
 
                             val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                            Log.d("Error", "fetchAssignmentDetail: $errorResponse")
-                            if(error.response.statusCode == 500) {
-                                coroutineScope.launch(Dispatchers.Main) {
-                                    Toast.makeText(context, "Trip not  ended", Toast.LENGTH_SHORT)
-                                }
+
+                            if (error.response.statusCode == 403 ) {
+                                errorManager.getErrorDescription403(context, errorResponse)
                             }
-                            coroutineScope.launch(Dispatchers.Main) {
-                                errorManager.handleErrorResponse(context, errorResponse)
+
+                            if (error.response.statusCode == 404 ) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if(error.response.statusCode == 500){
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
                             }
                         }
                     )

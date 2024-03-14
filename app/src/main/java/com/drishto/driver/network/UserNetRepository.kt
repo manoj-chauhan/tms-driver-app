@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import android.widget.Toast
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.Student
@@ -20,7 +19,6 @@ import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
@@ -51,21 +49,23 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
 
                         },
                         { error ->
-                            if (error.response.statusCode == 401) {
+                            if (error.response.statusCode == 401 ) {
                                 errorManager.getErrorDescription(context)
-                            }
-                            if (error.response.statusCode == 500) {
-                                coroutineScope.launch(Dispatchers.Main) {
-                                    Toast.makeText(
-                                        context,
-                                        "Can not Chnage Name ",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                }
                             }
 
                             val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                            Log.d("Error", "fetchAssignmentDetail: $errorResponse")
+
+                            if (error.response.statusCode == 403 ) {
+                                errorManager.getErrorDescription403(context, errorResponse)
+                            }
+
+                            if (error.response.statusCode == 404 ) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if(error.response.statusCode == 500){
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
+                            }
 
                         }
                     )
@@ -95,7 +95,23 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
                     },
                     {error->
                         EventBus.getDefault().post("AUTH_FAILED")
-                        Log.d("TAG", "getChildrenList: $error")
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                     }
                 )
 
@@ -125,6 +141,23 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
 
                         },
                         { error ->
+                            if (error.response.statusCode == 401 ) {
+                                errorManager.getErrorDescription(context)
+                            }
+
+                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                            if (error.response.statusCode == 403 ) {
+                                errorManager.getErrorDescription403(context, errorResponse)
+                            }
+
+                            if (error.response.statusCode == 404 ) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if(error.response.statusCode == 500){
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
+                            }
                         }
                     )
                 }
@@ -147,9 +180,24 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
                     { data ->
                         BitmapFactory.decodeByteArray(data, 0, data.size)
                     },
-                    {
-                        Log.e("TAG", "getUploadedImage: $it")
-                        EventBus.getDefault().post("AUTH_FAILED")
+                    {error->
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                         null
                     }
                 )

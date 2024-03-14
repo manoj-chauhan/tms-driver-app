@@ -27,10 +27,24 @@ class PlaceInfoNetRepository @Inject constructor( @ApplicationContext private va
                         tripDetail
                     },
                     { error ->
-                        Log.e(
-                            "Fuel",
-                            "Error $error"
-                        )
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
+
                         throw Exception("Error fetching trip details")
                     }
                 )

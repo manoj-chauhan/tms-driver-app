@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.navigation.NavHostController
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
@@ -21,9 +20,6 @@ import driver.models.ParentTrip
 import driver.models.ParentTripDetail
 import driver.models.currentDriverLocation
 import driver.models.point
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
@@ -51,13 +47,22 @@ class ParentTripNetRepository @Inject constructor(
                     { error ->
                         Log.d("Error", "fetchActiveTrips: $error")
                         EventBus.getDefault().post("AUTH_FAILED")
-                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                        if (error.response.statusCode == 401) {
-                            errorManager.getErrorDescription401(context, errorResponse)
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
                         }
 
-                        CoroutineScope(Dispatchers.IO).launch(Dispatchers.Main) {
-                            errorManager.handleErrorResponse(context, errorResponse)
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
                         }
                     }
                 )
@@ -92,6 +97,18 @@ class ParentTripNetRepository @Inject constructor(
                             errorManager.getErrorDescription401(context, errorResponse)
                            return null
                         }
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                     }
                 )
 
@@ -119,13 +136,22 @@ class ParentTripNetRepository @Inject constructor(
                     },
                     { error ->
                         EventBus.getDefault().post("AUTH_FAILED")
-                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                        if (error.response.statusCode == 401) {
-                            errorManager.getErrorDescription401(context, errorResponse)
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
                         }
 
-                        if (error.response.statusCode == 500) {
-                            errorManager.getErrorDescription500(context, errorResponse)
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
                         }
                     }
                 )
@@ -155,11 +181,23 @@ class ParentTripNetRepository @Inject constructor(
                     },
                     { error ->
                         EventBus.getDefault().post("AUTH_FAILED")
-                        handler.post {
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
-                                .show()
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
                         }
-                        Log.e("TAG", "fetchParentTripDetail: $error")
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
 
                     }
                 )
@@ -188,10 +226,22 @@ class ParentTripNetRepository @Inject constructor(
                         Log.d("DRIVER IS HERE", "fetchDriverLiveLoc: $result")
                     },
                     { error ->
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
                         if(error.response.statusCode == 500){
-                            if (error.response.statusCode == 500) {
-                                errorManager.getErrorDescription500(context, "Something Went Wrong")
-                            }
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
                         }
                       return null
                     }

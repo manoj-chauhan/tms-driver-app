@@ -3,6 +3,7 @@ package com.drishto.driver.network
 import android.content.Context
 import android.util.Log
 import com.drishto.driver.R
+import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.models.DriverPlans
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
@@ -12,9 +13,6 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
@@ -24,7 +22,7 @@ data class AssignmentCodeResponse(
 )
 
 
-class VehicleNetRepository @Inject constructor(@ApplicationContext private val context: Context) {
+class VehicleNetRepository @Inject constructor(@ApplicationContext private val context: Context,  private val errorManager: ErrManager) {
 
     fun generateAssignmentCode(): String? {
         val vehicleAssignmentUrl = context.resources.getString(R.string.url_driver_code)
@@ -57,13 +55,22 @@ class VehicleNetRepository @Inject constructor(@ApplicationContext private val c
                     {error->
                         Log.d("Error", "fetchActiveTrips: $error")
                         EventBus.getDefault().post("AUTH_FAILED")
-                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                        if (error.response.statusCode == 401) {
-//                            errorManager.getErrorDescription401(context, errorResponse)
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
                         }
 
-                        CoroutineScope(Dispatchers.IO).launch(Dispatchers.Main) {
-//                            errorManager.handleErrorResponse(context, errorResponse)
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
                         }
                     }
                 )

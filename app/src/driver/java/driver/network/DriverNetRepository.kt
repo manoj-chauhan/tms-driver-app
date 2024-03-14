@@ -46,8 +46,25 @@ class DriverNetRepository @Inject constructor(
                     {
 
                     },
-                    {
+                    {error ->
                         EventBus.getDefault().post("AUTH_FAILED")
+                        if (error.response.statusCode == 401 ) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                     }
                 )
 
@@ -73,10 +90,24 @@ class DriverNetRepository @Inject constructor(
                             schedule
                         },
                         { error ->
-                            Log.e(
-                                "Fuel",
-                                "Error $error"
-                            )
+                            if (error.response.statusCode == 401 ) {
+                                errorManager.getErrorDescription(context)
+                            }
+
+                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                            if (error.response.statusCode == 403 ) {
+                                errorManager.getErrorDescription403(context, errorResponse)
+                            }
+
+                            if (error.response.statusCode == 404 ) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if(error.response.statusCode == 500){
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
+                            }
+
                             throw Exception("Error fetching trip schedule" )
                         }
                     )
@@ -128,12 +159,23 @@ class DriverNetRepository @Inject constructor(
                         { _ ->
                         },
                         { error ->
-                            if (error.response.statusCode == 401) {
+                            if (error.response.statusCode == 401 ) {
                                 errorManager.getErrorDescription(context)
                             }
 
                             val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                            Log.d("Error", "addStudent: $error")
+
+                            if (error.response.statusCode == 403 ) {
+                                errorManager.getErrorDescription403(context, errorResponse)
+                            }
+
+                            if (error.response.statusCode == 404 ) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if(error.response.statusCode == 500){
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
+                            }
                         }
                     )
                 }
@@ -189,16 +231,23 @@ class DriverNetRepository @Inject constructor(
                         { _ ->
                         },
                         { error ->
-                            Log.d("Error", "addStudent: $error")
-                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                            if (error.response.statusCode == 401) {
+                            if (error.response.statusCode == 401 ) {
                                 errorManager.getErrorDescription(context)
                             }
-                            if(error.response.statusCode == 500){
-                                Log.d("Error", "edit $error")
-                                errorManager.getErrorDescription500(context, "Something Went Wrong")
+
+                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                            if (error.response.statusCode == 403 ) {
+                                errorManager.getErrorDescription403(context, errorResponse)
                             }
 
+                            if (error.response.statusCode == 404 ) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if(error.response.statusCode == 500){
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
+                            }
                         }
                     )
                 }
@@ -206,15 +255,13 @@ class DriverNetRepository @Inject constructor(
 
             Toast.makeText(
                 context,
-                "Student Added Successfully",
+                "Student Edited Successfully",
                 Toast.LENGTH_SHORT
             ).show()
 
         } catch(e:Exception){
 
         }
-
-
     }
 
 }
