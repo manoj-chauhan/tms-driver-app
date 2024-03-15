@@ -1,8 +1,10 @@
 package driver.ui.components
 
 import android.app.DatePickerDialog
+import android.content.pm.ActivityInfo
 import android.util.Log
 import android.widget.DatePicker
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -58,7 +60,9 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostController) {
+fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostController,     activity: ComponentActivity) {
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
     Log.d("Dialog", "addStudentInPlan: $operatorId, $planId ")
     val context = LocalContext.current
 

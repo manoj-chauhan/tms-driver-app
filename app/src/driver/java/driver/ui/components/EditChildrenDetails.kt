@@ -1,8 +1,10 @@
 package driver.ui.components
 
 import android.app.DatePickerDialog
+import android.content.pm.ActivityInfo
 import android.util.Log
 import android.widget.DatePicker
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -62,8 +64,10 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: Int, navController: NavHostController) {
+fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: Int, navController: NavHostController,     activity: ComponentActivity) {
     val context = LocalContext.current
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
 
     val ch: DriverPlanDetailsViewModel = hiltViewModel()
     val schedules by ch.planList.collectAsStateWithLifecycle()

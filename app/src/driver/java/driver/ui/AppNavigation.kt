@@ -3,6 +3,7 @@ package com.drishto.driver.ui
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -100,41 +101,54 @@ fun AppNavigationHost(
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
+            val activity = LocalContext.current as? ComponentActivity
+
             AssignmentDetailScreen(
                 navController = navController,
                 selectedAssignment = selectedAssignmentCode,
                 operatorId = operatorId,
                 tripId = tripId,
-                tripCode = selectedAssignmentCode
+                tripCode = selectedAssignmentCode,
+                activity = activity ?: return@composable
             )
         }
 
         composable(
             "locations-screen"
         ) {
-            MatrixLog()
+            val activity = LocalContext.current as? ComponentActivity
+
+            MatrixLog(activity = activity ?: return@composable)
         }
 
         composable("history") {
+            val activity = LocalContext.current as? ComponentActivity
+
             HistoryScreen(onTripSelected = {
                 selectedAssignmentCode = it.tripCode
                 operatorId = it.operatorCompanyId
                 tripId = it.tripId
                 navController.navigate("past-assignment-detail")
-            })
+            },activity = activity ?: return@composable)
         }
 
         composable("user-profile") {
-            UserProfile()
+            val activity = LocalContext.current as? ComponentActivity
+
+            UserProfile(activity = activity ?: return@composable)
         }
 
         composable("past-assignment-detail"){
-            PastAssignmentDetailScreen(navController = navController, operatorId = operatorId, tripId = tripId, tripCode = selectedAssignmentCode)
+            val activity = LocalContext.current as? ComponentActivity
+
+            PastAssignmentDetailScreen(navController = navController, operatorId = operatorId, tripId = tripId, tripCode = selectedAssignmentCode,activity = activity ?: return@composable)
         }
 
         composable(
             "home"
         ) {
+            val activity = LocalContext.current as? ComponentActivity
+
             HomeScreen(
                 navController = navController,
                 onTripSelected = {
@@ -147,7 +161,8 @@ fun AppNavigationHost(
                     operatorId = it.companyId
                     planId = it.id
                     navController.navigate("driver-plans-details")
-                }
+                },
+                activity = activity ?: return@composable
             )
         }
 
@@ -155,23 +170,31 @@ fun AppNavigationHost(
             navArgument("operatorId") { type = NavType.IntType},
             navArgument("planId") { type = NavType.IntType}
         )){entry ->
+            val activity = LocalContext.current as? ComponentActivity
+
             val operator = entry.arguments?.getInt("operatorId") ?: 0
             val plan = entry.arguments?.getInt("planId") ?: 0
-            StudentInPlan(operator,plan,navController)
+            StudentInPlan(operator,plan,navController,activity = activity ?: return@composable)
         }
         composable("driver-plans-details"){
+            val activity = LocalContext.current as? ComponentActivity
+
             ChildrenPlanDetail(operatorId, planId, navController, onStudentSelected = {
                 childrenList = it
                 navController.navigate("children-details")
-            })
+            },activity = activity ?: return@composable)
         }
 
         composable("children-details"){
-            childrenList?.let { it1 -> EditChildrenDetails(it1, operatorId, planId, navController) }
+            val activity = LocalContext.current as? ComponentActivity
+
+            childrenList?.let { it1 -> EditChildrenDetails(it1, operatorId, planId, navController, activity = activity ?: return@composable) }
         }
 
         composable("history_detail"){
-            History(navController = navController, selectedAssignmentCode, operatorId)
+            val activity = LocalContext.current as? ComponentActivity
+
+            History(navController = navController, selectedAssignmentCode, operatorId, activity = activity ?: return@composable)
         }
 
         composable("login"){
@@ -187,6 +210,8 @@ fun AppNavigationHost(
                 uriPattern = "$MY_URI/$MY_ARG={$MY_ARG}/$trip_Id={$trip_Id}&$operatorI={$operatorI}"
             })
         ){
+            val activity = LocalContext.current as? ComponentActivity
+
             val argument = it.arguments
             if (argument != null) {
                     val myArgValue = argument.getString(MY_ARG)
@@ -194,7 +219,7 @@ fun AppNavigationHost(
                     val o = argument.getInt("$operatorI")
 
                     if (myArgValue != null) {
-                        DetailsScree(myArgValue, h,o, navController)
+                        DetailsScree(myArgValue, h,o, navController, activity = activity ?: return@composable)
                     }
             }
         }
@@ -202,13 +227,14 @@ fun AppNavigationHost(
 }
 
 @Composable
-fun DetailsScree(message: String,tripId:Int,operatorI:Int,navController: NavHostController) {
+fun DetailsScree(message: String,tripId:Int,operatorI:Int,navController: NavHostController,     activity: ComponentActivity) {
     AssignmentDetailScreen(
         navController = navController,
         selectedAssignment = message,
         operatorId = operatorI,
         tripId = tripId,
-        tripCode = message
+        tripCode = message,
+        activity
     )
 
 }

@@ -1,6 +1,8 @@
 package driver.ui.pages
 
+import android.content.pm.ActivityInfo
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +48,9 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostController, onStudentSelected: (assignment: ChildrenList) -> Unit,ch: DriverPlanDetailsViewModel = hiltViewModel()) {
+fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostController, onStudentSelected: (assignment: ChildrenList) -> Unit,    activity: ComponentActivity,ch: DriverPlanDetailsViewModel = hiltViewModel()) {
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
     val childrens by ch.childrenList.collectAsStateWithLifecycle()
     ch.fetchParentTrip(context = LocalContext.current, operatorId, planId)
 

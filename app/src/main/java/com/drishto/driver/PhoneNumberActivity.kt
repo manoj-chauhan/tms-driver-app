@@ -3,6 +3,7 @@ package com.drishto.driver
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -267,6 +268,11 @@ class PhoneNumberActivity : ComponentActivity() {
         }
 
         setContent {
+            val activity = LocalContext.current as? ComponentActivity
+            if (activity != null) {
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+
             var text by remember { mutableStateOf(TextFieldValue("")) }
             var buttonText by remember { mutableStateOf("Send OTP") }
             var otpSeconds by remember { mutableStateOf(30) }

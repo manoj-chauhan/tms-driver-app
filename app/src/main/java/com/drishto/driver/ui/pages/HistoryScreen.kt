@@ -1,5 +1,6 @@
 package com.drishto.driver.ui.pages
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +39,7 @@ import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoryScreen(vm: HistoryViewModel = hiltViewModel(),  onTripSelected: (assignment: History) -> Unit) {
+fun HistoryScreen(vm: HistoryViewModel = hiltViewModel(),  onTripSelected: (assignment: History) -> Unit, activity: ComponentActivity) {
 
     val context = LocalContext.current
     val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()

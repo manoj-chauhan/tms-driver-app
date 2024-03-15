@@ -1,5 +1,7 @@
 package driver.ui.pages
 
+import android.content.pm.ActivityInfo
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -21,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,7 +31,9 @@ import driver.ui.viewmodels.MatrixLogViewModel
 import java.text.SimpleDateFormat
 
 @Composable
-fun MatrixLog(vm: MatrixLogViewModel = hiltViewModel()) {
+fun MatrixLog(activity: ComponentActivity,vm: MatrixLogViewModel = hiltViewModel()) {
+
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     val context = LocalContext.current
     val matList by vm.matrixList.collectAsStateWithLifecycle()
@@ -89,9 +92,3 @@ fun MatrixRecord(mat: com.drishto.driver.database.Telemetry) {
 }
 
     fun Double.format(digits: Int) = "%.${digits}f".format(this)
-
-@Preview
-@Composable
-fun UserDataFetchPreview() {
-    MatrixLog()
-}

@@ -1,6 +1,7 @@
 package driver.ui.viewmodels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drishto.driver.R
@@ -139,11 +140,19 @@ class HomeViewModel @Inject constructor(private val vehicleManager: VehicleManag
                         if (error.response.statusCode == 401) {
                             errorManager.getErrorDescription(context)
                         }
-
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
-//                        Log.d("Error", "fetchAssignmentDetail: $errorResponse")
-                        launch(Dispatchers.Main) {
-                            errorManager.handleErrorResponse(context, errorResponse)
+                        Log.d("Error", "fetchAssignmentDetail: $errorResponse")
+
+                        if (error.response.statusCode == 403 ) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404 ) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if(error.response.statusCode == 500){
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
                         }
                     }
                 )

@@ -1,6 +1,7 @@
 package driver
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -92,6 +93,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class OTPActivity() : ComponentActivity() {
 
+
     private lateinit var auth: FirebaseAuth
     private lateinit var OTP: String
     private lateinit var otpNumber: String
@@ -125,6 +127,11 @@ class OTPActivity() : ComponentActivity() {
         phoneNumber = intent.getStringExtra("phoneNumber")!!
 
         setContent {
+            val activity = LocalContext.current as? ComponentActivity
+            if (activity != null) {
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+
             val context = LocalContext.current
             val app_name: String =getString(R.string.app_name).toUpperCase()
 

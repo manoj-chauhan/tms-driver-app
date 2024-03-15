@@ -1,6 +1,7 @@
 package driver.ui.pages
 
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -60,6 +61,7 @@ fun AssignmentDetailScreen(
     operatorId: Int,
     tripId: Int,
     tripCode: String,
+    activity: ComponentActivity,
     vm: AssignmentDetailViewModel = hiltViewModel(),
     pt: PastAssignmentDetailViewModel = hiltViewModel()
 ) {

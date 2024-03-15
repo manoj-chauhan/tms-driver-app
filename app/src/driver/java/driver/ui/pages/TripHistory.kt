@@ -1,5 +1,7 @@
 package driver.ui.pages
 
+import android.content.pm.ActivityInfo
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,9 +38,11 @@ import com.drishto.driver.ui.viewmodels.TripHistoryViewModel
 import java.text.SimpleDateFormat
 
 @Composable
-fun History(navController: NavHostController,tripCode: String,operatorId:Int, thm: TripHistoryViewModel = hiltViewModel()
+fun History(navController: NavHostController,tripCode: String,operatorId:Int,activity: ComponentActivity,thm: TripHistoryViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
 
     val currentAssignmentData by thm.tripHistory.collectAsStateWithLifecycle()
     thm.fetchTripHistoryDetail(context = context, tripCode, operatorId)

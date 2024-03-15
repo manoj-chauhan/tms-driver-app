@@ -1,5 +1,7 @@
 package com.samrish.driver.ui.pages
 
+import android.content.pm.ActivityInfo
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,8 +38,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import driver.ui.components.DocumentsDialog
-import driver.ui.viewmodels.PastAssignmentDetailViewModel
 import driver.ui.pages.History
+import driver.ui.viewmodels.PastAssignmentDetailViewModel
 import java.text.SimpleDateFormat
 
 @Composable
@@ -46,8 +48,10 @@ fun PastAssignmentDetailScreen(
     operatorId: Int,
     tripId: Int,
     tripCode: String,
+    activity: ComponentActivity,
     pt: PastAssignmentDetailViewModel = hiltViewModel()
 ) {
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     val context = LocalContext.current
     val pastAssignment by pt.pastassignmentDetail.collectAsStateWithLifecycle()
@@ -202,7 +206,7 @@ fun PastAssignmentDetailScreen(
                     History(
                         navController = navController,
                         it.tripDetail.tripCode,
-                        it.tripDetail.operatorId
+                        it.tripDetail.operatorId, activity
                     )
                 }
             }

@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.os.Build
@@ -86,9 +87,11 @@ fun HomeScreen(
     vm: HomeViewModel = hiltViewModel(),
     mv: MatrixLogViewModel = hiltViewModel(),
     onTripSelected: (assignment: TripsAssigned) -> Unit,
-    onAssignedPlansSelected: (plans: DriverPlans) -> Unit
+    onAssignedPlansSelected: (plans: DriverPlans) -> Unit,
+    activity: ComponentActivity
 
 ) {
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     val matList by mv.matrixList.collectAsStateWithLifecycle()
 
@@ -495,7 +498,7 @@ fun HomeScreen(
                                                 }
                                             }
                                             if (it.userLocationVisible) {
-                                                MatrixLog()
+                                                MatrixLog(activity)
                                             }
                                         }
                                     }
