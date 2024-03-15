@@ -32,8 +32,8 @@ data class scheduleList (
       var operatorId : Int,
       var operatorName :  String ,
       var operatorCode :  String ,
-      var contractId : Int,
-      var contractCode :  String ,
+      var contractId : Int?,
+      var contractCode :  String?,
       var startTime :  String ,
       var from :  String ,
       var till : String ,
@@ -64,8 +64,8 @@ data class TripSchedulesList(
        var updaterName  :  String  ,
        var updaterId  : Int,
        var updatedAt  :   String,
-    var departure:String?,
-    var arrival:String?
+       var departure:String?,
+       var arrival:String?
 )
 
 

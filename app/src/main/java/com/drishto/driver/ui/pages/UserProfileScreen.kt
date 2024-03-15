@@ -516,7 +516,6 @@ fun userProfileView(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         vm.userDetail(context = context)
-        userDetail?.let { vm.getUploadedImage(it.id) }
     }
     val userProfile by vm.userImage.collectAsStateWithLifecycle()
     LaunchedEffect(userDetail) {

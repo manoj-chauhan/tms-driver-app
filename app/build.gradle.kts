@@ -16,8 +16,8 @@ android {
         applicationId = "com.drishto"
         minSdk = 26
         targetSdk = 34
-        versionCode = 16
-        versionName = "3.0-alpha"
+        versionCode = 18
+        versionName = "1.0-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -109,7 +109,7 @@ dependencies {
 
 
     implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.android.gms:play-services-auth-api-phone:18.0.1")
+    implementation("com.google.android.gms:play-services-auth-api-phone:18.0.2")
     implementation("androidx.appcompat:appcompat:$appCompatVersion")
     implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
     implementation("androidx.activity:activity-ktx:$activityVersion")

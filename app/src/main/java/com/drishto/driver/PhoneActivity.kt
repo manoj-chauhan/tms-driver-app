@@ -1,7 +1,6 @@
 package driver
 
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -72,7 +71,6 @@ import com.drishto.driver.auth.AuthManager
 import com.drishto.driver.database.TelemetryRepository
 import com.drishto.driver.network.getUserId
 import com.drishto.driver.network.saveUserId
-import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
@@ -89,7 +87,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -126,7 +123,6 @@ class OTPActivity() : ComponentActivity() {
         otpNumber = intent.getStringExtra("otp_number").toString()
         resentToken = intent.getParcelableExtra("resentToken")!!
         phoneNumber = intent.getStringExtra("phoneNumber")!!
-        autoOtpReceiver()
 
         setContent {
             val context = LocalContext.current
@@ -396,7 +392,6 @@ class OTPActivity() : ComponentActivity() {
             .setForceResendingToken(resentToken)
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
-        autoOtpReceiver()
     }
 
     val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -509,64 +504,9 @@ class OTPActivity() : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onStart() {
         super.onStart()
-        registerBroadCastReceiver()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(otp)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun registerBroadCastReceiver() {
-        Log.d("register", "registerBroadCastReceiver: ")
-        otp = OtpVerification()
-        otp!!.sms = object : OtpVerification.OtpReceiverListener {
-            override fun onOtpSuccess(intent: Intent) {
-                startActivityForResult(intent, REQ_USER_CONSENT)
-            }
-
-            override fun onOtpTimeOut() {
-                TODO("Not yet implemented")
-            }
-
-        }
-
-        val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
-        registerReceiver(otp, intentFilter, RECEIVER_NOT_EXPORTED)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun autoOtpReceiver() {
-        Log.d("auto", "autoOtpReceiver: ")
-        val client = SmsRetriever.getClient(this)
-        client.startSmsUserConsent(null)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQ_USER_CONSENT) {
-            if (resultCode == RESULT_OK && data != null) {
-                val message = data.getStringExtra(SmsRetriever.EXTRA_SMS_MESSAGE)
-                getOtpFromMessage(message)
-            }
-        }
-    }
-
-    private fun getOtpFromMessage(message: String?) {
-        if (message != null) {
-            val otpPattern = Pattern.compile("(|^)\\d{6}")
-            val matcher = otpPattern.matcher(message)
-            if (matcher.find()) {
-                val otpValue = matcher.group(0)
-                Log.d("getOTP", "getOtpFromMessage: $otpValue")
-
-                // Start OTPActivity with the OTP value
-                runOnUiThread {
-                    text = TextFieldValue(otpValue)
-                }
-            }
-        }
     }
 }
