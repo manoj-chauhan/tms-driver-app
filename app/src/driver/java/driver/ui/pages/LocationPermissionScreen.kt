@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +41,6 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -52,20 +50,33 @@ fun RequestPermission(
 ) {
     val permissionState = rememberPermissionState(permission)
 
-    when (permissionState.status) {
-        is PermissionStatus.Granted -> {
-
-        }
-        is PermissionStatus.Denied -> {
-            Log.d("Permission", "Should show rationale: ${permissionState.status.shouldShowRationale}")
+//    when (permissionState.status) {
+//        is PermissionStatus.Granted -> {
+//
+//        }
+//        is PermissionStatus.Denied -> {
+//            Log.d("Permission", "Should show rationale: ${permissionState.status.shouldShowRationale}")
+//            PermissionDeniedContent(
+//                rationaleMessage = rationaleMessage,
+//                shouldShowRationale = permissionState.status.shouldShowRationale
+//            ) {
+//                permissionState.launchPermissionRequest()
+//            }
+//        }
+//    }
+    HandleRequest(
+        permissionState = permissionState,
+        deniedContent = { shouldShowRationale ->
             PermissionDeniedContent(
                 rationaleMessage = rationaleMessage,
-                shouldShowRationale = permissionState.status.shouldShowRationale
+                shouldShowRationale = shouldShowRationale
             ) {
                 permissionState.launchPermissionRequest()
             }
-        }
-    }
+
+        },
+        content = {  }
+    )
 }
 
 
@@ -80,12 +91,13 @@ fun HandleRequest(
         is PermissionStatus.Granted -> {
             content()
         }
+
         is PermissionStatus.Denied -> {
-            val shouldShowRationale = (permissionState.status as PermissionStatus.Denied).shouldShowRationale
+            val shouldShowRationale =
+                (permissionState.status as PermissionStatus.Denied).shouldShowRationale
             deniedContent(shouldShowRationale)
         }
-        is PermissionStatus.Denied -> TODO()
-        PermissionStatus.Granted -> TODO()
+
     }
 }
 
@@ -111,6 +123,7 @@ fun PermissionDeniedContent(
     shouldShowRationale: Boolean,
     onRequestPermission: () -> Unit
 ) {
+    val context = LocalContext.current
     if (shouldShowRationale) {
         AlertDialog(
             onDismissRequest = {},
@@ -127,13 +140,13 @@ fun PermissionDeniedContent(
                 Text(rationaleMessage)
             },
             confirmButton = {
-                Button(onClick = onRequestPermission) {
+                Button(onClick = { openAppSettings(context) }) {
                     Text("Give Permission")
                 }
             }
         )
     } else {
-         Content(onClick = onRequestPermission)
+        Content(onClick = onRequestPermission)
     }
 
 }
@@ -150,7 +163,7 @@ fun CustomDialogLocation(
     val context = LocalContext.current
     Dialog(
         onDismissRequest = {
-            if(loc.status.isGranted) {
+            if (loc.status.isGranted) {
                 enableLocation.value = false
             }
         }
@@ -171,7 +184,6 @@ fun CustomDialogLocation(
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
 
 
                 Text(
@@ -205,10 +217,10 @@ fun CustomDialogLocation(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 32.dp, end = 32.dp),
-                    onClick= { openAppSettings(context)
-                             onClick()
-                             }
-                    ,
+                    onClick = {
+//                        openAppSettings(context)
+                        onClick()
+                    },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent
@@ -227,7 +239,7 @@ fun CustomDialogLocation(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text ="Enable",
+                            text = "Enable",
                             fontSize = 20.sp,
                             color = Color.White
                         )

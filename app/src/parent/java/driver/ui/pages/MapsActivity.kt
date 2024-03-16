@@ -110,10 +110,10 @@ fun MapsActivityContent(
     val outputFormat = SimpleDateFormat("dd MMM")
 
     val arrivalTime = SimpleDateFormat("HH:mm:ss")
-    val outputArrivaltime = SimpleDateFormat(" HH:mm a")
+    val outputArrivaltime = SimpleDateFormat(" HH:mm")
 
     val boardingTime = SimpleDateFormat("HH:mm:ss")
-    val outputboardingTime = SimpleDateFormat(" HH:mm a")
+    val outputboardingTime = SimpleDateFormat(" HH:mm")
 
     var map by remember { mutableStateOf(false) }
 
@@ -459,7 +459,7 @@ fun MapsActivityContent(
                                                         fontWeight = FontWeight.W400
                                                     )
                                                 )
-                                                val estimatedDistance = it.estDistance.div(1000)
+                                                val estimatedDistance = it.estDistance.div(1000).toInt()
                                                 Text(
                                                     text = "$estimatedDistance km",
                                                     style = TextStyle(

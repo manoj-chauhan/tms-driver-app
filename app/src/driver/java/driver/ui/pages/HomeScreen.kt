@@ -128,7 +128,7 @@ fun HomeScreen(
     if (!locationEnabledState.value) {
         LocationDisabledDialog()
     } else {
-        Log.e("Location", "LocationPermissionCheck: dialog is disabledd ",)
+        Log.e("Location", "LocationPermissionCheck: dialog is disabledd ")
     }
 
 
@@ -177,94 +177,117 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .fillMaxSize()
                             ) {
-                                Row(modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                                Scaffold(topBar = {
-                                    TopAppBar(
-                                        modifier = Modifier.padding(end = 13.dp),
-                                        title = { Text(text = "DRISHTO",style = TextStyle(
-                                                color = Color.Red,
-                                            fontSize = 28.sp,
-                                            fontWeight = FontWeight.W600,
-                                            fontFamily = FontFamily.SansSerif
-                                        )) },
-                                        navigationIcon = {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(50.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Scaffold(topBar = {
+                                        TopAppBar(
+                                            modifier = Modifier.padding(end = 13.dp),
+                                            title = {
+                                                Text(
+                                                    text = "DRISHTO", style = TextStyle(
+                                                        color = Color.Red,
+                                                        fontSize = 28.sp,
+                                                        fontWeight = FontWeight.W600,
+                                                        fontFamily = FontFamily.SansSerif
+                                                    )
+                                                )
+                                            },
+                                            navigationIcon = {
 //                IconButton(onClick = { /*TODO*/ }) {
 //
-                                                         //                     Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
+                                                //                     Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
 //                }
-                                        },
-                                        actions = {
-                                            IconButton(onClick = { expander = true }) {
-                                                Icon(imageVector = Icons.Filled.MoreVert, contentDescription = null)
+                                            },
+                                            actions = {
+                                                IconButton(onClick = { expander = true }) {
+                                                    Icon(
+                                                        imageVector = Icons.Filled.MoreVert,
+                                                        contentDescription = null
+                                                    )
+                                                }
+
+                                                DropdownMenu(
+                                                    expanded = expander,
+                                                    onDismissRequest = { expander = false }) {
+                                                    DropdownMenuItem(text = { Text(text = "User Profile") },
+                                                        onClick = {
+                                                            userProfile = true; expander = false
+                                                        },
+                                                        leadingIcon = {
+                                                            Icon(
+                                                                imageVector = Icons.Filled.Person,
+                                                                contentDescription = null
+                                                            )
+                                                        })
+
+                                                    DropdownMenuItem(text = { Text(text = "Locations") },
+                                                        onClick = {
+                                                            locations = true; expander = false
+                                                        },
+                                                        leadingIcon = {
+                                                            Icon(
+                                                                imageVector = Icons.Filled.Place,
+                                                                contentDescription = null
+                                                            )
+                                                        })
+
+                                                    DropdownMenuItem(text = { Text(text = "History") },
+                                                        onClick = {
+                                                            history = true; expander = false
+                                                        },
+                                                        leadingIcon = {
+                                                            Icon(
+                                                                imageVector = Icons.Filled.History,
+                                                                contentDescription = null
+                                                            )
+                                                        })
+
+                                                    DropdownMenuItem(text = { Text(text = "Log out") },
+                                                        onClick = {
+                                                            val myIntent =
+                                                                Intent(
+                                                                    context,
+                                                                    PhoneNumberActivity::class.java
+                                                                )
+                                                            clearSession(context)
+                                                            myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                            val location = Intent(
+                                                                context,
+                                                                LocationService::class.java
+                                                            )
+                                                            context.stopService(location)
+                                                            context.startActivity(myIntent)
+                                                        },
+                                                        leadingIcon = {
+                                                            Icon(
+                                                                imageVector = Icons.Filled.Logout,
+                                                                contentDescription = null
+                                                            )
+                                                        })
+                                                }
                                             }
+                                        )
+                                    }, content = {
+                                        it
 
-                                            DropdownMenu(
-                                                expanded = expander,
-                                                onDismissRequest = { expander = false }) {
-                                                DropdownMenuItem(text = { Text(text = "User Profile") },
-                                                    onClick = { userProfile = true; expander = false },
-                                                    leadingIcon = {
-                                                        Icon(
-                                                            imageVector = Icons.Filled.Person,
-                                                            contentDescription = null
-                                                        )
-                                                    })
+                                    }
 
-                                                DropdownMenuItem(text = { Text(text = "Locations") },
-                                                    onClick = { locations = true; expander = false },
-                                                    leadingIcon = {
-                                                        Icon(
-                                                            imageVector = Icons.Filled.Place,
-                                                            contentDescription = null
-                                                        )
-                                                    })
-
-                                                DropdownMenuItem(text = { Text(text = "History") },
-                                                    onClick = { history = true; expander = false },
-                                                    leadingIcon = {
-                                                        Icon(
-                                                            imageVector = Icons.Filled.History,
-                                                            contentDescription = null
-                                                        )
-                                                    })
-
-                                                DropdownMenuItem(text = { Text(text = "Log out") },
-                                                    onClick = {
-                                                        val myIntent =
-                                                            Intent(context, PhoneNumberActivity::class.java)
-                                                        clearSession(context)
-                                                        myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                                                        val location = Intent(context, LocationService::class.java)
-                                                        context.stopService(location)
-                                                        context.startActivity(myIntent)
-                                                    },
-                                                    leadingIcon = {
-                                                        Icon(
-                                                            imageVector = Icons.Filled.Logout,
-                                                            contentDescription = null
-                                                        )
-                                                    })
-                                            }
-                                        }
                                     )
-                                }, content = {
-                                    it
-
-                                }
-
-                                )
                                 }
                                 Row(modifier = Modifier.fillMaxSize()) {
 
 
-                                currentAssignmentData?.let {
+                                    currentAssignmentData?.let {
 //                        LocationPermissionScreen()
-                                    RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-                                    Column {
-                                        it.vehicles.let { vList ->
-                                            Column {
+                                        RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+                                        Column {
+                                            it.vehicles.let { vList ->
+                                                Column {
 //                                    vList.forEach { vehicleAssignment ->
 //                                        AssignedVehicle(vehicleAssignment)
 //                                    }
@@ -274,60 +297,60 @@ fun HomeScreen(
 //                                            AssignedVehicle(vehicleAssignment)
 //                                        }
 //                                    }
-                                                Column {
+                                                    Column {
+                                                        Row(
+                                                            modifier = Modifier
+                                                                .fillMaxWidth()
+                                                                .padding(13.dp, top = 20.dp),
+                                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                                            verticalAlignment = Alignment.CenterVertically
+                                                        ) {
+
+                                                            Text(
+                                                                text = "Vehicle Assigned ",
+                                                                style = TextStyle(
+                                                                    color = Color.Black,
+                                                                    fontSize = 16.sp,
+                                                                    fontWeight = FontWeight.W600,
+                                                                    fontFamily = FontFamily.SansSerif
+                                                                )
+                                                            )
+                                                        }
+                                                        vList.take(vList.size)
+                                                            .forEach { vehicleAssignment ->
+                                                                AssignedVehicle(
+                                                                    vehicleAssignment
+                                                                )
+                                                            }
+                                                    }
                                                     Row(
                                                         modifier = Modifier
                                                             .fillMaxWidth()
-                                                            .padding(13.dp, top = 20.dp),
-                                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-
-                                                        Text(
-                                                            text = "Vehicle Assigned ",
-                                                            style = TextStyle(
-                                                                color = Color.Black,
-                                                                fontSize = 16.sp,
-                                                                fontWeight = FontWeight.W600,
-                                                                fontFamily = FontFamily.SansSerif
+                                                            .padding(
+                                                                start = 16.dp,
+                                                                bottom = 16.dp
                                                             )
+                                                    ) {
+                                                        Button(
+                                                            onClick = {
+                                                                vm.generateAssignmentCode(
+                                                                    context
+                                                                )
+                                                            }
+                                                        ) {
+                                                            Text(text = "Generate Code")
+                                                        }
+                                                    }
+                                                    if (currentAssignmentData!!.isAssignmentCodeVisible) {
+                                                        GeneratedCodeDialog(
+                                                            currentAssignmentData?.assignmentCode
+                                                                ?: "",
+                                                            setShowDialog = {
+                                                                vm.hideAssignmentCode(context)
+                                                            }
                                                         )
                                                     }
-                                                    vList.take(vList.size)
-                                                        .forEach { vehicleAssignment ->
-                                                            AssignedVehicle(
-                                                                vehicleAssignment
-                                                            )
-                                                        }
                                                 }
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(
-                                                            start = 16.dp,
-                                                            bottom = 16.dp
-                                                        )
-                                                ) {
-                                                    Button(
-                                                        onClick = {
-                                                            vm.generateAssignmentCode(
-                                                                context
-                                                            )
-                                                        }
-                                                    ) {
-                                                        Text(text = "Generate Code")
-                                                    }
-                                                }
-                                                if (currentAssignmentData!!.isAssignmentCodeVisible) {
-                                                    GeneratedCodeDialog(
-                                                        currentAssignmentData?.assignmentCode
-                                                            ?: "",
-                                                        setShowDialog = {
-                                                            vm.hideAssignmentCode(context)
-                                                        }
-                                                    )
-                                                }
-                                            }
 
 //                                            Column {
 //                                                Row(
@@ -357,7 +380,7 @@ fun HomeScreen(
 //                                                }
 //                                            }
 
-                                            if (it.trips.size == 0) {
+                                                if (it.trips.size == 0) {
 //                                                Box(
 //                                                    modifier = Modifier
 //                                                        .fillMaxSize()
@@ -379,130 +402,136 @@ fun HomeScreen(
 //                                                        )
 //                                                    }
 //                                                }
-                                                val location =
-                                                    Intent(
-                                                        context,
-                                                        LocationService::class.java
-                                                    )
-                                                context.stopService(location)
-                                            } else {
-                                                val location =
-                                                    Intent(
-                                                        context,
-                                                        LocationService::class.java
-                                                    )
-                                                context.startForegroundService(location)
-                                                val loc = LocationService::class.java
-                                                val service =
-                                                    isLocationServiceRunning(context, loc)
-                                                if (service) {
-                                                    Column(modifier = Modifier.fillMaxWidth()) {
-                                                        Image(
-                                                            painter = painterResource(id = R.drawable.signal),
-                                                            contentDescription = null,
-                                                            Modifier
-                                                                .height(100.dp)
-                                                                .fillMaxSize()
+                                                    val location =
+                                                        Intent(
+                                                            context,
+                                                            LocationService::class.java
                                                         )
-                                                        matList?.let { mList ->
-                                                            if (mList.isNotEmpty()) {
-                                                                val lastTime =
-                                                                    mList.last().time
+                                                    context.stopService(location)
+                                                } else {
+                                                    val location =
+                                                        Intent(
+                                                            context,
+                                                            LocationService::class.java
+                                                        )
+                                                    context.startForegroundService(location)
+                                                    val loc = LocationService::class.java
+                                                    val service =
+                                                        isLocationServiceRunning(context, loc)
+                                                    if (service) {
+                                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                                            Image(
+                                                                painter = painterResource(id = R.drawable.signal),
+                                                                contentDescription = null,
+                                                                Modifier
+                                                                    .height(100.dp)
+                                                                    .fillMaxSize()
+                                                            )
+                                                            matList?.let { mList ->
+                                                                if (mList.isNotEmpty()) {
+                                                                    val lastTime =
+                                                                        mList.last().time
 
-                                                                val parsedDate =
-                                                                    inputFormat.parse(
-                                                                        lastTime.toString()
-                                                                    )
-                                                                val formattedDate =
-                                                                    outputFormat.format(
-                                                                        parsedDate
-                                                                    )
-                                                                Row(
-                                                                    modifier = Modifier.fillMaxWidth(),
-                                                                    horizontalArrangement = Arrangement.Center
-                                                                ) {
-                                                                    Text(text = "Last recorded location time ${formattedDate} ")
-
-                                                                }
-                                                            } else {
-                                                                Column(modifier = Modifier.fillMaxWidth()) {
+                                                                    val parsedDate =
+                                                                        inputFormat.parse(
+                                                                            lastTime.toString()
+                                                                        )
+                                                                    val formattedDate =
+                                                                        outputFormat.format(
+                                                                            parsedDate
+                                                                        )
                                                                     Row(
                                                                         modifier = Modifier.fillMaxWidth(),
                                                                         horizontalArrangement = Arrangement.Center
                                                                     ) {
-                                                                        Text(text = "Last recorded location time - Not shared ")
+                                                                        Text(text = "Last recorded location time ${formattedDate} ")
+
+                                                                    }
+                                                                } else {
+                                                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                                                        Row(
+                                                                            modifier = Modifier.fillMaxWidth(),
+                                                                            horizontalArrangement = Arrangement.Center
+                                                                        ) {
+                                                                            Text(text = "Last recorded location time - Not shared ")
+                                                                        }
                                                                     }
                                                                 }
                                                             }
                                                         }
                                                     }
-                                                }
-                                                Column {
-                                                    if(it.trips.size >0) {
-                                                        Row(
-                                                            modifier = Modifier
-                                                                .fillMaxWidth()
-                                                                .padding(13.dp, top = 20.dp),
-                                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                                            verticalAlignment = Alignment.CenterVertically
-                                                        ) {
+                                                    Column {
+                                                        if(it.trips != null) {
+                                                            if (it.trips.size > 0) {
+                                                                Row(
+                                                                    modifier = Modifier
+                                                                        .fillMaxWidth()
+                                                                        .padding(
+                                                                            13.dp,
+                                                                            top = 20.dp
+                                                                        ),
+                                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                                    verticalAlignment = Alignment.CenterVertically
+                                                                ) {
 
-                                                            Text(
-                                                                text = "Assigned Trips ",
-                                                                style = TextStyle(
-                                                                    color = Color.Black,
-                                                                    fontSize = 16.sp,
-                                                                    fontWeight = FontWeight.W600,
-                                                                    fontFamily = FontFamily.SansSerif
+                                                                    Text(
+                                                                        text = "Assigned Trips ",
+                                                                        style = TextStyle(
+                                                                            color = Color.Black,
+                                                                            fontSize = 16.sp,
+                                                                            fontWeight = FontWeight.W600,
+                                                                            fontFamily = FontFamily.SansSerif
+                                                                        )
+                                                                    )
+                                                                }
+                                                            }
+                                                            it.trips.take(it.trips.size)
+                                                                .forEach { trip ->
+                                                                    AssignedTrip(
+                                                                        trip,
+                                                                        onTripSelected
+                                                                    )
+                                                                }
+                                                        }
+                                                    }
+                                                }
+                                                if (driverPlanData != null) {
+                                                    if (driverPlanData?.size!! > 0) {
+                                                        Column {
+                                                            Row(
+                                                                modifier = Modifier
+                                                                    .fillMaxWidth()
+                                                                    .padding(13.dp, top = 20.dp),
+                                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                                verticalAlignment = Alignment.CenterVertically
+                                                            ) {
+
+                                                                Text(
+                                                                    text = "Plans Associated ",
+                                                                    style = TextStyle(
+                                                                        color = Color.Black,
+                                                                        fontSize = 16.sp,
+                                                                        fontWeight = FontWeight.W600,
+                                                                        fontFamily = FontFamily.SansSerif
+                                                                    )
                                                                 )
-                                                            )
+                                                            }
+
+                                                            driverPlanData?.forEach { plan ->
+                                                                AssignedPlans(
+                                                                    plan,
+                                                                    onAssignedPlansSelected
+                                                                )
+                                                            }
                                                         }
                                                     }
-                                                    it.trips.take(it.trips.size)
-                                                        .forEach { trip ->
-                                                            AssignedTrip(
-                                                                trip,
-                                                                onTripSelected
-                                                            )
-                                                        }
                                                 }
-
-                                            }
-                                            if(driverPlanData?.size!! >0) {
-                                                Column {
-                                                    Row(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .padding(13.dp, top = 20.dp),
-                                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-
-                                                        Text(
-                                                            text = "Plans Associated ",
-                                                            style = TextStyle(
-                                                                color = Color.Black,
-                                                                fontSize = 16.sp,
-                                                                fontWeight = FontWeight.W600,
-                                                                fontFamily = FontFamily.SansSerif
-                                                            )
-                                                        )
-                                                    }
-
-                                                    driverPlanData?.forEach { plan ->
-                                                        AssignedPlans(
-                                                            plan,
-                                                            onAssignedPlansSelected
-                                                        )
-                                                    }
+                                                if (it.userLocationVisible) {
+                                                    MatrixLog(activity)
                                                 }
-                                            }
-                                            if (it.userLocationVisible) {
-                                                MatrixLog(activity)
                                             }
                                         }
                                     }
-                                }
                                 }
                             }
 

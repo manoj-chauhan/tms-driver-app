@@ -191,10 +191,6 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
                             errorManager.getErrorDescription403(context, errorResponse)
                         }
 
-                        if (error.response.statusCode == 404 ) {
-                            errorManager.getErrorDescription404(context, "No url found")
-                        }
-
                         if(error.response.statusCode == 500){
                             errorManager.getErrorDescription500(context, "Something Went Wrong")
                         }
