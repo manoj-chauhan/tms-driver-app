@@ -398,7 +398,7 @@ class PhoneNumberActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(48.dp),
-                        enabled = if(buttonText=="Send OTP"){true}else{false},
+                        enabled = if(text.text.length == 10 && buttonText=="Send OTP"){true}else{false},
                         onClick = {
                             if (text.text.length == 10 && isButtonEnabled && buttonText != "Sending...") {
                                 number = "+91" + text.text.trim().toString()
@@ -418,7 +418,7 @@ class PhoneNumberActivity : ComponentActivity() {
 
 
                                 lifecycleScope.launch {
-                                    delay(10000)
+                                    delay(16000)
                                     isButtonEnabled = true
                                     buttonText = "Send OTP"
                                 }

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -31,8 +32,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
@@ -42,15 +42,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -62,7 +57,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,7 +96,7 @@ class OTPActivity() : ComponentActivity() {
 
     private var otp: OtpVerification? = null
 
-    private var text by mutableStateOf(TextFieldValue(""))
+    private var text by mutableStateOf("")
     val REQ_USER_CONSENT = 200
 
 
@@ -133,9 +127,9 @@ class OTPActivity() : ComponentActivity() {
             }
 
             val context = LocalContext.current
-            val app_name: String =getString(R.string.app_name).toUpperCase()
+            val app_name: String = getString(R.string.app_name).toUpperCase()
 
-            val lastTwoDigit =  phoneNumber.substring(phoneNumber.length - 2)
+            val lastTwoDigit = phoneNumber.substring(phoneNumber.length - 2)
 
             val focusRequesters = remember { Array(6) { FocusRequester() } }
             val focusManager = LocalFocusManager.current
@@ -169,7 +163,8 @@ class OTPActivity() : ComponentActivity() {
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize().background(brush = gradient),
+                        .fillMaxSize()
+                        .background(brush = gradient),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Spacer(modifier = Modifier.padding(10.dp))
@@ -180,10 +175,13 @@ class OTPActivity() : ComponentActivity() {
                             .align(Alignment.CenterHorizontally)
                             .fillMaxWidth()
                     ) {
-                        Column(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(240.dp)
-                            , horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(240.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
 
                             Text(
                                 modifier = Modifier,
@@ -223,118 +221,102 @@ class OTPActivity() : ComponentActivity() {
                         )
 
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+
+                    BasicTextField(
+                        value = text,
+                        onValueChange = {
+                            if (it.length <= 6) {
+                                text = it
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ),
                     ) {
-                        for (i in 0 until 6) {
-                            OutlinedTextField(
-                                value = if (i < text.text.length) TextFieldValue(text.text[i].toString()) else TextFieldValue(""),
-                                onValueChange = {
-                                    val newText = buildString {
-                                        append(text.text)
-                                        if (it.text.length == 1) {
-                                            append(it.text[0])
-                                        }
-                                    }
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            repeat(6) { index ->
+                                val number = when {
+                                    index >= text.length -> ""
+                                    else -> text[index]
+                                }
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = number.toString(),
+                                        style = MaterialTheme.typography.titleLarge
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .width(40.dp)
+                                            .height(2.dp)
+                                            .background(
+                                                Color.Black
+                                            )
+                                    )
+                                }
+                            }
 
-                                    if (i < 5 ) {
-                                        focusManager.moveFocus(FocusDirection.Next)
-                                    }
-
-                                    text = TextFieldValue(newText)
-                                },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(4.dp)
-                                    .onKeyEvent { event ->
-                                        if (event.key == Key.Backspace && text.text.isNotEmpty()) {
-                                            if (text.text.length == 1) {
-                                                text = TextFieldValue("")
-                                            } else {
-                                                focusManager.moveFocus(FocusDirection.Previous)
-                                                text = TextFieldValue(
-                                                    text.text.substring(
-                                                        0,
-                                                        text.text.length - 1
-                                                    )
-                                                )
-                                            }
-                                            true
-                                        } else {
-                                            false
-                                        }
-                                    },
-                                keyboardOptions = KeyboardOptions.Default.copy(
-                                    keyboardType = KeyboardType.Number,
-                                    imeAction = ImeAction.Done
-                                ),
-
-                                singleLine = true,
-                                textStyle = TextStyle.Default.copy(fontSize = 20.sp),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    cursorColor = Color(0xFF92A3FD),
-                                    focusedBorderColor = Color(0xFF92A3FD),
-                                    focusedLabelColor = Color(0xFF92A3FD),
-                                ),
-
-                            )
                         }
                     }
 
                     Spacer(modifier = Modifier.padding(3.dp))
 
-                    if (isResendEnabled) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 25.dp, bottom = 25.dp, start = 25.dp)
-                        ) {
-                            Text(text = "Didn't received the OTP?")
-                            Spacer(modifier = Modifier.padding(10.dp))
-                            ClickableText(
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(color = if (isResendEnabled) Color.Blue else Color.Gray)) {
-                                        append("Resend OTP")
-                                    }
-                                },
-                                onClick = { offset ->
-                                    resendOTPCredential()
-                                    isResendEnabled = false
-                                    countdownSeconds = 30
-                                },
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 25.dp, bottom = 25.dp, start = 25.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Didn't received the OTP?")
+                        Spacer(modifier = Modifier.padding(10.dp))
+                        ClickableText(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(color = if (isResendEnabled) Color.Blue else Color.Gray)) {
+                                    append("Resend OTP")
+                                }
+                            },
+                            onClick = { offset ->
+                                resendOTPCredential()
+                                isResendEnabled = false
+                                countdownSeconds = 30
+                            },
 
                             )
-                            Spacer(modifier = Modifier.padding(5.dp))
-                            if (countdownSeconds > 0) {
-                                Text(text = "Wait for $countdownSeconds")
-                            }
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        if (countdownSeconds > 0) {
+                            Text(text = "$countdownSeconds")
                         }
                     }
-                    Spacer(modifier = Modifier.padding(10   .dp))
 
+                    Spacer(modifier = Modifier.padding(10.dp))
 
 
                     val primary = Color(0xFF92A3FD)
                     val secondary = Color(0XFF9DCEFF)
                     Button(
-                        enabled = if(text.text.length == 6){
-                                                          true
-                                                          }else {
-                                                                false
-                                                                },
+                        enabled = if (text.length == 6) {
+                            true
+                        } else {
+                            false
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(48.dp),
                         onClick = {
+                            Log.d("OTP", "$text")
                             val credential = PhoneAuthProvider.getCredential(
-                                OTP, text.text.trim()
+                                OTP, text
                             )
                             Log.d("TAG", "onCreate: $credential")
-                            signInWithPhoneAuthCredential(credential) },
+                            signInWithPhoneAuthCredential(credential)
+                        },
                         contentPadding = PaddingValues(),
                         colors = ButtonDefaults.buttonColors(
-                            contentColor = if (text.text.length == 6) {
+                            contentColor = if (text.length == 6) {
                                 Color.White
                             } else {
                                 Color.Gray
@@ -363,7 +345,10 @@ class OTPActivity() : ComponentActivity() {
 
                                 Text(
                                     text = "Verify OTP",
-                                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 )
                             }
                         }
@@ -377,13 +362,6 @@ class OTPActivity() : ComponentActivity() {
 
     }
 
-    private fun handleBackspacePress(focusManager: FocusManager, index: Int) {
-        if (text.text.length == 1) {
-            text = TextFieldValue("")
-        } else if (index > 0) {
-            focusManager.moveFocus(FocusDirection.Previous)
-        }
-    }
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun resendOTPCredential() {
 
@@ -420,18 +398,18 @@ class OTPActivity() : ComponentActivity() {
             // for instance if the the phone number format is not valid.
             if (e is FirebaseAuthInvalidCredentialsException) {
                 Log.d("TAG", "onVerificationFailed: $e")
-                Toast.makeText(this@OTPActivity,e.message ,Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@OTPActivity, e.message, Toast.LENGTH_SHORT).show()
 
             } else if (e is FirebaseTooManyRequestsException) {
                 // The SMS quota for the project has been exceeded
                 Log.d("TAG", "onVerificationFailed: $e")
-                Toast.makeText(this@OTPActivity,e.message ,Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@OTPActivity, e.message, Toast.LENGTH_SHORT).show()
 
 
             } else if (e is FirebaseAuthMissingActivityForRecaptchaException) {
                 // reCAPTCHA verification attempted with null Activity
                 Log.d("TAG", "onVerificationFailed: $e")
-                Toast.makeText(this@OTPActivity,e.message ,Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@OTPActivity, e.message, Toast.LENGTH_SHORT).show()
 
 
             }
@@ -452,41 +430,45 @@ class OTPActivity() : ComponentActivity() {
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = task.result?.user
-                    Log.d("TAG", "signInWithCredential:success $user")
-                    if (user != null) {
-                        user.getIdToken(true).addOnSuccessListener { tokenResult ->
-                                val idToken = tokenResult.token
-                                if (user != null) {
-                                    if(getUserId(applicationContext) != user.uid){
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            telemetry.deleteAllTelemetry()
-                                        }
-                                    }
-                                    Log.d("USER", "${user.uid} ")
-                                    saveUserId(user.uid,applicationContext)
+            if (task.isSuccessful) {
+                val user = task.result?.user
+                Log.d("TAG", "signInWithCredential:success $user")
+                if (user != null) {
+                    user.getIdToken(true).addOnSuccessListener { tokenResult ->
+                        val idToken = tokenResult.token
+                        if (user != null) {
+                            if (getUserId(applicationContext) != user.uid) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    telemetry.deleteAllTelemetry()
                                 }
-                                if (idToken != null) {
-                                    updateUI(idToken)
-                                }
-                                Log.d("TAG", "ID Token: $idToken")
-                            }.addOnFailureListener { exception ->
-                                // Handle the case where getting the ID token failed
-                                Log.e("TAG", "Error getting ID token: ${exception.message}")
                             }
-                    }
-
-                    Log.d("TAG", "signInWithCredential:success $user")
-
-                } else {
-                    Log.w("TAG", "signInWithCredential:failure", task.exception)
-                    if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                        // The verification code entered was invalid
-                        Toast.makeText(this, "The entered code is invalid. Check the code and try again", Toast.LENGTH_LONG).show()
+                            Log.d("USER", "${user.uid} ")
+                            saveUserId(user.uid, applicationContext)
+                        }
+                        if (idToken != null) {
+                            updateUI(idToken)
+                        }
+                        Log.d("TAG", "ID Token: $idToken")
+                    }.addOnFailureListener { exception ->
+                        // Handle the case where getting the ID token failed
+                        Log.e("TAG", "Error getting ID token: ${exception.message}")
                     }
                 }
+
+                Log.d("TAG", "signInWithCredential:success $user")
+
+            } else {
+                Log.w("TAG", "signInWithCredential:failure", task.exception)
+                if (task.exception is FirebaseAuthInvalidCredentialsException) {
+                    // The verification code entered was invalid
+                    Toast.makeText(
+                        this,
+                        "The entered code is invalid. Check the code and try again",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
+        }
     }
 
     private fun updateUI(firebaseIdToken: String) {
@@ -498,7 +480,7 @@ class OTPActivity() : ComponentActivity() {
             }
             Log.d("TAG", "updateUI: ${task.result}  ")
             authManager.authenticate(applicationContext, firebaseIdToken, task.result, {
-                val myIntent = Intent(this,MainActivity::class.java)
+                val myIntent = Intent(this, MainActivity::class.java)
                 myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(myIntent)
                 finish()
