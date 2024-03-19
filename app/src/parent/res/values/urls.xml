@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [<!ENTITY baseUrl "https://api.drishto.com">]>
+<!DOCTYPE resources [<!ENTITY baseUrl "https://api.test.drishto.com">]>
 <resources>
     <!--    parent-->
     <string name="url_parent_trip">&baseUrl;/parents/activeTrips</string>

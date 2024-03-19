@@ -212,7 +212,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
     val outputFormat = SimpleDateFormat("dd MMM")
 
     val tripTime = SimpleDateFormat("HH:mm:ss")
-    val outputtripTime = SimpleDateFormat(" HH:mm")
+    val outputtripTime = SimpleDateFormat(" hh:mm a")
 
     val parsedDate = remember(trip.tripDate) { inputFormat.parse(trip.tripDate) }
     val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }

@@ -110,10 +110,11 @@ fun MapsActivityContent(
     val outputFormat = SimpleDateFormat("dd MMM")
 
     val arrivalTime = SimpleDateFormat("HH:mm:ss")
-    val outputArrivaltime = SimpleDateFormat(" HH:mm")
+    val outputArrivaltime = SimpleDateFormat("hh:mm a")
 
     val boardingTime = SimpleDateFormat("HH:mm:ss")
-    val outputboardingTime = SimpleDateFormat(" HH:mm")
+    val outputboardingTime = SimpleDateFormat("hh:mm a")
+
 
     var map by remember { mutableStateOf(false) }
 
@@ -269,7 +270,7 @@ fun MapsActivityContent(
 
 
                                     Text(
-                                        text = formattedDate + formattedTime,
+                                        text = formattedDate +" "+ formattedTime,
                                         style = TextStyle(
                                             color = gry,
                                             fontSize = 12.sp,
@@ -286,15 +287,40 @@ fun MapsActivityContent(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        text = "Running late ",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 14.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W400
+                                    if(it.status != "TRIP_CREATED" && it.status != "TRIP_STARTED") {
+                                        if(it.delay >0 ) {
+                                            Text(
+                                                text = "Running Late",
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 14.sp,
+                                                    fontFamily = fontStyle,
+                                                    fontWeight = FontWeight.W400
+                                                )
+                                            )
+                                        }else{
+                                            Text(
+                                                text = "Reaching Early",
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 14.sp,
+                                                    fontFamily = fontStyle,
+                                                    fontWeight = FontWeight.W400
+                                                )
+                                            )
+                                        }
+                                    }else{
+
+                                        Text(
+                                            text = it.status.replace("_", " "),
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 14.sp,
+                                                fontFamily = fontStyle,
+                                                fontWeight = FontWeight.W400
+                                            )
                                         )
-                                    )
+                                    }
                                 }
 
                                 Spacer(modifier = Modifier.height(4.dp))
@@ -305,7 +331,7 @@ fun MapsActivityContent(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "Estimated Arrival",
+                                        text = "Standard Arrival",
                                         style = TextStyle(
                                             color = Color.Black,
                                             fontSize = 12.sp,
@@ -314,9 +340,13 @@ fun MapsActivityContent(
                                         )
                                     )
 
+                                    val parsedDeBoardingTime = remember(it.deBoardingTime) {boardingTime.parse(it.deBoardingTime) }
+                                    val formattedDeBoardingTime = remember(parsedDeBoardingTime) { outputboardingTime.format(parsedDeBoardingTime) }
+
+
 
                                     Text(
-                                        text = "03:00 am",
+                                        text = formattedDeBoardingTime,
                                         style = TextStyle(
                                             color = Color.Gray,
                                             fontSize = 12.sp,
@@ -334,7 +364,7 @@ fun MapsActivityContent(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "Boarded",
+                                        text = "Boarding Place",
                                         style = TextStyle(
                                             color = gry,
                                             fontSize = 12.sp,
@@ -480,17 +510,29 @@ fun MapsActivityContent(
                                                         fontWeight = FontWeight.W400
                                                     )
                                                 )
-                                                val distanceCoveredKm =
-                                                    it.distanceCovered.div(1000)
-                                                Text(
-                                                    text = "$distanceCoveredKm km",
-                                                    style = TextStyle(
-                                                        color = Color.Black,
-                                                        fontSize = 12.sp,
-                                                        fontFamily = fontStyle,
-                                                        fontWeight = FontWeight.W400
+                                                val travelDistance =
+                                                    it.travelDistance.div(1000)
+                                                if(travelDistance >1) {
+                                                    Text(
+                                                        text = "$travelDistance km",
+                                                        style = TextStyle(
+                                                            color = Color.Black,
+                                                            fontSize = 12.sp,
+                                                            fontFamily = fontStyle,
+                                                            fontWeight = FontWeight.W400
+                                                        )
                                                     )
-                                                )
+                                                }else{
+                                                    Text(
+                                                        text = "${it.travelDistance.toInt()} m",
+                                                        style = TextStyle(
+                                                            color = Color.Black,
+                                                            fontSize = 12.sp,
+                                                            fontFamily = fontStyle,
+                                                            fontWeight = FontWeight.W400
+                                                        )
+                                                    )
+                                                }
                                             }
                                         }
                                     }

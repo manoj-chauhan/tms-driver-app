@@ -28,8 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import driver.models.ParentTrip
 import java.text.SimpleDateFormat
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun AssignedTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
@@ -236,6 +234,10 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
     val parsedTime = remember(trip.tripTime) {tripTime.parse(trip.tripTime) }
     val formattedTime = remember(parsedTime) { outputtripTime.format(parsedTime) }
 
+    val parseddeboardingTime = remember(trip.deBoardingPlaceTime) {tripTime.parse(trip.deBoardingPlaceTime) }
+    val formattedDeboardingTime = remember(parsedTime) { outputtripTime.format(parseddeboardingTime) }
+
+
     val fontStyle: FontFamily = FontFamily.SansSerif
 
     val gry=Color(android.graphics.Color.parseColor("#838383"))
@@ -407,16 +409,9 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                             )
                         )
                     }
-                    val startTime = LocalTime.parse(trip.tripTime)
-                    val estMinutes = trip.estTime
-
-                    val finalTime = startTime.plusMinutes(estMinutes.toLong())
-
-                    val formatter = DateTimeFormatter.ofPattern("hh:mm a")
-                    val finalTimeString = finalTime.format(formatter)
 
                     Text(
-                        text = "Arrival $finalTimeString",
+                        text = "Arrival $formattedDeboardingTime",
                         style = TextStyle(
                             color = gry,
                             fontSize = 12.sp,

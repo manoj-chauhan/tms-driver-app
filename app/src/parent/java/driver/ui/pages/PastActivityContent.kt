@@ -235,6 +235,7 @@ fun PastActivityContent(
                                     val parsedTime = remember(it.tripTime) {arrivalTime.parse(it.tripTime) }
                                     val formattedTime = remember(parsedDate) { outputArrivaltime.format(parsedTime) }
 
+
                                     Text(
                                         text = formattedDate + formattedTime,
                                         style = TextStyle(
@@ -321,7 +322,6 @@ fun PastActivityContent(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-
                                     val parsedDeBoardingTime = remember(it.deBoardingTime) {boardingTime.parse(it.deBoardingTime) }
                                     val formattedDeBoardingTime = remember(parsedDeBoardingTime) { outputboardingTime.format(parsedDeBoardingTime) }
                                     Text(
@@ -336,7 +336,7 @@ fun PastActivityContent(
 
 
                                     Text(
-                                        text = formattedDeBoardingTime,
+                                        text =" $formattedDeBoardingTime",
                                         style = TextStyle(
                                             color = Color.Gray,
                                             fontSize = 12.sp,
