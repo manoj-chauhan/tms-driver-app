@@ -335,12 +335,26 @@ fun HomeScreen(
                                                         )
                                                     }
                                                 }
+                                                var isAnyTripStarted = false;
+
+                                                it.trips.forEach { trip ->
+                                                    if (!isAnyTripStarted) {
+                                                        if (trip.status != "TRIP_CREATED") {
+                                                            isAnyTripStarted = true;
+                                                        }
+                                                    }
+                                                }
                                                 if (it.trips.size == 0) {
                                                     val location = Intent(context, LocationService::class.java)
                                                     context.stopService(location)
                                                 } else {
-                                                    val location = Intent(context, LocationService::class.java)
-                                                    context.startForegroundService(location)
+                                                    if(isAnyTripStarted) {
+                                                        val location = Intent(
+                                                            context,
+                                                            LocationService::class.java
+                                                        )
+                                                        context.startForegroundService(location)
+
                                                     val loc = LocationService::class.java
                                                     val service = isLocationServiceRunning(context, loc)
                                                     if (service) {
@@ -384,6 +398,7 @@ fun HomeScreen(
                                                                 }
                                                             }
                                                         }
+                                                    }
                                                     }
                                                     Column {
                                                         if(it.trips != null) {
