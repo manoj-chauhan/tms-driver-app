@@ -130,6 +130,7 @@ class LocationService : Service(), LocationListener {
                             .setContentTitle("You are operating a trip")
                             .setSmallIcon(R.drawable.notification)
                             .setContentIntent(pendingIntent)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setContentText("Tap to see more details. ")
 
                         startForeground(1001, builder.build())

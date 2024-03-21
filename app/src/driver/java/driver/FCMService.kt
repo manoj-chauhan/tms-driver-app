@@ -1,6 +1,5 @@
 package com.drishto.driver
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -40,7 +39,7 @@ class FCMService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage);
-        val message = remoteMessage.data.get("key1")
+        val message = remoteMessage.data
         Log.d("This is key1", "onMessageReceived: $message")
         sendNotification(applicationContext, "remote Trip", "Hii see the trip",message )
         fetchLocalData()
@@ -55,8 +54,12 @@ class FCMService : FirebaseMessagingService() {
         channel.description = description
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
+
     }
-    fun sendNotification(context: Context, title: String?, message: String?, deepLink: String?) {
+    fun sendNotification(context: Context, title: String?, message: String?, parameters: MutableMap<String, String>) {
+
+        val key1 = parameters.get("key1")
+        Log.d("Hello", "sendNotification: $key1")
         val notificationManager = getSystemService(NotificationManager::class.java)
 
         createNotificationChannel()
@@ -64,9 +67,8 @@ class FCMService : FirebaseMessagingService() {
         val notificationBuilder=NotificationCompat.Builder(context,
             NOTIFICATION_CHANNEL_ID
         )
-            .setSmallIcon(R.drawable.icon)
-            .setDefaults(Notification.DEFAULT_ALL)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setSmallIcon(R.drawable.notification)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentTitle(title)
             .setContentText(message)
         val id= Random(System.currentTimeMillis()).nextInt(1000)

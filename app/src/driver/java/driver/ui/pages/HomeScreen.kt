@@ -142,8 +142,7 @@ fun HomeScreen(
         var expander by remember {
             mutableStateOf(false)
         }
-//        Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically)
-//        }
+
         Box(modifier = Modifier.fillMaxSize()) {
             com.google.accompanist.swiperefresh.SwipeRefresh(
                 state = swipeRefreshState,
@@ -198,10 +197,7 @@ fun HomeScreen(
                                                 )
                                             },
                                             navigationIcon = {
-//                IconButton(onClick = { /*TODO*/ }) {
-//
-                                                //                     Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
-//                }
+
                                             },
                                             actions = {
                                                 IconButton(onClick = { expander = true }) {
@@ -280,23 +276,11 @@ fun HomeScreen(
                                     )
                                 }
                                 Row(modifier = Modifier.fillMaxSize()) {
-
-
                                     currentAssignmentData?.let {
-//                        LocationPermissionScreen()
                                         RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
                                         Column {
                                             it.vehicles.let { vList ->
                                                 Column {
-//                                    vList.forEach { vehicleAssignment ->
-//                                        AssignedVehicle(vehicleAssignment)
-//                                    }
-//
-//                                    LazyColumn {
-//                                        items(vList) { vehicleAssignment ->
-//                                            AssignedVehicle(vehicleAssignment)
-//                                        }
-//                                    }
                                                     Column {
                                                         Row(
                                                             modifier = Modifier
@@ -351,73 +335,14 @@ fun HomeScreen(
                                                         )
                                                     }
                                                 }
-
-//                                            Column {
-//                                                Row(
-//                                                    modifier = Modifier
-//                                                        .fillMaxWidth()
-//                                                        .padding(13.dp, top = 20.dp),
-//                                                    horizontalArrangement = Arrangement.SpaceBetween,
-//                                                    verticalAlignment = Alignment.CenterVertically
-//                                                ) {
-//
-//                                                    Text(
-//                                                        text = "Plans Associated ",
-//                                                        style = TextStyle(
-//                                                            color = Color.Black,
-//                                                            fontSize = 16.sp,
-//                                                            fontWeight = FontWeight.W600,
-//                                                            fontFamily = FontFamily.SansSerif
-//                                                        )
-//                                                    )
-//                                                }
-//
-//                                                driverPlanData?.forEach { plan->
-//                                                    AssignedPlans(
-//                                                        plan,
-////                                                            onTripSelected
-//                                                    )
-//                                                }
-//                                            }
-
                                                 if (it.trips.size == 0) {
-//                                                Box(
-//                                                    modifier = Modifier
-//                                                        .fillMaxSize()
-//                                                        .padding(13.dp)
-//                                                        .align(Alignment.CenterHorizontally)
-//                                                ) {
-//                                                    Row(
-//                                                        modifier = Modifier.fillMaxSize(),
-//                                                        horizontalArrangement = Arrangement.Center,
-//                                                        verticalAlignment = Alignment.CenterVertically
-//                                                    ) {
-//                                                        Text(
-//                                                            text = "No trips assigned!!",
-//                                                            style = TextStyle(
-//                                                                color = Color.Black,
-//                                                                fontSize = 14.sp,
-//                                                                fontWeight = FontWeight.Medium
-//                                                            )
-//                                                        )
-//                                                    }
-//                                                }
-                                                    val location =
-                                                        Intent(
-                                                            context,
-                                                            LocationService::class.java
-                                                        )
+                                                    val location = Intent(context, LocationService::class.java)
                                                     context.stopService(location)
                                                 } else {
-                                                    val location =
-                                                        Intent(
-                                                            context,
-                                                            LocationService::class.java
-                                                        )
+                                                    val location = Intent(context, LocationService::class.java)
                                                     context.startForegroundService(location)
                                                     val loc = LocationService::class.java
-                                                    val service =
-                                                        isLocationServiceRunning(context, loc)
+                                                    val service = isLocationServiceRunning(context, loc)
                                                     if (service) {
                                                         Column(modifier = Modifier.fillMaxWidth()) {
                                                             Image(
