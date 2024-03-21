@@ -1,8 +1,13 @@
 package com.drishto.driver
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.annotation.WorkerThread
+import androidx.core.app.NotificationCompat
 import com.drishto.driver.database.AppDatabase
 import com.drishto.driver.database.Trip
 import com.drishto.driver.tripmgmt.TripManager
@@ -14,6 +19,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
+
 
 @AndroidEntryPoint
 class FCMService : FirebaseMessagingService() {
@@ -33,9 +40,40 @@ class FCMService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.d("Message", "onMessageReceived: $remoteMessage")
+        val message = remoteMessage.data.get("key1")
+        Log.d("This is key1", "onMessageReceived: $message")
+        sendNotification(applicationContext, "remote Trip", "Hii see the trip",message )
         fetchLocalData()
     }
+
+    private fun createNotificationChannel() {
+        Log.d("create notification", "createNotificationChannel: ")
+        val name: CharSequence = "Trip Notification"
+        val description = "Trip service notification"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance)
+        channel.description = description
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
+    }
+    fun sendNotification(context: Context, title: String?, message: String?, deepLink: String?) {
+        val notificationManager = getSystemService(NotificationManager::class.java)
+
+        createNotificationChannel()
+
+        val notificationBuilder=NotificationCompat.Builder(context,
+            NOTIFICATION_CHANNEL_ID
+        )
+            .setSmallIcon(R.drawable.icon)
+            .setDefaults(Notification.DEFAULT_ALL)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentTitle(title)
+            .setContentText(message)
+        val id= Random(System.currentTimeMillis()).nextInt(1000)
+
+        notificationManager.notify(id, notificationBuilder.build())
+    }
+
 
 
     private fun fetchLocalData() {
@@ -98,6 +136,10 @@ class FCMService : FirebaseMessagingService() {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val NOTIFICATION_CHANNEL_ID = "firebase_notification"
     }
 }
 

@@ -131,7 +131,7 @@ class LocationService : Service(), LocationListener {
                             .setSmallIcon(R.drawable.notification)
                             .setContentIntent(pendingIntent)
                             .setContentText("Tap to see more details. ")
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+
                         startForeground(1001, builder.build())
                     }
 
