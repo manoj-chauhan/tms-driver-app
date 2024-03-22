@@ -316,18 +316,28 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    val distanceCovered =
-                        trip.estDistance.div(1000)
-
-                    Text(
-                        text = "$distanceCovered km",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 12.sp,
-                            fontFamily = fontStyle,
-                            fontWeight = FontWeight.W600
+                    val estimatedDistance = trip.estDistance.div(1000)
+                    if(estimatedDistance >1) {
+                        Text(
+                            text = "$estimatedDistance km",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontFamily = fontStyle,
+                                fontWeight = FontWeight.W400
+                            )
                         )
-                    )
+                    }else{
+                        Text(
+                            text = "${trip.estDistance.toInt()} m",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontFamily = fontStyle,
+                                fontWeight = FontWeight.W400
+                            )
+                        )
+                    }
 
 
                     val estimatedTimeHours: Int =

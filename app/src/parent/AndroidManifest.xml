@@ -68,7 +68,7 @@
             android:theme="@style/Base.Theme.AppCompat"/>
 
         <service
-            android:name=".network.MyFirebaseMessagingService"
+            android:name="driver.network.MyFirebaseMessagingService"
             android:exported="false"
             tools:ignore = "Instantiable"
             >

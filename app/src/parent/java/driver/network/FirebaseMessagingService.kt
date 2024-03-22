@@ -1,4 +1,4 @@
-package com.drishto.driver.network
+package driver.network
 
 import android.R
 import android.app.Notification

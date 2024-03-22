@@ -489,16 +489,28 @@ fun MapsActivityContent(
                                                         fontWeight = FontWeight.W400
                                                     )
                                                 )
-                                                val estimatedDistance = it.estDistance.div(1000).toInt()
-                                                Text(
-                                                    text = "$estimatedDistance km",
-                                                    style = TextStyle(
-                                                        color = Color.Black,
-                                                        fontSize = 12.sp,
-                                                        fontFamily = fontStyle,
-                                                        fontWeight = FontWeight.W400
+                                                val estimatedDistance = it.estDistance.div(1000)
+                                                if(estimatedDistance >1) {
+                                                    Text(
+                                                        text = "$estimatedDistance km",
+                                                        style = TextStyle(
+                                                            color = Color.Black,
+                                                            fontSize = 12.sp,
+                                                            fontFamily = fontStyle,
+                                                            fontWeight = FontWeight.W400
+                                                        )
                                                     )
-                                                )
+                                                }else{
+                                                    Text(
+                                                        text = "${it.estDistance.toInt()} m",
+                                                        style = TextStyle(
+                                                            color = Color.Black,
+                                                            fontSize = 12.sp,
+                                                            fontFamily = fontStyle,
+                                                            fontWeight = FontWeight.W400
+                                                        )
+                                                    )
+                                                }
                                             }
                                             Column(modifier = Modifier.fillMaxWidth()) {
                                                 Text(

@@ -39,8 +39,6 @@ const val MY_ARG= "message"
 const val MY_URI = "https://trip-details"
 const val trip_Id :Int=0
 const val operatorI:Int = 1
-const val planoperatorId:Int = 1
-const val Id:Int = 1
 
 
 

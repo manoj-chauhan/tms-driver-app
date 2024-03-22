@@ -292,23 +292,24 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                if(trip.deBoardingPlaceTime != null) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                    Text(
-                        text = "Arrived at 12:00 AM",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 12.sp,
-                            fontFamily = fontStyle,
-                            fontWeight = FontWeight.W600
+                        Text(
+                            text = "Arrived at ${trip.deBoardingPlaceTime} AM",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 12.sp,
+                                fontFamily = fontStyle,
+                                fontWeight = FontWeight.W600
+                            )
                         )
-                    )
+                    }
                 }
-
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Row(
@@ -318,7 +319,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                 ) {
 
                     Text(
-                        text = "Boarded from Pitampura, Delhi",
+                        text = "Boarded from ${trip.boardingPlaceName}",
                         style = TextStyle(
                             color = gry,
                             fontSize = 12.sp,

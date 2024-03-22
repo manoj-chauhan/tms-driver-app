@@ -2,14 +2,21 @@ package com.drishto.driver
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import com.drishto.driver.database.AppDatabase
 import com.drishto.driver.database.Trip
 import com.drishto.driver.tripmgmt.TripManager
+import com.drishto.driver.ui.MY_ARG
+import com.drishto.driver.ui.MY_URI
+import com.drishto.driver.ui.operatorI
+import com.drishto.driver.ui.trip_Id
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,11 +65,24 @@ class FCMService : FirebaseMessagingService() {
     }
     fun sendNotification(context: Context, title: String?, message: String?, parameters: MutableMap<String, String>) {
 
-        val key1 = parameters.get("key1")
-        Log.d("Hello", "sendNotification: $key1")
+        val tripCode = parameters.get("tripCode")
+        val tripId = parameters.get("tripId")?.toInt()
+        val operatorId = parameters.get("operatorId")?.toInt()
         val notificationManager = getSystemService(NotificationManager::class.java)
 
         createNotificationChannel()
+
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = "$MY_URI/$MY_ARG=${tripCode}/$trip_Id=${tripId}&$operatorI=${operatorId}".toUri()
+            Log.d("TAG", "showNotification: ${data} ")
+            setClass(applicationContext, driver.MainActivity::class.java)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        val pendingIntent = TaskStackBuilder.create(applicationContext).run {
+            addNextIntentWithParentStack(intent)
+            getPendingIntent(1, PendingIntent.FLAG_IMMUTABLE)
+        }
 
         val notificationBuilder=NotificationCompat.Builder(context,
             NOTIFICATION_CHANNEL_ID
@@ -71,6 +91,9 @@ class FCMService : FirebaseMessagingService() {
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentTitle(title)
             .setContentText(message)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
         val id= Random(System.currentTimeMillis()).nextInt(1000)
 
         notificationManager.notify(id, notificationBuilder.build())
