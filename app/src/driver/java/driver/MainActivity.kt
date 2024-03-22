@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Log.d("TAG", "onCreate: Drishto is running  ")
             DrishtoApp()
-            LocationPermissionCheck()
+//            LocationPermissionCheck()
             var showBatteryOptimizationDialog by remember { mutableStateOf(true) }
 
 
@@ -71,7 +71,6 @@ class MainActivity : ComponentActivity() {
                         }
                     },
                     dismissButton = {
-                        // Set dismissButton to null to prevent dismissal by clicking outside
                         null
                     }
 

@@ -46,7 +46,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -121,15 +120,7 @@ fun HomeScreen(
     var history by remember {
         mutableStateOf(false)
     }
-    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-    val locationEnabledState = rememberUpdatedState(isLocationEnabled)
 
-    if (!locationEnabledState.value) {
-        LocationDisabledDialog()
-    } else {
-        Log.e("Location", "LocationPermissionCheck: dialog is disabledd ")
-    }
 
 
     val vw: SwipeRefresh = viewModel()

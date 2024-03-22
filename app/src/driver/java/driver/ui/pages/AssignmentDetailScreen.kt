@@ -49,6 +49,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import driver.ui.components.CallCheckInDialog
 import driver.ui.components.DocumentsDialog
 import driver.ui.components.LocationList
+import driver.ui.components.StartTripDialog
 import driver.ui.viewmodels.AssignmentDetailViewModel
 import driver.ui.viewmodels.PastAssignmentDetailViewModel
 import kotlinx.coroutines.launch
@@ -82,6 +83,8 @@ fun AssignmentDetailScreen(
     }
 
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
+    var isStartDialogVisible = remember { mutableStateOf(false); }
+
     val isDocumentSelected = remember { mutableStateOf(true); }
     val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
     val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
@@ -486,12 +489,13 @@ fun AssignmentDetailScreen(
                                                         Color.Red
                                                     ),
                                                         onClick = {
-                                                            vm.startTrip(
-                                                                context,
-                                                                tripId,
-                                                                tripCode,
-                                                                operatorId
-                                                            )
+//                                                            vm.startTrip(
+//                                                                context,
+//                                                                tripId,
+//                                                                tripCode,
+//                                                                operatorId
+//                                                            )
+                                                            isStartDialogVisible.value = true
                                                         },
                                                         content = {
                                                             Text(text = "Start")
@@ -624,6 +628,16 @@ fun AssignmentDetailScreen(
                                         )
 
                                     }
+                                }
+
+                                if(isStartDialogVisible.value){
+                                    StartTripDialog( tripId,
+                                        operatorId,
+                                        tripCode,
+                                        setShowDialog = {
+                                        isStartDialogVisible.value = it
+                                    }
+                                    )
                                 }
 
                             }
