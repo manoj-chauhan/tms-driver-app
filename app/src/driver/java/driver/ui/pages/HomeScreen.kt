@@ -46,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,6 +73,7 @@ import driver.ui.components.AssignedPlans
 import driver.ui.components.AssignedTrip
 import driver.ui.components.AssignedVehicle
 import driver.ui.components.GeneratedCodeDialog
+import driver.ui.components.TripLocationPermission
 import driver.ui.viewmodels.HomeViewModel
 import driver.ui.viewmodels.MatrixLogViewModel
 import driver.ui.viewmodels.TripsAssigned
@@ -121,7 +123,15 @@ fun HomeScreen(
         mutableStateOf(false)
     }
 
+    var permit by remember {
+        mutableStateOf(false)
+    }
 
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+    // Check if location is enabled
+    val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    val locationEnabledState = rememberUpdatedState(isLocationEnabled)
 
     val vw: SwipeRefresh = viewModel()
     val isLoading by vw.isLoading.collectAsStateWithLifecycle()
@@ -336,63 +346,59 @@ fun HomeScreen(
                                                     }
                                                 }
                                                 if (it.trips.size == 0) {
-                                                    val location = Intent(context, LocationService::class.java)
+                                                    val location =
+                                                        Intent(context, LocationService::class.java)
                                                     context.stopService(location)
                                                 } else {
-                                                    if(isAnyTripStarted) {
-                                                        val location = Intent(
-                                                            context,
-                                                            LocationService::class.java
-                                                        )
-                                                        context.startForegroundService(location)
+                                                    if (isAnyTripStarted) {
+                                                        val loc = LocationService::class.java
+                                                        val service =
+                                                            isLocationServiceRunning(context, loc)
+                                                        if(service) {
+                                                            Column(modifier = Modifier.fillMaxWidth()) {
+                                                                Image(
+                                                                    painter = painterResource(id = R.drawable.signal),
+                                                                    contentDescription = null,
+                                                                    Modifier
+                                                                        .height(100.dp)
+                                                                        .fillMaxSize()
+                                                                )
+                                                                matList?.let { mList ->
+                                                                    if (mList.isNotEmpty()) {
+                                                                        val lastTime =
+                                                                            mList.last().time
 
-                                                    val loc = LocationService::class.java
-                                                    val service = isLocationServiceRunning(context, loc)
-                                                    if (service) {
-                                                        Column(modifier = Modifier.fillMaxWidth()) {
-                                                            Image(
-                                                                painter = painterResource(id = R.drawable.signal),
-                                                                contentDescription = null,
-                                                                Modifier
-                                                                    .height(100.dp)
-                                                                    .fillMaxSize()
-                                                            )
-                                                            matList?.let { mList ->
-                                                                if (mList.isNotEmpty()) {
-                                                                    val lastTime =
-                                                                        mList.last().time
-
-                                                                    val parsedDate =
-                                                                        inputFormat.parse(
-                                                                            lastTime.toString()
-                                                                        )
-                                                                    val formattedDate =
-                                                                        outputFormat.format(
-                                                                            parsedDate
-                                                                        )
-                                                                    Row(
-                                                                        modifier = Modifier.fillMaxWidth(),
-                                                                        horizontalArrangement = Arrangement.Center
-                                                                    ) {
-                                                                        Text(text = "Last recorded location time ${formattedDate} ")
-
-                                                                    }
-                                                                } else {
-                                                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                                                        val parsedDate =
+                                                                            inputFormat.parse(
+                                                                                lastTime.toString()
+                                                                            )
+                                                                        val formattedDate =
+                                                                            outputFormat.format(
+                                                                                parsedDate
+                                                                            )
                                                                         Row(
                                                                             modifier = Modifier.fillMaxWidth(),
                                                                             horizontalArrangement = Arrangement.Center
                                                                         ) {
-                                                                            Text(text = "Last recorded location time - Not shared ")
+                                                                            Text(text = "Last recorded location time ${formattedDate} ")
+
+                                                                        }
+                                                                    } else {
+                                                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                                                            Row(
+                                                                                modifier = Modifier.fillMaxWidth(),
+                                                                                horizontalArrangement = Arrangement.Center
+                                                                            ) {
+                                                                                Text(text = "Last recorded location time - Not shared ")
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
                                                             }
                                                         }
                                                     }
-                                                    }
                                                     Column {
-                                                        if(it.trips != null) {
+                                                        if (it.trips != null) {
                                                             if (it.trips.size > 0) {
                                                                 Row(
                                                                     modifier = Modifier
@@ -492,6 +498,12 @@ fun HomeScreen(
     if (locations) {
         navController.navigate("locations-screen")
         locations = false
+    }
+
+    if (permit) {
+        TripLocationPermission {
+            permit = it
+        }
     }
 
     if (userProfile) {

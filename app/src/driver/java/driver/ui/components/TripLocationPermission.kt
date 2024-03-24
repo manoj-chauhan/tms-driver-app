@@ -33,14 +33,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drishto.driver.LocationService
-import driver.ui.viewmodels.AssignmentDetailViewModel
+import driver.ui.pages.LocationDisabledDialog
 
 @Composable
-fun StartTripDialog(tripId:Int,operatorId: Int, tripCode:String,setShowDialog: (Boolean) -> Unit) {
+fun TripLocationPermission(setShowDialog: (Boolean) -> Unit) {
 
-    val vm: AssignmentDetailViewModel = viewModel()
     var locationEnabled by remember {
         mutableStateOf(false)
     }
@@ -51,6 +49,7 @@ fun StartTripDialog(tripId:Int,operatorId: Int, tripCode:String,setShowDialog: (
     // Check if location is enabled
     val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     val locationEnabledState = rememberUpdatedState(isLocationEnabled)
+
 
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
@@ -70,25 +69,17 @@ fun StartTripDialog(tripId:Int,operatorId: Int, tripCode:String,setShowDialog: (
 
                     ) {
                         Text(
-                            text = "You have to share location in order to start the trip",
+                            text = "A trip is assigned to you, if you want to operate trip. Allow Location",
                             style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 16.sp)
                         )
                     }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                         Button(
                             modifier = Modifier,
                             onClick = {
                                 if (!locationEnabledState.value) {
                                     context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                                 } else {
-                                    Log.e(
-                                        "Location",
-                                        "LocationPermissionCheck: dialog is DOne ",
-                                    )
                                     // vm.startTrip(context, tripId, tripCode, operatorId)
                                     val location = Intent(
                                         context,
@@ -96,7 +87,7 @@ fun StartTripDialog(tripId:Int,operatorId: Int, tripCode:String,setShowDialog: (
                                     )
                                     context.startForegroundService(location)
                                 }
-                                    setShowDialog(false)
+                                setShowDialog(false)
 
                             },
                             shape = RoundedCornerShape(50.dp)
@@ -117,14 +108,11 @@ fun StartTripDialog(tripId:Int,operatorId: Int, tripCode:String,setShowDialog: (
                     }
                 }
             }
+            if(locationEnabled){
+                Log.d("TAG", "TripLocationPermission: ")
+                LocationDisabledDialog()
+            }
 
-//            if(locationEnabled){
-//                Log.e("Location not shared", "StartTripDialog: ")
-//                LocationDisabledDialog()
-//            }
-//            if(locationEnabledState.value){
-//                setShowDialog(false)
-//            }
         }
     }
 }
