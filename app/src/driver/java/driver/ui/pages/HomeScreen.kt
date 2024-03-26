@@ -354,6 +354,9 @@ fun HomeScreen(
                                                         val loc = LocationService::class.java
                                                         val service =
                                                             isLocationServiceRunning(context, loc)
+                                                        if(!locationEnabledState.value){
+                                                            permit = true
+                                                        }
                                                         if(service) {
                                                             Column(modifier = Modifier.fillMaxWidth()) {
                                                                 Image(

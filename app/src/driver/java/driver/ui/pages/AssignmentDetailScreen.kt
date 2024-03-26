@@ -1,5 +1,7 @@
 package driver.ui.pages
 
+import android.content.Context
+import android.location.LocationManager
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
@@ -27,6 +29,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +54,7 @@ import driver.ui.components.CallCheckInDialog
 import driver.ui.components.DocumentsDialog
 import driver.ui.components.LocationList
 import driver.ui.components.StartTripDialog
+import driver.ui.components.TripLocationPermission
 import driver.ui.viewmodels.AssignmentDetailViewModel
 import driver.ui.viewmodels.PastAssignmentDetailViewModel
 import kotlinx.coroutines.launch
@@ -84,6 +89,9 @@ fun AssignmentDetailScreen(
 
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
     var isStartDialogVisible = remember { mutableStateOf(false); }
+    var permit by remember {
+        mutableStateOf(false)
+    }
 
     val isDocumentSelected = remember { mutableStateOf(true); }
     val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
@@ -103,12 +111,21 @@ fun AssignmentDetailScreen(
     val isLoading by vw.isLoading.collectAsStateWithLifecycle()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    val locationEnabledState = rememberUpdatedState(isLocationEnabled)
+
+    if(assignment?.tripDetail?.status == "TRIP_STARTED" && (!locationEnabledState.value)){
+        Log.d("TAG", "AssignmentDetailScreen: ")
+        permit = true
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
         Column {
             assignment?.let { it ->
+
                 val parsedDate =
                     remember(it.tripDetail.tripDateTime) { inputFormat.parse(it.tripDetail.tripDateTime) }
                 val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
@@ -640,6 +657,7 @@ fun AssignmentDetailScreen(
                                     )
                                 }
 
+
                             }
                         }
                     }
@@ -647,6 +665,13 @@ fun AssignmentDetailScreen(
             }
         }
 
+        if (permit) {
+            TripLocationPermission {
+                permit = it
+            }
+
+            permit = false
+        }
     }
 }
 

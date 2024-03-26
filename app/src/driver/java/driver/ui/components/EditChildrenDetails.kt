@@ -364,7 +364,7 @@ fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: I
                                             val formattedDay = dayOfMonth.toString()
                                                 .padStart(2, '0')
 
-                                            selectedDate = "$formattedDay-$formattedMonth-$year"
+                                            selectedDate = "$year-$formattedMonth-$formattedDay"
                                         },
                                         year,
                                         month,
