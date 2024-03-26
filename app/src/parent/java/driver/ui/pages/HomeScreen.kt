@@ -97,203 +97,202 @@ fun HomeScreen(
     val fontStyle: FontFamily = FontFamily.SansSerif
     val gry = Color(android.graphics.Color.parseColor("#838383"))
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(brush = gradient)
-    ) {
-        Column(
+    if(isConnected) {
+        Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(brush = gradient)
         ) {
-            if (isConnected) {
-                val vm: UserProfileViewModel = hiltViewModel()
-                val user by vm.userDetail.collectAsStateWithLifecycle()
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                if (isConnected) {
+                    val vm: UserProfileViewModel = hiltViewModel()
+                    val user by vm.userDetail.collectAsStateWithLifecycle()
 
-                LaunchedEffect(Unit) {
-                    vm.userDetail(context = context)
-                    user?.let { vm.getUploadedImage(it.id) }
-                }
-                val profile by vm.userImage.collectAsStateWithLifecycle()
-                LaunchedEffect(user) {
-                    user?.let {
-                        vm.getUploadedImage(it.id)
+                    LaunchedEffect(Unit) {
+                        vm.userDetail(context = context)
+                        user?.let { vm.getUploadedImage(it.id) }
+                    }
+                    val profile by vm.userImage.collectAsStateWithLifecycle()
+                    LaunchedEffect(user) {
+                        user?.let {
+                            vm.getUploadedImage(it.id)
+                        }
+                    }
+                    Log.d("TAG", "HomeScreen: ${user?.id}")
+                    Box(
+                        modifier = Modifier
+                            .height(66.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .background(Color.White, shape = CircleShape)
+                                    .width(40.dp)
+                                    .height(40.dp)
+                                    .align(Alignment.CenterVertically)
+                            ) {
+                                if (profile != null) {
+                                    Image(
+                                        bitmap = profile!!.asImageBitmap(),
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .width(40.dp)
+                                            .height(40.dp)
+                                            .clip(CircleShape)
+                                            .clickable { navController.navigate("user-profile") }
+                                            .border(width = 0.dp, Color.White, shape = CircleShape),
+                                        contentScale = ContentScale.FillBounds
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Default.Person,
+                                        contentDescription = "Edit Icon",
+                                        tint = gry,
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clickable { navController.navigate("user-profile") }
+                                            .align(Alignment.Center)
+                                    )
+                                }
+                            }
+
+                            Icon(
+                                imageVector = Icons.Default.Feedback,
+                                contentDescription = "", modifier = Modifier
+                                    .height(26.dp)
+                                    .width(50.dp)
+                                    .clickable { navController.navigate("notification/${user?.id}") }
+                                    .zIndex(2f)
+                            )
+                        }
                     }
                 }
-                Log.d("TAG", "HomeScreen: ${user?.id}")
                 Box(
                     modifier = Modifier
-                        .height(66.dp)
+                        .fillMaxSize(1f)
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    com.google.accompanist.swiperefresh.SwipeRefresh(
+                        state = swipeRefreshState,
+                        onRefresh = vw::loadstuff
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .background(Color.White, shape = CircleShape)
-                                .width(40.dp)
-                                .height(40.dp)
-                                .align(Alignment.CenterVertically)
-                        ) {
-                            if (profile != null) {
-                                Image(
-                                    bitmap = profile!!.asImageBitmap(),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .width(40.dp)
-                                        .height(40.dp)
-                                        .clip(CircleShape)
-                                        .clickable { navController.navigate("user-profile") }
-                                        .border(width = 0.dp, Color.White, shape = CircleShape),
-                                    contentScale = ContentScale.FillBounds
-                                )
-                            } else {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = "Edit Icon",
-                                    tint = gry,
-                                    modifier = Modifier
-                                        .size(28.dp)
-                                        .clickable { navController.navigate("user-profile") }
-                                        .align(Alignment.Center)
-                                )
-                            }
-                        }
+                        LazyColumn {
+                            item {
+                                    val currentAssignmentData by vm.parentTrip.collectAsStateWithLifecycle()
+                                    vm.fetchParentTrip(context = context)
+                                    val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
+                                    vm.fetchParentPastTrip()
 
-                        Icon(
-                            imageVector = Icons.Default.Feedback,
-                            contentDescription = "", modifier = Modifier
-                                .height(26.dp)
-                                .width(50.dp)
-                                .clickable { navController.navigate("notification/${user?.id}") }
-                                .zIndex(2f)
-                        )
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(1f)
-            ) {
-                com.google.accompanist.swiperefresh.SwipeRefresh(
-                    state = swipeRefreshState,
-                    onRefresh = vw::loadstuff
-                ) {
-                    LazyColumn {
-                        item {
-                            if (isConnected) {
-                                val currentAssignmentData by vm.parentTrip.collectAsStateWithLifecycle()
-                                vm.fetchParentTrip(context = context)
-                                val pastTrip by vm.pastTripList.collectAsStateWithLifecycle()
-                                vm.fetchParentPastTrip()
-
-                                if (currentAssignmentData == null) {
-                                    Column(
-                                        modifier = Modifier.fillMaxSize(),
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        LoadingDialog()
+                                    if (currentAssignmentData == null) {
+                                        Column(
+                                            modifier = Modifier.fillMaxSize(),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            LoadingDialog()
+                                        }
                                     }
-                                }
 
-                                Column(modifier = Modifier.fillMaxSize()) {
-                                    if (currentAssignmentData?.size == 0 && pastTrip?.size == 0) {
-                                        Box(modifier = Modifier.fillMaxSize()) {
-                                            Column(
-                                                modifier = Modifier.fillMaxSize(1f),
-                                                horizontalAlignment = Alignment.CenterHorizontally
-                                            ) {
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .height(200.dp),
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.Center
+                                    Column(modifier = Modifier.fillMaxSize()) {
+                                        if (currentAssignmentData?.size == 0 && pastTrip?.size == 0) {
+                                            Box(modifier = Modifier.fillMaxSize()) {
+                                                Column(
+                                                    modifier = Modifier.fillMaxSize(1f),
+                                                    horizontalAlignment = Alignment.CenterHorizontally
                                                 ) {
-                                                    Text(
-                                                        text = "Welcome To Drishto",
-                                                        style = TextStyle(
-                                                            color = gry,
-                                                            fontSize = 20.sp,
-                                                            fontWeight = FontWeight.W600,
+                                                    Row(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .height(200.dp),
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.Center
+                                                    ) {
+                                                        Text(
+                                                            text = "Welcome To Drishto",
+                                                            style = TextStyle(
+                                                                color = gry,
+                                                                fontSize = 20.sp,
+                                                                fontWeight = FontWeight.W600,
+                                                            )
                                                         )
+                                                    }
+                                                    Image(
+                                                        painter = painterResource(id = R.drawable.image),
+                                                        contentDescription = "",
+                                                        modifier = Modifier
+                                                            .padding(end = 12.dp)
+                                                            .height(250.dp)
+                                                            .width(250.dp)
+                                                            .clickable { },
+                                                        contentScale = ContentScale.FillBounds
                                                     )
                                                 }
-                                                Image(
-                                                    painter = painterResource(id = R.drawable.image),
-                                                    contentDescription = "",
-                                                    modifier = Modifier
-                                                        .padding(end = 12.dp)
-                                                        .height(250.dp)
-                                                        .width(250.dp)
-                                                        .clickable { },
-                                                    contentScale = ContentScale.FillBounds
+                                            }
+                                        }
+                                        if (currentAssignmentData?.size != 0) {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(13.dp, top = 20.dp),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+
+                                                Text(
+                                                    text = "Ongoing Trips ",
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 16.sp,
+                                                        fontWeight = FontWeight.W600,
+                                                        fontFamily = fontStyle
+                                                    )
                                                 )
                                             }
                                         }
-                                    }
-                                    if (currentAssignmentData?.size != 0) {
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(13.dp, top = 20.dp),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-
-                                            Text(
-                                                text = "Ongoing Trips ",
-                                                style = TextStyle(
-                                                    color = Color.Black,
-                                                    fontSize = 16.sp,
-                                                    fontWeight = FontWeight.W600,
-                                                    fontFamily = fontStyle
-                                                )
+                                        Column {
+                                            currentAssignmentData?.let {
+                                                Column {
+                                                    it.take(it.size).forEach { trip ->
+                                                        tripList(trip, onTripSelected)
+                                                    }
+                                                }
+                                            }
+                                            pastTrips(
+                                                navHostController = navController,
+                                                "home",
+                                                onPastTripSelected
                                             )
                                         }
                                     }
-                                    Column {
-                                        currentAssignmentData?.let {
-                                            Column {
-                                                it.take(it.size).forEach { trip ->
-                                                    tripList(trip, onTripSelected)
-                                                }
-                                            }
-                                        }
-                                        pastTrips(
-                                            navHostController = navController,
-                                            "home",
-                                            onPastTripSelected
-                                        )
-                                    }
-                                }
 
-                            } else {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator(
-                                        color = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(48.dp)
-                                    )
-                                    Toast.makeText(
-                                        context,
-                                        "Please connect to a network and restart application",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
                             }
                         }
                     }
                 }
-
             }
+        }
+    }else {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(48.dp)
+            )
+            Toast.makeText(
+                context,
+                "Please connect to a network and restart application",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }

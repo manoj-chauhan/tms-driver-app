@@ -240,6 +240,10 @@ class ParentTripNetRepository @Inject constructor(
                             errorManager.getErrorDescription404(context, "No url found")
                         }
 
+                        if (error.response.statusCode == 400 ) {
+                            errorManager.getErrorDescription400(context, errorResponse)
+                        }
+
                         if(error.response.statusCode == 500){
                             errorManager.getErrorDescription500(context, "Something Went Wrong")
                         }

@@ -1,6 +1,7 @@
 package driver.ui.viewmodels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -63,7 +64,7 @@ class parentTripDetail @Inject constructor(private val parentTripManager: Parent
                     )
                 }
             }else{
-
+                _currentDriver.value?.isloading = true
             }
         }
     }

@@ -48,7 +48,7 @@ class FCMService : FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage);
         val message = remoteMessage.data
         Log.d("This is key1", "onMessageReceived: $message")
-        sendNotification(applicationContext, "remote Trip", "Hii see the trip",message )
+        sendNotification(applicationContext, "DRISHTO Trip", "Some trips changes are done.",message )
     }
 
     private fun createNotificationChannel() {

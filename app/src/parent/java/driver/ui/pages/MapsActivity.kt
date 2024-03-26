@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.net.ConnectivityManager
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +33,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -86,583 +89,621 @@ fun MapsActivityContent(
 ) {
     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-    val vm: parentTripDetail = hiltViewModel()
     val context = LocalContext.current
-
-    val assignmentDetail by vm.assignmentDetail.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
-        vm.fetchTripDetails(context, passengerTripId, navController)
-    }
-    Log.d("Detail", "MapsActivityContent: $assignmentDetail")
-
-    val gradient = Brush.linearGradient(
-        listOf(
-            Color(android.graphics.Color.parseColor("#FFFFFF")),
-            Color(android.graphics.Color.parseColor("#E8F1F8"))
-        ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
-    )
-
-    val gry = Color(android.graphics.Color.parseColor("#838383"))
-    val fontStyle: FontFamily = FontFamily.SansSerif
-    val back = Color(android.graphics.Color.parseColor("#F5F5F5"))
-
-    val inputFormat = SimpleDateFormat("yyyy-MM-dd")
-    val outputFormat = SimpleDateFormat("dd MMM")
-
-    val arrivalTime = SimpleDateFormat("HH:mm:ss")
-    val outputArrivaltime = SimpleDateFormat("hh:mm a")
-
-    val boardingTime = SimpleDateFormat("HH:mm:ss")
-    val outputboardingTime = SimpleDateFormat("hh:mm a")
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val isConnected = runCatching {
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }.getOrDefault(false)
 
 
-    var map by remember { mutableStateOf(false) }
+    if(isConnected) {
+        val vm: parentTripDetail = hiltViewModel()
+        val assignmentDetail by vm.assignmentDetail.collectAsStateWithLifecycle()
+        LaunchedEffect(Unit) {
+            vm.fetchTripDetails(context, passengerTripId, navController)
+        }
+        Log.d("Detail", "MapsActivityContent: $assignmentDetail")
+
+        val gradient = Brush.linearGradient(
+            listOf(
+                Color(android.graphics.Color.parseColor("#FFFFFF")),
+                Color(android.graphics.Color.parseColor("#E8F1F8"))
+            ), start = Offset(0.0f, 90f), end = Offset(0.0f, 200f)
+        )
+
+        val gry = Color(android.graphics.Color.parseColor("#838383"))
+        val fontStyle: FontFamily = FontFamily.SansSerif
+        val back = Color(android.graphics.Color.parseColor("#F5F5F5"))
+
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd")
+        val outputFormat = SimpleDateFormat("dd MMM")
+
+        val arrivalTime = SimpleDateFormat("HH:mm:ss")
+        val outputArrivaltime = SimpleDateFormat("hh:mm a")
+
+        val boardingTime = SimpleDateFormat("HH:mm:ss")
+        val outputboardingTime = SimpleDateFormat("hh:mm a")
 
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+        var map by remember { mutableStateOf(false) }
 
-        Column(
+
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(brush = gradient)
         ) {
-            Box(
+
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 18.dp)
-                    .height(50.dp)
+                    .fillMaxSize()
+                    .background(brush = gradient)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 18.dp)
+                        .height(50.dp)
                 ) {
                     Row(
-                        modifier = Modifier.width(30.dp),
-                        horizontalArrangement = Arrangement.Start
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .height(25.dp)
-                                .clickable {
-                                    navController.popBackStack()
-                                },
-                        )
-                    }
-                    Box(modifier = Modifier.fillMaxWidth(0.65f)) {
-                        Text(
-                            text = "Ongoing Trip ",
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 18.sp,
-                                fontFamily = fontStyle,
-                                fontWeight = FontWeight.W600
+                        Row(
+                            modifier = Modifier.width(30.dp),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.ArrowBack,
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .height(25.dp)
+                                    .clickable {
+                                        navController.popBackStack()
+                                    },
                             )
-                        )
-                    }
+                        }
+                        Box(modifier = Modifier.fillMaxWidth(0.65f)) {
+                            Text(
+                                text = "Ongoing Trip ",
+                                style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 18.sp,
+                                    fontFamily = fontStyle,
+                                    fontWeight = FontWeight.W600
+                                )
+                            )
+                        }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 16.dp), verticalAlignment = Alignment.Bottom
-                    ) {
-                        Button(
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(25.dp)
-                                .align(Alignment.Bottom),
-                            enabled = true,
-                            onClick = {
-                                navController.navigate("map-screen")
-                            },
-                            contentPadding = PaddingValues(),
-                            colors = ButtonDefaults.buttonColors(
-                                Color.Transparent
-                            ),
-                            shape = RoundedCornerShape(40.dp)
+                                .padding(end = 16.dp), verticalAlignment = Alignment.Bottom
                         ) {
-                            val primary = Color(0xFF92A3FD)
-                            val secondary = Color(0XFF9DCEFF)
-                            Box(
+                            Button(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .heightIn(35.dp)
-                                    .align(Alignment.Bottom)
-                                    .background(
-                                        brush = Brush.horizontalGradient(
-                                            listOf(
-                                                primary,
-                                                secondary
-                                            )
-                                        ),
-                                        shape = RoundedCornerShape(40.dp)
-                                    ), contentAlignment = Alignment.Center
+                                    .height(25.dp)
+                                    .align(Alignment.Bottom),
+                                enabled = true,
+                                onClick = {
+                                    navController.navigate("map-screen")
+                                },
+                                contentPadding = PaddingValues(),
+                                colors = ButtonDefaults.buttonColors(
+                                    Color.Transparent
+                                ),
+                                shape = RoundedCornerShape(40.dp)
                             ) {
-                                Row(
-                                    modifier = Modifier,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
+                                val primary = Color(0xFF92A3FD)
+                                val secondary = Color(0XFF9DCEFF)
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(35.dp)
+                                        .align(Alignment.Bottom)
+                                        .background(
+                                            brush = Brush.horizontalGradient(
+                                                listOf(
+                                                    primary,
+                                                    secondary
+                                                )
+                                            ),
+                                            shape = RoundedCornerShape(40.dp)
+                                        ), contentAlignment = Alignment.Center
                                 ) {
-                                    Text(
-                                        text = "View map",
-                                        style = TextStyle(
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.Bold
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = "View map",
+                                            style = TextStyle(
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            Box(
-                modifier = Modifier.fillMaxSize()
-            )
-            {
-                Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 10.dp)) {
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.46f),
-                        shape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp),
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                )
+                {
+                    Column(
+                        modifier = Modifier.padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 10.dp
+                        )
                     ) {
-                        assignmentDetail?.let {
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White,
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.46f),
+                            shape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp),
+                        ) {
+                            assignmentDetail?.let {
 
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(12.dp)
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(12.dp)
                                 ) {
-                                    Text(
-                                        text = it.passengerName,
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 14.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W700
-                                        )
-                                    )
-
-                                    val parsedDate =
-                                        remember(it.tripDate) { inputFormat.parse(it.tripDate) }
-                                    val formattedDate =
-                                        remember(parsedDate) { outputFormat.format(parsedDate) }
-                                    val parsedTime =
-                                        remember(it.tripTime) { arrivalTime.parse(it.tripTime) }
-                                    val formattedTime =
-                                        remember(parsedTime) { outputArrivaltime.format(parsedTime) }
-
-
-
-                                    Text(
-                                        text = formattedDate +" "+ formattedTime,
-                                        style = TextStyle(
-                                            color = gry,
-                                            fontSize = 12.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W600
-                                        )
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(24.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    if(it.status != "TRIP_CREATED" && it.status != "TRIP_STARTED") {
-                                        if(it.delay >0 ) {
-                                            Text(
-                                                text = "Running Late",
-                                                style = TextStyle(
-                                                    color = Color.Black,
-                                                    fontSize = 14.sp,
-                                                    fontFamily = fontStyle,
-                                                    fontWeight = FontWeight.W400
-                                                )
-                                            )
-                                        }else{
-                                            Text(
-                                                text = "Reaching Early",
-                                                style = TextStyle(
-                                                    color = Color.Black,
-                                                    fontSize = 14.sp,
-                                                    fontFamily = fontStyle,
-                                                    fontWeight = FontWeight.W400
-                                                )
-                                            )
-                                        }
-                                    }else{
-
-                                        Text(
-                                            text = it.status.replace("_", " "),
-                                            style = TextStyle(
-                                                color = Color.Black,
-                                                fontSize = 14.sp,
-                                                fontFamily = fontStyle,
-                                                fontWeight = FontWeight.W400
-                                            )
-                                        )
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(4.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "Standard Arrival",
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 12.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                    )
-
-                                    val parsedDeBoardingTime = remember(it.deBoardingTime) {boardingTime.parse(it.deBoardingTime) }
-                                    val formattedDeBoardingTime = remember(parsedDeBoardingTime) { outputboardingTime.format(parsedDeBoardingTime) }
-
-
-
-                                    Text(
-                                        text = formattedDeBoardingTime,
-                                        style = TextStyle(
-                                            color = Color.Gray,
-                                            fontSize = 12.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(24.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "Boarding Place",
-                                        style = TextStyle(
-                                            color = gry,
-                                            fontSize = 12.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(4.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = it.boardingPlaceName,
-                                        style = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 12.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                    )
-
-                                    val parsedBoardingTime =
-                                        remember(it.boardingTime) { boardingTime.parse(it.boardingTime) }
-                                    val formattedBoardingTime = remember(parsedBoardingTime) {
-                                        outputboardingTime.format(parsedBoardingTime)
-                                    }
-
-                                    Text(
-                                        text = formattedBoardingTime,
-                                        style = TextStyle(
-                                            color = Color.Gray,
-                                            fontSize = 12.sp,
-                                            fontFamily = fontStyle,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(27.dp))
-                                if (it.vehicleNumber != null && it.driverName != null) {
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
+                                        Text(
+                                            text = it.passengerName,
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 14.sp,
+                                                fontFamily = fontStyle,
+                                                fontWeight = FontWeight.W700
+                                            )
+                                        )
 
-                                        Row(
-                                            modifier = Modifier
-                                                .background(
-                                                    color = back,
-                                                    shape = RoundedCornerShape(5.dp)
-                                                )
-                                                .width(140.dp)
-                                                .padding(5.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            it.vehicleNumber?.let { it1 ->
-                                                Text(
-                                                    text = it1,
-                                                    style = TextStyle(
-                                                        color = Color.Black,
-                                                        fontSize = 11.sp,
-                                                        fontFamily = fontStyle,
-                                                        fontWeight = FontWeight.W400
-                                                    )
+                                        val parsedDate =
+                                            remember(it.tripDate) { inputFormat.parse(it.tripDate) }
+                                        val formattedDate =
+                                            remember(parsedDate) { outputFormat.format(parsedDate) }
+                                        val parsedTime =
+                                            remember(it.tripTime) { arrivalTime.parse(it.tripTime) }
+                                        val formattedTime =
+                                            remember(parsedTime) {
+                                                outputArrivaltime.format(
+                                                    parsedTime
                                                 )
                                             }
-                                        }
 
-                                        Row(
-                                            modifier = Modifier
-                                                .background(
-                                                    color = back,
-                                                    shape = RoundedCornerShape(5.dp)
-                                                )
-                                                .width(140.dp)
-                                                .padding(5.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            it.driverName?.let { it1 ->
-                                                Text(
-                                                    text = it1,
-                                                    style = TextStyle(
-                                                        color = Color.Black,
-                                                        fontSize = 11.sp,
-                                                        fontFamily = fontStyle,
-                                                        fontWeight = FontWeight.W400
-                                                    )
-                                                )
-                                            }
-                                        }
 
+
+                                        Text(
+                                            text = formattedDate + " " + formattedTime,
+                                            style = TextStyle(
+                                                color = gry,
+                                                fontSize = 12.sp,
+                                                fontFamily = fontStyle,
+                                                fontWeight = FontWeight.W600
+                                            )
+                                        )
                                     }
-                                }
 
-                                Spacer(modifier = Modifier.height(27.dp))
+                                    Spacer(modifier = Modifier.height(24.dp))
 
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        if (it.status != "TRIP_CREATED" && it.status != "TRIP_STARTED") {
+                                            if (it.delay > 0) {
+                                                Text(
+                                                    text = "Running Late",
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 14.sp,
+                                                        fontFamily = fontStyle,
+                                                        fontWeight = FontWeight.W400
+                                                    )
+                                                )
+                                            } else {
+                                                Text(
+                                                    text = "Reaching Early",
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 14.sp,
+                                                        fontFamily = fontStyle,
+                                                        fontWeight = FontWeight.W400
+                                                    )
+                                                )
+                                            }
+                                        } else {
+
+                                            Text(
+                                                text = it.status.replace("_", " "),
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 14.sp,
+                                                    fontFamily = fontStyle,
+                                                    fontWeight = FontWeight.W400
+                                                )
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(4.dp))
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "Standard Arrival",
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 12.sp,
+                                                fontFamily = fontStyle,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                        )
+
+                                        val parsedDeBoardingTime =
+                                            remember(it.deBoardingTime) { boardingTime.parse(it.deBoardingTime) }
+                                        val formattedDeBoardingTime =
+                                            remember(parsedDeBoardingTime) {
+                                                outputboardingTime.format(parsedDeBoardingTime)
+                                            }
+
+
+
+                                        Text(
+                                            text = formattedDeBoardingTime,
+                                            style = TextStyle(
+                                                color = Color.Gray,
+                                                fontSize = 12.sp,
+                                                fontFamily = fontStyle,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.height(24.dp))
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "Boarding Place",
+                                            style = TextStyle(
+                                                color = gry,
+                                                fontSize = 12.sp,
+                                                fontFamily = fontStyle,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.height(4.dp))
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = it.boardingPlaceName,
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 12.sp,
+                                                fontFamily = fontStyle,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                        )
+
+                                        val parsedBoardingTime =
+                                            remember(it.boardingTime) { boardingTime.parse(it.boardingTime) }
+                                        val formattedBoardingTime = remember(parsedBoardingTime) {
+                                            outputboardingTime.format(parsedBoardingTime)
+                                        }
+
+                                        Text(
+                                            text = formattedBoardingTime,
+                                            style = TextStyle(
+                                                color = Color.Gray,
+                                                fontSize = 12.sp,
+                                                fontFamily = fontStyle,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.height(27.dp))
+                                    if (it.vehicleNumber != null && it.driverName != null) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+
+                                            Row(
+                                                modifier = Modifier
+                                                    .background(
+                                                        color = back,
+                                                        shape = RoundedCornerShape(5.dp)
+                                                    )
+                                                    .width(140.dp)
+                                                    .padding(5.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Center
+                                            ) {
+                                                it.vehicleNumber?.let { it1 ->
+                                                    Text(
+                                                        text = it1,
+                                                        style = TextStyle(
+                                                            color = Color.Black,
+                                                            fontSize = 11.sp,
+                                                            fontFamily = fontStyle,
+                                                            fontWeight = FontWeight.W400
+                                                        )
+                                                    )
+                                                }
+                                            }
+
+                                            Row(
+                                                modifier = Modifier
+                                                    .background(
+                                                        color = back,
+                                                        shape = RoundedCornerShape(5.dp)
+                                                    )
+                                                    .width(140.dp)
+                                                    .padding(5.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Center
+                                            ) {
+                                                it.driverName?.let { it1 ->
+                                                    Text(
+                                                        text = it1,
+                                                        style = TextStyle(
+                                                            color = Color.Black,
+                                                            fontSize = 11.sp,
+                                                            fontFamily = fontStyle,
+                                                            fontWeight = FontWeight.W400
+                                                        )
+                                                    )
+                                                }
+                                            }
+
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(27.dp))
+
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .fillMaxHeight(0.5f)
                                     ) {
-                                        Row(modifier = Modifier.fillMaxWidth(1f)) {
-                                            Column(modifier = Modifier.fillMaxWidth(0.6f)) {
-                                                Text(
-                                                    text = "Estimated Distance ",
-                                                    style = TextStyle(
-                                                        color = gry,
-                                                        fontSize = 12.sp,
-                                                        fontFamily = fontStyle,
-                                                        fontWeight = FontWeight.W400
-                                                    )
-                                                )
-                                                val estimatedDistance = it.estDistance.div(1000)
-                                                if(estimatedDistance >1) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight(0.5f)
+                                        ) {
+                                            Row(modifier = Modifier.fillMaxWidth(1f)) {
+                                                Column(modifier = Modifier.fillMaxWidth(0.6f)) {
                                                     Text(
-                                                        text = "$estimatedDistance km",
+                                                        text = "Estimated Distance ",
                                                         style = TextStyle(
-                                                            color = Color.Black,
+                                                            color = gry,
                                                             fontSize = 12.sp,
                                                             fontFamily = fontStyle,
                                                             fontWeight = FontWeight.W400
                                                         )
                                                     )
-                                                }else{
-                                                    Text(
-                                                        text = "${it.estDistance.toInt()} m",
-                                                        style = TextStyle(
-                                                            color = Color.Black,
-                                                            fontSize = 12.sp,
-                                                            fontFamily = fontStyle,
-                                                            fontWeight = FontWeight.W400
+                                                    val estimatedDistance = it.estDistance.div(1000)
+                                                    if (estimatedDistance > 1) {
+                                                        Text(
+                                                            text = "$estimatedDistance km",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 12.sp,
+                                                                fontFamily = fontStyle,
+                                                                fontWeight = FontWeight.W400
+                                                            )
                                                         )
-                                                    )
+                                                    } else {
+                                                        Text(
+                                                            text = "${it.estDistance.toInt()} m",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 12.sp,
+                                                                fontFamily = fontStyle,
+                                                                fontWeight = FontWeight.W400
+                                                            )
+                                                        )
+                                                    }
                                                 }
-                                            }
-                                            Column(modifier = Modifier.fillMaxWidth()) {
-                                                Text(
-                                                    text = "Distance Covered",
-                                                    style = TextStyle(
-                                                        color = gry,
-                                                        fontSize = 12.sp,
-                                                        fontFamily = fontStyle,
-                                                        fontWeight = FontWeight.W400
-                                                    )
-                                                )
-                                                val travelDistance =
-                                                    it.travelDistance.div(1000)
-                                                if(travelDistance >1) {
+                                                Column(modifier = Modifier.fillMaxWidth()) {
                                                     Text(
-                                                        text = "$travelDistance km",
+                                                        text = "Distance Covered",
                                                         style = TextStyle(
-                                                            color = Color.Black,
+                                                            color = gry,
                                                             fontSize = 12.sp,
                                                             fontFamily = fontStyle,
                                                             fontWeight = FontWeight.W400
                                                         )
                                                     )
-                                                }else{
-                                                    Text(
-                                                        text = "${it.travelDistance.toInt()} m",
-                                                        style = TextStyle(
-                                                            color = Color.Black,
-                                                            fontSize = 12.sp,
-                                                            fontFamily = fontStyle,
-                                                            fontWeight = FontWeight.W400
+                                                    val travelDistance =
+                                                        it.travelDistance.div(1000)
+                                                    if (travelDistance > 1) {
+                                                        Text(
+                                                            text = "$travelDistance km",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 12.sp,
+                                                                fontFamily = fontStyle,
+                                                                fontWeight = FontWeight.W400
+                                                            )
                                                         )
-                                                    )
+                                                    } else {
+                                                        Text(
+                                                            text = "${it.travelDistance.toInt()} m",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 12.sp,
+                                                                fontFamily = fontStyle,
+                                                                fontWeight = FontWeight.W400
+                                                            )
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                    Spacer(modifier = Modifier.height(2.dp))
+                                        Spacer(modifier = Modifier.height(2.dp))
 
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .fillMaxHeight(1f)
-                                    ) {
-                                        Row(modifier = Modifier.fillMaxWidth(1f)) {
-                                            Column(modifier = Modifier.fillMaxWidth(0.6f)) {
-                                                Text(
-                                                    text = "Estimated Time ",
-                                                    style = TextStyle(
-                                                        color = gry,
-                                                        fontSize = 12.sp,
-                                                        fontFamily = fontStyle,
-                                                        fontWeight = FontWeight.W400
-                                                    )
-                                                )
-                                                val estimatedTimeHours: Int =
-                                                    it.estTime.div(60).toInt()
-
-                                                if (estimatedTimeHours == 0) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight(1f)
+                                        ) {
+                                            Row(modifier = Modifier.fillMaxWidth(1f)) {
+                                                Column(modifier = Modifier.fillMaxWidth(0.6f)) {
                                                     Text(
-                                                        text = "${
-                                                            it.estTime.rem(
-                                                                60
-                                                            ).toInt()
-                                                        }" + " min",
+                                                        text = "Estimated Time ",
                                                         style = TextStyle(
-                                                            color = Color.Black,
+                                                            color = gry,
                                                             fontSize = 12.sp,
                                                             fontFamily = fontStyle,
                                                             fontWeight = FontWeight.W400
                                                         )
                                                     )
-                                                } else {
-                                                    Text(
-                                                        text = "${
-                                                            it.estTime.div(
-                                                                60
+                                                    val estimatedTimeHours: Int =
+                                                        it.estTime.div(60).toInt()
+
+                                                    if (estimatedTimeHours == 0) {
+                                                        Text(
+                                                            text = "${
+                                                                it.estTime.rem(
+                                                                    60
+                                                                ).toInt()
+                                                            }" + " min",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 12.sp,
+                                                                fontFamily = fontStyle,
+                                                                fontWeight = FontWeight.W400
                                                             )
-                                                        }" + " hr " + "${
-                                                            it.estTime.rem(
-                                                                60
+                                                        )
+                                                    } else {
+                                                        Text(
+                                                            text = "${
+                                                                it.estTime.div(
+                                                                    60
+                                                                )
+                                                            }" + " hr " + "${
+                                                                it.estTime.rem(
+                                                                    60
+                                                                )
+                                                            }" + " min",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 12.sp,
+                                                                fontFamily = fontStyle,
+                                                                fontWeight = FontWeight.W400
                                                             )
-                                                        }" + " min",
-                                                        style = TextStyle(
-                                                            color = Color.Black,
-                                                            fontSize = 12.sp,
-                                                            fontFamily = fontStyle,
-                                                            fontWeight = FontWeight.W400
                                                         )
-                                                    )
+                                                    }
                                                 }
-                                            }
-                                            Column(modifier = Modifier.fillMaxWidth()) {
-                                                Text(
-                                                    text = "Travel Time",
-                                                    style = TextStyle(
-                                                        color = gry,
-                                                        fontSize = 12.sp,
-                                                        fontFamily = fontStyle,
-                                                        fontWeight = FontWeight.W400
+                                                Column(modifier = Modifier.fillMaxWidth()) {
+                                                    Text(
+                                                        text = "Travel Time",
+                                                        style = TextStyle(
+                                                            color = gry,
+                                                            fontSize = 12.sp,
+                                                            fontFamily = fontStyle,
+                                                            fontWeight = FontWeight.W400
+                                                        )
                                                     )
-                                                )
-                                                val travelTimeHours: Int =
-                                                    it.travelTime.div(60).toInt()
+                                                    val travelTimeHours: Int =
+                                                        it.travelTime.div(60).toInt()
 
-                                                if (travelTimeHours == 0) {
-                                                    Text(
-                                                        text = "${
-                                                            it.travelTime.rem(
-                                                                60
-                                                            ).toInt()
-                                                        }" + " min",
-                                                        style = TextStyle(
-                                                            color = Color.Black,
-                                                            fontSize = 12.sp,
-                                                            fontFamily = fontStyle,
-                                                            fontWeight = FontWeight.W400
+                                                    if (travelTimeHours == 0) {
+                                                        Text(
+                                                            text = "${
+                                                                it.travelTime.rem(
+                                                                    60
+                                                                ).toInt()
+                                                            }" + " min",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 12.sp,
+                                                                fontFamily = fontStyle,
+                                                                fontWeight = FontWeight.W400
+                                                            )
                                                         )
-                                                    )
-                                                } else {
-                                                    Text(
-                                                        text = "${
-                                                            it.travelTime.div(
-                                                                60
-                                                            ).toInt()
-                                                        }" + " hr " + "${
-                                                            it.travelTime.rem(
-                                                                60
-                                                            ).toInt()
-                                                        }" + " min",
-                                                        style = TextStyle(
-                                                            color = Color.Black,
-                                                            fontSize = 12.sp,
-                                                            fontFamily = fontStyle,
-                                                            fontWeight = FontWeight.W400
+                                                    } else {
+                                                        Text(
+                                                            text = "${
+                                                                it.travelTime.div(
+                                                                    60
+                                                                ).toInt()
+                                                            }" + " hr " + "${
+                                                                it.travelTime.rem(
+                                                                    60
+                                                                ).toInt()
+                                                            }" + " min",
+                                                            style = TextStyle(
+                                                                color = Color.Black,
+                                                                fontSize = 12.sp,
+                                                                fontFamily = fontStyle,
+                                                                fontWeight = FontWeight.W400
+                                                            )
                                                         )
-                                                    )
+                                                    }
                                                 }
-                                            }
 
+                                            }
                                         }
                                     }
+
                                 }
-
                             }
                         }
                     }
+
                 }
-
             }
-        }
 
+        }
+    }else {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(48.dp)
+            )
+            Toast.makeText(
+                context,
+                "Please connect to a network and restart application",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }
 
@@ -681,13 +722,26 @@ fun GoogleMapView(
 
     val context = LocalContext.current
     val currentDriver by vm.currentDriver.collectAsStateWithLifecycle()
-    if (currentDriver?.isloading != true) {
-        vm.fetchDriverLocation(passengerTripId = passengerTripId)
+
+    LaunchedEffect(Unit) {
+        if (currentDriver?.isloading != true) {
+            vm.fetchDriverLocation(passengerTripId = passengerTripId)
+        }
     }
 
     val tripRoute by vm.points.collectAsStateWithLifecycle()
     LaunchedEffect(currentDriver) {
         vm.fetchTripRouteCoordinates(passengerTripId)
+    }
+
+    if(tripRoute == null){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LoadingDialog()
+        }
     }
 
     var circularIndicator by remember { mutableStateOf(false) }
@@ -764,7 +818,7 @@ fun GoogleMapView(
                                     modifier = Modifier
                                         .size(30.dp)
                                 )
-                                if (currentDriver?.isloading == true) {
+                                if (currentDriver?.isloading == true || currentDriver?.driver == null) {
                                     circularIndicator = false
                                 }
                             } else {

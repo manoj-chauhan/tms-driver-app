@@ -104,4 +104,26 @@ class ErrorMangerImpl @Inject constructor(
                 .show()
         }
     }
+
+    override fun getErrorDescription400(context: Context, error: String) {
+        try {
+            val moshi = Moshi.Builder().build()
+            val adapter: JsonAdapter<errorDescription> = moshi.adapter(errorDescription::class.java)
+            val errorResponse = adapter.fromJson(error)
+
+            val handler = Handler(Looper.getMainLooper())
+
+            if (errorResponse != null) {
+                handler.post {
+
+                    Toast.makeText(context, errorResponse.errorShortDescription, Toast.LENGTH_SHORT)
+                        .show()
+                }
+            } else {
+                Toast.makeText(context, "API Request Failed", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Error) {
+            Toast.makeText(context, "API Request Failed", Toast.LENGTH_SHORT).show()
+        }
+    }
 }

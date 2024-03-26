@@ -13,4 +13,5 @@ interface ErrManager {
     fun getErrorDescription401(context: Context, error: String)
      fun getErrorDescription403(context: Context, error: String)
      fun getErrorDescription404(context: Context, errorResponse: String)
+     fun getErrorDescription400(context: Context, errorResponse: String)
 }
