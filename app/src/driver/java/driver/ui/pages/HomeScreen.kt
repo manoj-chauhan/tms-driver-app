@@ -395,6 +395,8 @@ fun HomeScreen(
                                                                     }
                                                                 }
                                                             }
+                                                        }else{
+                                                            permit = true
                                                         }
                                                     }
                                                     Column {
@@ -504,6 +506,8 @@ fun HomeScreen(
         TripLocationPermission {
             permit = it
         }
+
+        permit = false
     }
 
     if (userProfile) {

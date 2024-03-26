@@ -89,7 +89,7 @@ fun StartTripDialog(tripId:Int,operatorId: Int, tripCode:String,setShowDialog: (
                                         "Location",
                                         "LocationPermissionCheck: dialog is DOne ",
                                     )
-                                    // vm.startTrip(context, tripId, tripCode, operatorId)
+                                     vm.startTrip(context, tripId, tripCode, operatorId)
                                     val location = Intent(
                                         context,
                                         LocationService::class.java

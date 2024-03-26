@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
 import android.provider.Settings
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.drishto.driver.LocationService
-import driver.ui.pages.LocationDisabledDialog
 
 @Composable
 fun TripLocationPermission(setShowDialog: (Boolean) -> Unit) {
@@ -69,7 +67,7 @@ fun TripLocationPermission(setShowDialog: (Boolean) -> Unit) {
 
                     ) {
                         Text(
-                            text = "A trip is assigned to you, if you want to operate trip. Allow Location",
+                            text = "A trip is assigned to you, if you want to operate trip. Allow Location?",
                             style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 16.sp)
                         )
                     }
@@ -79,16 +77,17 @@ fun TripLocationPermission(setShowDialog: (Boolean) -> Unit) {
                             onClick = {
                                 if (!locationEnabledState.value) {
                                     context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                                    setShowDialog(false)
+
                                 } else {
-                                    // vm.startTrip(context, tripId, tripCode, operatorId)
                                     val location = Intent(
                                         context,
                                         LocationService::class.java
                                     )
                                     context.startForegroundService(location)
-                                }
-                                setShowDialog(false)
+                                    setShowDialog(false)
 
+                                }
                             },
                             shape = RoundedCornerShape(50.dp)
                         ) {
@@ -108,11 +107,16 @@ fun TripLocationPermission(setShowDialog: (Boolean) -> Unit) {
                     }
                 }
             }
-            if(locationEnabled){
-                Log.d("TAG", "TripLocationPermission: ")
-                LocationDisabledDialog()
-            }
 
+            if(locationEnabledState.value){
+                val location = Intent(
+                    context,
+                    LocationService::class.java
+                )
+                context.startForegroundService(location)
+                setShowDialog(false)
+
+            }
         }
     }
 }
