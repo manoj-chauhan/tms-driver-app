@@ -16,7 +16,7 @@ android {
         applicationId = "com.drishto"
         minSdk = 26
         targetSdk = 34
-        versionCode = 18
+        versionCode = 19
         versionName = "1.0-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

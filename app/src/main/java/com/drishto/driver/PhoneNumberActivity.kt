@@ -365,6 +365,7 @@ class PhoneNumberActivity : ComponentActivity() {
                                 text = newValue
                             }
                         },
+                        enabled = isButtonEnabled,
                         colors = OutlinedTextFieldDefaults.colors(
                             cursorColor = primary,
                             focusedBorderColor = primary,

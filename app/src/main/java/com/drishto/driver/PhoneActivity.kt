@@ -42,13 +42,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -130,11 +127,6 @@ class OTPActivity() : ComponentActivity() {
             val app_name: String = getString(R.string.app_name).toUpperCase()
 
             val lastTwoDigit = phoneNumber.substring(phoneNumber.length - 2)
-
-            val focusRequesters = remember { Array(6) { FocusRequester() } }
-            val focusManager = LocalFocusManager.current
-            val keyboardController = LocalSoftwareKeyboardController.current
-
             var countdownSeconds by remember { mutableStateOf(30) }
             var isResendEnabled by remember { mutableStateOf(false) }
             val gradient = Brush.linearGradient(

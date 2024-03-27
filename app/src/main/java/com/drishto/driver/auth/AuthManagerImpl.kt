@@ -34,9 +34,10 @@ class AuthManagerImpl @Inject constructor(private val authNetRepo: AuthNetReposi
                     fcmToken,
                     deviceIdentifier,
                     deviceName,
-                    "ANDROID"
+                    "ANDROID",
+                    context.packageName
                 )
-                Log.i("Login", deviceRegDetail.toString())
+                Log.i("Login"," ${deviceRegDetail.toString()}${context.packageName}")
                 authNetRepo.registerDevice(context, authToken, deviceRegDetail)
                 saveAccessToken(context, authToken)
                 CoroutineScope(Dispatchers.Main).launch {

@@ -114,7 +114,7 @@ fun UserProfile(activity: ComponentActivity) {
     val buildVariantField: Field = buildConfigClass.getDeclaredField("BUILD_VARIANT")
     val buildVariantValue: String = buildVariantField.get(null) as String
 
-    Log.d("This is value ", "UserProfile: $buildVariantValue")
+    Log.d("This is value ", "UserProfile: ${context.packageName}")
 
     val userProfile by vm.userImage.collectAsStateWithLifecycle()
     LaunchedEffect(userDetail) {
@@ -315,7 +315,6 @@ fun UserProfile(activity: ComponentActivity) {
                     Spacer(modifier = Modifier.height(20.dp))
                     if (filteredCompanies != null) {
                             companyList(filteredCompanies)
-                            Log.d("Variant", "UserProfile: $buildVariantValue")
                         }
                 }
             }

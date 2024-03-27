@@ -394,6 +394,9 @@ fun HomeScreen(
                                                         }else{
                                                             permit = true
                                                         }
+                                                        if(service && !locationEnabledState.value)  {
+                                                            permit = true
+                                                        }
                                                     }
                                                     Column {
                                                         if (it.trips != null) {

@@ -2,12 +2,12 @@ package com.drishto.driver.network
 
 import android.content.Context
 import android.util.Log
+import com.drishto.driver.R
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
-import com.drishto.driver.R
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
@@ -24,7 +24,8 @@ data class DeviceRegistrationDetail(
     val fcmToken: String,
     val deviceIdentifier: String,
     val deviceName: String,
-    val typeCode: String
+    val typeCode: String,
+    val appName: String
 )
 
 
