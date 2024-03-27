@@ -115,7 +115,7 @@ fun AssignmentDetailScreen(
     val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     val locationEnabledState = rememberUpdatedState(isLocationEnabled)
 
-    if(assignment?.tripDetail?.status == "TRIP_STARTED" && (!locationEnabledState.value)){
+    if(assignment?.tripDetail?.status != "TRIP_CREATED" && (!locationEnabledState.value)){
         Log.d("TAG", "AssignmentDetailScreen: ")
         permit = true
     }

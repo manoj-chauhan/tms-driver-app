@@ -78,7 +78,6 @@ fun TripLocationPermission(setShowDialog: (Boolean) -> Unit) {
                                 if (!locationEnabledState.value) {
                                     context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                                     setShowDialog(false)
-
                                 } else {
                                     val location = Intent(
                                         context,
@@ -86,7 +85,6 @@ fun TripLocationPermission(setShowDialog: (Boolean) -> Unit) {
                                     )
                                     context.startForegroundService(location)
                                     setShowDialog(false)
-
                                 }
                             },
                             shape = RoundedCornerShape(50.dp)
@@ -115,7 +113,6 @@ fun TripLocationPermission(setShowDialog: (Boolean) -> Unit) {
                 )
                 context.startForegroundService(location)
                 setShowDialog(false)
-
             }
         }
     }

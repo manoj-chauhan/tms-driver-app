@@ -80,6 +80,19 @@ import driver.ui.viewmodels.TripsAssigned
 import java.text.SimpleDateFormat
 
 
+fun isLocationServiceRunning(
+    context: Context,
+    serviceClass: Class<*>
+): Boolean {
+    val manager =
+        context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+        if (serviceClass.name == service.service.className) {
+            return true
+        }
+    }
+    return false
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
@@ -105,12 +118,6 @@ fun HomeScreen(
         activeNetworkInfo != null && activeNetworkInfo.isConnected
     }.getOrDefault(false)
 
-    val driverPlanData by vm.driverPlan.collectAsStateWithLifecycle()
-    vm.driverPlanAssignment(context = context)
-
-    Log.d("TAG", "HomeScreen: $driverPlanData")
-
-
     var locations by remember {
         mutableStateOf(false)
     }
@@ -128,8 +135,6 @@ fun HomeScreen(
     }
 
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
-    // Check if location is enabled
     val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     val locationEnabledState = rememberUpdatedState(isLocationEnabled)
 
@@ -160,19 +165,11 @@ fun HomeScreen(
                             val currentAssignmentData by vm.currentAssignment.collectAsStateWithLifecycle()
                             vm.fetchAssignmentDetail(context = context)
 
-                            fun isLocationServiceRunning(
-                                context: Context,
-                                serviceClass: Class<*>
-                            ): Boolean {
-                                val manager =
-                                    context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                                for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
-                                    if (serviceClass.name == service.service.className) {
-                                        return true
-                                    }
-                                }
-                                return false
-                            }
+                            val driverPlanData by vm.driverPlan.collectAsStateWithLifecycle()
+                            vm.driverPlanAssignment(context = context)
+
+                            Log.d("TAG", "HomeScreen: $driverPlanData")
+
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -352,11 +349,7 @@ fun HomeScreen(
                                                 } else {
                                                     if (isAnyTripStarted) {
                                                         val loc = LocationService::class.java
-                                                        val service =
-                                                            isLocationServiceRunning(context, loc)
-                                                        if(!locationEnabledState.value){
-                                                            permit = true
-                                                        }
+                                                        val service = isLocationServiceRunning(context, loc)
                                                         if(service) {
                                                             Column(modifier = Modifier.fillMaxWidth()) {
                                                                 Image(
@@ -506,11 +499,9 @@ fun HomeScreen(
     }
 
     if (permit) {
-        TripLocationPermission {
-            permit = it
-        }
-
-        permit = false
+        TripLocationPermission (
+            setShowDialog = { permit = it }
+        )
     }
 
     if (userProfile) {

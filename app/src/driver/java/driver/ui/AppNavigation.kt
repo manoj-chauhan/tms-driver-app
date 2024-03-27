@@ -2,7 +2,6 @@ package com.drishto.driver.ui
 
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,7 +18,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.drishto.driver.LocationService
 import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.models.ChildrenList
 import com.drishto.driver.network.getAccessToken
@@ -70,32 +68,17 @@ fun AppNavigationHost(
 
     var childrenList : ChildrenList? = null
 
-
-    var startScreen:String
-
-    getAccessToken(LocalContext.current)?.let {
-        startScreen = "home"
+    var startScreen: String by remember {
+        mutableStateOf(
+            if (getAccessToken(context) != null) "home" else "login"
+        )
     }
-
-    val accessToken = getAccessToken(LocalContext.current)
-
-    if (accessToken != null) {
-            startScreen = "home"
-    } else {
-        val location = Intent(context, LocationService::class.java)
-        context.stopService(location)
-        Log.d("TAG", "AppNavigationHost: No auth token present ")
-        startScreen = "login"
-    }
-
 
     if (startScreen == "login") {
         val myIntent = Intent(LocalContext.current, PhoneNumberActivity::class.java)
         myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         LocalContext.current.startActivity(myIntent)
     }
-
-
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
