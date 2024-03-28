@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.models.ParentTripDetail
+import driver.models.TripRouteResult
 import driver.models.loaderMap
 import driver.models.point
 import driver.tripManagement.ParentTripManager
@@ -29,12 +30,23 @@ class parentTripDetail @Inject constructor(private val parentTripManager: Parent
     private val  _points: MutableStateFlow<List<point>?> = MutableStateFlow(null)
     val points: StateFlow<List<point>?> = _points.asStateFlow()
 
+    private val _error = MutableStateFlow<String>("")
+    val error: StateFlow<String> get() = _error.asStateFlow()
+
 
     fun fetchTripRouteCoordinates(passengerTripId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val pointList = parentTripManager.getTripLatLon(passengerTripId)
-            _points.update { _ ->
-                pointList
+//            val pointList = parentTripManager.getTripLatLon(passengerTripId)
+            val result = parentTripManager.getTripLatLon(passengerTripId)
+            when (result) {
+                is TripRouteResult.Success -> {
+                    _points.update { result.points }
+                }
+                is TripRouteResult.Error -> {
+                    _error.update {  (result.message)}
+
+                    Log.d("Error in Route", "fetchTripRouteCoordinates: ${result.message}")
+                }
             }
         }
     }

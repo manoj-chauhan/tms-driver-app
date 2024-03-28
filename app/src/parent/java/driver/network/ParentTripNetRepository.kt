@@ -18,6 +18,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import driver.models.ParentPastTrip
 import driver.models.ParentTrip
 import driver.models.ParentTripDetail
+import driver.models.TripRouteResult
 import driver.models.currentDriverLocation
 import driver.models.point
 import org.greenrobot.eventbus.EventBus
@@ -74,7 +75,7 @@ class ParentTripNetRepository @Inject constructor(
         }
     }
 
-    fun fetchTripRouteCoor(passengerTripId: Int): List<point>? {
+    fun fetchTripRouteCoor(passengerTripId: Int): TripRouteResult {
         val assignedTripType = Types.newParameterizedType(List::class.java, point::class.java)
         val adapter: JsonAdapter<List<point>> = Moshi.Builder().build().adapter(assignedTripType)
 
@@ -88,34 +89,26 @@ class ParentTripNetRepository @Inject constructor(
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(adapter))
                 result.fold(
-                    {
+                    {points ->
+                        TripRouteResult.Success(points)
+
                     },
                     { error ->
                         EventBus.getDefault().post("AUTH_FAILED")
                         val errorResponse = error.response.data.toString(Charsets.UTF_8)
-                        if (error.response.statusCode == 401) {
-                            errorManager.getErrorDescription401(context, errorResponse)
-                           return null
+                        val errorMessage = when (error.response.statusCode) {
+                            401 -> errorManager.getErrorRouteDescription401(context, errorResponse)
+                            403 -> errorManager.getErrorRouteDescription403(context, errorResponse)
+                            404 -> errorManager.getErrorRouteDescription404(context, "No URL found")
+                            500 -> errorManager.getErrorRouteDescription500(context, "Something Went Wrong")
+                            else -> "Unknown error"
                         }
-
-                        if (error.response.statusCode == 403 ) {
-                            errorManager.getErrorDescription403(context, errorResponse)
-                        }
-
-                        if (error.response.statusCode == 404 ) {
-                            errorManager.getErrorDescription404(context, "No url found")
-                        }
-
-                        if(error.response.statusCode == 500){
-                            errorManager.getErrorDescription500(context, "Something Went Wrong")
-                        }
+                        TripRouteResult.Error(errorMessage)
                     }
                 )
-
-                result.get()
-            }
+            } ?: TripRouteResult.Error("Access token is null")
         } catch (e: Exception) {
-            null
+            TripRouteResult.Error("Exception occurred: ${e.message}")
         }
     }
     fun fetchPastTrips(): List<ParentPastTrip>? {

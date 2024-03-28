@@ -730,17 +730,19 @@ fun GoogleMapView(
     }
 
     val tripRoute by vm.points.collectAsStateWithLifecycle()
+    val error by vm.error.collectAsStateWithLifecycle()
+
     LaunchedEffect(currentDriver) {
         vm.fetchTripRouteCoordinates(passengerTripId)
     }
 
-    if(tripRoute == null){
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+    if(error != null){
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            LoadingDialog()
+            Row (modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
+                Text(text = error, style = TextStyle(color = Color.Red))
+            }
         }
     }
 

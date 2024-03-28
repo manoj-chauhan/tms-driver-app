@@ -5,13 +5,13 @@ import driver.models.ParentPastTrip
 import driver.models.ParentTrip
 import driver.models.ParentTripDetail
 import driver.models.PlaceInfo
+import driver.models.TripRouteResult
 import driver.models.currentDriverLocation
-import driver.models.point
 
 interface ParentTripManager {
 
     fun getActiveTrips(): List<ParentTrip>?
-    fun getTripLatLon(passengerTripId: Int): List<point>?
+    fun getTripLatLon(passengerTripId: Int): TripRouteResult
 
     fun getPastTrips(): List<ParentPastTrip>?
 

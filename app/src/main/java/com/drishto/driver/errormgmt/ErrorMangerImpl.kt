@@ -126,4 +126,24 @@ class ErrorMangerImpl @Inject constructor(
             Toast.makeText(context, "API Request Failed", Toast.LENGTH_SHORT).show()
         }
     }
+
+    override fun getErrorRouteDescription401(context: Context, errorResponse: String): String {
+        // Return the error message instead of showing a toast
+        return "Unauthorized: $errorResponse"
+    }
+
+    override fun getErrorRouteDescription403(context: Context, errorResponse: String): String {
+        // Return the error message instead of showing a toast
+        return "Forbidden: $errorResponse"
+    }
+
+    override fun getErrorRouteDescription404(context: Context, message: String): String {
+        // Return the error message instead of showing a toast
+        return "Not Found: $message"
+    }
+
+    override fun getErrorRouteDescription500(context: Context, message: String): String {
+        // Return the error message instead of showing a toast
+        return "Internal Server Error: $message"
+    }
 }
