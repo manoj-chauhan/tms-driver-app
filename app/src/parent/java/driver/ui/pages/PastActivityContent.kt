@@ -85,10 +85,10 @@ fun PastActivityContent(
     val outputFormat = SimpleDateFormat("dd MMM")
 
     val arrivalTime = SimpleDateFormat("HH:mm:ss")
-    val outputArrivaltime = SimpleDateFormat(" HH:mm")
+    val outputArrivaltime = SimpleDateFormat(" HH:mm a")
 
     val boardingTime = SimpleDateFormat("HH:mm:ss")
-    val outputboardingTime = SimpleDateFormat(" HH:mm")
+    val outputboardingTime = SimpleDateFormat(" HH:mm a")
 
     var map by remember { mutableStateOf(false) }
 
@@ -427,7 +427,7 @@ fun PastActivityContent(
                                                 val estimatedDistance = it.estDistance.div(1000)
                                                 if(estimatedDistance >1) {
                                                     Text(
-                                                        text = "$estimatedDistance km",
+                                                        text = "${estimatedDistance.toInt()} km",
                                                         style = TextStyle(
                                                             color = Color.Black,
                                                             fontSize = 12.sp,

@@ -319,7 +319,7 @@ fun tripList(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
                     val estimatedDistance = trip.estDistance.div(1000)
                     if(estimatedDistance >1) {
                         Text(
-                            text = "$estimatedDistance km",
+                            text = "${estimatedDistance.toInt()} km",
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 12.sp,

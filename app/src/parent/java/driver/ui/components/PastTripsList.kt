@@ -220,6 +220,7 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
     val parsedTime = remember(trip.tripTime) {tripTime.parse(trip.tripTime) }
     val formattedTime = remember(parsedTime) { outputtripTime.format(parsedTime) }
 
+
     val gry=Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle:FontFamily = FontFamily.SansSerif
 
@@ -299,8 +300,11 @@ fun past_trip(trip: ParentPastTrip,  onClick: (tripsToDriver: ParentPastTrip) ->
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
+                        val parsedDeboarding = remember(trip.deBoardingPlaceTime) {tripTime.parse(trip.deBoardingPlaceTime) }
+                        val formatDeboarding = remember(parsedDeboarding) { outputtripTime.format(parsedDeboarding) }
+
                         Text(
-                            text = "Arrived at ${trip.deBoardingPlaceTime} AM",
+                            text = "Arrived at ${formatDeboarding}",
                             style = TextStyle(
                                 color = Color.Black,
                                 fontSize = 12.sp,

@@ -133,10 +133,16 @@ fun AssignmentDetailScreen(
         val loc = LocationService::class.java
         val service = isLocationServiceRunning(context, loc)
 
-        if ((assignment?.tripDetail?.status != "TRIP_CREATED" || (!locationEnabledState.value)) && (!service)) {
-            Log.d("TAG", "AssignmentDetailScreen: ")
-            permit = true
+        Log.d("This is the permit of dialog", "AssignmentDetailScreen: ${locationEnabledState.value}, ${assignment?.tripDetail?.status}, ${service}")
+        if (assignment?.tripDetail?.status != "TRIP_CREATED") {
+            if(!service){
+                permit = true
+            }
+        }else{
+            permit = false
         }
+
+        //T,
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -688,11 +694,9 @@ fun AssignmentDetailScreen(
             }
 
             if (permit) {
-                TripLocationPermission {
-                    permit = it
-                }
-
-                permit = false
+                TripLocationPermission (
+                    setShowDialog = { permit = it }
+                )
             }
         }
     }else {
