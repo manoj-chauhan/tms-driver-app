@@ -567,7 +567,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
                                     },
                                     modifier = Modifier.background(Color.White)
                                 ) {
-                                    schedules?.tripPlanScheduleList?.forEach { place ->
+                                    schedules?.tripPlanScheduleList?.dropLast(1)?.forEach { place ->
                                         DropdownMenuItem(
                                             text = { Text(text = place.placeName) },
                                             onClick = {
@@ -613,7 +613,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
                                     },
                                     modifier = Modifier.background(Color.White)
                                 ) {
-                                    schedules?.tripPlanScheduleList?.forEach { place ->
+                                    schedules?.tripPlanScheduleList?.drop(1)?.forEach { place ->
                                         DropdownMenuItem(
                                             text = { Text(text = place.placeName) },
                                             onClick = {
