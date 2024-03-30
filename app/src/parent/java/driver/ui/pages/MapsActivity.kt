@@ -1086,7 +1086,7 @@ fun createCustomCircleMarker(): BitmapDescriptor {
                         diameter / 2,
                         diameter / 2,
                         android.graphics.Paint().apply {
-                            color = Color.Blue.toArgb()
+                            color = Color(0xFF92A3FD).toArgb()
                             style = android.graphics.Paint.Style.FILL
                         }
                     )
@@ -1094,11 +1094,11 @@ fun createCustomCircleMarker(): BitmapDescriptor {
                     drawCircle(
                         diameter / 2,
                         diameter / 2,
-                        diameter / 2 - 2.0f,
+                        diameter / 2 - 1.0f,
                         android.graphics.Paint().apply {
                             color = Color.White.toArgb()
                             style = android.graphics.Paint.Style.STROKE
-                            strokeWidth = 5.0f
+                            strokeWidth = 4.0f
                         }
                     )
                 }

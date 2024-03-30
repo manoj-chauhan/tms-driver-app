@@ -362,9 +362,8 @@ fun AgeDisplay(dateOfBirth: String) :Number {
 }
 
 @Composable
-fun childList(childrensList :List<Student>) {
-
-
+fun childList(childrensList :List<Student>)
+{
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val fontStyle: FontFamily = FontFamily.SansSerif
     var age:Number= 0
@@ -521,15 +520,12 @@ fun userProfileView(navController: NavHostController) {
         vm.userDetail(context = context)
     }
     val userProfile by vm.userImage.collectAsStateWithLifecycle()
+    val childrensList by cl.childrensList.collectAsStateWithLifecycle()
     LaunchedEffect(userDetail) {
+        cl.getChildrenList()
         userDetail?.let {
             vm.getUploadedImage(it.id)
         }
-    }
-
-    val childrensList by cl.childrensList.collectAsStateWithLifecycle()
-    LaunchedEffect(childrensList) {
-        cl.getChildrenList()
     }
 
     val isEditNameSelected = remember { mutableStateOf(false); }
