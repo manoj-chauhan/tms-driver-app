@@ -51,6 +51,7 @@ data class scheduleList (
 
 @JsonClass(generateAdapter = true)
 data class TripSchedulesList(
+        var id:Int,
        var placeId  : Int,
        var placeCode  :   String  ,
        var placeName  :   String  ,
@@ -81,8 +82,8 @@ data class childrenAddPlan(
     var guardianName: String,
     var schoolAddress: String,
     var tripPlanId: Int,
-    var boardingPlaceId: Int,
-    var deBoardingPlaceId: Int
+    var boardingPlanScheduleId: Int,
+    var deBoardingPlanScheduleId: Int
 )
 
 @JsonClass(generateAdapter = true)

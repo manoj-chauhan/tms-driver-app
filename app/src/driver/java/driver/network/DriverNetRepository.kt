@@ -34,6 +34,7 @@ class DriverNetRepository @Inject constructor(
             Moshi.Builder().build().adapter(assignedTripType)
 
         val tripAssignmentUrl = context.resources.getString(R.string.url_student_list)+ planId +"/passengers?page_no=0"
+        Log.d("TAG", "fetchPlanChildren:$tripAssignmentUrl ")
 
         return try {
             getAccessToken(context)?.let {
@@ -132,14 +133,14 @@ class DriverNetRepository @Inject constructor(
         guardianName: String,
         schoolAddress: String,
         planId: Int,
-        boardingPlaceId: Int,
-        deboardingPlaceId: Int,
+        boardingPlanScheduleId: Int,
+        deboardingPlanScheduleId: Int,
         operatorId: Int,
     ) {
 
-        val coroutineScope = CoroutineScope(Dispatchers.IO)
         try {
-            val studentRequest = childrenAddPlan(name, schoolName,  primarynumber, standard, selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId)
+            val studentRequest = childrenAddPlan(name, schoolName,  primarynumber, standard, selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlanScheduleId, deboardingPlanScheduleId)
+            Log.d("JSON", "addStudent: $studentRequest")
             val moshi = Moshi.Builder().build()
             val jsonAdapter: JsonAdapter<childrenAddPlan> = moshi.adapter(childrenAddPlan::class.java)
             val requestBody = jsonAdapter.toJson(studentRequest)

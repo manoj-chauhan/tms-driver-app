@@ -27,8 +27,7 @@
     <string name="url_schedule_plan">&baseUrl;/tripPlan/</string>
     <string name="url_addStudent_plan">&baseUrl;/passengers</string>
     <string name="url_editStudent_detail">&baseUrl;/passengers/edit/</string>
-
-
+    <string name="url_student_list">&baseUrl;/tripPlan/</string>
 
 
 </resources>

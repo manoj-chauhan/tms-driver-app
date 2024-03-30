@@ -19,9 +19,9 @@ interface DriverPlanManager {
         guardianName: String,
         schoolAddress: String,
         planId: Int,
-        boardingPlaceId: Int,
-        deboardingPlaceId: Int,
-        operatorId: Int,
+        boardingPlanScheduleId: Int,
+        deboardingPlanScheduleId: Int,
+        operatorId: Int
     )
 
     fun editStudent(

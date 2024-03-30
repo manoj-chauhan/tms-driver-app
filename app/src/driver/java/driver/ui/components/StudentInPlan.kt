@@ -54,13 +54,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.drishto.driver.models.TripSchedulesList
 import driver.ui.viewmodels.DriverPlanDetailsViewModel
 import java.util.Calendar
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostController,     activity: ComponentActivity) {
+fun StudentInPlan(
+    operatorId: Int,
+    planId: Int,
+    navController: NavHostController,
+    activity: ComponentActivity
+) {
     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     Log.d("Dialog", "addStudentInPlan: $operatorId, $planId ")
@@ -160,9 +166,12 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
     var standard by remember { mutableStateOf("") }
     var boardingPlaceName by remember { mutableStateOf("") }
     var boardingPlaceId by remember { mutableIntStateOf(0) }
+    var filteredLocations by remember { mutableStateOf<List<TripSchedulesList>>(emptyList()) }
 
     var deboardingPlaceName by remember { mutableStateOf("") }
     var deboardingPlaceId by remember { mutableIntStateOf(0) }
+    var filteredBoardingLocations by remember { mutableStateOf<List<TripSchedulesList>>(emptyList()) }
+
 
 
     val schoolStandard =
@@ -180,6 +189,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
             return false
         }
     }
+
     fun validateName(): Boolean {
         if (name.isNotEmpty()) {
             isNameValid = true
@@ -190,6 +200,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
             return false
         }
     }
+
     fun standardSelected(): Boolean {
         if (standard.isBlank()) {
             standardSelected = false
@@ -200,6 +211,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
             return true
         }
     }
+
     fun boardingSelected(): Boolean {
         if (boardingPlaceName.isEmpty()) {
             boardingSelected = false
@@ -210,6 +222,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
             return true
         }
     }
+
     fun deboardingSelected(): Boolean {
         if (deboardingPlaceName.isEmpty()) {
             deboardingSelected = false
@@ -220,6 +233,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
             return true
         }
     }
+
     fun validateGuardianName(): Boolean {
         if (guardianName.isNotEmpty()) {
             guardianValid = true
@@ -230,6 +244,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
             return false
         }
     }
+
     fun validateSchoolName(): Boolean {
         if (schoolName.isNotEmpty()) {
             schoolNameValid = true
@@ -240,6 +255,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
             return false
         }
     }
+
     fun validateSchoolAddress(): Boolean {
         if (schoolAddress.isNotEmpty()) {
             schoolAddressValid = true
@@ -452,7 +468,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
                                     .fillMaxWidth()
                                     .padding(bottom = 1.dp)
                             )
-                            if(schoolAddress.isEmpty()) {
+                            if (schoolAddress.isEmpty()) {
                                 Text(
                                     modifier = Modifier.padding(start = 8.dp),
                                     text = schoolAddressError,
@@ -567,19 +583,47 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
                                     },
                                     modifier = Modifier.background(Color.White)
                                 ) {
-                                    schedules?.tripPlanScheduleList?.dropLast(1)?.forEach { place ->
-                                        DropdownMenuItem(
-                                            text = { Text(text = place.placeName) },
-                                            onClick = {
-                                                boardingPlaceName = place.placeName
-                                                boardingPlaceId = place.placeId
-                                                Log.d(
-                                                    "Dialog",
-                                                    "addStudentInPlan: $boardingPlaceId "
-                                                )
+                                    if (filteredBoardingLocations.isEmpty()) {
+                                        schedules?.tripPlanScheduleList?.dropLast(1)
+                                            ?.forEachIndexed { index, place ->
+                                                DropdownMenuItem(
+                                                    text = { Text(text = place.placeName) },
+                                                    onClick = {
+                                                        boardingPlaceName = place.placeName
+                                                        boardingPlaceId = place.id
+                                                        Log.d(
+                                                            "Dialog",
+                                                            "addStudentInPlan: $boardingPlaceId "
+                                                        )
 
-                                                boardinglocationexpander = false
-                                            })
+                                                        filteredLocations =
+                                                            schedules?.tripPlanScheduleList?.drop(
+                                                                index + 1
+                                                            )
+                                                                ?: emptyList()
+
+                                                        Log.d(
+                                                            "HELlo",
+                                                            "StudentInPlan: $filteredLocations"
+                                                        )
+                                                        boardinglocationexpander = false
+                                                    })
+                                            }
+                                    }else{
+                                        filteredBoardingLocations.forEachIndexed { index, place ->
+                                            DropdownMenuItem(
+                                                text = { Text(text = place.placeName) },
+                                                onClick = {
+                                                    boardingPlaceName = place.placeName
+                                                    boardingPlaceId = place.id
+                                                    Log.d(
+                                                        "Dialog",
+                                                        "addStudentInPlan: $boardingPlaceId "
+                                                    )
+                                                    boardinglocationexpander = false
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -595,12 +639,13 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
                                 expanded = deboardinglocationexpander,
                                 modifier = Modifier.fillMaxWidth(),
                                 onExpandedChange = { deboardinglocationexpander = it }
-                            ){
+                            ) {
                                 OutlinedTextField(
                                     value = deboardingPlaceName,
                                     label = { Text(text = "DeBoarding Location") },
                                     onValueChange = {},
-                                    readOnly = true, trailingIcon = {
+                                    readOnly = true,
+                                    trailingIcon = {
                                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = deboardinglocationexpander)
                                     },
                                     modifier = Modifier.menuAnchor()
@@ -611,20 +656,40 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
                                     onDismissRequest = {
                                         deboardinglocationexpander = false
                                     },
-                                    modifier = Modifier.background(Color.White)
+                                    modifier = Modifier
+                                        .background(Color.White)
                                 ) {
-                                    schedules?.tripPlanScheduleList?.drop(1)?.forEach { place ->
-                                        DropdownMenuItem(
-                                            text = { Text(text = place.placeName) },
-                                            onClick = {
-                                                deboardingPlaceName = place.placeName
-                                                deboardingPlaceId = place.placeId
-                                                Log.d(
-                                                    "Dialog",
-                                                    "addStudentInPlan: $deboardingPlaceId "
-                                                )
-                                                deboardinglocationexpander = false
-                                            })
+                                    if(filteredLocations.isEmpty()) {
+                                        schedules?.tripPlanScheduleList?.drop(1)?.forEachIndexed { index,place ->
+                                            DropdownMenuItem(
+                                                text = { Text(text = place.placeName) },
+                                                onClick = {
+                                                    deboardingPlaceName = place.placeName
+                                                    deboardingPlaceId = place.id
+                                                    Log.d(
+                                                        "Dialog",
+                                                        "addStudentInPlan: $deboardingPlaceId "
+                                                    )
+                                                    filteredBoardingLocations = schedules?.tripPlanScheduleList?.take(index+1) ?: emptyList()
+                                                    deboardinglocationexpander = false
+                                                }
+                                            )
+                                        }
+                                    }else{
+                                        filteredLocations.forEachIndexed { index, place ->
+                                            DropdownMenuItem(
+                                                text = { Text(text = place.placeName) },
+                                                onClick = {
+                                                    deboardingPlaceName = place.placeName
+                                                    deboardingPlaceId = place.id
+                                                    Log.d(
+                                                        "Dialog",
+                                                        "addStudentInPlan: $deboardingPlaceId "
+                                                    )
+                                                    deboardinglocationexpander = false
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -654,7 +719,7 @@ fun StudentInPlan(operatorId: Int, planId: Int,  navController: NavHostControlle
                                     .height(40.dp)
                                     .align(Alignment.Bottom),
                                 onClick = {
-                                    if (!(validatePrimaryPhone()) && validateName() && validateGuardianName()  && validateSchoolName() && validateSchoolAddress() && standardSelected() && boardingSelected() && deboardingSelected()) {
+                                    if (!(validatePrimaryPhone()) && validateName() && validateGuardianName() && validateSchoolName() && validateSchoolAddress() && standardSelected() && boardingSelected() && deboardingSelected()) {
                                         Log.d("true", "addStudentInPlan: ")
                                         ch.addStudentInPlan(
                                             name,

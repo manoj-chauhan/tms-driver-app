@@ -33,11 +33,11 @@ class DriverPlanImpl @Inject constructor(
         guardianName: String,
         schoolAddress: String,
         planId: Int,
-        boardingPlaceId: Int,
-        deboardingPlaceId: Int,
+        boardingPlanScheduleId: Int,
+        deboardingPlanScheduleId: Int,
         operatorId: Int,
     ) {
-        return planNetRepository.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlaceId, deboardingPlaceId, operatorId)
+        return planNetRepository.addStudent(name,schoolName,  primarynumber,standard,selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, planId, boardingPlanScheduleId, deboardingPlanScheduleId, operatorId)
     }
 
     override fun editStudent(
