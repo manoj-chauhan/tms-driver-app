@@ -55,6 +55,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.drishto.driver.models.ChildrenList
+import com.drishto.driver.models.TripSchedulesList
 import com.drishto.driver.models.childrenEditPlan
 import driver.ui.viewmodels.DriverPlanDetailsViewModel
 import java.text.SimpleDateFormat
@@ -64,7 +65,13 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: Int, navController: NavHostController,     activity: ComponentActivity) {
+fun EditChildrenDetails(
+    childrenDetail: ChildrenList,
+    operatorId: Int,
+    planId: Int,
+    navController: NavHostController,
+    activity: ComponentActivity
+) {
     val context = LocalContext.current
     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
@@ -165,13 +172,14 @@ fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: I
         var expanded by remember { mutableStateOf(false) }
         var standardexpander by remember { mutableStateOf(false) }
         var boardinglocationexpander by remember { mutableStateOf(false) }
+
         var deboardinglocationexpander by remember { mutableStateOf(false) }
 
 
         var selectedText by remember { mutableStateOf(it.gender) }
-        val updated = if(it.gender == "M"){
+        val updated = if (it.gender == "M") {
             "Male"
-        }else{
+        } else {
             "Female"
         }
 
@@ -179,10 +187,20 @@ fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: I
         var standard by remember { mutableStateOf(it.standard) }
         var boardingPlaceName by remember { mutableStateOf(it.boardingPlaceName) }
         var boardingPlaceId by remember { mutableIntStateOf(it.boardingPlaceId) }
+        val boardingIndex = schedules?.tripPlanScheduleList?.indexOfFirst { it.placeName == boardingPlaceName } ?: -1
+        var boardingfilteredLocations by remember { mutableStateOf<List<TripSchedulesList>>(emptyList()) }
 
         var deboardingPlaceName by remember { mutableStateOf(it.deBoardingPlaceName) }
         var deboardingPlaceId by remember { mutableIntStateOf(it.deBoardingPlaceId) }
+        val deboardingIndex = schedules?.tripPlanScheduleList?.indexOfFirst { it.placeName == deboardingPlaceName } ?: -1
+        var deboardingfilteredLocations by remember {
+            mutableStateOf<List<TripSchedulesList>>(
+                emptyList()
+            )
+        }
 
+
+        Log.d("Value of indexes", "EditChildrenDetails: $boardingIndex, $deboardingIndex")
 
         val schoolStandard =
             arrayOf("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII")
@@ -222,15 +240,17 @@ fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: I
             }
         }
 
-        Log.d("Last Place", "EditChildrenDetails: ${schedules?.tripPlanScheduleList?.last()?.placeName}")
+        Log.d(
+            "Last Place",
+            "EditChildrenDetails: ${schedules?.tripPlanScheduleList?.last()?.placeName}"
+        )
 
         fun boardingSelected(): Boolean {
             if (boardingPlaceName.isEmpty()) {
                 boardingSelected = false
                 boardingSelectedError = "Select the boarding place"
                 return false
-            }
-            else if(boardingPlaceName == schedules?.tripPlanScheduleList?.last()?.placeName){
+            } else if (boardingPlaceName == schedules?.tripPlanScheduleList?.last()?.placeName) {
                 boardingSelected = false
                 boardingSelectedError = "Boarding Place should not be last place"
                 return false
@@ -629,14 +649,43 @@ fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: I
                                         },
                                         modifier = Modifier.background(Color.White)
                                     ) {
-                                        schedules?.tripPlanScheduleList?.forEach { place ->
-                                            DropdownMenuItem(
-                                                text = { Text(text = place.placeName) },
-                                                onClick = {
-                                                    boardingPlaceName = place.placeName
-                                                    boardingPlaceId = place.placeId
-                                                    boardinglocationexpander = false
-                                                })
+                                        if (deboardingfilteredLocations.isEmpty()) {
+                                            schedules?.tripPlanScheduleList?.dropLast(1)
+                                                ?.forEachIndexed { index, place ->
+                                                    DropdownMenuItem(
+                                                        text = { Text(text = place.placeName) },
+                                                        onClick = {
+                                                            boardingPlaceName = place.placeName
+                                                            boardingPlaceId = place.id
+                                                            Log.d(
+                                                                "Dialog",
+                                                                "addStudentInPlan: $boardingPlaceId "
+                                                            )
+
+                                                            boardingfilteredLocations =
+                                                                schedules?.tripPlanScheduleList?.drop(
+                                                                    index + 1
+                                                                )
+                                                                    ?: emptyList()
+                                                            boardinglocationexpander = false
+                                                        })
+                                                }
+                                        }else{
+                                            Log.d("Boarding locations changed ", "EditChildrenDetails: $deboardingfilteredLocations")
+                                            deboardingfilteredLocations.forEachIndexed { index, place ->
+                                                DropdownMenuItem(
+                                                    text = { Text(text = place.placeName) },
+                                                    onClick = {
+                                                        boardingPlaceName = place.placeName
+                                                        boardingPlaceId = place.id
+                                                        Log.d(
+                                                            "Dialog",
+                                                            "addStudentInPlan: $boardingPlaceId "
+                                                        )
+                                                        boardinglocationexpander = false
+                                                    }
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -680,18 +729,38 @@ fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: I
                                         },
                                         modifier = Modifier.background(Color.White)
                                     ) {
-                                        schedules?.tripPlanScheduleList?.forEach { place ->
-                                            DropdownMenuItem(
-                                                text = { Text(text = place.placeName) },
-                                                onClick = {
-                                                    deboardingPlaceName = place.placeName
-                                                    deboardingPlaceId = place.placeId
-                                                    Log.d(
-                                                        "Dialog",
-                                                        "addStudentInPlan: $deboardingPlaceId "
-                                                    )
-                                                    deboardinglocationexpander = false
-                                                })
+                                        if(boardingfilteredLocations.isEmpty()) {
+                                            schedules?.tripPlanScheduleList?.drop(1)?.drop(boardingIndex)?.forEachIndexed { index,place ->
+                                                DropdownMenuItem(
+                                                    text = { Text(text = place.placeName) },
+                                                    onClick = {
+                                                        deboardingPlaceName = place.placeName
+                                                        deboardingPlaceId = place.id
+                                                        Log.d(
+                                                            "Dialog",
+                                                            "addSfergtudentInPlan: $deboardingPlaceId "
+                                                        )
+                                                        deboardingfilteredLocations = schedules?.tripPlanScheduleList?.take(index+1) ?: emptyList()
+                                                        Log.d("Hrllp", "EditChildrenDetails: $$deboardingfilteredLocations")
+                                                        deboardinglocationexpander = false
+                                                    }
+                                                )
+                                            }
+                                        }else{
+                                            boardingfilteredLocations.forEachIndexed { index, place ->
+                                                DropdownMenuItem(
+                                                    text = { Text(text = place.placeName) },
+                                                    onClick = {
+                                                        deboardingPlaceName = place.placeName
+                                                        deboardingPlaceId = place.id
+                                                        Log.d(
+                                                            "Dialog",
+                                                            "addStgreeudentInPlan: $deboardingPlaceId "
+                                                        )
+                                                        deboardinglocationexpander = false
+                                                    }
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -723,10 +792,26 @@ fun EditChildrenDetails(childrenDetail: ChildrenList, operatorId: Int, planId: I
                                     onClick = {
                                         if (!(validatePrimaryPhone()) && validateName() && validateGuardianName() && validateSchoolName() && validateSchoolAddress() && standardSelected() && boardingSelected() && deboardingSelected()) {
 //                                            ch.editStudent(name, schoolName,  primarynumber, standard, selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, boardingPlaceId, deboardingPlaceId, operatorId, childrenDetail.id)
-                                            val studentRequest = childrenEditPlan(name, schoolName,  primarynumber, standard, selectedText, secondarynumber, selectedDate, guardianName, schoolAddress, boardingPlaceId, deboardingPlaceId)
+                                            val studentRequest = childrenEditPlan(
+                                                name,
+                                                schoolName,
+                                                primarynumber,
+                                                standard,
+                                                selectedText,
+                                                secondarynumber,
+                                                selectedDate,
+                                                guardianName,
+                                                schoolAddress,
+                                                boardingPlaceId,
+                                                deboardingPlaceId
+                                            )
 
                                             Log.d("TAG", "EditChildrenDetails: $studentRequest")
-                                            ch.editStudent(studentRequest, operatorId, childrenDetail.id)
+                                            ch.editStudent(
+                                                studentRequest,
+                                                operatorId,
+                                                childrenDetail.id
+                                            )
                                             navController.popBackStack()
                                         }
 
