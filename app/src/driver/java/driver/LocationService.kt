@@ -276,7 +276,6 @@ class LocationService : Service(), LocationListener {
             )
         }
     }
-
     companion object {
         private const val CHANNEL_ID = "main"
     }
