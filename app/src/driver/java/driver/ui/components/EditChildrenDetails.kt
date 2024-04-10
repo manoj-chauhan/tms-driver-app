@@ -657,10 +657,6 @@ fun EditChildrenDetails(
                                                         onClick = {
                                                             boardingPlaceName = place.placeName
                                                             boardingPlaceId = place.id
-                                                            Log.d(
-                                                                "Dialog",
-                                                                "addStudentInPlan: $boardingPlaceId "
-                                                            )
 
                                                             boardingfilteredLocations =
                                                                 schedules?.tripPlanScheduleList?.drop(
@@ -671,17 +667,12 @@ fun EditChildrenDetails(
                                                         })
                                                 }
                                         }else{
-                                            Log.d("Boarding locations changed ", "EditChildrenDetails: $deboardingfilteredLocations")
                                             deboardingfilteredLocations.forEachIndexed { index, place ->
                                                 DropdownMenuItem(
                                                     text = { Text(text = place.placeName) },
                                                     onClick = {
                                                         boardingPlaceName = place.placeName
                                                         boardingPlaceId = place.id
-                                                        Log.d(
-                                                            "Dialog",
-                                                            "addStudentInPlan: $boardingPlaceId "
-                                                        )
                                                         boardinglocationexpander = false
                                                     }
                                                 )
@@ -736,12 +727,7 @@ fun EditChildrenDetails(
                                                     onClick = {
                                                         deboardingPlaceName = place.placeName
                                                         deboardingPlaceId = place.id
-                                                        Log.d(
-                                                            "Dialog",
-                                                            "addSfergtudentInPlan: $deboardingPlaceId "
-                                                        )
                                                         deboardingfilteredLocations = schedules?.tripPlanScheduleList?.take(index+1) ?: emptyList()
-                                                        Log.d("Hrllp", "EditChildrenDetails: $$deboardingfilteredLocations")
                                                         deboardinglocationexpander = false
                                                     }
                                                 )
@@ -753,10 +739,6 @@ fun EditChildrenDetails(
                                                     onClick = {
                                                         deboardingPlaceName = place.placeName
                                                         deboardingPlaceId = place.id
-                                                        Log.d(
-                                                            "Dialog",
-                                                            "addStgreeudentInPlan: $deboardingPlaceId "
-                                                        )
                                                         deboardinglocationexpander = false
                                                     }
                                                 )
