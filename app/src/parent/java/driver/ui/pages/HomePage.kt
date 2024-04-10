@@ -114,7 +114,6 @@ fun HomePage() {
                                 ),
                                 keyboardActions = KeyboardActions(
                                     onSearch = {
-                                        // Handle search action
                                     }
                                 ),
                                 shape = RoundedCornerShape(8.dp),
@@ -148,7 +147,7 @@ fun HomePage() {
 
                 )
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             val tabItems = listOf(
                 tabItem("All"), tabItem("School"), tabItem("Class")
@@ -159,14 +158,15 @@ fun HomePage() {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White)
                 ) {
                     Column(modifier = Modifier.fillMaxSize()) {
                         Box(modifier = Modifier.height(43.dp)) {
                             TabRow(selectedTabIndex = selectedTabIndex) {
                                 tabItems.forEachIndexed { index: Int, item ->
                                     Tab(selected = index == selectedTabIndex,
-                                        modifier = Modifier.height(40.dp).padding(bottom = 20.dp),
+                                        modifier = Modifier
+                                            .height(40.dp)
+                                            .padding(bottom = 20.dp),
                                         onClick = { selectedTabIndex = index },
                                         text = {
                                             Row(
@@ -195,16 +195,23 @@ fun HomePage() {
                         LaunchedEffect(pagerState.currentPage) {
                             selectedTabIndex = pagerState.currentPage
                         }
-                        HorizontalPager(state = pagerState, modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)) {index->
-                            
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+
+                        Spacer(modifier = Modifier
+                            .height(10.dp)
+                            .background(Color.LightGray))
+
+                        HorizontalPager(
+                            state = pagerState, modifier = Modifier
+                                .fillMaxWidth()
+                        ) { index ->
+
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
+                                    .background(Color.White),
+                            ) {
                                 Text(text = tabItems[index].title)
                             }
                         }
-
-
                     }
                 }
             }
