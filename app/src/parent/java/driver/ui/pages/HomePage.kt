@@ -49,6 +49,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -216,70 +217,276 @@ fun HomePage() {
                                 .fillMaxWidth()
                         ) { index ->
                             Box(modifier = Modifier.fillMaxSize()) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(Color.White),
-                                ) {
+                                Column {
+
+
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(12.dp)
+                                            .background(Color.White),
                                     ) {
-                                        Column(modifier = Modifier) {
-                                            Row(modifier = Modifier.fillMaxWidth()) {
-                                                Box(
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(bottom = 10.dp, top = 10.dp)
+                                        ) {
+                                            Column(modifier = Modifier) {
+                                                Row(
                                                     modifier = Modifier
-                                                        .background(
-                                                            Color.White,
-                                                            shape = CircleShape
-                                                        )
-                                                        .size(44.dp)
+                                                        .fillMaxWidth()
+                                                        .padding(horizontal = 10.dp)
                                                 ) {
-                                                    Image(
-                                                        painter = painterResource(id = R.drawable.atul),
-                                                        contentDescription = "",
+                                                    Box(
                                                         modifier = Modifier
-                                                            .width(200.dp)
-                                                            .height(200.dp)
-                                                            .clip(CircleShape)
-                                                            .border(
-                                                                width = 0.dp,
+                                                            .background(
                                                                 Color.White,
                                                                 shape = CircleShape
-                                                            ),
+                                                            )
+                                                            .size(44.dp)
+                                                    ) {
+                                                        Image(
+                                                            painter = painterResource(id = R.drawable.atul),
+                                                            contentDescription = "",
+                                                            modifier = Modifier
+                                                                .width(200.dp)
+                                                                .height(200.dp)
+                                                                .clip(CircleShape)
+                                                                .border(
+                                                                    width = 0.dp,
+                                                                    Color.White,
+                                                                    shape = CircleShape
+                                                                ),
+                                                            contentScale = ContentScale.FillBounds
+                                                        )
+                                                    }
+                                                    Spacer(modifier = Modifier.width(14.dp))
+
+                                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                                            Text(
+                                                                text = "Delhi Public School",
+                                                                style = TextStyle(
+                                                                    fontSize = 16.sp,
+                                                                    fontFamily = FontFamily.SansSerif
+                                                                )
+                                                            )
+                                                        }
+                                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                                            Text(
+                                                                text = "Sonipath, Haryana",
+                                                                style = TextStyle(
+                                                                    fontSize = 14.sp,
+                                                                    fontFamily = FontFamily.SansSerif,
+                                                                    color = Color.Gray
+                                                                )
+                                                            )
+                                                        }
+                                                    }
+
+                                                }
+
+                                                Spacer(modifier = Modifier.size(15.dp))
+
+                                                Row(modifier = Modifier.fillMaxWidth()) {
+                                                    Image(
+                                                        painter = painterResource(id = R.drawable.hi),
+                                                        contentDescription = "",
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .fillMaxHeight(0.3f),
                                                         contentScale = ContentScale.FillBounds
                                                     )
                                                 }
-                                                Spacer(modifier = Modifier.width(14.dp))
 
-                                                Column(modifier = Modifier.fillMaxWidth()) {
-                                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                                Spacer(modifier = Modifier.size(15.dp))
+
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(20.dp)
+                                                        .padding(
+                                                            vertical = 0.dp,
+                                                            horizontal = 10.dp
+                                                        ),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                                ) {
+                                                    Row {
                                                         Text(
-                                                            text = "Delhi Public School",
-                                                            style = TextStyle(
-                                                                fontSize = 16.sp,
-                                                                fontFamily = FontFamily.SansSerif
-                                                            )
+                                                            text = "12 comments",
+                                                            style = TextStyle(fontSize = 12.sp, color = gry)
+                                                        )
+
+                                                        Spacer(modifier = Modifier.width(12.dp))
+
+                                                        Text(
+                                                            text = "12 likes",
+                                                            style = TextStyle(fontSize = 12.sp, color = gry)
                                                         )
                                                     }
-                                                    Box(modifier = Modifier.fillMaxWidth()) {
-                                                        Text(
-                                                            text = "Sonipath, Haryana",
-                                                            style = TextStyle(
-                                                                fontSize = 14.sp,
-                                                                fontFamily = FontFamily.SansSerif,
-                                                                color = Color.Gray
-                                                            )
+
+                                                    Row {
+                                                        Image(
+                                                            painter = painterResource(id = R.drawable.like),
+                                                            contentDescription = "",
+                                                            modifier = Modifier.size(20.dp),
+                                                            contentScale = ContentScale.FillBounds
                                                         )
+
+                                                        Spacer(modifier = Modifier.width(12.dp))
+
+                                                        Image(
+                                                            painter = painterResource(id = R.drawable.message),
+                                                            contentDescription = "",
+                                                            modifier = Modifier.size(20.dp),
+                                                            contentScale = ContentScale.FillBounds
+                                                        )
+
+                                                        Spacer(modifier = Modifier.width(10.dp))
+
+                                                        Image(
+                                                            painter = painterResource(id = R.drawable.share),
+                                                            contentDescription = "",
+                                                            modifier = Modifier.size(20.dp),
+                                                            contentScale = ContentScale.FillBounds
+                                                        )
+
                                                     }
                                                 }
-
                                             }
                                         }
-
                                     }
-//                                Text(text = tabItems[index].title)
+
+                                    Spacer(modifier = Modifier.size(15.dp))
+
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(Color.White),
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(bottom = 10.dp, top = 10.dp)
+                                        ) {
+                                            Column(modifier = Modifier) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(horizontal = 10.dp)
+                                                ) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .background(
+                                                                Color.White,
+                                                                shape = CircleShape
+                                                            )
+                                                            .size(44.dp)
+                                                    ) {
+                                                        Image(
+                                                            painter = painterResource(id = R.drawable.atul),
+                                                            contentDescription = "",
+                                                            modifier = Modifier
+                                                                .width(200.dp)
+                                                                .height(200.dp)
+                                                                .clip(CircleShape)
+                                                                .border(
+                                                                    width = 0.dp,
+                                                                    Color.White,
+                                                                    shape = CircleShape
+                                                                ),
+                                                            contentScale = ContentScale.FillBounds
+                                                        )
+                                                    }
+                                                    Spacer(modifier = Modifier.width(14.dp))
+
+                                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                                            Text(
+                                                                text = "Delhi Public School",
+                                                                style = TextStyle(
+                                                                    fontSize = 16.sp,
+                                                                    fontFamily = FontFamily.SansSerif
+                                                                )
+                                                            )
+                                                        }
+                                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                                            Text(
+                                                                text = "Sonipath, Haryana",
+                                                                style = TextStyle(
+                                                                    fontSize = 14.sp,
+                                                                    fontFamily = FontFamily.SansSerif,
+                                                                    color = Color.Gray
+                                                                )
+                                                            )
+                                                        }
+                                                    }
+
+                                                }
+
+                                                Spacer(modifier = Modifier.size(15.dp))
+
+                                                Row(modifier = Modifier.fillMaxWidth()                                                        .padding(horizontal = 10.dp)
+                                                    .padding(horizontal = 1.dp)
+                                                ) {
+                                                    Text(
+                                                        text = "Congratulations!! to all the winners of the Inter School Competition 2024." +
+                                                                "" +
+                                                                "This add another chapter to in the history of out school, where we our belief in hard work and commitment helps our students to achieve new benchmarks.",
+                                                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.W400)
+                                                    )
+
+                                                }
+
+                                                Spacer(modifier = Modifier.size(15.dp))
+
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(20.dp)
+                                                        .padding(
+                                                            vertical = 0.dp,
+                                                            horizontal = 10.dp
+                                                        ),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                                ) {
+                                                    Row {
+                                                        Text(
+                                                            text = "12 comments",
+                                                            style = TextStyle(fontSize = 12.sp, color = gry)
+                                                        )
+
+                                                        Spacer(modifier = Modifier.width(12.dp))
+
+                                                        Text(
+                                                            text = "12 likes",
+                                                            style = TextStyle(fontSize = 12.sp, color = gry)
+                                                        )
+                                                    }
+
+                                                    Row {
+                                                        Image(
+                                                            painter = painterResource(id = R.drawable.like),
+                                                            contentDescription = "",
+                                                            modifier = Modifier.size(20.dp),
+                                                            contentScale = ContentScale.FillBounds
+                                                        )
+
+                                                        Spacer(modifier = Modifier.width(12.dp))
+
+                                                        Image(
+                                                            painter = painterResource(id = R.drawable.message),
+                                                            contentDescription = "",
+                                                            modifier = Modifier.size(20.dp),
+                                                            contentScale = ContentScale.FillBounds
+                                                        )
+
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
