@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -79,166 +80,182 @@ fun HomePage() {
         }
 
         val gry = Color(android.graphics.Color.parseColor("#838383"))
+        LazyColumn {
+            item {
 
-        Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(72.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Scaffold(
-                    modifier = Modifier,
-                    topBar = {
-                        Row(
-                            modifier = Modifier.padding(top = 2.dp).fillMaxHeight(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            IconButton(modifier = Modifier, onClick = { expander = true }) {
-                                Icon(
-                                    modifier = Modifier,
-                                    imageVector = Icons.Filled.Menu,
-                                    contentDescription = null
-                                )
-                            }
-
-                            val colors = TextFieldDefaults.textFieldColors()
-                            val interactionSource = remember { MutableInteractionSource() }
-
-
-                            Box(modifier = Modifier
-                                .weight(1f)
-                            ) {
-                                BasicTextField(
-                                    value = text,
-                                    onValueChange = { text = it },
-                                    textStyle = TextStyle(fontSize = 20.sp),
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(72.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Scaffold(
+                            modifier = Modifier,
+                            topBar = {
+                                Row(
                                     modifier = Modifier
-                                        .background(
-                                            color = Color.White,
-                                            shape = RoundedCornerShape(50.dp)
-                                        )
-                                        .padding(end = 12.dp)
-                                        .indicatorLine(
-                                            enabled = true,
-                                            isError = false,
-                                            interactionSource = interactionSource,
-                                            colors = colors,
-                                            focusedIndicatorLineThickness = 0.dp,
-                                            unfocusedIndicatorLineThickness = 0.dp
-                                        )
-                                        .height(35.dp)
-                                        .fillMaxWidth(),
-
-                                    enabled = true,
-                                    singleLine = true,
-                                    decorationBox = { innerTextField ->
-                                        TextFieldDefaults.TextFieldDecorationBox(
-                                            value = text,
-                                            innerTextField = innerTextField,
-                                            visualTransformation = VisualTransformation.None,
-                                            trailingIcon = { /* ... */ },
-                                            placeholder = {
-                                                        Text(
-                                                        text = "Search",
-                                                        fontSize = 14.sp,
-                                                    )
-                                            },
-                                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.LightGray,focusedIndicatorColor =  Color.Transparent,unfocusedIndicatorColor =Color.Transparent),
-                                            singleLine = true,
-                                            enabled = true,
-                                            interactionSource = interactionSource,
-                                            contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(top = 0.dp, bottom = 0.dp),
-                                            shape = RoundedCornerShape(12.dp)
+                                        .padding(top = 2.dp)
+                                        .fillMaxHeight(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    IconButton(modifier = Modifier, onClick = { expander = true }) {
+                                        Icon(
+                                            modifier = Modifier,
+                                            imageVector = Icons.Filled.Menu,
+                                            contentDescription = null
                                         )
                                     }
 
-                                )
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .background(Color.White, shape = CircleShape)
-                                    .padding(top = 4.dp)
-                                    .size(38.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = "Edit Icon",
-                                    tint = gry,
-                                    modifier = Modifier
-                                        .size(27.dp)
-                                        .align(Alignment.Center)
-                                )
-                            }
-                        }
-                    }, content = {
-                        it
-                    }
+                                    val colors = TextFieldDefaults.textFieldColors()
+                                    val interactionSource = remember { MutableInteractionSource() }
 
-                )
-            }
-            Spacer(modifier = Modifier.height(1.dp))
 
-            val tabItems = listOf(
-                tabItem("All"), tabItem("School"), tabItem("Class")
-            )
-
-            var selectedTabIndex by remember { mutableStateOf(0) }
-            Box(modifier = Modifier.fillMaxHeight()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        Box(modifier = Modifier.height(43.dp)) {
-                            TabRow(selectedTabIndex = selectedTabIndex) {
-                                tabItems.forEachIndexed { index: Int, item ->
-                                    Tab(selected = index == selectedTabIndex,
+                                    Box(
                                         modifier = Modifier
-                                            .height(40.dp)
-                                            .padding(bottom = 20.dp),
-                                        onClick = { selectedTabIndex = index },
-                                        text = {
-                                            Row(
-                                                modifier = Modifier.fillMaxSize(),
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(text = item.title, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W400))
+                                            .weight(0.8f)
+                                    ) {
+                                        BasicTextField(
+                                            value = text,
+                                            onValueChange = { text = it },
+                                            textStyle = TextStyle(fontSize = 20.sp),
+                                            modifier = Modifier
+                                                .indicatorLine(
+                                                    enabled = true,
+                                                    isError = false,
+                                                    interactionSource = interactionSource,
+                                                    colors = colors,
+                                                    focusedIndicatorLineThickness = 0.dp,
+                                                    unfocusedIndicatorLineThickness = 0.dp
+                                                )
+                                                .height(35.dp)
+                                                .fillMaxWidth(),
+
+                                            enabled = true,
+                                            singleLine = true,
+                                            decorationBox = { innerTextField ->
+                                                TextFieldDefaults.TextFieldDecorationBox(
+                                                    value = text,
+                                                    innerTextField = innerTextField,
+                                                    visualTransformation = VisualTransformation.None,
+                                                    trailingIcon = { /* ... */ },
+                                                    placeholder = {
+                                                        Text(
+                                                            text = "Search",
+                                                            fontSize = 14.sp,
+                                                        )
+                                                    },
+                                                    colors = TextFieldDefaults.textFieldColors(
+                                                        containerColor = Color.LightGray,
+                                                        focusedIndicatorColor = Color.Transparent,
+                                                        unfocusedIndicatorColor = Color.Transparent
+                                                    ),
+                                                    singleLine = true,
+                                                    enabled = true,
+                                                    interactionSource = interactionSource,
+                                                    contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
+                                                        top = 0.dp,
+                                                        bottom = 0.dp
+                                                    ),
+                                                    shape = RoundedCornerShape(12.dp)
+                                                )
                                             }
-                                        },
-                                        icon = {
 
-                                        }
-                                    )
+                                        )
+                                    }
+                                    Box(
+                                        modifier = Modifier
+                                            .background(Color.White, shape = CircleShape)
+                                            .padding(top = 4.dp)
+                                            .size(38.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Person,
+                                            contentDescription = "Edit Icon",
+                                            tint = gry,
+                                            modifier = Modifier
+                                                .size(27.dp)
+                                                .align(Alignment.Center)
+                                        )
+                                    }
                                 }
+                            }, content = {
+                                it
                             }
-                        }
-                        val pagerState = rememberPagerState {
-                            tabItems.size
-                        }
 
-                        LaunchedEffect(selectedTabIndex) {
-                            pagerState.animateScrollToPage(selectedTabIndex)
-
-                        }
-                        LaunchedEffect(pagerState.currentPage) {
-                            selectedTabIndex = pagerState.currentPage
-                        }
-
-                        Spacer(
-                            modifier = Modifier
-                                .height(10.dp)
-                                .background(Color.LightGray)
                         )
+                    }
+                    Spacer(modifier = Modifier.height(1.dp))
 
-                        HorizontalPager(
-                            state = pagerState, modifier = Modifier
+                    val tabItems = listOf(
+                        tabItem("All"), tabItem("School"), tabItem("Class")
+                    )
+
+                    var selectedTabIndex by remember { mutableStateOf(0) }
+                    Box(modifier = Modifier.fillMaxHeight()) {
+                        Box(
+                            modifier = Modifier
                                 .fillMaxWidth()
-                        ) { index ->
-                            Column {
-                                ContentPage()
+                        ) {
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                Box(modifier = Modifier.height(43.dp)) {
+                                    TabRow(selectedTabIndex = selectedTabIndex) {
+                                        tabItems.forEachIndexed { index: Int, item ->
+                                            Tab(selected = index == selectedTabIndex,
+                                                modifier = Modifier
+                                                    .height(40.dp)
+                                                    .padding(bottom = 20.dp),
+                                                onClick = { selectedTabIndex = index },
+                                                text = {
+                                                    Row(
+                                                        modifier = Modifier.fillMaxSize(),
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.Center
+                                                    ) {
+                                                        Text(
+                                                            text = item.title,
+                                                            style = TextStyle(
+                                                                fontSize = 18.sp,
+                                                                fontWeight = FontWeight.W400
+                                                            )
+                                                        )
+                                                    }
+                                                },
+                                                icon = {
+
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                                val pagerState = rememberPagerState {
+                                    tabItems.size
+                                }
+
+                                LaunchedEffect(selectedTabIndex) {
+                                    pagerState.animateScrollToPage(selectedTabIndex)
+
+                                }
+                                LaunchedEffect(pagerState.currentPage) {
+                                    selectedTabIndex = pagerState.currentPage
+                                }
+
+                                Spacer(
+                                    modifier = Modifier
+                                        .height(10.dp)
+                                        .background(Color.LightGray)
+                                )
+
+                                HorizontalPager(
+                                    state = pagerState, modifier = Modifier
+                                        .fillMaxWidth()
+                                ) { index ->
+
+                                    Column {
+                                        ContentPage()
+                                    }
+                                }
                             }
                         }
                     }
@@ -247,6 +264,7 @@ fun HomePage() {
         }
     }
 }
+
 
 @Composable
 fun ContentPage() {
@@ -269,7 +287,7 @@ fun ContentPage() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 10.dp, top = 10.dp)
-    //                verticalArrangement = Arrangement.SpaceBetween
+                    //                verticalArrangement = Arrangement.SpaceBetween
                 ) {
 
                     Row(
@@ -334,8 +352,8 @@ fun ContentPage() {
                             contentDescription = "",
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .fillMaxHeight(0.3f),
-                            contentScale = ContentScale.FillBounds
+                                .height(200.dp),
+                            contentScale = ContentScale.Crop
                         )
                     }
 
@@ -469,10 +487,154 @@ fun ContentPage() {
 
                     Spacer(modifier = Modifier.size(15.dp))
 
-                    Row(modifier = Modifier
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 1.dp)
+                            .padding(horizontal = 10.dp)
+                    ) {
+                        Text(
+                            text = "Congratulations!! to all the winners of the Inter School Competition 2024." +
+                                    "" +
+                                    "This add another chapter to in the history of out school, where we our belief in hard work and commitment helps our students to achieve new benchmarks.",
+                            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.W400)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.size(15.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(20.dp)
+                            .padding(
+                                vertical = 0.dp,
+                                horizontal = 10.dp
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row {
+                            Text(
+                                text = "12 comments",
+                                style = TextStyle(fontSize = 12.sp, color = gry)
+                            )
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Text(
+                                text = "12 likes",
+                                style = TextStyle(fontSize = 12.sp, color = gry)
+                            )
+                        }
+
+                        Row {
+                            Image(
+                                painter = painterResource(id = R.drawable.like),
+                                contentDescription = "",
+                                modifier = Modifier.size(20.dp),
+                                contentScale = ContentScale.FillBounds
+                            )
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Image(
+                                painter = painterResource(id = R.drawable.message),
+                                contentDescription = "",
+                                modifier = Modifier.size(20.dp),
+                                contentScale = ContentScale.FillBounds
+                            )
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Image(
+                                painter = painterResource(id = R.drawable.share),
+                                contentDescription = "",
+                                modifier = Modifier.size(20.dp),
+                                contentScale = ContentScale.FillBounds
+                            )
+
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White,
+                ),
+                modifier = Modifier
+                    .fillMaxWidth(),
+            ) {
+                Column(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 1.dp)
-                        .padding(horizontal = 10.dp)
+                        .padding(bottom = 10.dp, top = 10.dp)
+                    //                verticalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    Color.White,
+                                    shape = CircleShape
+                                )
+                                .size(44.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.atul),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .height(200.dp)
+                                    .clip(CircleShape)
+                                    .border(
+                                        width = 0.dp,
+                                        Color.White,
+                                        shape = CircleShape
+                                    ),
+                                contentScale = ContentScale.FillBounds
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(14.dp))
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = "Delhi Public School",
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontFamily = FontFamily.SansSerif
+                                    )
+                                )
+                            }
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = "Sonipath, Haryana",
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily.SansSerif,
+                                        color = Color.Gray
+                                    )
+                                )
+                            }
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.size(15.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 1.dp)
+                            .padding(horizontal = 10.dp)
                     ) {
                         Text(
                             text = "Congratulations!! to all the winners of the Inter School Competition 2024." +
