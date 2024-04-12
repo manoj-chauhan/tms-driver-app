@@ -82,7 +82,6 @@ fun HomePage() {
         val gry = Color(android.graphics.Color.parseColor("#838383"))
         LazyColumn {
             item {
-
                 Column(modifier = Modifier.fillMaxSize()) {
                     Row(
                         modifier = Modifier
@@ -199,35 +198,25 @@ fun HomePage() {
                                 .fillMaxWidth()
                         ) {
                             Column(modifier = Modifier.fillMaxSize()) {
-                                Box(modifier = Modifier.height(43.dp)) {
-                                    TabRow(selectedTabIndex = selectedTabIndex) {
-                                        tabItems.forEachIndexed { index: Int, item ->
-                                            Tab(selected = index == selectedTabIndex,
-                                                modifier = Modifier
-                                                    .height(40.dp)
-                                                    .padding(bottom = 20.dp),
-                                                onClick = { selectedTabIndex = index },
-                                                text = {
-                                                    Row(
-                                                        modifier = Modifier.fillMaxSize(),
-                                                        verticalAlignment = Alignment.CenterVertically,
-                                                        horizontalArrangement = Arrangement.Center
-                                                    ) {
-                                                        Text(
-                                                            text = item.title,
-                                                            style = TextStyle(
-                                                                fontSize = 18.sp,
-                                                                fontWeight = FontWeight.W400
-                                                            )
-                                                        )
-                                                    }
-                                                },
-                                                icon = {
-
-                                                }
-                                            )
-                                        }
+                                TabRow(
+//                                    backgroundColor = Color.Transparent.copy(0.1f),
+                                    selectedTabIndex = selectedTabIndex,
+                                ) {
+                                    tabItems.forEachIndexed { index: Int, item ->
+                                        Tab(selected = index == selectedTabIndex,
+                                            onClick = { selectedTabIndex = index },
+                                            text = {
+                                                Text(
+                                                    text = item.title,
+                                                    style = TextStyle(
+                                                        fontSize = 18.sp,
+                                                        fontWeight = FontWeight.W400
+                                                    ),
+                                                )
+                                            }
+                                        )
                                     }
+
                                 }
                                 val pagerState = rememberPagerState {
                                     tabItems.size
@@ -280,6 +269,7 @@ fun ContentPage() {
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White,
                 ),
+                shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .fillMaxWidth(),
             ) {
@@ -421,6 +411,7 @@ fun ContentPage() {
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White,
                 ),
+                shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .fillMaxWidth(),
             ) {
@@ -564,6 +555,7 @@ fun ContentPage() {
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White,
                 ),
+                shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .fillMaxWidth(),
             ) {
