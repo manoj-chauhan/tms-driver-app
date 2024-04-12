@@ -95,7 +95,7 @@ fun HomePage() {
                             topBar = {
                                 Row(
                                     modifier = Modifier
-                                        .padding(top = 2.dp)
+                                        .padding(top = 2.dp, end = 6.dp)
                                         .fillMaxHeight(),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
@@ -238,10 +238,9 @@ fun HomePage() {
                                     state = pagerState, modifier = Modifier
                                         .fillMaxWidth()
                                 ) { index ->
-
-                                    Column {
+//                                    Column {
                                         ContentPage()
-                                    }
+//                                    }
                                 }
                             }
                         }

@@ -75,7 +75,7 @@ fun AppNavigationHost(
             userProfileView(navController)
         }
         composable("home") {
-//            val activity = LocalContext.current as? ComponentActivity
+            val activity = LocalContext.current as? ComponentActivity
 //            HomeScreen(
 //                navController = navController,
 //                onTripSelected = {
