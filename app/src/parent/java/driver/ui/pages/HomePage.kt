@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,21 +21,21 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,8 +51,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -93,7 +93,7 @@ fun HomePage() {
                     topBar = {
                         Row(
                             modifier = Modifier.padding(top = 2.dp),
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalAlignment = Alignment.Bottom,
                         ) {
                             IconButton(modifier = Modifier, onClick = { expander = true }) {
                                 Icon(
@@ -103,37 +103,58 @@ fun HomePage() {
                                 )
                             }
 
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f),
-                                value = text,
-                                onValueChange = {
-                                    text = it
-                                },
-                                textStyle = LocalTextStyle.current.copy(
-                                    fontSize = 16.sp
-                                ),
-                                label = {
-                                    Text("Search")
-                                },
-                                singleLine = true,
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Text,
-                                    imeAction = ImeAction.Search
-                                ),
-                                keyboardActions = KeyboardActions(
-                                    onSearch = {
-                                    }
-                                ),
-                                shape = RoundedCornerShape(8.dp),
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    focusedBorderColor = Color.Gray,
-                                    unfocusedBorderColor = Color.Gray,
-                                    cursorColor = Color.Black
-                                ),
-                            )
+                            val colors = TextFieldDefaults.textFieldColors()
+                            val interactionSource = remember { MutableInteractionSource() }
 
+
+                            Box(modifier = Modifier
+                                .weight(1f)
+                            ) {
+                                BasicTextField(
+                                    value = text,
+                                    onValueChange = { text = it },
+                                    textStyle = TextStyle(fontSize = 20.sp),
+                                    modifier = Modifier
+                                        .background(
+                                            color = Color.White,
+                                            shape = RoundedCornerShape(50.dp)
+                                        )
+                                        .indicatorLine(
+                                            enabled = true,
+                                            isError = false,
+                                            interactionSource = interactionSource,
+                                            colors = colors,
+                                            focusedIndicatorLineThickness = 0.dp,
+                                            unfocusedIndicatorLineThickness = 0.dp
+                                        )
+                                        .height(35.dp)
+                                        .fillMaxWidth(),
+
+                                    enabled = true,
+                                    singleLine = true,
+                                    decorationBox = { innerTextField ->
+                                        TextFieldDefaults.TextFieldDecorationBox(
+                                            value = text,
+                                            innerTextField = innerTextField,
+                                            visualTransformation = VisualTransformation.None,
+                                            trailingIcon = { /* ... */ },
+                                            placeholder = {
+                                                        Text(
+                                                        text = "Search",
+                                                        fontSize = 14.sp,
+                                                    )
+                                            },
+                                            colors = TextFieldDefaults.textFieldColors(focusedIndicatorColor =  Color.Transparent,unfocusedIndicatorColor =Color.Transparent),
+                                            singleLine = true,
+                                            enabled = true,
+                                            interactionSource = interactionSource,
+                                            contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(top = 0.dp, bottom = 0.dp),
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                    }
+
+                                )
+                            }
                             Box(
                                 modifier = Modifier
                                     .background(Color.White, shape = CircleShape)
@@ -152,7 +173,6 @@ fun HomePage() {
                         }
                     }, content = {
                         it
-
                     }
 
                 )
@@ -184,7 +204,7 @@ fun HomePage() {
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 horizontalArrangement = Arrangement.Center
                                             ) {
-                                                Text(text = item.title)
+                                                Text(text = item.title, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W400))
                                             }
                                         },
                                         icon = {
@@ -216,278 +236,8 @@ fun HomePage() {
                             state = pagerState, modifier = Modifier
                                 .fillMaxWidth()
                         ) { index ->
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Column {
-
-
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(Color.White),
-                                    ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(bottom = 10.dp, top = 10.dp)
-                                        ) {
-                                            Column(modifier = Modifier) {
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(horizontal = 10.dp)
-                                                ) {
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .background(
-                                                                Color.White,
-                                                                shape = CircleShape
-                                                            )
-                                                            .size(44.dp)
-                                                    ) {
-                                                        Image(
-                                                            painter = painterResource(id = R.drawable.atul),
-                                                            contentDescription = "",
-                                                            modifier = Modifier
-                                                                .width(200.dp)
-                                                                .height(200.dp)
-                                                                .clip(CircleShape)
-                                                                .border(
-                                                                    width = 0.dp,
-                                                                    Color.White,
-                                                                    shape = CircleShape
-                                                                ),
-                                                            contentScale = ContentScale.FillBounds
-                                                        )
-                                                    }
-                                                    Spacer(modifier = Modifier.width(14.dp))
-
-                                                    Column(modifier = Modifier.fillMaxWidth()) {
-                                                        Box(modifier = Modifier.fillMaxWidth()) {
-                                                            Text(
-                                                                text = "Delhi Public School",
-                                                                style = TextStyle(
-                                                                    fontSize = 16.sp,
-                                                                    fontFamily = FontFamily.SansSerif
-                                                                )
-                                                            )
-                                                        }
-                                                        Box(modifier = Modifier.fillMaxWidth()) {
-                                                            Text(
-                                                                text = "Sonipath, Haryana",
-                                                                style = TextStyle(
-                                                                    fontSize = 14.sp,
-                                                                    fontFamily = FontFamily.SansSerif,
-                                                                    color = Color.Gray
-                                                                )
-                                                            )
-                                                        }
-                                                    }
-
-                                                }
-
-                                                Spacer(modifier = Modifier.size(15.dp))
-
-                                                Row(modifier = Modifier.fillMaxWidth()) {
-                                                    Image(
-                                                        painter = painterResource(id = R.drawable.hi),
-                                                        contentDescription = "",
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .fillMaxHeight(0.3f),
-                                                        contentScale = ContentScale.FillBounds
-                                                    )
-                                                }
-
-                                                Spacer(modifier = Modifier.size(15.dp))
-
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .height(20.dp)
-                                                        .padding(
-                                                            vertical = 0.dp,
-                                                            horizontal = 10.dp
-                                                        ),
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                ) {
-                                                    Row {
-                                                        Text(
-                                                            text = "12 comments",
-                                                            style = TextStyle(fontSize = 12.sp, color = gry)
-                                                        )
-
-                                                        Spacer(modifier = Modifier.width(12.dp))
-
-                                                        Text(
-                                                            text = "12 likes",
-                                                            style = TextStyle(fontSize = 12.sp, color = gry)
-                                                        )
-                                                    }
-
-                                                    Row {
-                                                        Image(
-                                                            painter = painterResource(id = R.drawable.like),
-                                                            contentDescription = "",
-                                                            modifier = Modifier.size(20.dp),
-                                                            contentScale = ContentScale.FillBounds
-                                                        )
-
-                                                        Spacer(modifier = Modifier.width(12.dp))
-
-                                                        Image(
-                                                            painter = painterResource(id = R.drawable.message),
-                                                            contentDescription = "",
-                                                            modifier = Modifier.size(20.dp),
-                                                            contentScale = ContentScale.FillBounds
-                                                        )
-
-                                                        Spacer(modifier = Modifier.width(10.dp))
-
-                                                        Image(
-                                                            painter = painterResource(id = R.drawable.share),
-                                                            contentDescription = "",
-                                                            modifier = Modifier.size(20.dp),
-                                                            contentScale = ContentScale.FillBounds
-                                                        )
-
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    Spacer(modifier = Modifier.size(15.dp))
-
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(Color.White),
-                                    ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(bottom = 10.dp, top = 10.dp)
-                                        ) {
-                                            Column(modifier = Modifier) {
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(horizontal = 10.dp)
-                                                ) {
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .background(
-                                                                Color.White,
-                                                                shape = CircleShape
-                                                            )
-                                                            .size(44.dp)
-                                                    ) {
-                                                        Image(
-                                                            painter = painterResource(id = R.drawable.atul),
-                                                            contentDescription = "",
-                                                            modifier = Modifier
-                                                                .width(200.dp)
-                                                                .height(200.dp)
-                                                                .clip(CircleShape)
-                                                                .border(
-                                                                    width = 0.dp,
-                                                                    Color.White,
-                                                                    shape = CircleShape
-                                                                ),
-                                                            contentScale = ContentScale.FillBounds
-                                                        )
-                                                    }
-                                                    Spacer(modifier = Modifier.width(14.dp))
-
-                                                    Column(modifier = Modifier.fillMaxWidth()) {
-                                                        Box(modifier = Modifier.fillMaxWidth()) {
-                                                            Text(
-                                                                text = "Delhi Public School",
-                                                                style = TextStyle(
-                                                                    fontSize = 16.sp,
-                                                                    fontFamily = FontFamily.SansSerif
-                                                                )
-                                                            )
-                                                        }
-                                                        Box(modifier = Modifier.fillMaxWidth()) {
-                                                            Text(
-                                                                text = "Sonipath, Haryana",
-                                                                style = TextStyle(
-                                                                    fontSize = 14.sp,
-                                                                    fontFamily = FontFamily.SansSerif,
-                                                                    color = Color.Gray
-                                                                )
-                                                            )
-                                                        }
-                                                    }
-
-                                                }
-
-                                                Spacer(modifier = Modifier.size(15.dp))
-
-                                                Row(modifier = Modifier.fillMaxWidth()                                                        .padding(horizontal = 10.dp)
-                                                    .padding(horizontal = 1.dp)
-                                                ) {
-                                                    Text(
-                                                        text = "Congratulations!! to all the winners of the Inter School Competition 2024." +
-                                                                "" +
-                                                                "This add another chapter to in the history of out school, where we our belief in hard work and commitment helps our students to achieve new benchmarks.",
-                                                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.W400)
-                                                    )
-
-                                                }
-
-                                                Spacer(modifier = Modifier.size(15.dp))
-
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .height(20.dp)
-                                                        .padding(
-                                                            vertical = 0.dp,
-                                                            horizontal = 10.dp
-                                                        ),
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                ) {
-                                                    Row {
-                                                        Text(
-                                                            text = "12 comments",
-                                                            style = TextStyle(fontSize = 12.sp, color = gry)
-                                                        )
-
-                                                        Spacer(modifier = Modifier.width(12.dp))
-
-                                                        Text(
-                                                            text = "12 likes",
-                                                            style = TextStyle(fontSize = 12.sp, color = gry)
-                                                        )
-                                                    }
-
-                                                    Row {
-                                                        Image(
-                                                            painter = painterResource(id = R.drawable.like),
-                                                            contentDescription = "",
-                                                            modifier = Modifier.size(20.dp),
-                                                            contentScale = ContentScale.FillBounds
-                                                        )
-
-                                                        Spacer(modifier = Modifier.width(12.dp))
-
-                                                        Image(
-                                                            painter = painterResource(id = R.drawable.message),
-                                                            contentDescription = "",
-                                                            modifier = Modifier.size(20.dp),
-                                                            contentScale = ContentScale.FillBounds
-                                                        )
-
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                            Column {
+                                ContentPage()
                             }
                         }
                     }
@@ -495,6 +245,302 @@ fun HomePage() {
             }
         }
     }
+}
+
+@Composable
+fun ContentPage() {
+
+    val gry = Color(android.graphics.Color.parseColor("#838383"))
+    Box(
+        modifier = Modifier
+            .fillMaxSize(1f)
+//            .clickable { onClick(trip) }
+    ) {
+        Column {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White,
+                ),
+                modifier = Modifier
+                    .fillMaxWidth(),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp, top = 10.dp)
+    //                verticalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    Color.White,
+                                    shape = CircleShape
+                                )
+                                .size(44.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.atul),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .height(200.dp)
+                                    .clip(CircleShape)
+                                    .border(
+                                        width = 0.dp,
+                                        Color.White,
+                                        shape = CircleShape
+                                    ),
+                                contentScale = ContentScale.FillBounds
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(14.dp))
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = "Delhi Public School",
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontFamily = FontFamily.SansSerif
+                                    )
+                                )
+                            }
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = "Sonipath, Haryana",
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily.SansSerif,
+                                        color = Color.Gray
+                                    )
+                                )
+                            }
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.size(15.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Image(
+                            painter = painterResource(id = R.drawable.hi),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.3f),
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.size(15.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(20.dp)
+                            .padding(
+                                vertical = 0.dp,
+                                horizontal = 10.dp
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row {
+                            Text(
+                                text = "12 comments",
+                                style = TextStyle(fontSize = 12.sp, color = gry)
+                            )
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Text(
+                                text = "12 likes",
+                                style = TextStyle(fontSize = 12.sp, color = gry)
+                            )
+                        }
+
+                        Row {
+                            Image(
+                                painter = painterResource(id = R.drawable.like),
+                                contentDescription = "",
+                                modifier = Modifier.size(20.dp),
+                                contentScale = ContentScale.FillBounds
+                            )
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Image(
+                                painter = painterResource(id = R.drawable.message),
+                                contentDescription = "",
+                                modifier = Modifier.size(20.dp),
+                                contentScale = ContentScale.FillBounds
+                            )
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Image(
+                                painter = painterResource(id = R.drawable.share),
+                                contentDescription = "",
+                                modifier = Modifier.size(20.dp),
+                                contentScale = ContentScale.FillBounds
+                            )
+
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White,
+                ),
+                modifier = Modifier
+                    .fillMaxWidth(),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp, top = 10.dp)
+                    //                verticalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    Color.White,
+                                    shape = CircleShape
+                                )
+                                .size(44.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.atul),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .height(200.dp)
+                                    .clip(CircleShape)
+                                    .border(
+                                        width = 0.dp,
+                                        Color.White,
+                                        shape = CircleShape
+                                    ),
+                                contentScale = ContentScale.FillBounds
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(14.dp))
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = "Delhi Public School",
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontFamily = FontFamily.SansSerif
+                                    )
+                                )
+                            }
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = "Sonipath, Haryana",
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily.SansSerif,
+                                        color = Color.Gray
+                                    )
+                                )
+                            }
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.size(15.dp))
+
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 1.dp)
+                        .padding(horizontal = 10.dp)
+                    ) {
+                        Text(
+                            text = "Congratulations!! to all the winners of the Inter School Competition 2024." +
+                                    "" +
+                                    "This add another chapter to in the history of out school, where we our belief in hard work and commitment helps our students to achieve new benchmarks.",
+                            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.W400)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.size(15.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(20.dp)
+                            .padding(
+                                vertical = 0.dp,
+                                horizontal = 10.dp
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row {
+                            Text(
+                                text = "12 comments",
+                                style = TextStyle(fontSize = 12.sp, color = gry)
+                            )
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Text(
+                                text = "12 likes",
+                                style = TextStyle(fontSize = 12.sp, color = gry)
+                            )
+                        }
+
+                        Row {
+                            Image(
+                                painter = painterResource(id = R.drawable.like),
+                                contentDescription = "",
+                                modifier = Modifier.size(20.dp),
+                                contentScale = ContentScale.FillBounds
+                            )
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Image(
+                                painter = painterResource(id = R.drawable.message),
+                                contentDescription = "",
+                                modifier = Modifier.size(20.dp),
+                                contentScale = ContentScale.FillBounds
+                            )
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Image(
+                                painter = painterResource(id = R.drawable.share),
+                                contentDescription = "",
+                                modifier = Modifier.size(20.dp),
+                                contentScale = ContentScale.FillBounds
+                            )
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 data class tabItem(
