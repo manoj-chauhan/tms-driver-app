@@ -112,8 +112,7 @@ fun HomePage() {
 
 
                                     Box(
-                                        modifier = Modifier
-                                            .weight(0.8f)
+                                        modifier = Modifier.weight(1f)
                                     ) {
                                         BasicTextField(
                                             value = text,
@@ -128,8 +127,7 @@ fun HomePage() {
                                                     focusedIndicatorLineThickness = 0.dp,
                                                     unfocusedIndicatorLineThickness = 0.dp
                                                 )
-                                                .height(35.dp)
-                                                .fillMaxWidth(),
+                                                .height(35.dp).fillMaxWidth(0.96f),
 
                                             enabled = true,
                                             singleLine = true,
@@ -157,7 +155,7 @@ fun HomePage() {
                                                         top = 0.dp,
                                                         bottom = 0.dp
                                                     ),
-                                                    shape = RoundedCornerShape(12.dp)
+                                                    shape = RoundedCornerShape(16.dp)
                                                 )
                                             }
 
