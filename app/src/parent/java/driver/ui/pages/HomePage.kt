@@ -92,12 +92,12 @@ fun HomePage() {
                     modifier = Modifier,
                     topBar = {
                         Row(
-                            modifier = Modifier.padding(top = 2.dp),
-                            verticalAlignment = Alignment.Bottom,
+                            modifier = Modifier.padding(top = 2.dp).fillMaxHeight(),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             IconButton(modifier = Modifier, onClick = { expander = true }) {
                                 Icon(
-                                    modifier = Modifier.padding(top = 5.dp),
+                                    modifier = Modifier,
                                     imageVector = Icons.Filled.Menu,
                                     contentDescription = null
                                 )
@@ -119,6 +119,7 @@ fun HomePage() {
                                             color = Color.White,
                                             shape = RoundedCornerShape(50.dp)
                                         )
+                                        .padding(end = 12.dp)
                                         .indicatorLine(
                                             enabled = true,
                                             isError = false,
@@ -144,7 +145,7 @@ fun HomePage() {
                                                         fontSize = 14.sp,
                                                     )
                                             },
-                                            colors = TextFieldDefaults.textFieldColors(focusedIndicatorColor =  Color.Transparent,unfocusedIndicatorColor =Color.Transparent),
+                                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.LightGray,focusedIndicatorColor =  Color.Transparent,unfocusedIndicatorColor =Color.Transparent),
                                             singleLine = true,
                                             enabled = true,
                                             interactionSource = interactionSource,
