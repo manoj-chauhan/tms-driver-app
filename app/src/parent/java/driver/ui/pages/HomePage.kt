@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -38,8 +36,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -127,7 +125,8 @@ fun HomePage() {
                                                     focusedIndicatorLineThickness = 0.dp,
                                                     unfocusedIndicatorLineThickness = 0.dp
                                                 )
-                                                .height(35.dp).fillMaxWidth(0.96f),
+                                                .height(35.dp)
+                                                .fillMaxWidth(0.96f),
 
                                             enabled = true,
                                             singleLine = true,
@@ -185,10 +184,6 @@ fun HomePage() {
                     }
                     Spacer(modifier = Modifier.height(1.dp))
 
-                    val tabItems = listOf(
-                        tabItem("All"), tabItem("School"), tabItem("Class")
-                    )
-
                     var selectedTabIndex by remember { mutableStateOf(0) }
                     Box(modifier = Modifier.fillMaxHeight()) {
                         Box(
@@ -196,57 +191,61 @@ fun HomePage() {
                                 .fillMaxWidth()
                         ) {
                             Column(modifier = Modifier.fillMaxSize()) {
-                                TabRow(
-//                                    backgroundColor = Color.Transparent.copy(0.1f),
-                                    selectedTabIndex = selectedTabIndex,
-                                ) {
-                                    tabItems.forEachIndexed { index: Int, item ->
-                                        Tab(selected = index == selectedTabIndex,
-                                            onClick = { selectedTabIndex = index },
-                                            text = {
-                                                Text(
-                                                    text = item.title,
-                                                    style = TextStyle(
-                                                        fontSize = 18.sp,
-                                                        fontWeight = FontWeight.W400
-                                                    ),
-                                                )
-                                            }
-                                        )
+                                Column(modifier = Modifier.fillMaxSize()) {
+                                    PostsTabView(onTabSelected = { index:Int->
+                                        selectedTabIndex = index
+                                    })
+                                    when (selectedTabIndex) {
+                                        0 -> PostsSection()
                                     }
-
-                                }
-                                val pagerState = rememberPagerState {
-                                    tabItems.size
-                                }
-
-                                LaunchedEffect(selectedTabIndex) {
-                                    pagerState.animateScrollToPage(selectedTabIndex)
-
-                                }
-                                LaunchedEffect(pagerState.currentPage) {
-                                    selectedTabIndex = pagerState.currentPage
-                                }
-
-                                Spacer(
-                                    modifier = Modifier
-                                        .height(10.dp)
-                                        .background(Color.LightGray)
-                                )
-
-                                HorizontalPager(
-                                    state = pagerState, modifier = Modifier
-                                        .fillMaxWidth()
-                                ) { index ->
-//                                    Column {
-                                        ContentPage()
-//                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun PostsSection() {
+    Column {
+        ContentPage()
+    }
+}
+
+@Composable
+fun PostsTabView( modifier: Modifier = Modifier,onTabSelected: (selectedIndex: Int) -> Unit) {
+    var selectedTabIndex by remember {
+        mutableIntStateOf(0)
+    }
+    val tabItems = listOf(
+        tabItem("All"), tabItem("School"), tabItem("Class")
+    )
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        modifier = modifier
+    ) {
+        tabItems.forEachIndexed { index, tabRowIcons ->
+            Tab(
+                selected = index == selectedTabIndex,
+                onClick = {
+                    selectedTabIndex = index
+                    onTabSelected(index)
+                },
+                text = {
+                    Text(
+                        text = tabRowIcons.title,
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.W400
+                        ),
+                    )
+                },
+                selectedContentColor = Color.Black,
+                unselectedContentColor = Color.Gray
+            )
         }
     }
 }
