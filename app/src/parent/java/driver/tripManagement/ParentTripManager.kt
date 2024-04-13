@@ -9,7 +9,6 @@ import driver.models.TripRouteResult
 import driver.models.currentDriverLocation
 
 interface ParentTripManager {
-
     fun getActiveTrips(): List<ParentTrip>?
     fun getTripLatLon(passengerTripId: Int): TripRouteResult
 

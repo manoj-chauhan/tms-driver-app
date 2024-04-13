@@ -7,10 +7,8 @@ import driver.models.ParentPastTrip
 import driver.models.ParentTrip
 import driver.models.ParentTripDetail
 import driver.models.PlaceInfo
-import driver.models.ProcessedPoints
 import driver.models.TripRouteResult
 import driver.models.currentDriverLocation
-import driver.models.point
 import driver.network.FeedBackNetRepository
 import driver.network.ParentTripNetRepository
 import driver.network.PlaceInfoNetRepository
@@ -51,4 +49,5 @@ class ParentTripManagerImpl @Inject constructor(
     override fun sendFeedback(userId: Int, message: String) {
         return feedbackrepository.sendFeedback(userId, message)
     }
+
 }
