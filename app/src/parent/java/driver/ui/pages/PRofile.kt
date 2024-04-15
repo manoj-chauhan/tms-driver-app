@@ -76,13 +76,13 @@ fun profile() {
                         .padding(start = 20.dp, top = 20.dp, bottom = 20.dp)
                 ) {
                     Text(
-                        text = "Krish Chauhan",
+                        text = "${userDetail?.name}",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black
                     )
                     Text(
-                        text = "@KrishChauhan",
+                        text = "${userDetail?.userName}",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Light,
                         color = Color.Black)

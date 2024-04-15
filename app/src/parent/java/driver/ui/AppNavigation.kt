@@ -77,26 +77,11 @@ fun AppNavigationHost(
             userProfileView(navController)
         }
         composable("home") {
-            val activity = LocalContext.current as? ComponentActivity
-//            HomeScreen(
-//                navController = navController,
-//                onTripSelected = {
-//                    selectedAssignmentCode = it.tripCode
-//                    passengerTripId = it.passengerTripId
-//                    operatorId = it.companyId
-//                    deBoardingPlaceId = "MPS"
-//                    boardingPlaceId = "WYC"
-//                    navController.navigate("current-assignment-detail")
-//                },
-//                onPastTripSelected = {
-//                    selectedAssignmentCode = it.tripCode
-//                    operatorId = 1
-//                    passengerTripId = it.passengerTripId
-//                    navController.navigate("past-assignment-detail")
-//                },
-//                activity = activity ?: return@composable
-//            )
-//            HomePage(navController)
+
+            HomePage(navController)
+
+        }
+        composable("user_profile"){
             profile()
         }
 
