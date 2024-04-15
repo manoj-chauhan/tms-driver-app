@@ -24,8 +24,8 @@ import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.ui.components.pastTrips
 import driver.ui.pages.GoogleMapView
-import driver.ui.pages.HomePage
 import driver.ui.pages.HomeScreen
+import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.notificationScreen
@@ -76,26 +76,7 @@ fun AppNavigationHost(
             userProfileView(navController)
         }
         composable("home") {
-            val activity = LocalContext.current as? ComponentActivity
-//            HomeScreen(
-//                navController = navController,
-//                onTripSelected = {
-//                    selectedAssignmentCode = it.tripCode
-//                    passengerTripId = it.passengerTripId
-//                    operatorId = it.companyId
-//                    deBoardingPlaceId = "MPS"
-//                    boardingPlaceId = "WYC"
-//                    navController.navigate("current-assignment-detail")
-//                },
-//                onPastTripSelected = {
-//                    selectedAssignmentCode = it.tripCode
-//                    operatorId = 1
-//                    passengerTripId = it.passengerTripId
-//                    navController.navigate("past-assignment-detail")
-//                },
-//                activity = activity ?: return@composable
-//            )
-            HomePage(navController)
+            HomeScreenNavigation(navController)
         }
 
         composable("MainScreen"){

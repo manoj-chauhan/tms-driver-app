@@ -1,6 +1,5 @@
 package driver.ui.pages
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,14 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -32,6 +29,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -68,6 +66,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.drishto.driver.R
 import kotlinx.coroutines.launch
 
@@ -79,208 +78,6 @@ data class NavigationItem(
     val navigate: String = ""
 
 )
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-@Composable
-fun HomePage(navController: NavHostController) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.LightGray)
-    ) {
-
-        var expander by remember {
-            mutableStateOf(false)
-        }
-
-        var text by remember {
-            mutableStateOf("")
-        }
-
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val scope = rememberCoroutineScope()
-
-        var selectedItemIndex by rememberSaveable {
-            mutableStateOf(0)
-        }
-
-        val items = listOf(
-            NavigationItem(
-                title = "All",
-                selectedIcon = Icons.Filled.Home,
-                unselectedIcon = Icons.Outlined.Home,
-                navigate = ""
-
-            ),
-            NavigationItem(
-                title = "Urgent",
-                selectedIcon = Icons.Filled.Info,
-                unselectedIcon = Icons.Outlined.Info,
-                badgeCount = 45,
-                navigate = ""
-
-            ),
-            NavigationItem(
-                title = "Trips",
-                selectedIcon = Icons.Filled.CarCrash,
-                unselectedIcon = Icons.Outlined.CarCrash,
-                navigate = "MainScreen"
-            ),
-        )
-
-        val gry = Color(android.graphics.Color.parseColor("#838383"))
-        LazyColumn {
-            item {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(72.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        ModalNavigationDrawer(
-                            drawerContent = {
-                                ModalDrawerSheet {
-                                    items.forEachIndexed { index, item ->
-                                        NavigationDrawerItem(
-                                            label = { Text(text = "Trips") },
-                                            selected = index == selectedItemIndex,
-                                            onClick = {
-                                                navController.navigate(item.navigate)
-                                                selectedItemIndex = index
-                                                scope.launch {
-                                                    drawerState.close()
-                                                }
-                                            }
-                                        )
-                                    }
-                                }
-                            },
-                            drawerState = drawerState
-                        ) {
-
-                            Scaffold(modifier = Modifier, topBar = {
-                                Row(
-                                    modifier = Modifier
-                                        .padding(top = 2.dp, end = 6.dp)
-                                        .fillMaxHeight(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    IconButton(modifier = Modifier, onClick = {
-//                                        scope.launch {
-//                                            drawerState.open()
-//                                        }
-                                    }) {
-                                        Icon(
-                                            modifier = Modifier,
-                                            imageVector = Icons.Filled.Menu,
-                                            contentDescription = null
-                                        )
-                                    }
-
-                                    val colors = TextFieldDefaults.textFieldColors()
-                                    val interactionSource = remember { MutableInteractionSource() }
-
-
-                                    Box(
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        BasicTextField(value = text,
-                                            onValueChange = { text = it },
-                                            textStyle = TextStyle(fontSize = 20.sp),
-                                            modifier = Modifier
-                                                .indicatorLine(
-                                                    enabled = true,
-                                                    isError = false,
-                                                    interactionSource = interactionSource,
-                                                    colors = colors,
-                                                    focusedIndicatorLineThickness = 0.dp,
-                                                    unfocusedIndicatorLineThickness = 0.dp
-                                                )
-                                                .height(35.dp)
-                                                .fillMaxWidth(0.96f),
-
-                                            enabled = true,
-                                            singleLine = true,
-                                            decorationBox = { innerTextField ->
-                                                TextFieldDefaults.TextFieldDecorationBox(
-                                                    value = text,
-                                                    innerTextField = innerTextField,
-                                                    visualTransformation = VisualTransformation.None,
-                                                    trailingIcon = { /* ... */ },
-                                                    placeholder = {
-                                                        Text(
-                                                            text = "Search",
-                                                            fontSize = 14.sp,
-                                                        )
-                                                    },
-                                                    colors = TextFieldDefaults.textFieldColors(
-                                                        containerColor = Color.LightGray,
-                                                        focusedIndicatorColor = Color.Transparent,
-                                                        unfocusedIndicatorColor = Color.Transparent
-                                                    ),
-                                                    singleLine = true,
-                                                    enabled = true,
-                                                    interactionSource = interactionSource,
-                                                    contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
-                                                        top = 0.dp, bottom = 0.dp
-                                                    ),
-                                                    shape = RoundedCornerShape(16.dp)
-                                                )
-                                            }
-
-                                        )
-                                    }
-                                    Box(
-                                        modifier = Modifier
-                                            .background(
-                                                Color.White, shape = CircleShape
-                                            )
-                                            .padding(top = 4.dp)
-                                            .size(38.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Person,
-                                            contentDescription = "Edit Icon",
-                                            tint = gry,
-                                            modifier = Modifier
-                                                .size(27.dp)
-                                                .align(Alignment.Center)
-                                        )
-                                    }
-                                }
-                            }, content = {
-                                it
-                            })
-                        }
-
-
-                    }
-                    Spacer(modifier = Modifier.height(1.dp))
-
-                    var selectedTabIndex by remember { mutableStateOf(0) }
-                    Box(modifier = Modifier.fillMaxHeight()) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Column(modifier = Modifier.fillMaxSize()) {
-                                Column(modifier = Modifier.fillMaxSize()) {
-                                    PostsTabView(onTabSelected = { index: Int ->
-                                        selectedTabIndex = index
-                                    })
-                                    when (selectedTabIndex) {
-                                        0 -> PostsSection()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun PostsSection() {
@@ -732,3 +529,193 @@ fun ContentPage() {
 data class tabItem(
     val title: String
 )
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreenNavigation(navController: NavHostController) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    val navigationController = rememberNavController()
+
+    var selectedItemIndex by rememberSaveable {
+        mutableStateOf(0)
+    }
+
+    val items = listOf(
+        NavigationItem(
+            title = "All",
+            selectedIcon = Icons.Filled.Home,
+            unselectedIcon = Icons.Outlined.Home,
+            navigate = ""
+
+        ),
+        NavigationItem(
+            title = "Urgent",
+            selectedIcon = Icons.Filled.Info,
+            unselectedIcon = Icons.Outlined.Info,
+            badgeCount = 45,
+            navigate = ""
+
+        ),
+        NavigationItem(
+            title = "Trips",
+            selectedIcon = Icons.Filled.CarCrash,
+            unselectedIcon = Icons.Outlined.CarCrash,
+            navigate = "MainScreen"
+        ),
+    )
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = true,
+            drawerContent = {
+                ModalDrawerSheet {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.LightGray)
+                            .fillMaxWidth()
+                            .height(150.dp)
+                    ) {
+                        Text(text = "")
+                    }
+
+                    Divider()
+
+                    items.forEachIndexed { index, item ->
+                        NavigationDrawerItem(
+                            label = { Text(text = item.title) },
+                            selected = index == selectedItemIndex,
+                            onClick = {
+                            navController.navigate(item.navigate)
+                                selectedItemIndex = index
+                                scope.launch {
+                                    drawerState.close()
+                                }
+                            }
+                        )
+                    }
+                }
+            }) {
+
+            Scaffold(modifier = Modifier, topBar = {
+                val scope = rememberCoroutineScope()
+
+                val gry = Color(android.graphics.Color.parseColor("#838383"))
+                var text by remember {
+                    mutableStateOf("")
+                }
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = 2.dp, end = 6.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(modifier = Modifier, onClick = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }) {
+                        Icon(
+                            modifier = Modifier,
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = null
+                        )
+                    }
+
+                    val colors = TextFieldDefaults.textFieldColors()
+                    val interactionSource = remember { MutableInteractionSource() }
+
+
+                    Box(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        BasicTextField(value = text,
+                            onValueChange = { text = it },
+                            textStyle = TextStyle(fontSize = 20.sp),
+                            modifier = Modifier
+                                .indicatorLine(
+                                    enabled = true,
+                                    isError = false,
+                                    interactionSource = interactionSource,
+                                    colors = colors,
+                                    focusedIndicatorLineThickness = 0.dp,
+                                    unfocusedIndicatorLineThickness = 0.dp
+                                )
+                                .height(35.dp)
+                                .fillMaxWidth(0.96f),
+
+                            enabled = true,
+                            singleLine = true,
+                            decorationBox = { innerTextField ->
+                                TextFieldDefaults.TextFieldDecorationBox(
+                                    value = text,
+                                    innerTextField = innerTextField,
+                                    visualTransformation = VisualTransformation.None,
+                                    trailingIcon = { /* ... */ },
+                                    placeholder = {
+                                        Text(
+                                            text = "Search",
+                                            fontSize = 14.sp,
+                                        )
+                                    },
+                                    colors = TextFieldDefaults.textFieldColors(
+                                        containerColor = Color.LightGray,
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent
+                                    ),
+                                    singleLine = true,
+                                    enabled = true,
+                                    interactionSource = interactionSource,
+                                    contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
+                                        top = 0.dp, bottom = 0.dp
+                                    ),
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                            }
+
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                Color.White, shape = CircleShape
+                            )
+                            .padding(top = 4.dp)
+                            .size(38.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Edit Icon",
+                            tint = gry,
+                            modifier = Modifier
+                                .size(27.dp)
+                                .align(Alignment.Center)
+                        )
+                    }
+                }
+            }, content = { innerPadding ->
+                HomeApp(modifier = Modifier.padding(innerPadding))
+            })
+        }
+
+    }
+
+}
+
+@Composable
+fun HomeApp(modifier: Modifier = Modifier) {
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    Column(modifier = modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            PostsTabView(onTabSelected = { index: Int ->
+                selectedTabIndex = index
+            })
+            when (selectedTabIndex) {
+                0 -> PostsSection()
+            }
+        }
+    }
+}
