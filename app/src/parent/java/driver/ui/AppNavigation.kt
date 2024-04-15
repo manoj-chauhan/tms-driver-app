@@ -29,6 +29,7 @@ import driver.ui.pages.HomeScreen
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.notificationScreen
+import driver.ui.pages.profile
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -95,7 +96,8 @@ fun AppNavigationHost(
 //                },
 //                activity = activity ?: return@composable
 //            )
-            HomePage(navController)
+//            HomePage(navController)
+            profile()
         }
 
         composable("MainScreen"){

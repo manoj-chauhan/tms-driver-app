@@ -50,6 +50,7 @@ class UserProfileViewModel @Inject constructor(private val userProfileManager: c
                 userResult.fold(
                     { userDetail ->
                         channel1.send(userDetail)
+                        Log.d("check","$userDetail")
                     },
                     { error ->
                         Log.e(
