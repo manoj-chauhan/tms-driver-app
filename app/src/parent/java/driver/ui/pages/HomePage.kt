@@ -168,9 +168,9 @@ fun HomePage(navController: NavHostController) {
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     IconButton(modifier = Modifier, onClick = {
-                                        scope.launch {
-                                            drawerState.open()
-                                        }
+//                                        scope.launch {
+//                                            drawerState.open()
+//                                        }
                                     }) {
                                         Icon(
                                             modifier = Modifier,
