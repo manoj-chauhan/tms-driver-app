@@ -28,6 +28,7 @@ import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
+import driver.ui.pages.PostItem
 import driver.ui.pages.notificationScreen
 
 
@@ -102,6 +103,10 @@ fun AppNavigationHost(
         }
         composable("login") {
 
+        }
+
+        composable("post_page"){
+            PostItem()
         }
 
         composable("map-screen") {

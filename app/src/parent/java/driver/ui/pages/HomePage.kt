@@ -553,11 +553,11 @@ fun HomeScreenNavigation(navController: NavHostController) {
 
         ),
         NavigationItem(
-            title = "Urgent",
+            title = "Add post",
             selectedIcon = Icons.Filled.Info,
             unselectedIcon = Icons.Outlined.Info,
             badgeCount = 45,
-            navigate = ""
+            navigate = "post_page"
 
         ),
         NavigationItem(
