@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -43,6 +44,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -566,12 +568,15 @@ fun HomeScreenNavigation(navController: NavHostController) {
         ),
     )
 
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
+
     Column(modifier = Modifier.fillMaxSize()) {
         ModalNavigationDrawer(
             drawerState = drawerState,
             gesturesEnabled = true,
             drawerContent = {
-                ModalDrawerSheet {
+                ModalDrawerSheet(modifier = Modifier.width(300.dp)) {
                     Box(
                         modifier = Modifier
                             .background(Color.LightGray)
@@ -599,7 +604,8 @@ fun HomeScreenNavigation(navController: NavHostController) {
                 }
             }) {
 
-            Scaffold(modifier = Modifier, topBar = {
+            Scaffold(modifier = Modifier
+                , topBar = {
                 val scope = rememberCoroutineScope()
 
                 val gry = Color(android.graphics.Color.parseColor("#838383"))
@@ -708,13 +714,17 @@ fun HomeScreenNavigation(navController: NavHostController) {
 @Composable
 fun HomeApp(modifier: Modifier = Modifier) {
     var selectedTabIndex by remember { mutableStateOf(0) }
-    Column(modifier = modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = modifier.fillMaxWidth()) {
+        item {
             PostsTabView(onTabSelected = { index: Int ->
                 selectedTabIndex = index
             })
-            when (selectedTabIndex) {
-                0 -> PostsSection()
+        }
+        when (selectedTabIndex) {
+            0 -> {
+                item {
+                    PostsSection()
+                }
             }
         }
     }
