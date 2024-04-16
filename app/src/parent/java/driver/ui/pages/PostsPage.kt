@@ -1,6 +1,9 @@
 package driver.ui.pages
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,13 +45,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import driver.ui.viewmodels.PostsViewModel
+import java.io.File
+import java.io.FileOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -65,10 +73,25 @@ fun PostItem() {
         mutableStateOf<List<Uri?>>(emptyList())
     }
 
+    var bitmap by remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val context = LocalContext.current
+
+    val postUploadViewModel:PostsViewModel = hiltViewModel()
+
     val getMultipleImage = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(),
-        onResult = { selectedImageUri = it }
-    )
+        ActivityResultContracts.PickMultipleVisualMedia()
+    ) { uris: List<Uri?> ->
+        selectedImageUri = uris
+        uris.forEach { uri ->
+            val imageFile = uri?.let { uriToFile(it,context) }
+            postUploadViewModel.uploadPosts(imageFile)
+            Log.d("TAG", "PostItem: ${imageFile?.name} ")
+        }
+    }
+
 
 
     Box(
@@ -229,6 +252,25 @@ fun PostItem() {
     }
 
 }
+
+fun uriToFile(uri: Uri, context: Context): File {
+    val destinationFilename = File(context.cacheDir, "posts${System.currentTimeMillis()}")
+
+    context.contentResolver.openInputStream(uri)?.use { inputStream ->
+        FileOutputStream(destinationFilename).use { outputStream ->
+            val buffer = ByteArray(4 * 1024)
+            while (true) {
+                val byteCount = inputStream.read(buffer)
+                if (byteCount < 0) break
+                outputStream.write(buffer, 0, byteCount)
+            }
+            outputStream.flush()
+        }
+    }
+
+    return destinationFilename
+}
+
 
 
 @Composable
