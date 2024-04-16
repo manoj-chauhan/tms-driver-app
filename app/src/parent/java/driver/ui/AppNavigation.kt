@@ -23,6 +23,7 @@ import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.ui.components.pastTrips
+import driver.ui.pages.AddInstitute
 import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomePage
 import driver.ui.pages.HomeScreen
@@ -79,6 +80,7 @@ fun AppNavigationHost(
         composable("home") {
 
             HomePage(navController)
+//           AddInstitute()
 
         }
         composable("user_profile"){
