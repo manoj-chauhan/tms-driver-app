@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -180,30 +179,31 @@ fun PostItem() {
                         )
                     }
                 )
-
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    IconButton(modifier = Modifier.width(40.dp), onClick = {
-                        selectedImageUri
-                    }) {
-                        Icon(
-                            modifier = Modifier,
-                            imageVector = Icons.Filled.Clear,
-                            contentDescription = null
-                        )
-                    }
-
-                }
-
                 LazyColumn {
-                    items(selectedImageUri){selectedImageUri ->
-                        AsyncImage(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp)), model = selectedImageUri, contentDescription =null
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
+                    items(selectedImageUri.size) { index ->
+                        val uri = selectedImageUri[index]
+                        Box {
+                            AsyncImage(
+                                model = uri,
+                                contentDescription = "Selected Image",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(8.dp))
+                            )
+                            IconButton(
+                                onClick = {
+                                    selectedImageUri = selectedImageUri.toMutableList().also { it.removeAt(index) }
+                                },
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                            ) {
+                                Icon(Icons.Filled.Clear, contentDescription = "", tint = Color.Red)
+                            }
+                        }
+                        Spacer(Modifier.height(10.dp))
                     }
                 }
+
             }
 
             Row(
