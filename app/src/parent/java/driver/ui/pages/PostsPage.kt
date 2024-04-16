@@ -1,5 +1,9 @@
 package driver.ui.pages
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -7,12 +11,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -33,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -40,8 +48,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun PostItem() {
 
@@ -51,6 +61,16 @@ fun PostItem() {
     var text by remember {
         mutableStateOf("")
     }
+
+    var selectedImageUri by remember {
+        mutableStateOf<List<Uri?>>(emptyList())
+    }
+
+    val getMultipleImage = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        onResult = { selectedImageUri = it }
+    )
+
 
     Box(
         modifier = Modifier
@@ -109,7 +129,8 @@ fun PostItem() {
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth().fillMaxHeight(0.9f)
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.9f)
             ) {
 
                 val colors = TextFieldDefaults.textFieldColors()
@@ -160,9 +181,28 @@ fun PostItem() {
                     }
                 )
 
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    IconButton(modifier = Modifier.width(40.dp), onClick = {
+                        selectedImageUri
+                    }) {
+                        Icon(
+                            modifier = Modifier,
+                            imageVector = Icons.Filled.Clear,
+                            contentDescription = null
+                        )
+                    }
 
-                Row(modifier = Modifier.fillMaxSize()) {
+                }
 
+                LazyColumn {
+                    items(selectedImageUri){selectedImageUri ->
+                        AsyncImage(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp)), model = selectedImageUri, contentDescription =null
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                 }
             }
 
@@ -174,7 +214,9 @@ fun PostItem() {
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(modifier = Modifier.width(40.dp), onClick = {
-
+                    getMultipleImage.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
+                    )
                 }) {
                     Icon(
                         modifier = Modifier,
