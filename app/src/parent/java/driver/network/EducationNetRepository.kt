@@ -35,6 +35,8 @@ class EducationNetRepository @Inject constructor(
                     .responseObject(moshiDeserializerOf(adapter))
                 result.fold(
                     {
+
+
                     },
                     { error ->
                         Log.d("Error", "fetchEducationList: $error")
@@ -57,6 +59,7 @@ class EducationNetRepository @Inject constructor(
                             errorManager.getErrorDescription500(context, "Something Went Wrong")
                         }
                     }
+
                 )
 
                 result.get()

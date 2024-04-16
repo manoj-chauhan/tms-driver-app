@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,20 +30,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.drishto.driver.R
-import com.drishto.driver.ui.viewmodels.CompanyPositions
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
+import driver.models.EducationList
+import driver.ui.viewmodels.EducationListViewModel
 
 
 @Composable
 fun profile() {
     val vm: UserProfileViewModel = hiltViewModel()
     val userDetail by vm.userDetail.collectAsStateWithLifecycle()
+     val context= LocalContext.current
 
-    vm.userDetail(LocalContext.current)
-
+    LaunchedEffect(Unit) {
+        vm.userDetail(context)
+    }
+    val el: EducationListViewModel = hiltViewModel()
+    val educationList by el.educationList.collectAsStateWithLifecycle()
+    LaunchedEffect(userDetail) {
+        el.getEducationList()
+    }
     Log.d("user","$userDetail")
 
 
@@ -111,64 +119,81 @@ fun profile() {
                             , color = Color.Black)
                     }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, top = 20.dp, bottom = 20.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    Color.White, shape = CircleShape
-                                )
-                                .size(60.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.dps),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(200.dp)
-                                    .clip(CircleShape)
-                                    .border(
-                                        width = 0.dp, Color.White, shape = CircleShape
-                                    ),
-                                contentScale = ContentScale.FillBounds
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(14.dp))
-
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            Column {
-                                Text(text = "Delhi Public School",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Color.Black
-                                )
-
-                                Text(
-                                    text = "Sonipat-Harayana",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Light,
-                                    color = Color.Black
-                                )
-                                Text(
-                                    text = "2023-Present",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Light,
-                                    color = Color.Black
-                                )
-
-                            }
-
-                        }
+                    educationList?.let {
+                        driver.ui.pages.educationList(it)
                     }
                 }
             }
         }
     }
 }
+
+@Composable
+fun educationList(educationList:List<EducationList>){
+    educationList?.forEach() { information ->
+
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 20.dp, bottom = 20.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        Color.White, shape = CircleShape
+                    )
+                    .size(60.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.dps),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(200.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 0.dp, Color.White, shape = CircleShape
+                        ),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Column {
+                    Text(
+                        text = "${information.schoolName}",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
+
+                    Text(
+                        text = "${information.schoolAddress}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Light,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = "${information.status}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Light,
+                        color = Color.Black
+                    )
+
+                }
+
+            }
+        }
+    }
+
+
+
+
+}
+
 
 @Composable
 @Preview

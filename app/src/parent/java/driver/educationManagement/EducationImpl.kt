@@ -9,7 +9,7 @@ import javax.inject.Inject
 class EducationImpl @Inject constructor(
     private val EducationNetRepository: EducationNetRepository,
 ): EducationManager   {
-    override fun getEducationList(): List<EducationList>? {
+    override  fun getEducationList(): List<EducationList>? {
         return EducationNetRepository.fetchEducationList()
 
     }
