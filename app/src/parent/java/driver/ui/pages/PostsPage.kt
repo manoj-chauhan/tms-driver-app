@@ -1,7 +1,6 @@
 package driver.ui.pages
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -45,16 +44,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import driver.ui.viewmodels.PostsViewModel
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
@@ -73,22 +73,24 @@ fun PostItem() {
         mutableStateOf<List<Uri?>>(emptyList())
     }
 
-    var bitmap by remember {
-        mutableStateOf<Bitmap?>(null)
+    var mediaIdsList by remember {
+        mutableStateOf<List<String>>(emptyList())
     }
 
-    val context = LocalContext.current
-
     val postUploadViewModel:PostsViewModel = hiltViewModel()
+    val mediaId by postUploadViewModel.postDetails.collectAsStateWithLifecycle()
+
+    Log.d("mediaIds", "PostItem: $mediaId")
+
 
     val getMultipleImage = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris: List<Uri?> ->
         selectedImageUri = uris
         uris.forEach { uri ->
-            val imageFile = uri?.let { uriToFile(it,context) }
-            postUploadViewModel.uploadPosts(imageFile)
-            Log.d("TAG", "PostItem: ${imageFile?.name} ")
+            val stream = ByteArrayOutputStream()
+            val byteArray: ByteArray = stream.toByteArray()
+            postUploadViewModel.uploadPosts(byteArray)
         }
     }
 

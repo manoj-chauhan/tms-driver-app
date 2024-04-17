@@ -1,7 +1,5 @@
 package driver.postUploadManagement
 
-import java.io.File
-
 interface PostUploadManager {
-    fun uploadPosts(image: File)
+    suspend  fun uploadPosts(image: ByteArray): String
 }
