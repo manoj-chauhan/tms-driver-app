@@ -5,7 +5,6 @@ import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.github.kittinunf.fuel.core.FuelManager
-import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,7 +21,7 @@ class PostNetRepository @Inject constructor(
                 val fuelManager = FuelManager()
                 val (_, response, result) = fuelManager.post(url)
                     .body(image)
-                    .responseObject(moshiDeserializerOf(String::class.java))
+                    .responseString()
 
                 result.fold(
                     {
