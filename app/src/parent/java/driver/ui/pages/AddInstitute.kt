@@ -1,10 +1,8 @@
 package driver.ui.pages
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,17 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -35,31 +30,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.squareup.moshi.Json
+import androidx.hilt.navigation.compose.hiltViewModel
+import driver.models.ContactList
+import driver.ui.viewmodels.AddInstitueViewModel
 
-class ContactList (
-    var department: MutableState<String>,
-    var number: MutableState<String>,
-
-
-    )
 
 @Composable
 fun AddInstitute() {
 
 
     var instituteName by remember { mutableStateOf("") }
-    var Contact1 by remember { mutableStateOf("") }
-    var Contact2 by remember { mutableStateOf("") }
+
     var description by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
     var state by remember { mutableStateOf("") }
-    var facility1 by remember { mutableStateOf("") }
-    var contactType = remember {mutableStateOf<List<ContactList>>(emptyList())}
-    var contactFields by remember { mutableStateOf(listOf("")) }
+
     var facilityFields by remember { mutableStateOf(listOf("")) }
     val contactEnteries = remember { mutableStateListOf<ContactList>() }
+    val addNewInstitute: AddInstitueViewModel = hiltViewModel()
+
+
 
     Box(
         modifier = Modifier
@@ -172,9 +163,9 @@ fun AddInstitute() {
                     }
 
                 }
-                
-                
-                
+
+
+
 
                 facilityFields.forEachIndexed { index, facility ->
                     OutlinedTextField(
@@ -190,6 +181,18 @@ fun AddInstitute() {
                     )
 
                 }
+                Button(
+                    onClick = {
+                        addNewInstitute.addInstitute(instituteName,contactEnteries.toList(),description,facilityFields,address,state,city);
+
+                    },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text("Submit")
+                }
+
 
             }
         }

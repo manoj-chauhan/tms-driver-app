@@ -26,7 +26,7 @@ class EducationNetRepository @Inject constructor(
         val adapter: JsonAdapter<List<EducationList>> =
             Moshi.Builder().build().adapter(EducationListType)
 
-        val EducationListUrl = context.resources.getString(R.string.education_list)
+        val EducationListUrl = context.resources.getString(R.string.url_education_list)
 
         return try {
             getAccessToken(context)?.let {
