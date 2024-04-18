@@ -47,7 +47,7 @@ fun AddInstitute() {
     var state by remember { mutableStateOf("") }
 
     var facilityFields by remember { mutableStateOf(listOf("")) }
-    val contactEnteries = remember { mutableStateListOf<ContactList>() }
+    val contactEntries = remember { mutableStateListOf<ContactList>() }
     val addNewInstitute: AddInstitueViewModel = hiltViewModel()
 
 
@@ -85,31 +85,29 @@ fun AddInstitute() {
                     )
 
                     IconButton(onClick = {
-                        // Add a new contact field when the button is clicked
 
-
-                        contactEnteries.add(ContactList(mutableStateOf(""), mutableStateOf("")))
+                        contactEntries.add(ContactList("", ""))
                     }) {
                         Icon(Icons.Default.Add, contentDescription = "Add Contact")
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
-                contactEnteries.forEachIndexed { index, entry ->
+                contactEntries.forEachIndexed { index, entry ->
                     OutlinedTextField(
-                        value = entry.department.value,
-                        onValueChange = { entry.department.value = it },
-                        placeholder = { Text("Enter Department Name") },
+                        value = entry.department,
+                        onValueChange = { updated -> contactEntries[index] = entry.copy(department = updated) },
                         label = { Text("Title") },
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
-                        value = entry.number.value,
-                        onValueChange = { entry.number.value = it },
+                        value = entry.number,
+                        onValueChange = { updated -> contactEntries[index] = entry.copy(number = updated) },
                         label = { Text("Phone Number") },
                         modifier = Modifier.fillMaxWidth()
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -171,7 +169,6 @@ fun AddInstitute() {
                     OutlinedTextField(
                         value = facility,
                         onValueChange = { newValue ->
-                            // Update the value in the list
                             facilityFields =
                                 facilityFields.toMutableList().also { it[index] = newValue }
                         },
@@ -183,8 +180,7 @@ fun AddInstitute() {
                 }
                 Button(
                     onClick = {
-                        addNewInstitute.addInstitute(instituteName,contactEnteries.toList(),description,facilityFields,address,state,city);
-
+                        addNewInstitute.addInstitute(instituteName,contactEntries.toList(),description,facilityFields,address,state,city);
                     },
                     modifier = Modifier
                         .padding(16.dp)

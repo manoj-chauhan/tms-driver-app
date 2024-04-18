@@ -39,8 +39,8 @@ class InstituteNetRepository @Inject constructor(
             val jsonAdapter: JsonAdapter<InstituteAddInfo> = moshi.adapter(InstituteAddInfo::class.java)
             val requestBody = jsonAdapter.toJson(addInstituteRequest)
 
+            Log.d("anirudh", "addInstitute: $requestBody")
             val url = context.resources.getString(R.string.url_addInstitute)
-            Log.d("anirudh", "addInstitute: $url")
 
             val fuelManager = FuelManager()
             val (_, response, result) = fuelManager.post(url).jsonBody(requestBody)
