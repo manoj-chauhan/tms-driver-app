@@ -1,6 +1,5 @@
 package driver.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +13,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostsViewModel @Inject constructor(private val postsUploadManager: PostUploadManager) :ViewModel(){
-
     private val _uploadedPosts: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     val postDetails: StateFlow<List<String>> = _uploadedPosts.asStateFlow()
 
@@ -23,13 +21,16 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
             try {
                 if (image != null) {
                     val postResponse = postsUploadManager.uploadPosts(image)
-                    _uploadedPosts.update { currentPosts ->
-                        currentPosts + postResponse
+                    _uploadedPosts.update{currentResponse ->
+                        currentResponse+postResponse
                     }
-                    Log.d("Hello jiii", "uploadPosts: $postResponse")
                 }
             } catch (e: Exception) {
             }
         }
+    }
+
+    fun deletePosts(){
+        _uploadedPosts.value = emptyList()
     }
 }

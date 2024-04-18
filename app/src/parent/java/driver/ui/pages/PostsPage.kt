@@ -35,7 +35,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,16 +54,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import driver.models.PostUpload
 import driver.ui.viewmodels.PostsViewModel
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostItem() {
-
     val primary = Color(0xFF92A3FD)
     val secondary = Color(0XFF9DCEFF)
 
@@ -73,14 +72,27 @@ fun PostItem() {
         mutableStateOf<List<Uri?>>(emptyList())
     }
 
-    var mediaIdsList by remember {
-        mutableStateOf<List<String>>(emptyList())
-    }
-
     val postUploadViewModel:PostsViewModel = hiltViewModel()
     val mediaId by postUploadViewModel.postDetails.collectAsStateWithLifecycle()
+    var mediaPosts = remember { mutableStateListOf<PostUpload>() }
 
-    Log.d("mediaIds", "PostItem: $mediaId")
+    LaunchedEffect(mediaId) {
+        Log.d("My Media ID", "PostItem: ${mediaId}")
+
+        if (mediaId.isNotEmpty()) {
+            mediaId.forEach {media->
+                mediaPosts.add(
+                    PostUpload(
+                        type = "Image",
+                        mediaId = media,
+                        caption = "Command 1"
+                    )
+                )
+            }
+
+        }
+        Log.d("Media ", "PostItem: ${mediaPosts.toList()} ")
+    }
 
 
     val getMultipleImage = rememberLauncherForActivityResult(
@@ -204,6 +216,23 @@ fun PostItem() {
                         )
                     }
                 )
+                if(selectedImageUri.isNotEmpty() ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+
+                        IconButton(
+                            onClick = {
+                                postUploadViewModel.deletePosts()
+                                selectedImageUri = emptyList()
+                            },
+                            modifier = Modifier
+                        ) {
+                            Icon(Icons.Filled.Clear, contentDescription = "", tint = Color.Red)
+                        }
+                    }
+                }
                 LazyColumn {
                     items(selectedImageUri.size) { index ->
                         val uri = selectedImageUri[index]
@@ -215,39 +244,32 @@ fun PostItem() {
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(8.dp))
                             )
-                            IconButton(
-                                onClick = {
-                                    selectedImageUri = selectedImageUri.toMutableList().also { it.removeAt(index) }
-                                },
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                            ) {
-                                Icon(Icons.Filled.Clear, contentDescription = "", tint = Color.Red)
-                            }
+
                         }
                         Spacer(Modifier.height(10.dp))
                     }
                 }
-
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton(modifier = Modifier.width(40.dp), onClick = {
-                    getMultipleImage.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
-                    )
-                }) {
-                    Icon(
-                        modifier = Modifier,
-                        imageVector = Icons.Filled.Photo,
-                        contentDescription = null
-                    )
+            if(selectedImageUri.isEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    IconButton(modifier = Modifier.width(40.dp), onClick = {
+                        getMultipleImage.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
+                        )
+                    }) {
+                        Icon(
+                            modifier = Modifier,
+                            imageVector = Icons.Filled.Photo,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
         }
@@ -255,25 +277,27 @@ fun PostItem() {
 
 }
 
-fun uriToFile(uri: Uri, context: Context): File {
-    val destinationFilename = File(context.cacheDir, "posts${System.currentTimeMillis()}")
+//@Composable
+//fun VideoPreview(uri: Uri) {
+//    val mediaPlayer = rememberMediaPlayer(uri = uri)
+//    VideoPlayer(mediaPlayer)
+//}
+//
+//@Composable
+//fun ImagePreview(uri: Uri) {
+//    AsyncImage(
+//        model = uri,
+//        contentDescription = "Selected Image",
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .clip(RoundedCornerShape(8.dp))
+//    )
+//}
 
-    context.contentResolver.openInputStream(uri)?.use { inputStream ->
-        FileOutputStream(destinationFilename).use { outputStream ->
-            val buffer = ByteArray(4 * 1024)
-            while (true) {
-                val byteCount = inputStream.read(buffer)
-                if (byteCount < 0) break
-                outputStream.write(buffer, 0, byteCount)
-            }
-            outputStream.flush()
-        }
-    }
-
-    return destinationFilename
+fun isVideoUri(context: Context, uri: Uri): Boolean {
+    val mimeType = context.contentResolver.getType(uri)
+    return mimeType != null && mimeType.startsWith("video/")
 }
-
-
 
 @Composable
 @Preview
