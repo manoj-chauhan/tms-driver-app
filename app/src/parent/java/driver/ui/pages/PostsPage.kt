@@ -48,11 +48,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import driver.models.PostUpload
 import driver.ui.viewmodels.PostsViewModel
@@ -60,7 +60,7 @@ import java.io.ByteArrayOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PostItem() {
+fun PostItem(navController: NavHostController) {
     val primary = Color(0xFF92A3FD)
     val secondary = Color(0XFF9DCEFF)
 
@@ -126,6 +126,7 @@ fun PostItem() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(modifier = Modifier.width(40.dp), onClick = {
+                    navController.popBackStack()
                 }) {
                     Icon(
                         modifier = Modifier,
@@ -139,6 +140,7 @@ fun PostItem() {
                         .padding(8.dp),
                     onClick = {
                         postUploadViewModel.addPost(mediaPosts.toList(), text)
+                        navController.popBackStack()
                     },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
@@ -223,8 +225,8 @@ fun PostItem() {
 
                         IconButton(
                             onClick = {
-                                postUploadViewModel.deletePosts()
                                 selectedImageUri = emptyList()
+                                postUploadViewModel.deletePosts()
                             },
                             modifier = Modifier
                         ) {
@@ -297,9 +299,4 @@ fun isVideoUri(context: Context, uri: Uri): Boolean {
     return mimeType != null && mimeType.startsWith("video/")
 }
 
-@Composable
-@Preview
-fun PostItemPreview() {
-    PostItem()
-}
 

@@ -106,7 +106,7 @@ fun AppNavigationHost(
         }
 
         composable("post_page"){
-            PostItem()
+            PostItem(navController)
         }
 
         composable("map-screen") {
