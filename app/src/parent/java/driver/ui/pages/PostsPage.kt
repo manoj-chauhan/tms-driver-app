@@ -126,7 +126,6 @@ fun PostItem() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(modifier = Modifier.width(40.dp), onClick = {
-
                 }) {
                     Icon(
                         modifier = Modifier,
@@ -135,11 +134,11 @@ fun PostItem() {
                     )
                 }
 
-
                 Button(
                     modifier = Modifier
                         .padding(8.dp),
                     onClick = {
+                        postUploadViewModel.addPost(mediaPosts.toList(), text)
                     },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
@@ -255,7 +254,6 @@ fun PostItem() {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
-
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End
                 ) {

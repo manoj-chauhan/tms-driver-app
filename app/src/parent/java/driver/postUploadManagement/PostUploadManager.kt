@@ -1,5 +1,9 @@
 package driver.postUploadManagement
 
+import driver.models.PostUpload
+
 interface PostUploadManager {
-    suspend  fun uploadPosts(image: ByteArray): String
+    fun uploadPosts(image: ByteArray): String
+
+    fun addPost(media: List<PostUpload>, message: String)
 }

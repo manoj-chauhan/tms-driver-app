@@ -1,9 +1,11 @@
 package driver.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import driver.models.PostUpload
 import driver.postUploadManagement.PostUploadManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +19,7 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
     val postDetails: StateFlow<List<String>> = _uploadedPosts.asStateFlow()
 
     fun uploadPosts(image: ByteArray?){
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 if (image != null) {
                     val postResponse = postsUploadManager.uploadPosts(image)
@@ -31,6 +33,15 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
     }
 
     fun deletePosts(){
-        _uploadedPosts.value = emptyList()
+        _uploadedPosts.update { emptyList() }
+    }
+
+    fun addPost(media: List<PostUpload>, message:String){
+        CoroutineScope(Dispatchers.IO).launch {
+            try{
+                postsUploadManager.addPost(media, message)
+            }catch (e: Exception) {
+            }
+        }
     }
 }
