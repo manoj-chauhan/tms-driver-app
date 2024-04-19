@@ -1,5 +1,5 @@
 package driver.ui.pages
-
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,11 +26,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+
+import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 import driver.models.ContactList
 import driver.ui.viewmodels.AddInstitueViewModel
 
@@ -50,7 +63,12 @@ fun AddInstitute() {
     val contactEntries = remember { mutableStateListOf<ContactList>() }
     val addNewInstitute: AddInstitueViewModel = hiltViewModel()
 
+    val indiaLatLng = LatLng(20.5937, 78.9629)
 
+    val defaultCameraPositionState = CameraPosition.fromLatLngZoom(indiaLatLng, 4f)
+    val cameraPositionState = rememberCameraPositionState {
+        position = defaultCameraPositionState
+    }
 
     Box(
         modifier = Modifier
@@ -96,14 +114,18 @@ fun AddInstitute() {
                 contactEntries.forEachIndexed { index, entry ->
                     OutlinedTextField(
                         value = entry.department,
-                        onValueChange = { updated -> contactEntries[index] = entry.copy(department = updated) },
+                        onValueChange = { updated ->
+                            contactEntries[index] = entry.copy(department = updated)
+                        },
                         label = { Text("Title") },
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = entry.number,
-                        onValueChange = { updated -> contactEntries[index] = entry.copy(number = updated) },
+                        onValueChange = { updated ->
+                            contactEntries[index] = entry.copy(number = updated)
+                        },
                         label = { Text("Phone Number") },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -178,9 +200,26 @@ fun AddInstitute() {
                     )
 
                 }
+                GoogleMapView(
+                    modifier = Modifier
+                        .height(358.dp),
+                    indiaLatLng,
+                    cameraPositionState = cameraPositionState,
+                    onMapLoaded = {
+
+                    }
+                )
                 Button(
                     onClick = {
-                        addNewInstitute.addInstitute(instituteName,contactEntries.toList(),description,facilityFields,address,state,city);
+                        addNewInstitute.addInstitute(
+                            instituteName,
+                            contactEntries.toList(),
+                            description,
+                            facilityFields,
+                            address,
+                            state,
+                            city
+                        );
                     },
                     modifier = Modifier
                         .padding(16.dp)
@@ -194,6 +233,56 @@ fun AddInstitute() {
         }
     }
 }
+@Composable
+fun GoogleMapView(
+    modifier: Modifier = Modifier,
+    indiaLatLng: LatLng,
+    cameraPositionState: CameraPositionState,
+    onMapLoaded: () -> Unit
+) {
+    var markerPosition by remember { mutableStateOf(indiaLatLng) }
+    val mapClickedPosition = remember { mutableStateOf<LatLng?>(null) }
+
+    val locationState = rememberMarkerState(position = indiaLatLng)
+
+    val mapUiSettings by remember { mutableStateOf(MapUiSettings(compassEnabled = false)) }
+    val mapProperties by remember { mutableStateOf(MapProperties(mapType = MapType.NORMAL)) }
+
+    GoogleMap(
+        modifier = modifier,
+        onMapLoaded = onMapLoaded,
+        onMapClick = { clickedLatLng ->
+            // Update marker position when map is clicked
+            mapClickedPosition.value = clickedLatLng
+        },
+        uiSettings = mapUiSettings,
+        cameraPositionState = cameraPositionState,
+        properties = mapProperties
+    ) {
+        mapClickedPosition.value?.let { clickedPosition ->
+            // Update marker position when map is clicked
+            markerPosition = clickedPosition
+            // Reset mapClickedPosition to null after processing
+            mapClickedPosition.value = null
+        }
+
+        Marker(
+
+            state = locationState,
+            draggable = true,
+            onClick = {
+                      it.showInfoWindow()
+                      true
+            },
+            title = "India Map Title"
+        )
+    }
+}
+
+
+
+
+
 
 
 
