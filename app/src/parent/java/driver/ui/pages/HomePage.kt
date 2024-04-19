@@ -1,10 +1,10 @@
 package driver.ui.pages
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,7 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -210,7 +211,6 @@ fun ContentPage() {
 
                     Row(
                         modifier = Modifier
-                            .horizontalScroll(rememberScrollState())
                             .fillMaxWidth(),
                     ) {
                         val images = listOf(
@@ -752,33 +752,62 @@ fun HomeApp(modifier: Modifier = Modifier) {
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ImageScrollWithTextOverlay(images: List<String>) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
+    val pagerState = rememberPagerState(pageCount = {
+        images.size
+    })
 
-    images.forEachIndexed { index, imageUrl ->
-        Box(
-            modifier = Modifier
-                .width(screenWidth.dp)
-                .aspectRatio(1f)
-        ) {
-            AsyncImage(
-                model = imageUrl,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.FillWidth
-            )
 
-            Text(
-                text = "${index + 1}/${images.size}",
-                color = Color.White,
+    Column(modifier = Modifier.fillMaxSize()) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize()
+        ) { page ->
+            Box(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(4.dp)
-            )
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+            ) {
+                AsyncImage(
+                    model = images[page],
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
+
+                Text(
+                    text = "${page + 1}/${images.size}",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(12.dp)
+                )
+            }
+        }
+        Row(
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .align(Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            repeat(pagerState.pageCount) { index ->
+                val color = if (pagerState.currentPage == index) Color.Cyan else Color.LightGray
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .clip(CircleShape)
+                        .background(color)
+                        .size(10.dp)
+                )
+            }
         }
     }
 }
+
 @Composable
 @Preview
 fun ContentPagePreview() {
