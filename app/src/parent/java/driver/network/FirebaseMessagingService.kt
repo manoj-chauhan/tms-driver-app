@@ -33,7 +33,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService(){
 
         val data = remoteMessage.getData()
 
-        sendNotification(applicationContext, "","", data.get("deeplink"))
+//        sendNotification(applicationContext, "","", data.get("deeplink"))
 
     }
 

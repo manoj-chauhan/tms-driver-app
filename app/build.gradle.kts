@@ -194,6 +194,9 @@ dependencies {
     //inappupdate
     implementation("com.google.android.play:app-update-ktx:2.1.0")
 
+    //video_player
+    implementation ("com.google.android.exoplayer:exoplayer-core:2.19.1")
+    implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
 
 
 

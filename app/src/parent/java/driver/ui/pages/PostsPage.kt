@@ -80,7 +80,7 @@ fun PostItem(navController: NavHostController) {
     }
     val context = LocalContext.current
 
-    val postUploadViewModel:PostsViewModel = hiltViewModel()
+    val postUploadViewModel: PostsViewModel = hiltViewModel()
     val mediaId by postUploadViewModel.postDetails.collectAsStateWithLifecycle()
     var mediaPosts = remember { mutableStateListOf<PostUpload>() }
 
@@ -88,7 +88,7 @@ fun PostItem(navController: NavHostController) {
         Log.d("My Media ID", "PostItem: ${mediaId}")
 
         if (mediaId.isNotEmpty()) {
-            mediaId.forEach {media->
+            mediaId.forEach { media ->
                 mediaPosts.add(
                     PostUpload(
                         type = "Image",
@@ -107,7 +107,7 @@ fun PostItem(navController: NavHostController) {
         ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris: List<Uri?> ->
         selectedImageUri = uris
-            uris.forEach { uri ->
+        uris.forEach { uri ->
             val stream = ByteArrayOutputStream()
             bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
             bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, stream)
@@ -227,7 +227,7 @@ fun PostItem(navController: NavHostController) {
                         )
                     }
                 )
-                if(selectedImageUri.isNotEmpty() ) {
+                if (selectedImageUri.isNotEmpty()) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
@@ -262,7 +262,7 @@ fun PostItem(navController: NavHostController) {
                 }
             }
 
-            if(selectedImageUri.isEmpty()) {
+            if (selectedImageUri.isEmpty()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),

@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -61,17 +64,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.drishto.driver.R
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
@@ -87,7 +93,7 @@ data class NavigationItem(
 
 @Composable
 fun PostsSection() {
-    val pf:PostsViewModel = hiltViewModel()
+    val pf: PostsViewModel = hiltViewModel()
     val postsList by pf.postFeedsDetails.collectAsStateWithLifecycle()
     pf.getPosts()
 
@@ -130,6 +136,9 @@ fun PostsTabView(modifier: Modifier = Modifier, onTabSelected: (selectedIndex: I
 fun ContentPage() {
 
     val gry = Color(android.graphics.Color.parseColor("#838383"))
+
+    val images = listOf(R.drawable.hi)
+
     Box(
         modifier = Modifier.fillMaxSize(1f)
 //            .clickable { onClick(trip) }
@@ -199,15 +208,19 @@ fun ContentPage() {
 
                     Spacer(modifier = Modifier.size(15.dp))
 
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Image(
-                            painter = painterResource(id = R.drawable.hi),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp),
-                            contentScale = ContentScale.Crop
+                    Row(
+                        modifier = Modifier
+                            .horizontalScroll(rememberScrollState())
+                            .fillMaxWidth(),
+                    ) {
+                        val images = listOf(
+                            "http://13.201.100.196:8888/test/posts/file/8d1d1563-e4d5-4c3a-b7c7-ccfacefc6958",
+                            "http://13.201.100.196:8888/test/posts/file/cc1173ca-0cf8-4967-8232-7cb4573e76b1",
+                            "http://13.201.100.196:8888/test/posts/file/e9b81169-7e96-4981-9d61-e39a44b8cf15",
+                            "https://www.youtube.com/watch?v=mKYf7_AhVI0&ab_channel=NeonManSports"
                         )
+
+                        ImageScrollWithTextOverlay(images)
                     }
 
                     Spacer(modifier = Modifier.size(15.dp))
@@ -602,7 +615,7 @@ fun HomeScreenNavigation(navController: NavHostController) {
                             label = { Text(text = item.title) },
                             selected = index == selectedItemIndex,
                             onClick = {
-                            navController.navigate(item.navigate)
+                                navController.navigate(item.navigate)
                                 selectedItemIndex = index
                                 scope.launch {
                                     drawerState.close()
@@ -613,8 +626,7 @@ fun HomeScreenNavigation(navController: NavHostController) {
                 }
             }) {
 
-            Scaffold(modifier = Modifier
-                , topBar = {
+            Scaffold(modifier = Modifier, topBar = {
                 val scope = rememberCoroutineScope()
 
                 val gry = Color(android.graphics.Color.parseColor("#838383"))
@@ -737,4 +749,38 @@ fun HomeApp(modifier: Modifier = Modifier) {
             }
         }
     }
+}
+
+
+@Composable
+fun ImageScrollWithTextOverlay(images: List<String>) {
+    val screenWidth = LocalConfiguration.current.screenWidthDp
+
+    images.forEachIndexed { index, imageUrl ->
+        Box(
+            modifier = Modifier
+                .width(screenWidth.dp)
+                .aspectRatio(1f)
+        ) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = null,
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.FillWidth
+            )
+
+            Text(
+                text = "${index + 1}/${images.size}",
+                color = Color.White,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(4.dp)
+            )
+        }
+    }
+}
+@Composable
+@Preview
+fun ContentPagePreview() {
+    ContentPage()
 }
