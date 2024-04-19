@@ -1,4 +1,5 @@
 package driver.ui.pages
+
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,13 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
@@ -41,9 +40,8 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
-
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.compose.rememberMarkerState
 import driver.models.ContactList
 import driver.ui.viewmodels.AddInstitueViewModel
 
@@ -168,6 +166,18 @@ fun AddInstitute() {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
+                GoogleMapView(
+                    modifier = Modifier
+                        .height(358.dp),
+                    indiaLatLng,
+                    cameraPositionState = cameraPositionState,
+                    onMapLoaded = {
+
+                    },
+
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -200,15 +210,6 @@ fun AddInstitute() {
                     )
 
                 }
-                GoogleMapView(
-                    modifier = Modifier
-                        .height(358.dp),
-                    indiaLatLng,
-                    cameraPositionState = cameraPositionState,
-                    onMapLoaded = {
-
-                    }
-                )
                 Button(
                     onClick = {
                         addNewInstitute.addInstitute(
@@ -238,45 +239,63 @@ fun GoogleMapView(
     modifier: Modifier = Modifier,
     indiaLatLng: LatLng,
     cameraPositionState: CameraPositionState,
-    onMapLoaded: () -> Unit
+    onMapLoaded: () -> Unit,
 ) {
-    var markerPosition by remember { mutableStateOf(indiaLatLng) }
-    val mapClickedPosition = remember { mutableStateOf<LatLng?>(null) }
-
-    val locationState = rememberMarkerState(position = indiaLatLng)
-
     val mapUiSettings by remember { mutableStateOf(MapUiSettings(compassEnabled = false)) }
     val mapProperties by remember { mutableStateOf(MapProperties(mapType = MapType.NORMAL)) }
+
+    var markerPosition by remember { mutableStateOf<LatLng?>(null) }
+
+    var latitude by remember { mutableStateOf("") }
+    var longitude by remember { mutableStateOf("") }
+
+    if(markerPosition != null) {
+        OutlinedTextField(
+            value = latitude,
+            onValueChange = { null },
+            label = { Text("Latitude") },
+            placeholder = { Text("Latitude") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = longitude,
+            onValueChange = { null },
+            label = { Text("Longitude") },
+            placeholder = { Text("Longitude") },
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
 
     GoogleMap(
         modifier = modifier,
         onMapLoaded = onMapLoaded,
-        onMapClick = { clickedLatLng ->
-            // Update marker position when map is clicked
-            mapClickedPosition.value = clickedLatLng
-        },
         uiSettings = mapUiSettings,
         cameraPositionState = cameraPositionState,
-        properties = mapProperties
-    ) {
-        mapClickedPosition.value?.let { clickedPosition ->
-            // Update marker position when map is clicked
-            markerPosition = clickedPosition
-            // Reset mapClickedPosition to null after processing
-            mapClickedPosition.value = null
+        properties = mapProperties,
+        onMapClick = { latLng ->
+            markerPosition = latLng
         }
-
-        Marker(
-
-            state = locationState,
-            draggable = true,
-            onClick = {
-                      it.showInfoWindow()
-                      true
-            },
-            title = "India Map Title"
-        )
+    ) {
+        if(markerPosition != null) {
+            Marker(
+                state = MarkerState(
+                    position = cameraPositionState.position.target
+                ),
+                draggable = true,
+                title = "Marker Title",
+                onClick = {
+                    it.showInfoWindow()
+                    true
+                }
+            )
+        }
     }
+    latitude = cameraPositionState.position.target.latitude.toString()
+    longitude = cameraPositionState.position.target.longitude.toString()
+    Log.d("Lat Long", "GoogleMapView: ${cameraPositionState.position.target.latitude} ${cameraPositionState.position.target.longitude}")
 }
 
 
