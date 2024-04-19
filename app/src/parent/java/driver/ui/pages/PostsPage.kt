@@ -1,7 +1,9 @@
 package driver.ui.pages
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -46,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -71,6 +74,11 @@ fun PostItem(navController: NavHostController) {
     var selectedImageUri by remember {
         mutableStateOf<List<Uri?>>(emptyList())
     }
+
+    var bitmap by remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+    val context = LocalContext.current
 
     val postUploadViewModel:PostsViewModel = hiltViewModel()
     val mediaId by postUploadViewModel.postDetails.collectAsStateWithLifecycle()
@@ -99,8 +107,10 @@ fun PostItem(navController: NavHostController) {
         ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris: List<Uri?> ->
         selectedImageUri = uris
-        uris.forEach { uri ->
+            uris.forEach { uri ->
             val stream = ByteArrayOutputStream()
+            bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, stream)
             val byteArray: ByteArray = stream.toByteArray()
             postUploadViewModel.uploadPosts(byteArray)
         }
