@@ -1,5 +1,6 @@
 package driver.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -67,9 +68,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.drishto.driver.R
+import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
 
 data class NavigationItem(
@@ -83,6 +87,11 @@ data class NavigationItem(
 
 @Composable
 fun PostsSection() {
+    val pf:PostsViewModel = hiltViewModel()
+    val postsList by pf.postFeedsDetails.collectAsStateWithLifecycle()
+    pf.getPosts()
+
+    Log.d("TAG", "PostsSection: $postsList")
     Column {
         ContentPage()
     }
