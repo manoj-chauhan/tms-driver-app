@@ -79,8 +79,8 @@ fun AppNavigationHost(
         }
         composable("home") {
 
-//            HomePage(navController)
-           AddInstitute()
+            HomePage(navController)
+//           AddInstitute()
 
         }
         composable("user_profile"){

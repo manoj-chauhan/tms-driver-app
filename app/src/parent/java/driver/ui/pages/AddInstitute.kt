@@ -1,7 +1,10 @@
 package driver.ui.pages
 
+import android.location.Address
+import android.location.Geocoder
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -18,7 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -27,13 +32,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -44,6 +53,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import driver.models.ContactList
 import driver.ui.viewmodels.AddInstitueViewModel
+import java.io.IOException
 
 
 @Composable
@@ -62,6 +72,14 @@ fun AddInstitute() {
     val addNewInstitute: AddInstitueViewModel = hiltViewModel()
 
     val indiaLatLng = LatLng(20.5937, 78.9629)
+    var latitude by remember { mutableStateOf("") }
+    var longitude by remember { mutableStateOf("") }
+
+    val mapUiSettings by remember { mutableStateOf(MapUiSettings(compassEnabled = false)) }
+    val mapProperties by remember { mutableStateOf(MapProperties(mapType = MapType.NORMAL)) }
+    var markerPosition by remember { mutableStateOf<LatLng?>(null) }
+
+
 
     val defaultCameraPositionState = CameraPosition.fromLatLngZoom(indiaLatLng, 4f)
     val cameraPositionState = rememberCameraPositionState {
@@ -165,17 +183,55 @@ fun AddInstitute() {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-
-                GoogleMapView(
+                Text(text = "Mark Institute's Location", fontWeight =FontWeight.Bold , fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(16.dp))
+                GoogleMap(
                     modifier = Modifier
-                        .height(358.dp),
-                    indiaLatLng,
+                        .fillMaxWidth()
+                        .height(800.dp),
+                    onMapLoaded = {  },
+                    uiSettings = mapUiSettings,
                     cameraPositionState = cameraPositionState,
-                    onMapLoaded = {
+                    properties = mapProperties,
 
-                    },
+                    onMapClick = { latLng ->
+                        markerPosition = latLng
+                    }
+                ) {
+                    if(markerPosition != null) {
+                        Marker(
+                            state = MarkerState(
+                                position = cameraPositionState.position.target
+                            ),
+                            draggable = true,
+                            title = "Marker Title",
+                            onClick = {
+                                it.showInfoWindow()
+                                true
+                            }
+                        )
+                    }
+                }
 
-                )
+                if(markerPosition != null) {
+                    OutlinedTextField(
+                        value = latitude,
+                        onValueChange = { null },
+                        label = { Text("Latitude") },
+                        placeholder = { Text("Latitude") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = longitude,
+                        onValueChange = { null },
+                        label = { Text("Longitude") },
+                        placeholder = { Text("Longitude") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
@@ -193,10 +249,6 @@ fun AddInstitute() {
                     }
 
                 }
-
-
-
-
                 facilityFields.forEachIndexed { index, facility ->
                     OutlinedTextField(
                         value = facility,
@@ -210,6 +262,11 @@ fun AddInstitute() {
                     )
 
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                latitude = cameraPositionState.position.target.latitude.toString()
+                longitude = cameraPositionState.position.target.longitude.toString()
+                Log.d("Lat Long", "GoogleMapView: ${cameraPositionState.position.target.latitude} ${cameraPositionState.position.target.longitude}")
                 Button(
                     onClick = {
                         addNewInstitute.addInstitute(
@@ -219,7 +276,9 @@ fun AddInstitute() {
                             facilityFields,
                             address,
                             state,
-                            city
+                            city,
+                            latitude,
+                            longitude
                         );
                     },
                     modifier = Modifier
@@ -234,69 +293,10 @@ fun AddInstitute() {
         }
     }
 }
-@Composable
-fun GoogleMapView(
-    modifier: Modifier = Modifier,
-    indiaLatLng: LatLng,
-    cameraPositionState: CameraPositionState,
-    onMapLoaded: () -> Unit,
-) {
-    val mapUiSettings by remember { mutableStateOf(MapUiSettings(compassEnabled = false)) }
-    val mapProperties by remember { mutableStateOf(MapProperties(mapType = MapType.NORMAL)) }
 
-    var markerPosition by remember { mutableStateOf<LatLng?>(null) }
 
-    var latitude by remember { mutableStateOf("") }
-    var longitude by remember { mutableStateOf("") }
 
-    if(markerPosition != null) {
-        OutlinedTextField(
-            value = latitude,
-            onValueChange = { null },
-            label = { Text("Latitude") },
-            placeholder = { Text("Latitude") },
-            modifier = Modifier.fillMaxWidth()
-        )
 
-        OutlinedTextField(
-            value = longitude,
-            onValueChange = { null },
-            label = { Text("Longitude") },
-            placeholder = { Text("Longitude") },
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    GoogleMap(
-        modifier = modifier,
-        onMapLoaded = onMapLoaded,
-        uiSettings = mapUiSettings,
-        cameraPositionState = cameraPositionState,
-        properties = mapProperties,
-        onMapClick = { latLng ->
-            markerPosition = latLng
-        }
-    ) {
-        if(markerPosition != null) {
-            Marker(
-                state = MarkerState(
-                    position = cameraPositionState.position.target
-                ),
-                draggable = true,
-                title = "Marker Title",
-                onClick = {
-                    it.showInfoWindow()
-                    true
-                }
-            )
-        }
-    }
-    latitude = cameraPositionState.position.target.latitude.toString()
-    longitude = cameraPositionState.position.target.longitude.toString()
-    Log.d("Lat Long", "GoogleMapView: ${cameraPositionState.position.target.latitude} ${cameraPositionState.position.target.longitude}")
-}
 
 
 

@@ -11,6 +11,8 @@ interface InstitueManager {
         facilityFields: List<String>,
         address: String,
         state: String,
-        city: String
+        city: String,
+        latitude: String,
+        longitude:String
     );
 }

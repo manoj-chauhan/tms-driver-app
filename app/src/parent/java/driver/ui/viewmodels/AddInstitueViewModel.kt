@@ -1,8 +1,6 @@
 package driver.ui.viewmodels
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drishto.driver.errormgmt.ErrManager
@@ -31,13 +29,19 @@ class AddInstitueViewModel @Inject constructor(
         facilityFields: List<String>,
         address: String,
         state: String,
-        city: String
+        city: String,
+//        geoCordinates:List<GeoCordinates>
+        latitude:String,
+        longitude:String
     ) {
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                addInstitute.addInstitute(instituteName,contactList,description,facilityFields,address,state,city)
+                addInstitute.addInstitute(instituteName,contactList,description,facilityFields,address,state,city,latitude,longitude)
                 Log.d("value","$contactList")
+                Log.d("lat", "$latitude")
+                Log.d("long", "$longitude")
+
 
 
             } catch (e: Exception) {

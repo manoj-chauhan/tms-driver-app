@@ -16,9 +16,11 @@ class InstituteImpl @Inject constructor(
         facilityFields: List<String>,
         address: String,
         state: String,
-        city: String
+        city: String,
+        latitude: String,
+        longitude:String
     ) {
-        return AddInstituteNetRepository.addInstitute(instituteName,contactList,description,facilityFields,address,state,city)
+        return AddInstituteNetRepository.addInstitute(instituteName,contactList,description,facilityFields,address,state,city,latitude,longitude)
 
 
     }

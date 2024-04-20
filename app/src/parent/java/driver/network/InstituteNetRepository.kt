@@ -28,6 +28,8 @@ class InstituteNetRepository @Inject constructor(
         address: String,
         state: String,
         city: String,
+        latitude: String,
+        longitude: String,
     ) {
         try {
             val addressInfo=AddressInfo(address,city,state)
