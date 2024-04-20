@@ -1,5 +1,6 @@
 package driver.ui.pages
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -52,6 +53,7 @@ import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -66,6 +68,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -74,12 +78,19 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.drishto.driver.R
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
 
@@ -209,18 +220,18 @@ fun ContentPage() {
 
                     Spacer(modifier = Modifier.size(15.dp))
 
+                        val images = listOf(
+                            "https://picsum.photos/200/300",
+                            "http://13.201.100.196:8888/test/posts/file/78cdf346-96c3-466d-96e4-d469638447b9",
+                            "http://13.201.100.196:8888/test/posts/file/78cdf346-96c3-466d-96e4-d469638447b9",
+                        )
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
                     ) {
-                        val images = listOf(
-                            "http://13.201.100.196:8888/test/posts/file/8d1d1563-e4d5-4c3a-b7c7-ccfacefc6958",
-                            "http://13.201.100.196:8888/test/posts/file/cc1173ca-0cf8-4967-8232-7cb4573e76b1",
-                            "http://13.201.100.196:8888/test/posts/file/e9b81169-7e96-4981-9d61-e39a44b8cf15",
-                            "https://www.youtube.com/watch?v=mKYf7_AhVI0&ab_channel=NeonManSports"
-                        )
 
                         ImageScrollWithTextOverlay(images)
+//                        videoPlayer()
                     }
 
                     Spacer(modifier = Modifier.size(15.dp))
@@ -807,7 +818,62 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
         }
     }
 }
+@Composable
+fun videoPlayer(){
+    val url ="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    val context = LocalContext.current
 
+    val exoPlayer= ExoPlayer.Builder(context).build()
+    val mediaItem = MediaItem.fromUri(Uri.parse(url))
+
+    exoPlayer.setMediaItem(mediaItem)
+
+    val playerView= StyledPlayerView(context)
+    playerView.player = exoPlayer
+
+    var lifecycle by remember {
+        mutableStateOf(Lifecycle.Event.ON_CREATE)
+    }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            lifecycle = event
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+    ) {
+        AndroidView(
+            factory = { context ->
+                PlayerView(context).also {
+                    it.player = exoPlayer
+                }
+            },
+            update = {
+                when (lifecycle) {
+                    Lifecycle.Event.ON_PAUSE -> {
+                        it.onPause()
+                        it.player?.pause()
+                    }
+                    Lifecycle.Event.ON_RESUME -> {
+                        it.onResume()
+                    }
+                    else -> Unit
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+        )
+    }
+}
 @Composable
 @Preview
 fun ContentPagePreview() {
