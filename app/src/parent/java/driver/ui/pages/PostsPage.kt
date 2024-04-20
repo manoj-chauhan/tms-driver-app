@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.VideoView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -53,6 +54,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -60,6 +62,7 @@ import coil.compose.AsyncImage
 import driver.models.PostUpload
 import driver.ui.viewmodels.PostsViewModel
 import java.io.ByteArrayOutputStream
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,11 +111,12 @@ fun PostItem(navController: NavHostController) {
     ) { uris: List<Uri?> ->
         selectedImageUri = uris
         uris.forEach { uri ->
-            val stream = ByteArrayOutputStream()
-            bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, stream)
-            val byteArray: ByteArray = stream.toByteArray()
-            postUploadViewModel.uploadPosts(byteArray)
+            uris.forEach { uri ->
+                uri?.let {
+                    val byteArray = getByteArrayFromUri(context, it)
+                    postUploadViewModel.uploadPosts(byteArray)
+                }
+            }
         }
     }
 
@@ -248,14 +252,19 @@ fun PostItem(navController: NavHostController) {
                     items(selectedImageUri.size) { index ->
                         val uri = selectedImageUri[index]
                         Box {
-                            AsyncImage(
-                                model = uri,
-                                contentDescription = "Selected Image",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
-
+                            if (uri != null) {
+                                if (uri.isImage()) {
+                                    AsyncImage(
+                                        model = uri,
+                                        contentDescription = "Selected Image",
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(8.dp))
+                                    )
+                                } else if (uri.isVideo()) {
+                                    VideoPlayer(uri = uri)
+                                }
+                            }
                         }
                         Spacer(Modifier.height(10.dp))
                     }
@@ -286,27 +295,49 @@ fun PostItem(navController: NavHostController) {
     }
 
 }
-
-//@Composable
-//fun VideoPreview(uri: Uri) {
-//    val mediaPlayer = rememberMediaPlayer(uri = uri)
-//    VideoPlayer(mediaPlayer)
-//}
-//
-//@Composable
-//fun ImagePreview(uri: Uri) {
-//    AsyncImage(
-//        model = uri,
-//        contentDescription = "Selected Image",
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .clip(RoundedCornerShape(8.dp))
-//    )
-//}
-
-fun isVideoUri(context: Context, uri: Uri): Boolean {
-    val mimeType = context.contentResolver.getType(uri)
-    return mimeType != null && mimeType.startsWith("video/")
+@Composable
+private fun Uri.isImage(): Boolean {
+    val context = LocalContext.current
+    val mimeType = context.contentResolver.getType(this)
+    return mimeType?.startsWith("image/") == true
+}
+@Composable
+private fun Uri.isVideo(): Boolean {
+    val context = LocalContext.current
+    val mimeType = context.contentResolver.getType(this)
+    return mimeType?.startsWith("video/") == true
 }
 
+@Composable
+fun VideoPlayer(uri: Uri) {
+    AndroidView(
+        factory = { ctx ->
+            VideoView(ctx).apply {
+                setVideoURI(uri)
+                start()
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .clip(RoundedCornerShape(8.dp)),
+    )
+}
+
+
+private fun getByteArrayFromUri(context: Context, uri: Uri): ByteArray {
+    val stream = ByteArrayOutputStream()
+    val mimeType = context.contentResolver.getType(uri)
+
+    return if (mimeType?.startsWith("image/") == true) {
+        val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+        stream.toByteArray()
+    } else{
+        val inputStream = context.contentResolver.openInputStream(uri)
+        inputStream?.buffered()?.use { input ->
+            input.readBytes()
+        } ?: ByteArray(0)
+    }
+}
 
