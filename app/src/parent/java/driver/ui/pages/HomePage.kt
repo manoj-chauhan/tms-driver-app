@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -716,6 +717,7 @@ fun HomeScreenNavigation(navController: NavHostController) {
                     }
                     Box(
                         modifier = Modifier
+                            .clickable { navController.navigate("user_profile") }
                             .background(
                                 Color.White, shape = CircleShape
                             )

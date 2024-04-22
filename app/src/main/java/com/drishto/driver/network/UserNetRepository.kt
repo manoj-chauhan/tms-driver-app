@@ -77,16 +77,16 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
     }
 
     fun getChildrenList(): List<Student>? {
-        val assignedTripType =
+        val student_list =
             Types.newParameterizedType(MutableList::class.java, Student::class.java)
         val adapter: JsonAdapter<MutableList<Student>> =
-            Moshi.Builder().build().adapter(assignedTripType)
+            Moshi.Builder().build().adapter(student_list)
 
-        val tripAssignmentUrl = context.resources.getString(R.string.children_list)
+        val student_list_Url = context.resources.getString(R.string.children_list)
 
         return try {
             getAccessToken(context)?.let {
-                val (_, _, result) = tripAssignmentUrl.httpGet()
+                val (_, _, result) = student_list_Url.httpGet()
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(adapter))
                 result.fold(

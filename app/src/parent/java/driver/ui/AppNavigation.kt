@@ -23,13 +23,14 @@ import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.ui.components.pastTrips
+import driver.ui.pages.AddInstitute
 import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
-import driver.ui.pages.PostItem
 import driver.ui.pages.notificationScreen
+import driver.ui.pages.profile
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -78,6 +79,11 @@ fun AppNavigationHost(
         }
         composable("home") {
             HomeScreenNavigation(navController)
+//           AddInstitute()
+
+        }
+        composable("user_profile"){
+            profile()
         }
 
         composable("MainScreen"){
@@ -103,10 +109,6 @@ fun AppNavigationHost(
         }
         composable("login") {
 
-        }
-
-        composable("post_page"){
-            PostItem(navController)
         }
 
         composable("map-screen") {
