@@ -86,6 +86,7 @@ fun PostItem(navController: NavHostController) {
 
     LaunchedEffect(mediaId) {
         Log.d("My Media ID", "PostItem: ${mediaId}")
+        mediaPosts.clear()
 
         if (mediaId?.isNotEmpty() == true) {
             mediaId?.forEach { media ->
@@ -103,7 +104,7 @@ fun PostItem(navController: NavHostController) {
             }
         }
     }
-
+    Log.d("TAG", "PostItem: ${mediaPosts.toList()}")
 
     val getMultipleImage = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia()
