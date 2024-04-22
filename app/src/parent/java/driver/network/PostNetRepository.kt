@@ -23,12 +23,13 @@ class PostNetRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val errorManager: ErrManager
 ) {
-    fun getMediaID(image: ByteArray): String {
+    fun getMediaID(image: ByteArray, mimeType: String): String {
         val url = context.resources.getString(R.string.url_get_mediaId)
-        return try {
+         return try {
             val fuelManager = FuelManager()
             val (_, response, result) = fuelManager.post(url)
                 .body(image)
+                .header("content-type", mimeType)
                 .responseString()
 
             result.fold(
@@ -61,7 +62,7 @@ class PostNetRepository @Inject constructor(
         }
     }
 
-    fun uploadPosts(media: List<PostUpload>, message: String) {
+    fun uploadPosts(media: List<PostUpload?>, message: String) {
         try {
             val postUploadRequest = UploadPosts("661e625812e20f273847eb04", media, message)
 

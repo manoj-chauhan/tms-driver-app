@@ -78,31 +78,30 @@ fun PostItem(navController: NavHostController) {
         mutableStateOf<List<Uri?>>(emptyList())
     }
 
-    var bitmap by remember {
-        mutableStateOf<Bitmap?>(null)
-    }
     val context = LocalContext.current
 
     val postUploadViewModel: PostsViewModel = hiltViewModel()
     val mediaId by postUploadViewModel.postDetails.collectAsStateWithLifecycle()
-    var mediaPosts = remember { mutableStateListOf<PostUpload>() }
+    var mediaPosts = remember { mutableStateListOf<PostUpload?>() }
 
     LaunchedEffect(mediaId) {
         Log.d("My Media ID", "PostItem: ${mediaId}")
 
-        if (mediaId.isNotEmpty()) {
-            mediaId.forEach { media ->
+        if (mediaId?.isNotEmpty() == true) {
+            mediaId?.forEach { media ->
                 mediaPosts.add(
                     PostUpload(
-                        type = "Image",
-                        mediaId = media,
+                        type = when (media.second) {
+                            "video/mp4" -> "Video"
+                            "image/jpeg", "image/png" -> "Image"
+                            else -> "Unknown"
+                        },
+                        mediaId = media.first,
                         caption = "Command 1"
                     )
                 )
             }
-
         }
-        Log.d("Media ", "PostItem: ${mediaPosts.toList()} ")
     }
 
 
@@ -111,16 +110,13 @@ fun PostItem(navController: NavHostController) {
     ) { uris: List<Uri?> ->
         selectedImageUri = uris
         uris.forEach { uri ->
-            uris.forEach { uri ->
-                uri?.let {
-                    val byteArray = getByteArrayFromUri(context, it)
-                    postUploadViewModel.uploadPosts(byteArray)
-                }
+            uri?.let {
+                val mimeType = context.contentResolver.getType(uri)
+                val byteArray = getByteArrayFromUri(context, it)
+                postUploadViewModel.uploadPosts(byteArray, mimeType)
             }
         }
     }
-
-
 
     Box(
         modifier = Modifier
@@ -240,6 +236,7 @@ fun PostItem(navController: NavHostController) {
                         IconButton(
                             onClick = {
                                 selectedImageUri = emptyList()
+                                mediaPosts.clear()
                                 postUploadViewModel.deletePosts()
                             },
                             modifier = Modifier
@@ -295,12 +292,14 @@ fun PostItem(navController: NavHostController) {
     }
 
 }
+
 @Composable
 private fun Uri.isImage(): Boolean {
     val context = LocalContext.current
     val mimeType = context.contentResolver.getType(this)
     return mimeType?.startsWith("image/") == true
 }
+
 @Composable
 private fun Uri.isVideo(): Boolean {
     val context = LocalContext.current
@@ -333,7 +332,7 @@ private fun getByteArrayFromUri(context: Context, uri: Uri): ByteArray {
         val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
         bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
         stream.toByteArray()
-    } else{
+    } else {
         val inputStream = context.contentResolver.openInputStream(uri)
         inputStream?.buffered()?.use { input ->
             input.readBytes()

@@ -9,11 +9,11 @@ import javax.inject.Inject
 
 class PostUploadManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context, private val postNetRepository: PostNetRepository) :PostUploadManager {
-    override fun uploadPosts(image: ByteArray): String{
-        return postNetRepository.getMediaID(image)
+    override fun uploadPosts(image: ByteArray, mimeType:String): String{
+        return postNetRepository.getMediaID(image,mimeType)
     }
 
-    override fun addPost(media: List<PostUpload>, message: String) {
+    override fun addPost(media: List<PostUpload?>, message: String) {
         return postNetRepository.uploadPosts(media, message)
     }
 
