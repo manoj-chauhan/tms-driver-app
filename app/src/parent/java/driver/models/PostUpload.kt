@@ -13,7 +13,7 @@ data class PostUpload(
 data class UploadPosts(
     val createdBy: String,
     val media: List<PostUpload?>,
-    val content:String,
+    val message:String,
     val scope : String = "School",
 )
 

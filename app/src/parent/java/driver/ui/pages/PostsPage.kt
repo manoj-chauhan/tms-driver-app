@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.VideoView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -85,7 +84,6 @@ fun PostItem(navController: NavHostController) {
     var mediaPosts = remember { mutableStateListOf<PostUpload?>() }
 
     LaunchedEffect(mediaId) {
-        Log.d("My Media ID", "PostItem: ${mediaId}")
         mediaPosts.clear()
 
         if (mediaId?.isNotEmpty() == true) {
@@ -104,7 +102,6 @@ fun PostItem(navController: NavHostController) {
             }
         }
     }
-    Log.d("TAG", "PostItem: ${mediaPosts.toList()}")
 
     val getMultipleImage = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia()
