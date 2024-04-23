@@ -117,13 +117,11 @@ fun PostsSection() {
 }
 
 @Composable
-fun PostsTabView(modifier: Modifier = Modifier, onTabSelected: (selectedIndex: Int) -> Unit) {
+fun PostsTabView(modifier: Modifier = Modifier, tabItems: List<tabItem>,onTabSelected: (selectedIndex: Int) -> Unit) {
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
     }
-    val tabItems = listOf(
-        tabItem("All"), tabItem("School"), tabItem("Class")
-    )
+
     TabRow(
         selectedTabIndex = selectedTabIndex, modifier = modifier
     ) {
@@ -748,9 +746,12 @@ fun HomeScreenNavigation(navController: NavHostController) {
 @Composable
 fun HomeApp(modifier: Modifier = Modifier) {
     var selectedTabIndex by remember { mutableStateOf(0) }
+    val tabItems = listOf(
+        tabItem("All"), tabItem("School"), tabItem("Class")
+    )
     LazyColumn(modifier = modifier.fillMaxWidth()) {
         item {
-            PostsTabView(onTabSelected = { index: Int ->
+            PostsTabView(modifier,tabItems,onTabSelected = { index: Int ->
                 selectedTabIndex = index
             })
         }
