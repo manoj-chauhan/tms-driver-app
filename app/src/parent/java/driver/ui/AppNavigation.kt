@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -84,8 +83,7 @@ fun AppNavigationHost(
         }
         composable("home") {
 //            HomeScreenNavigation(navController)
-//            navController.navigate("userList")
-           AddInstitute()
+            navController.navigate("userList")
 
         }
         composable("post_page"){
@@ -104,9 +102,11 @@ fun AppNavigationHost(
         }
         composable("home-screen"){
             HomeScreenNavigation(navController = navController)
-
         }
 
+        composable("add-Institute"){
+            AddInstitute()
+        }
 
         composable("MainScreen"){
             val activity = LocalContext.current as? ComponentActivity

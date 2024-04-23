@@ -27,14 +27,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CarCrash
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.BookmarkAdd
+import androidx.compose.material.icons.outlined.Business
 import androidx.compose.material.icons.outlined.CarCrash
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Mail
+import androidx.compose.material.icons.outlined.PostAdd
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -74,9 +75,9 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -117,7 +118,11 @@ fun PostsSection() {
 }
 
 @Composable
-fun PostsTabView(modifier: Modifier = Modifier, tabItems: List<tabItem>,onTabSelected: (selectedIndex: Int) -> Unit) {
+fun PostsTabView(
+    modifier: Modifier = Modifier,
+    tabItems: List<tabItem>,
+    onTabSelected: (selectedIndex: Int) -> Unit
+) {
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
     }
@@ -219,11 +224,11 @@ fun ContentPage() {
 
                     Spacer(modifier = Modifier.size(15.dp))
 
-                        val images = listOf(
-                            "https://picsum.photos/200/300",
-                            "http://13.201.100.196:8888/test/posts/file/78cdf346-96c3-466d-96e4-d469638447b9",
-                            "http://13.201.100.196:8888/test/posts/file/78cdf346-96c3-466d-96e4-d469638447b9",
-                        )
+                    val images = listOf(
+                        "https://picsum.photos/200/300",
+                        "http://13.201.100.196:8888/test/posts/file/78cdf346-96c3-466d-96e4-d469638447b9",
+                        "http://13.201.100.196:8888/test/posts/file/78cdf346-96c3-466d-96e4-d469638447b9",
+                    )
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -576,27 +581,54 @@ fun HomeScreenNavigation(navController: NavHostController) {
         mutableStateOf(0)
     }
 
-    val items = listOf(
+    val topItems = listOf(
         NavigationItem(
-            title = "All",
-            selectedIcon = Icons.Filled.Home,
-            unselectedIcon = Icons.Outlined.Home,
-            navigate = ""
-
+            title = "Trips",
+            selectedIcon = Icons.Outlined.CarCrash,
+            unselectedIcon = Icons.Outlined.CarCrash,
+            navigate = "MainScreen"
         ),
         NavigationItem(
-            title = "Add post",
-            selectedIcon = Icons.Filled.Info,
-            unselectedIcon = Icons.Outlined.Info,
+            title = "Notices",
+            selectedIcon = Icons.Outlined.Flag,
+            unselectedIcon = Icons.Outlined.Flag,
             badgeCount = 45,
             navigate = "post_page"
 
         ),
         NavigationItem(
-            title = "Trips",
-            selectedIcon = Icons.Filled.CarCrash,
-            unselectedIcon = Icons.Outlined.CarCrash,
-            navigate = "MainScreen"
+            title = "Events",
+            selectedIcon = Icons.Outlined.BookmarkAdd,
+            unselectedIcon = Icons.Outlined.BookmarkAdd,
+            navigate = "add-Institute"
+        ),
+        NavigationItem(
+            title = "Add post",
+            selectedIcon = Icons.Outlined.PostAdd,
+            unselectedIcon = Icons.Outlined.PostAdd,
+            badgeCount = 45,
+            navigate = "post_page"
+
+        ),
+        NavigationItem(
+            title = "Add Institute",
+            selectedIcon = Icons.Outlined.Business,
+            unselectedIcon = Icons.Outlined.Business,
+            navigate = "add-Institute"
+        ),
+    )
+    val bottomItems = listOf(
+        NavigationItem(
+            title = "Give Feedback",
+            selectedIcon = Icons.Outlined.Mail,
+            unselectedIcon = Icons.Outlined.Mail,
+            navigate = "add-Institute"
+        ),
+        NavigationItem(
+            title = "Settings",
+            selectedIcon = Icons.Outlined.Settings,
+            unselectedIcon = Icons.Outlined.Settings,
+            navigate = "add-Institute"
         ),
     )
 
@@ -611,27 +643,82 @@ fun HomeScreenNavigation(navController: NavHostController) {
                 ModalDrawerSheet(modifier = Modifier.width(300.dp)) {
                     Box(
                         modifier = Modifier
-                            .background(Color.LightGray)
                             .fillMaxWidth()
-                            .height(150.dp)
+                            .align(Alignment.CenterHorizontally)
+                            .height(80.dp)
                     ) {
-                        Text(text = "")
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(20.dp), verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                modifier = Modifier,
+                                text = "DRISHTO",
+                                fontStyle = FontStyle.Normal,
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 24.sp,
+                                color = Color.Red
+                            )
+
+                        }
                     }
 
-                    Divider()
+                    Divider(
+                        modifier = Modifier
+                            .background(Color.LightGray)
+                            .height(2.dp)
+                    )
 
-                    items.forEachIndexed { index, item ->
-                        NavigationDrawerItem(
-                            label = { Text(text = item.title) },
-                            selected = index == selectedItemIndex,
-                            onClick = {
-                                navController.navigate(item.navigate)
-                                selectedItemIndex = index
-                                scope.launch {
-                                    drawerState.close()
-                                }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+                        Column {
+                            topItems.forEachIndexed { index, item ->
+                                NavigationDrawerItem(
+                                    label = { Text(text = item.title) },
+                                    icon = {
+                                        Icon(
+                                            imageVector = item.selectedIcon,
+                                            contentDescription = "", modifier = Modifier.width(30.dp)
+                                        )
+                                    },
+                                    selected = index == selectedItemIndex,
+                                    onClick = {
+                                        navController.navigate(item.navigate)
+                                        selectedItemIndex = index
+                                        scope.launch {
+                                            drawerState.close()
+                                        }
+                                    },
+                                    modifier = Modifier.height(40.dp)
+                                )
                             }
-                        )
+                        }
+
+
+                        Column(modifier = Modifier.padding(bottom= 8.dp)){
+                            bottomItems.forEachIndexed { index, item ->
+                                NavigationDrawerItem(
+                                    label = { Text(text = item.title) },
+                                    icon = {
+                                        Icon(
+                                            imageVector = item.selectedIcon,
+                                            contentDescription = "", modifier = Modifier.width(30.dp)
+                                        )
+                                    },
+                                    selected = index + topItems.size == selectedItemIndex,
+                                    onClick = {
+                                        navController.navigate(item.navigate)
+                                        selectedItemIndex = index + topItems.size
+                                        scope.launch {
+                                            drawerState.close()
+                                        }
+                                    },
+                                    modifier = Modifier.height(40.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }) {
@@ -735,8 +822,16 @@ fun HomeScreenNavigation(navController: NavHostController) {
                     }
                 }
             }, content = { innerPadding ->
-                HomeApp(modifier = Modifier.padding(innerPadding))
-            })
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                ) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    HomeApp(modifier = Modifier)
+                }
+            }
+            )
         }
 
     }
@@ -749,9 +844,9 @@ fun HomeApp(modifier: Modifier = Modifier) {
     val tabItems = listOf(
         tabItem("All"), tabItem("School"), tabItem("Class")
     )
-    LazyColumn(modifier = modifier.fillMaxWidth()) {
+    LazyColumn(modifier = modifier) {
         item {
-            PostsTabView(modifier,tabItems,onTabSelected = { index: Int ->
+            PostsTabView(modifier, tabItems, onTabSelected = { index: Int ->
                 selectedTabIndex = index
             })
         }
@@ -821,17 +916,18 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
         }
     }
 }
+
 @Composable
-fun videoPlayer(){
-    val url ="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+fun videoPlayer() {
+    val url = "http://13.201.100.196:8888/test/posts/file/33593be3-39d8-4dba-b390-6794249a401f.mp4"
     val context = LocalContext.current
 
-    val exoPlayer= ExoPlayer.Builder(context).build()
+    val exoPlayer = ExoPlayer.Builder(context).build()
     val mediaItem = MediaItem.fromUri(Uri.parse(url))
 
     exoPlayer.setMediaItem(mediaItem)
 
-    val playerView= StyledPlayerView(context)
+    val playerView = StyledPlayerView(context)
     playerView.player = exoPlayer
 
     var lifecycle by remember {
@@ -865,9 +961,11 @@ fun videoPlayer(){
                         it.onPause()
                         it.player?.pause()
                     }
+
                     Lifecycle.Event.ON_RESUME -> {
                         it.onResume()
                     }
+
                     else -> Unit
                 }
             },
@@ -876,9 +974,4 @@ fun videoPlayer(){
                 .aspectRatio(1f)
         )
     }
-}
-@Composable
-@Preview
-fun ContentPagePreview() {
-    ContentPage()
 }
