@@ -12,6 +12,7 @@ import com.squareup.moshi.Moshi
 import dagger.hilt.android.qualifiers.ApplicationContext
 import driver.models.AddressInfo
 import driver.models.ContactList
+import driver.models.GeoCordinates
 import driver.models.InstituteAddInfo
 import javax.inject.Inject
 
@@ -32,8 +33,9 @@ class InstituteNetRepository @Inject constructor(
         longitude: String,
     ) {
         try {
-            val addressInfo=AddressInfo(address,city,state)
-            val addInstituteRequest = InstituteAddInfo(name, contacts, description, addressInfo, facilities)
+            val geoCordinates=GeoCordinates(latitude,longitude)
+            val addressInfo=AddressInfo(address,city,state,geoCordinates)
+            val addInstituteRequest = InstituteAddInfo(name,"","", contacts, description, addressInfo, facilities)
             Log.d("JSON", "addInstitute: $addInstituteRequest")
 
             val moshi = Moshi.Builder().build()

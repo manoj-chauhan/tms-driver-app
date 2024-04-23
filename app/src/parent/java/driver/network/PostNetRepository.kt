@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
+import com.drishto.driver.network.getAccessToken
 import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
@@ -111,14 +113,19 @@ class PostNetRepository @Inject constructor(
         }
     }
 
-    fun getAllFeeds(): List<PostsFeed>? {
+    fun getAllFeeds(context: Context): List<PostsFeed>? {
         val postsFeeds = Types.newParameterizedType(List::class.java, PostsFeed::class.java)
         val adapter: JsonAdapter<List<PostsFeed>> = Moshi.Builder().build().adapter(postsFeeds)
 
         val postUrl = context.resources.getString(R.string.url_get_all_posts)
 
         return try {
+            getAccessToken(context)?.let {
+                Log.d("access token check", "$it")
+
+
             val (_, _, result) = postUrl.httpGet()
+                .authentication().bearer(it)
                 .responseObject(moshiDeserializerOf(adapter))
 
             result.fold(
@@ -147,6 +154,9 @@ class PostNetRepository @Inject constructor(
             )
 
             result.get()
+
+
+            }
 
         } catch (e: Exception) {
             null

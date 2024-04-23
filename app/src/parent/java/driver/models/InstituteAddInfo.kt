@@ -8,6 +8,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class InstituteAddInfo(
     val name: String,
+    val coverPicture:String?,
+    val displayPicture:String?,
     val contacts: List<ContactList>,
     val description: String,
     val address: AddressInfo,
@@ -26,7 +28,8 @@ data class ContactList(
 data class AddressInfo(
     val address: String,
     val city: String,
-    val state: String
+    val state: String,
+    val geocordinates: GeoCordinates
 
 
 )

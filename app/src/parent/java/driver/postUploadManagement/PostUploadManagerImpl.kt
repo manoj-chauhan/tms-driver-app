@@ -18,6 +18,6 @@ class PostUploadManagerImpl @Inject constructor(
     }
 
     override fun getFeedPosts(): List<PostsFeed>? {
-        return postNetRepository.getAllFeeds()
+        return postNetRepository.getAllFeeds(context)
     }
 }

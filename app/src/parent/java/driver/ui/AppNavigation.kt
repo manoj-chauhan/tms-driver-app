@@ -2,6 +2,7 @@ package driver.ui
 
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.getAccessToken
+import com.drishto.driver.network.saveAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.ui.components.pastTrips
 import driver.ui.pages.AddInstitute
@@ -31,6 +33,7 @@ import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PostItem
+import driver.ui.pages.UserList
 import driver.ui.pages.notificationScreen
 import driver.ui.pages.profile
 
@@ -80,8 +83,9 @@ fun AppNavigationHost(
             userProfileView(navController)
         }
         composable("home") {
-            HomeScreenNavigation(navController)
-//           AddInstitute()
+//            HomeScreenNavigation(navController)
+//            navController.navigate("userList")
+           AddInstitute()
 
         }
         composable("post_page"){
@@ -91,6 +95,18 @@ fun AppNavigationHost(
         composable("user_profile"){
             profile()
         }
+        composable("userList"){
+            UserList(onUserSelected = {
+                Log.d("token", "AppNavigationHost: $it")
+                saveAccessToken(context,it)
+                navController.navigate("home-screen")
+            })
+        }
+        composable("home-screen"){
+            HomeScreenNavigation(navController = navController)
+
+        }
+
 
         composable("MainScreen"){
             val activity = LocalContext.current as? ComponentActivity
