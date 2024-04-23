@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -29,6 +30,7 @@ import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
+import driver.ui.pages.PostItem
 import driver.ui.pages.notificationScreen
 import driver.ui.pages.profile
 
@@ -82,6 +84,10 @@ fun AppNavigationHost(
 //           AddInstitute()
 
         }
+        composable("post_page"){
+            PostItem(navController = navController)
+        }
+        
         composable("user_profile"){
             profile()
         }
