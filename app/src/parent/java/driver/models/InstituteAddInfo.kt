@@ -18,7 +18,7 @@ data class InstituteAddInfo(
 
 @JsonClass(generateAdapter = true)
 data class ContactList(
-    var department: String,
+    var description: String,
     var number: String
 )
 

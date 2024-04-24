@@ -104,9 +104,9 @@ fun AddInstitute(navController: NavHostController, markerPosition: LatLng?) {
 
                 contactEntries.forEachIndexed { index, entry ->
                     OutlinedTextField(
-                        value = entry.department,
+                        value = entry.description,
                         onValueChange = { updated ->
-                            contactEntries[index] = entry.copy(department = updated)
+                            contactEntries[index] = entry.copy(description = updated)
                         },
                         label = { Text("Title") },
                         modifier = Modifier.fillMaxWidth()
