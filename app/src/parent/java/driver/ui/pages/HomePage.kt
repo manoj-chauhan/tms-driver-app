@@ -93,6 +93,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
+import driver.models.PostsFeed
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
 
@@ -102,7 +103,6 @@ data class NavigationItem(
     val unselectedIcon: ImageVector,
     val badgeCount: Int? = null,
     val navigate: String = ""
-
 )
 
 @Composable
@@ -113,7 +113,9 @@ fun PostsSection() {
 
     Log.d("TAG", "PostsSection: $postsList")
     Column {
-        ContentPage()
+        postsList?.take(postsList!!.size)?.forEach { post ->
+            ContentPage(post)
+        }
     }
 }
 
@@ -149,15 +151,13 @@ fun PostsTabView(
 
 
 @Composable
-fun ContentPage() {
+fun ContentPage(post: PostsFeed) {
 
     val gry = Color(android.graphics.Color.parseColor("#838383"))
-
     val images = listOf(R.drawable.hi)
 
     Box(
         modifier = Modifier.fillMaxSize(1f)
-//            .clickable { onClick(trip) }
     ) {
         Column {
             Card(
@@ -224,18 +224,13 @@ fun ContentPage() {
 
                     Spacer(modifier = Modifier.size(15.dp))
 
-                    val images = listOf(
-                        "https://picsum.photos/200/300",
-                        "http://13.201.100.196:8888/test/posts/file/78cdf346-96c3-466d-96e4-d469638447b9",
-                        "http://13.201.100.196:8888/test/posts/file/78cdf346-96c3-466d-96e4-d469638447b9",
-                    )
+                    val images = post.media.map { it.mediaUrl }.toList()
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
                     ) {
+                        ImageScrollWithTextOverlay(images = images)
 
-                        ImageScrollWithTextOverlay(images)
-//                        videoPlayer()
                     }
 
                     Spacer(modifier = Modifier.size(15.dp))
@@ -252,14 +247,15 @@ fun ContentPage() {
                     ) {
                         Row {
                             Text(
-                                text = "12 comments",
+                                text = "${post.comments} comments",
                                 style = TextStyle(fontSize = 12.sp, color = gry)
                             )
 
                             Spacer(modifier = Modifier.width(12.dp))
 
                             Text(
-                                text = "12 likes", style = TextStyle(fontSize = 12.sp, color = gry)
+                                text = "${post.likes} likes",
+                                style = TextStyle(fontSize = 12.sp, color = gry)
                             )
                         }
 
@@ -295,271 +291,6 @@ fun ContentPage() {
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White,
-                ),
-                shape = RoundedCornerShape(0.dp),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp, top = 10.dp)
-                    //                verticalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    Color.White, shape = CircleShape
-                                )
-                                .size(44.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.atul),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(200.dp)
-                                    .clip(CircleShape)
-                                    .border(
-                                        width = 0.dp, Color.White, shape = CircleShape
-                                    ),
-                                contentScale = ContentScale.FillBounds
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(14.dp))
-
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "Delhi Public School", style = TextStyle(
-                                        fontSize = 16.sp, fontFamily = FontFamily.SansSerif
-                                    )
-                                )
-                            }
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "Sonipath, Haryana", style = TextStyle(
-                                        fontSize = 14.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        color = Color.Gray
-                                    )
-                                )
-                            }
-                        }
-
-                    }
-
-                    Spacer(modifier = Modifier.size(15.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 1.dp)
-                            .padding(horizontal = 10.dp)
-                    ) {
-                        Text(
-                            text = "Congratulations!! to all the winners of the Inter School Competition 2024." + "" + "This add another chapter to in the history of out school, where we our belief in hard work and commitment helps our students to achieve new benchmarks.",
-                            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.W400)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.size(15.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(20.dp)
-                            .padding(
-                                vertical = 0.dp, horizontal = 10.dp
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row {
-                            Text(
-                                text = "12 comments",
-                                style = TextStyle(fontSize = 12.sp, color = gry)
-                            )
-
-                            Spacer(modifier = Modifier.width(12.dp))
-
-                            Text(
-                                text = "12 likes", style = TextStyle(fontSize = 12.sp, color = gry)
-                            )
-                        }
-
-                        Row {
-                            Image(
-                                painter = painterResource(id = R.drawable.like),
-                                contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
-                            )
-
-                            Spacer(modifier = Modifier.width(12.dp))
-
-                            Image(
-                                painter = painterResource(id = R.drawable.message),
-                                contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
-                            )
-
-                            Spacer(modifier = Modifier.width(10.dp))
-
-                            Image(
-                                painter = painterResource(id = R.drawable.share),
-                                contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
-                            )
-
-                        }
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White,
-                ),
-                shape = RoundedCornerShape(0.dp),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp, top = 10.dp)
-                    //                verticalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    Color.White, shape = CircleShape
-                                )
-                                .size(44.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.atul),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(200.dp)
-                                    .clip(CircleShape)
-                                    .border(
-                                        width = 0.dp, Color.White, shape = CircleShape
-                                    ),
-                                contentScale = ContentScale.FillBounds
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(14.dp))
-
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "Delhi Public School", style = TextStyle(
-                                        fontSize = 16.sp, fontFamily = FontFamily.SansSerif
-                                    )
-                                )
-                            }
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "Sonipath, Haryana", style = TextStyle(
-                                        fontSize = 14.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        color = Color.Gray
-                                    )
-                                )
-                            }
-                        }
-
-                    }
-
-                    Spacer(modifier = Modifier.size(15.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 1.dp)
-                            .padding(horizontal = 10.dp)
-                    ) {
-                        Text(
-                            text = "Congratulations!! to all the winners of the Inter School Competition 2024." + "" + "This add another chapter to in the history of out school, where we our belief in hard work and commitment helps our students to achieve new benchmarks.",
-                            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.W400)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.size(15.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(20.dp)
-                            .padding(
-                                vertical = 0.dp, horizontal = 10.dp
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row {
-                            Text(
-                                text = "12 comments",
-                                style = TextStyle(fontSize = 12.sp, color = gry)
-                            )
-
-                            Spacer(modifier = Modifier.width(12.dp))
-
-                            Text(
-                                text = "12 likes", style = TextStyle(fontSize = 12.sp, color = gry)
-                            )
-                        }
-
-                        Row {
-                            Image(
-                                painter = painterResource(id = R.drawable.like),
-                                contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
-                            )
-
-                            Spacer(modifier = Modifier.width(12.dp))
-
-                            Image(
-                                painter = painterResource(id = R.drawable.message),
-                                contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
-                            )
-
-                            Spacer(modifier = Modifier.width(10.dp))
-
-                            Image(
-                                painter = painterResource(id = R.drawable.share),
-                                contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
-                            )
-
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -672,7 +403,10 @@ fun HomeScreenNavigation(navController: NavHostController) {
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
-                    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Column {
                             topItems.forEachIndexed { index, item ->
                                 NavigationDrawerItem(
@@ -680,7 +414,8 @@ fun HomeScreenNavigation(navController: NavHostController) {
                                     icon = {
                                         Icon(
                                             imageVector = item.selectedIcon,
-                                            contentDescription = "", modifier = Modifier.width(30.dp)
+                                            contentDescription = "",
+                                            modifier = Modifier.width(30.dp)
                                         )
                                     },
                                     selected = index == selectedItemIndex,
@@ -697,14 +432,15 @@ fun HomeScreenNavigation(navController: NavHostController) {
                         }
 
 
-                        Column(modifier = Modifier.padding(bottom= 8.dp)){
+                        Column(modifier = Modifier.padding(bottom = 8.dp)) {
                             bottomItems.forEachIndexed { index, item ->
                                 NavigationDrawerItem(
                                     label = { Text(text = item.title) },
                                     icon = {
                                         Icon(
                                             imageVector = item.selectedIcon,
-                                            contentDescription = "", modifier = Modifier.width(30.dp)
+                                            contentDescription = "",
+                                            modifier = Modifier.width(30.dp)
                                         )
                                     },
                                     selected = index + topItems.size == selectedItemIndex,
@@ -880,12 +616,16 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
                     .fillMaxWidth()
                     .aspectRatio(1f)
             ) {
-                AsyncImage(
-                    model = images[page],
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.Crop
-                )
+                if(images[page].endsWith(".mp4")){
+                    videoPlayer(url = images[page])
+                }else {
+                    AsyncImage(
+                        model = images[page],
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
                 Text(
                     text = "${page + 1}/${images.size}",
@@ -918,8 +658,7 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
 }
 
 @Composable
-fun videoPlayer() {
-    val url = "http://13.201.100.196:8888/test/posts/file/33593be3-39d8-4dba-b390-6794249a401f.mp4"
+fun videoPlayer(url: String) {
     val context = LocalContext.current
 
     val exoPlayer = ExoPlayer.Builder(context).build()
@@ -944,34 +683,30 @@ fun videoPlayer() {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-    Box(
+
+    AndroidView(
+        factory = { context ->
+            PlayerView(context).also {
+                it.player = exoPlayer
+            }
+        },
+        update = {
+            when (lifecycle) {
+                Lifecycle.Event.ON_PAUSE -> {
+                    it.onPause()
+                    it.player?.pause()
+                }
+
+                Lifecycle.Event.ON_RESUME -> {
+                    it.onResume()
+                }
+
+                else -> Unit
+            }
+        },
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-    ) {
-        AndroidView(
-            factory = { context ->
-                PlayerView(context).also {
-                    it.player = exoPlayer
-                }
-            },
-            update = {
-                when (lifecycle) {
-                    Lifecycle.Event.ON_PAUSE -> {
-                        it.onPause()
-                        it.player?.pause()
-                    }
+    )
 
-                    Lifecycle.Event.ON_RESUME -> {
-                        it.onResume()
-                    }
-
-                    else -> Unit
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-        )
-    }
 }
