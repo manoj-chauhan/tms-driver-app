@@ -2,8 +2,10 @@ package driver.ui.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,8 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -84,33 +86,55 @@ fun schoolProfile() {
             }
             Spacer(modifier = Modifier.height(14.dp))
 
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp)){
-                Text(text = "Delhi Public School", style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.W400))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp)
+            ) {
+                Text(
+                    text = "Delhi Public School",
+                    style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.W400)
+                )
             }
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp)){
-                Text(text = "@virus", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W400, color = gry))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp)
+            ) {
+                Text(
+                    text = "@virus",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W400, color = gry)
+                )
             }
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 15.dp)){
-                Text(text = "We believe in nuturing the future of country by contributing to education initiatives and promoting quality in education.", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W600, color = gry))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp)
+            ) {
+                Text(
+                    text = "We believe in nuturing the future of country by contributing to education initiatives and promoting quality in education.",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W600, color = gry)
+                )
             }
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray)) {
-                Spacer(modifier = Modifier.height(2.dp))
+            Divider(
+                modifier = Modifier
+                    .height(2.dp)
+                    .background(Color.LightGray)
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray)
+            ) {
 
                 ProfileSections()
 
@@ -121,22 +145,95 @@ fun schoolProfile() {
 
 @Composable
 fun ProfileSections() {
+
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabItems = listOf(
         tabItem("About"), tabItem("Reviews"), tabItem("Posts")
     )
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        item {
-            PostsTabView(modifier = Modifier, tabItems,onTabSelected = { index: Int ->
-                selectedTabIndex = index
-            })
-        }
+    Column(modifier = Modifier.fillMaxSize()) {
+        PostsTabView(modifier = Modifier, tabItems, onTabSelected = { index: Int ->
+            selectedTabIndex = index
+        })
+
         when (selectedTabIndex) {
             0 -> {
-                item {
-//                    PostsSection()
-                }
+                AboutSectionProfile()
+
             }
+        }
+    }
+}
+
+@Composable
+fun AboutSectionProfile() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.7f),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        ContentAbout()
+    }
+}
+
+@Composable
+fun ContentAbout() {
+    val gry = Color(android.graphics.Color.parseColor("#838383"))
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White), verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp, top = 16.dp, bottom = 16.dp)
+                .background(Color.White)
+        ) {
+            Text(
+                text = "ADDRESS",
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W600)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "243 Merut Road, Near GSK Factory, Sonipath, Haryana, 243954",
+                style = TextStyle(
+                    fontSize = 16.sp, fontWeight = FontWeight.W500, color = gry
+                )
+            )
+        }
+    }
+    Spacer(modifier = Modifier.height(40.dp))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp, top = 16.dp, bottom = 16.dp)
+                .background(Color.White)
+        ) {
+            Text(
+                text = "CONTACTS",
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W600)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "abcde@example.com", style = TextStyle(
+                    fontSize = 16.sp, fontWeight = FontWeight.W500, color = gry
+                )
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "+91-7543894334", style = TextStyle(
+                    fontSize = 16.sp, fontWeight = FontWeight.W500, color = gry
+                )
+            )
+
         }
     }
 }
