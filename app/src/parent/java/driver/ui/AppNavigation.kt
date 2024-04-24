@@ -24,6 +24,8 @@ import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.network.saveAccessToken
 import com.drishto.driver.ui.pages.userProfileView
+import com.google.android.gms.maps.model.LatLng
+import driver.ui.components.MapsView
 import driver.ui.components.pastTrips
 import driver.ui.pages.AddInstitute
 import driver.ui.pages.GoogleMapView
@@ -51,7 +53,7 @@ fun AppNavigationHost(
     var selectedAssignmentCode by remember { mutableStateOf("") }
     var operatorId by remember { mutableIntStateOf(0) }
     var passengerTripId by remember { mutableIntStateOf(0) }
-    var userId by remember { mutableIntStateOf(0) }
+    var markerPosition by remember { mutableStateOf<LatLng?>(null) }
 
     var boardingPlaceId by remember { mutableStateOf("") }
     var deBoardingPlaceId by remember { mutableStateOf("") }
@@ -105,7 +107,7 @@ fun AppNavigationHost(
         }
 
         composable("add-Institute"){
-            AddInstitute()
+            AddInstitute(navController, markerPosition)
         }
 
         composable("MainScreen"){
@@ -157,6 +159,13 @@ fun AppNavigationHost(
                     navController.navigate("past-assignment-detail")
                 })
 
+        }
+        composable("marker-map"){
+            MapsView(onMarkerSelected ={
+                Log.d("TAG", "AppNavigationHost: $it")
+                markerPosition = it
+                navController.navigate("add-Institute")
+            })
         }
         composable(
             "notification/{userId}", arguments = listOf(

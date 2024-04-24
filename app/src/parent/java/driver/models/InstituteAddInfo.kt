@@ -1,7 +1,5 @@
 package driver.models
 
-import android.location.Address
-import androidx.compose.runtime.MutableState
 import com.squareup.moshi.JsonClass
 
 
@@ -40,4 +38,13 @@ data class GeoCordinates(
     val longitude: String
 )
 
+
+data class AddInstituteSavedData(
+    val instituteName: String,
+    val description: String,
+    val address: String,
+    val city: String,
+    val state: String,
+    val contactEntries: List<ContactList>
+)
 
