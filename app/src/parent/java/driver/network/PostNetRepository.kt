@@ -28,37 +28,41 @@ class PostNetRepository @Inject constructor(
     fun getMediaID(image: ByteArray, mimeType: String): String {
         val url = context.resources.getString(R.string.url_get_mediaId)
          return try {
-            val fuelManager = FuelManager()
-            val (_, response, result) = fuelManager.post(url)
-                .body(image)
-                .header("content-type", mimeType)
-                .responseString()
+             getAccessToken(context)?.let {
 
-            result.fold(
-                {
-                },
-                { error ->
-                    if (error.response.statusCode == 401) {
-                        errorManager.getErrorDescription(context)
+                val fuelManager = FuelManager()
+                val (_, response, result) = fuelManager.post(url)
+                    .authentication().bearer(it)
+                    .body(image)
+                    .header("content-type", mimeType)
+                    .responseString()
+
+                result.fold(
+                    {
+                    },
+                    { error ->
+                        if (error.response.statusCode == 401) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        Log.d("Hie", "uploadPost: $errorResponse ")
+                        if (error.response.statusCode == 403) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if (error.response.statusCode == 500) {
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
                     }
-
-                    val errorResponse = error.response.data.toString(Charsets.UTF_8)
-
-                    Log.d("Hie", "uploadPost: $errorResponse ")
-                    if (error.response.statusCode == 403) {
-                        errorManager.getErrorDescription403(context, errorResponse)
-                    }
-
-                    if (error.response.statusCode == 404) {
-                        errorManager.getErrorDescription404(context, "No url found")
-                    }
-
-                    if (error.response.statusCode == 500) {
-                        errorManager.getErrorDescription500(context, "Something Went Wrong")
-                    }
-                }
-            )
-            result.get()
+                )
+                result.get()
+             }?: throw Exception("Access token is null")
         } catch (e: Exception) {
             "Error Handling Post"
         }
@@ -79,6 +83,7 @@ class PostNetRepository @Inject constructor(
                 val url = context.resources.getString(R.string.url_upload_post)
 
                 val (request1, response, result) = url.httpPost()
+                    .authentication().bearer(it)
                     .jsonBody(requestBody)
                     .response()
 
