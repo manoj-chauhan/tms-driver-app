@@ -665,6 +665,8 @@ fun videoPlayer(url: String) {
     val mediaItem = MediaItem.fromUri(Uri.parse(url))
 
     exoPlayer.setMediaItem(mediaItem)
+    exoPlayer.playWhenReady = true
+    exoPlayer.prepare()
 
     val playerView = StyledPlayerView(context)
     playerView.player = exoPlayer
@@ -688,6 +690,7 @@ fun videoPlayer(url: String) {
         factory = { context ->
             PlayerView(context).also {
                 it.player = exoPlayer
+                it.useController = false
             }
         },
         update = {
@@ -708,5 +711,4 @@ fun videoPlayer(url: String) {
             .fillMaxWidth()
             .aspectRatio(1f)
     )
-
 }
