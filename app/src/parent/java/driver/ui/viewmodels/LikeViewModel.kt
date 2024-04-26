@@ -13,7 +13,7 @@ class LikeViewModel @Inject constructor(
     private val likeNetRepository: LikeNetRepository
 ) : ViewModel() {
 
-    fun likePost(postId: Int) {
+    fun likePost(postId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             likeNetRepository.likePost(postId)
         }

@@ -94,6 +94,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import driver.models.PostsFeed
+import driver.ui.viewmodels.LikeViewModel
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
 
@@ -103,6 +104,7 @@ data class NavigationItem(
     val unselectedIcon: ImageVector,
     val badgeCount: Int? = null,
     val navigate: String = ""
+
 )
 
 @Composable
@@ -155,6 +157,9 @@ fun ContentPage(post: PostsFeed) {
 
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val images = listOf(R.drawable.hi)
+
+    val likeViewModel: LikeViewModel = hiltViewModel()
+    var likesCount by remember { mutableStateOf(post.likes ?: 0) }
 
     Box(
         modifier = Modifier.fillMaxSize(1f)
@@ -245,7 +250,21 @@ fun ContentPage(post: PostsFeed) {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
+//                        Row {
+//                            Text(
+//                                text = "${post.comments} comments",
+//                                style = TextStyle(fontSize = 12.sp, color = gry)
+//                            )
+//
+//                            Spacer(modifier = Modifier.width(12.dp))
+//
+//                            Text(
+//                                text = "${post.likes} likes",
+//                                style = TextStyle(fontSize = 12.sp, color = gry)
+//                            )
+//                        }
                         Row {
+                            val postId:String
                             Text(
                                 text = "${post.comments} comments",
                                 style = TextStyle(fontSize = 12.sp, color = gry)
@@ -254,26 +273,60 @@ fun ContentPage(post: PostsFeed) {
                             Spacer(modifier = Modifier.width(12.dp))
 
                             Text(
-                                text = "${post.likes} likes",
-                                style = TextStyle(fontSize = 12.sp, color = gry)
+                                text = "$likesCount likes",
+                                style = TextStyle(fontSize =12.sp, color = gry)
                             )
                         }
 
+//                        Row {
+//                            Image(
+//                                painter = painterResource(id = R.drawable.like),
+//                                contentDescription = "",
+//                                modifier = Modifier.size(20.dp),
+//                                contentScale = ContentScale.FillBounds
+//                            )
+//
+//                            Spacer(modifier = Modifier.width(12.dp))
+//
+//                            Image(
+//                                painter = painterResource(id = R.drawable.message),
+//                                contentDescription = "",
+//                                modifier = Modifier.size(20.dp),
+//                                contentScale = ContentScale.FillBounds
+//                            )
+//
+//                            Spacer(modifier = Modifier.width(10.dp))
+//
+//                            Image(
+//                                painter = painterResource(id = R.drawable.share),
+//                                contentDescription = "",
+//                                modifier = Modifier.size(20.dp),
+//                                contentScale = ContentScale.FillBounds
+//                            )
+//
+//                        }
                         Row {
-                            Image(
+                            Icon(
                                 painter = painterResource(id = R.drawable.like),
                                 contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
+
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable {
+                                    likeViewModel.likePost(post.id)
+                                    likesCount++
+                                },
+
                             )
 
                             Spacer(modifier = Modifier.width(12.dp))
 
-                            Image(
+                            Icon(
                                 painter = painterResource(id = R.drawable.message),
                                 contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
+//                                contentScale = ContentScale.FillBounds,
+                                modifier = Modifier
+                                    .size(20.dp)
                             )
 
                             Spacer(modifier = Modifier.width(10.dp))
@@ -284,7 +337,6 @@ fun ContentPage(post: PostsFeed) {
                                 modifier = Modifier.size(20.dp),
                                 contentScale = ContentScale.FillBounds
                             )
-
                         }
                     }
                 }

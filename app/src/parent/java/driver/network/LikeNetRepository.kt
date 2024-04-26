@@ -5,41 +5,45 @@ import android.util.Log
 import android.widget.Toast
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
+import com.drishto.driver.network.getAccessToken
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
-import com.github.kittinunf.fuel.core.extensions.jsonBody
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
+import com.github.kittinunf.fuel.core.extensions.authentication
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import driver.models.LikeRequest
 
 class LikeNetRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val errorManager: ErrManager
 ) {
-    fun likePost(postId: Int) {
+    fun likePost(postId: String) {
         try {
 
-            val likeRequest = LikeRequest(postId)
+//            val likeRequest = LikeRequest(postId)
 
 
-            val moshi = Moshi.Builder().build()
-            val jsonAdapter: JsonAdapter<LikeRequest> = moshi.adapter(LikeRequest::class.java)
-            val requestBody = jsonAdapter.toJson(likeRequest)
+//            val moshi = Moshi.Builder().build()
+//            val jsonAdapter: JsonAdapter<LikeRequest> = moshi.adapter(LikeRequest::class.java)
+//            val requestBody = jsonAdapter.toJson(likeRequest)
 
 
-            val url = context.resources.getString(R.string.url_likePost)
+            val url = context.resources.getString(R.string.url_likePost)+postId
+            getAccessToken(context)?.let {
 
 
-            val fuelManager = FuelManager()
-            val (_, response, result) = fuelManager.post(url).jsonBody(requestBody).response()
+                val fuelManager = FuelManager()
+                val (_, response, result) = fuelManager.post(url)
+                    .authentication().bearer(it)
+                    .response()
+
+                Log.d("resp and res", "likePost: $response , $result")
 
 
-            if (response.statusCode == 200) {
-                Toast.makeText(context, "Post Liked Successfully", Toast.LENGTH_SHORT).show()
-            } else {
-                handleError(response, errorManager)
+                if (response.statusCode == 200) {
+//                Toast.makeText(context, "Post Liked Successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    handleError(response, errorManager)
+                }
             }
 
         } catch (e: Exception) {
