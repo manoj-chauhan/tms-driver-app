@@ -22,8 +22,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -113,7 +116,6 @@ fun PostContent() {
         modifier = Modifier.fillMaxSize(1f)
     ) {
         Column {
-            
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White,
@@ -127,7 +129,7 @@ fun PostContent() {
                         .padding(bottom = 10.dp, top = 10.dp)
                     //                verticalArrangement = Arrangement.SpaceBetween
                 ) {
-    
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -154,7 +156,7 @@ fun PostContent() {
                             )
                         }
                         Spacer(modifier = Modifier.width(14.dp))
-    
+
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 Text(
@@ -173,25 +175,24 @@ fun PostContent() {
                                 )
                             }
                         }
-    
+
                     }
-    
+
                     Spacer(modifier = Modifier.size(15.dp))
-    
+
                     val images = listOf(
-                        "https://picsum.photos/200/300",
-                        "https://picsum.photos/200/300",
+                        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
                         "https://picsum.photos/200/300",
                     )
                     Row(
                         modifier = Modifier
                     ) {
                         ImageScrollWithTextOverlay(images = images)
-    
+
                     }
-    
+
                     Spacer(modifier = Modifier.size(15.dp))
-    
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -207,15 +208,15 @@ fun PostContent() {
                                 text = "50 comments",
                                 style = TextStyle(fontSize = 12.sp, color = gry)
                             )
-    
+
                             Spacer(modifier = Modifier.width(12.dp))
-    
+
                             Text(
                                 text = "100 likes",
                                 style = TextStyle(fontSize = 12.sp, color = gry)
                             )
                         }
-    
+
                         Row {
                             Image(
                                 painter = painterResource(id = R.drawable.like),
@@ -223,36 +224,198 @@ fun PostContent() {
                                 modifier = Modifier.size(20.dp),
                                 contentScale = ContentScale.FillBounds
                             )
-    
+
                             Spacer(modifier = Modifier.width(12.dp))
-    
+
                             Image(
                                 painter = painterResource(id = R.drawable.message),
                                 contentDescription = "",
                                 modifier = Modifier.size(20.dp),
                                 contentScale = ContentScale.FillBounds
                             )
-    
+
                             Spacer(modifier = Modifier.width(10.dp))
-    
+
                             Image(
                                 painter = painterResource(id = R.drawable.share),
                                 contentDescription = "",
                                 modifier = Modifier.size(20.dp),
                                 contentScale = ContentScale.FillBounds
                             )
-    
+
                         }
                     }
                 }
             }
-            
-            Text(text = "Comments")
-            
+            HorizontalDivider(
+                modifier = Modifier
+                    .height(2.dp)
+                    .padding(
+                        vertical = 0.dp, horizontal = 10.dp
+                    )
+                    .background(Color.LightGray)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            CommentsArea()
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
+    }
+}
+
+@Composable
+fun CommentsArea() {
+    Box(
+        modifier = Modifier
+            .padding(vertical = 0.dp, horizontal = 10.dp)
+    ) {
+        Column {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Comments",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W500)
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Box(modifier = Modifier.fillMaxWidth()) {
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    CommentsInPost()
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+@Composable
+fun CommentsInPost() {
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.width(33.dp)) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        Color.White, shape = CircleShape
+                    )
+                    .size(35.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.atul),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(200.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 0.dp, Color.White, shape = CircleShape
+                        ),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+        }
+        Spacer(modifier = Modifier.width(15.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(shape = RoundedCornerShape(6.dp))
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding()
+                    .fillMaxWidth()
+                    .background(Color.LightGray),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "Delhi Public School", style = TextStyle(
+                                    fontSize = 16.sp, fontFamily = FontFamily.SansSerif
+                                )
+                            )
+                        }
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "Sonipath, Haryana", style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily.SansSerif,
+                                    color = Color.Gray
+                                )
+                            )
+                        }
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, bottom = 10.dp)
+                ) {
+                    Text(
+                        text = "The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily.SansSerif,
+                            color = Color.Black
+                        )
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                TextButton(
+                    onClick = {
+                    }
+                ) {
+                    Text(
+                        "Like", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+
+                VerticalDivider(modifier = Modifier.width(2.dp).height(14.dp).background(Color.LightGray))
+
+                TextButton(
+                    onClick = {
+                    }
+                ) {
+                    Text(
+                        "Reply", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+            }
+
+
+        }
     }
 }
 

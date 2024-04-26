@@ -97,6 +97,7 @@ import driver.models.PostsFeed
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
 
+
 data class NavigationItem(
     val title: String,
     val selectedIcon: ImageVector,
@@ -106,7 +107,7 @@ data class NavigationItem(
 )
 
 @Composable
-fun PostsSection() {
+fun PostsSection(navigationController: NavHostController) {
     val pf: PostsViewModel = hiltViewModel()
     val postsList by pf.postFeedsDetails.collectAsStateWithLifecycle()
     pf.getPosts()
@@ -114,7 +115,7 @@ fun PostsSection() {
     Log.d("TAG", "PostsSection: $postsList")
     Column {
         postsList?.take(postsList!!.size)?.forEach { post ->
-            ContentPage(post)
+            ContentPage(post, navigationController)
         }
     }
 }
@@ -151,10 +152,12 @@ fun PostsTabView(
 
 
 @Composable
-fun ContentPage(post: PostsFeed) {
+fun ContentPage(post: PostsFeed, navigationController: NavHostController) {
 
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val images = listOf(R.drawable.hi)
+
+
 
     Box(
         modifier = Modifier.fillMaxSize(1f)
@@ -272,7 +275,11 @@ fun ContentPage(post: PostsFeed) {
                             Image(
                                 painter = painterResource(id = R.drawable.message),
                                 contentDescription = "",
-                                modifier = Modifier.size(20.dp),
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable {
+                                               navigationController.navigate("add_comment")
+                                    },
                                 contentScale = ContentScale.FillBounds
                             )
 
@@ -293,7 +300,6 @@ fun ContentPage(post: PostsFeed) {
             Spacer(modifier = Modifier.height(12.dp))
         }
     }
-
 }
 
 data class tabItem(
@@ -564,7 +570,7 @@ fun HomeScreenNavigation(navController: NavHostController) {
                         .fillMaxSize(),
                 ) {
                     Spacer(modifier = Modifier.height(6.dp))
-                    HomeApp(modifier = Modifier)
+                    HomeApp(modifier = Modifier, navController)
                 }
             }
             )
@@ -575,7 +581,7 @@ fun HomeScreenNavigation(navController: NavHostController) {
 }
 
 @Composable
-fun HomeApp(modifier: Modifier = Modifier) {
+fun HomeApp(modifier: Modifier = Modifier, navigationController: NavHostController) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabItems = listOf(
         tabItem("All"), tabItem("School"), tabItem("Class")
@@ -589,7 +595,7 @@ fun HomeApp(modifier: Modifier = Modifier) {
         when (selectedTabIndex) {
             0 -> {
                 item {
-                    PostsSection()
+                    PostsSection(navigationController)
                 }
             }
         }
@@ -615,16 +621,16 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
                     .fillMaxWidth()
                     .aspectRatio(1f)
             ) {
-                if(images[page].endsWith(".mp4")){
-                    videoPlayer(url = images[page])
-                }else {
+//                if(images[page].endsWith(".mp4")){
+//                    videoPlayer(url = images[page])
+//                }else {
                     AsyncImage(
                         model = images[page],
                         contentDescription = null,
                         modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Crop
                     )
-                }
+//                }
 
                 Text(
                     text = "${page + 1}/${images.size}",

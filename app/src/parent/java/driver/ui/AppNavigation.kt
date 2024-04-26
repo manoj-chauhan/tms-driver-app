@@ -25,6 +25,7 @@ import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.network.saveAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import com.google.android.gms.maps.model.LatLng
+import driver.ui.components.CommentPost
 import driver.ui.components.MapsView
 import driver.ui.components.pastTrips
 import driver.ui.pages.AddInstitute
@@ -110,6 +111,9 @@ fun AppNavigationHost(
             AddInstitute(navController, markerPosition)
         }
 
+        composable("add_comment"){
+            CommentPost()
+        }
         composable("MainScreen"){
             val activity = LocalContext.current as? ComponentActivity
             HomeScreen(
