@@ -251,21 +251,7 @@ fun ContentPage(post: PostsFeed) {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-//                        Row {
-//                            Text(
-//                                text = "${post.comments} comments",
-//                                style = TextStyle(fontSize = 12.sp, color = gry)
-//                            )
-//
-//                            Spacer(modifier = Modifier.width(12.dp))
-//
-//                            Text(
-//                                text = "${post.likes} likes",
-//                                style = TextStyle(fontSize = 12.sp, color = gry)
-//                            )
-//                        }
                         Row {
-                            val postId:String
                             Text(
                                 text = "${post.comments} comments",
                                 style = TextStyle(fontSize = 12.sp, color = gry)
@@ -275,53 +261,14 @@ fun ContentPage(post: PostsFeed) {
 
                             Text(
                                 text = "$likesCount likes",
-                                style = TextStyle(fontSize =12.sp, color = gry)
+                                style = TextStyle(fontSize = 12.sp, color = gry)
                             )
                         }
 
-//                        Row {
-//                            Image(
-//                                painter = painterResource(id = R.drawable.like),
-//                                contentDescription = "",
-//                                modifier = Modifier.size(20.dp),
-//                                contentScale = ContentScale.FillBounds
-//                            )
-//
-//                            Spacer(modifier = Modifier.width(12.dp))
-//
-//                            Image(
-//                                painter = painterResource(id = R.drawable.message),
-//                                contentDescription = "",
-//                                modifier = Modifier.size(20.dp),
-//                                contentScale = ContentScale.FillBounds
-//                            )
-//
-//                            Spacer(modifier = Modifier.width(10.dp))
-//
-//                            Image(
-//                                painter = painterResource(id = R.drawable.share),
-//                                contentDescription = "",
-//                                modifier = Modifier.size(20.dp),
-//                                contentScale = ContentScale.FillBounds
-//                            )
-//
-//                        }
                         Row {
-//                            Icon(
-//                                painter = painterResource(id = R.drawable.like),
-//                                contentDescription = "",
-//
-//                                modifier = Modifier
-//                                    .size(20.dp)
-//                                    .clickable {
-//                                    likeViewModel.likePost(post.id)
-//                                    likesCount++
-//                                },
-//
-//                            )
-                            Icon(
+                            Image(
                                 painter = painterResource(
-                                    id = if (isLiked) R.drawable.unlike else R.drawable.like
+                                    id = if (isLiked) R.drawable.likenew else R.drawable.like
                                 ),
                                 contentDescription = "",
 
@@ -689,9 +636,9 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
                     .fillMaxWidth()
                     .aspectRatio(1f)
             ) {
-                if(images[page].endsWith(".mp4")){
+                if (images[page].endsWith(".mp4")) {
                     videoPlayer(url = images[page])
-                }else {
+                } else {
                     AsyncImage(
                         model = images[page],
                         contentDescription = null,
