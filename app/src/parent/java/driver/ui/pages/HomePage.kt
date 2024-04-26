@@ -606,10 +606,9 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
     })
 
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
         ) { page ->
             Box(
                 modifier = Modifier
