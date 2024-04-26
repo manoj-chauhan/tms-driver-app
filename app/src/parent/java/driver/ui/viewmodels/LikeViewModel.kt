@@ -18,4 +18,9 @@ class LikeViewModel @Inject constructor(
             likeNetRepository.likePost(postId)
         }
     }
+    fun dislikePost(postId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            likeNetRepository.dislikePost(postId)
+        }
+    }
 }

@@ -160,6 +160,7 @@ fun ContentPage(post: PostsFeed) {
 
     val likeViewModel: LikeViewModel = hiltViewModel()
     var likesCount by remember { mutableStateOf(post.likes ?: 0) }
+    var isLiked by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize(1f)
@@ -306,17 +307,37 @@ fun ContentPage(post: PostsFeed) {
 //
 //                        }
                         Row {
+//                            Icon(
+//                                painter = painterResource(id = R.drawable.like),
+//                                contentDescription = "",
+//
+//                                modifier = Modifier
+//                                    .size(20.dp)
+//                                    .clickable {
+//                                    likeViewModel.likePost(post.id)
+//                                    likesCount++
+//                                },
+//
+//                            )
                             Icon(
-                                painter = painterResource(id = R.drawable.like),
+                                painter = painterResource(
+                                    id = if (isLiked) R.drawable.unlike else R.drawable.like
+                                ),
                                 contentDescription = "",
 
                                 modifier = Modifier
                                     .size(20.dp)
                                     .clickable {
-                                    likeViewModel.likePost(post.id)
-                                    likesCount++
-                                },
-
+                                        if (isLiked) {
+                                            likeViewModel.dislikePost(post.id)
+                                            likesCount--
+                                            isLiked = false
+                                        } else {
+                                            likeViewModel.likePost(post.id)
+                                            likesCount++
+                                            isLiked = true
+                                        }
+                                    }
                             )
 
                             Spacer(modifier = Modifier.width(12.dp))

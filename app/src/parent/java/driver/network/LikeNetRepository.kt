@@ -27,7 +27,7 @@ class LikeNetRepository @Inject constructor(
 //            val requestBody = jsonAdapter.toJson(likeRequest)
 
 
-            val url = context.resources.getString(R.string.url_likePost)+postId
+            val url = context.resources.getString(R.string.url_likePost) + postId
             getAccessToken(context)?.let {
 
 
@@ -42,32 +42,82 @@ class LikeNetRepository @Inject constructor(
                 if (response.statusCode == 200) {
 //                Toast.makeText(context, "Post Liked Successfully", Toast.LENGTH_SHORT).show()
                 } else {
-                    handleError(response, errorManager)
+                    val errorCode = response.statusCode
+                    val errorResponse = response.data.toString(Charsets.UTF_8)
+
+                    when (errorCode) {
+                        401 -> errorManager.getErrorDescription(context)
+                        403 -> errorManager.getErrorDescription403(context, errorResponse)
+                        404 -> errorManager.getErrorDescription404(context, "No URL found")
+                        500 -> errorManager.getErrorDescription500(context, "Something went wrong")
+                        else -> Log.e("LikeNetRepository", "Unknown error: $errorCode")
+
+                    }
+                    Toast.makeText(
+                        context,
+                        "An error occurred. Status code: $errorCode",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
         } catch (e: Exception) {
             Log.e("LikeNetRepository", "Error liking post", e)
-            Toast.makeText(context, "An error occurred. Please try again.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "An error occurred. Please try again.", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
-    private fun handleError(
-        response: Response,
-        errorManager: ErrManager
-    ) {
-        val errorCode = response.statusCode
-        val errorResponse = response.data.toString(Charsets.UTF_8)
+    fun dislikePost(postId: String) {
+        try {
+//            val url = context.resources.getString(R.string.url_likePost) + postId
+//            val fuelManager = FuelManager()
+//            fuelManager.post(url).response()
 
-        when (errorCode) {
-            401 -> errorManager.getErrorDescription(context)
-            403 -> errorManager.getErrorDescription403(context, errorResponse)
-            404 -> errorManager.getErrorDescription404(context, "No URL found")
-            500 -> errorManager.getErrorDescription500(context, "Something went wrong")
-            else -> Log.e("LikeNetRepository", "Unknown error: $errorCode")
+            val url = context.resources.getString(R.string.url_likePost) + postId
+            getAccessToken(context)?.let {
+
+
+                val fuelManager = FuelManager()
+                val (_, response, result) = fuelManager.post(url)
+                    .authentication().bearer(it)
+                    .response()
+
+                Log.d("resp and res", "DislikePost: $response , $result")
+
+
+                if (response.statusCode == 200) {
+//                Toast.makeText(context, "Post DisLiked Successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    val errorCode = response.statusCode
+                    val errorResponse = response.data.toString(Charsets.UTF_8)
+
+                    when (errorCode) {
+                        401 -> errorManager.getErrorDescription(context)
+                        403 -> errorManager.getErrorDescription403(context, errorResponse)
+                        404 -> errorManager.getErrorDescription404(context, "No URL found")
+                        500 -> errorManager.getErrorDescription500(context, "Something went wrong")
+                        else -> Log.e("LikeNetRepository", "Unknown error: $errorCode")
+
+                    }
+                    Toast.makeText(
+                        context,
+                        "An error occurred. Status code: $errorCode",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+
+        } catch (e: Exception) {
+            Log.e("LikeNetRepository", "Error liking post", e)
+            Toast.makeText(context, "An error occurred. Please try again.", Toast.LENGTH_SHORT)
+                .show()
         }
 
-
-        Toast.makeText(context, "An error occurred. Status code: $errorCode", Toast.LENGTH_SHORT).show()
     }
 }
+
+
+
+
