@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -39,76 +40,79 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drishto.driver.R
+import driver.models.PostsFeed
 import driver.ui.pages.ImageScrollWithTextOverlay
 
 @Composable
-fun CommentPost() {
+fun CommentPost(postDetails: PostsFeed?) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(2.dp, RectangleShape)
-                    .height(50.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
+        LazyColumn(modifier = Modifier) {
+            item {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Box(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .width(70.dp)
-                            .padding(start = 16.dp),
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
+                            .fillMaxWidth()
+                            .shadow(2.dp, RectangleShape)
+                            .height(50.dp)
                     ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(70.dp)
+                                    .padding(start = 16.dp),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
-                        Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(30.dp)
-                                .height(25.dp)
-                                .clickable {
+                                Icon(
+                                    imageVector = Icons.Outlined.ArrowBack,
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .height(25.dp)
+                                        .clickable {
 //                                    navController.popBackStack()
-                                },
-                        )
+                                        },
+                                )
 
+                            }
+                            Box(modifier = Modifier.fillMaxWidth(0.65f)) {
+                                Text(
+                                    text = "Post",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 20.sp,
+                                        fontFamily = FontFamily.SansSerif,
+                                        fontWeight = FontWeight.W600
+                                    )
+                                )
+                            }
+                        }
                     }
-                    Box(modifier = Modifier.fillMaxWidth(0.65f)) {
-                        Text(
-                            text = "Post",
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 20.sp,
-                                fontFamily = FontFamily.SansSerif,
-                                fontWeight = FontWeight.W600
-                            )
-                        )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Column(modifier = Modifier) {
+                        PostContent(postDetails)
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            Column(modifier = Modifier) {
-                PostContent()
-            }
-
         }
     }
 }
 
 @Composable
-fun PostContent() {
+fun PostContent(postDetails: PostsFeed?) {
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val images = listOf(R.drawable.hi)
 
@@ -205,14 +209,14 @@ fun PostContent() {
                     ) {
                         Row {
                             Text(
-                                text = "50 comments",
+                                text = "${postDetails?.comments} comments",
                                 style = TextStyle(fontSize = 12.sp, color = gry)
                             )
 
                             Spacer(modifier = Modifier.width(12.dp))
 
                             Text(
-                                text = "100 likes",
+                                text = "${postDetails?.likes} likes",
                                 style = TextStyle(fontSize = 12.sp, color = gry)
                             )
                         }
@@ -262,7 +266,6 @@ fun PostContent() {
         }
 
         Spacer(modifier = Modifier.height(12.dp))
-
     }
 }
 
@@ -413,15 +416,6 @@ fun CommentsInPost() {
                     )
                 }
             }
-
-
         }
     }
-}
-
-
-@Preview
-@Composable
-fun CommentPostPreview() {
-    CommentPost()
 }

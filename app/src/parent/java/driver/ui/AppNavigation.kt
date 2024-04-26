@@ -25,6 +25,7 @@ import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.network.saveAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import com.google.android.gms.maps.model.LatLng
+import driver.models.PostsFeed
 import driver.ui.components.CommentPost
 import driver.ui.components.MapsView
 import driver.ui.components.pastTrips
@@ -55,6 +56,9 @@ fun AppNavigationHost(
     var operatorId by remember { mutableIntStateOf(0) }
     var passengerTripId by remember { mutableIntStateOf(0) }
     var markerPosition by remember { mutableStateOf<LatLng?>(null) }
+
+    var postDetails by remember { mutableStateOf<PostsFeed?>(null) }
+
 
     var boardingPlaceId by remember { mutableStateOf("") }
     var deBoardingPlaceId by remember { mutableStateOf("") }
@@ -104,7 +108,13 @@ fun AppNavigationHost(
             })
         }
         composable("home-screen"){
-            HomeScreenNavigation(navController = navController)
+            HomeScreenNavigation(navController = navController, onCommentClick= {
+                postDetails = it
+                navController.navigate("add_comment")
+
+                Log.d("TAG", "AppNavigationHost: $postDetails")
+
+            })
         }
 
         composable("add-Institute"){
@@ -112,7 +122,7 @@ fun AppNavigationHost(
         }
 
         composable("add_comment"){
-            CommentPost()
+            CommentPost(postDetails)
         }
         composable("MainScreen"){
             val activity = LocalContext.current as? ComponentActivity

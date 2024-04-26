@@ -107,7 +107,10 @@ data class NavigationItem(
 )
 
 @Composable
-fun PostsSection(navigationController: NavHostController) {
+fun PostsSection(
+    navigationController: NavHostController,
+    onCommentClick: (postData: PostsFeed) -> Unit
+) {
     val pf: PostsViewModel = hiltViewModel()
     val postsList by pf.postFeedsDetails.collectAsStateWithLifecycle()
     pf.getPosts()
@@ -115,7 +118,7 @@ fun PostsSection(navigationController: NavHostController) {
     Log.d("TAG", "PostsSection: $postsList")
     Column {
         postsList?.take(postsList!!.size)?.forEach { post ->
-            ContentPage(post, navigationController)
+            ContentPage(post, navigationController, onCommentClick)
         }
     }
 }
@@ -152,7 +155,11 @@ fun PostsTabView(
 
 
 @Composable
-fun ContentPage(post: PostsFeed, navigationController: NavHostController) {
+fun ContentPage(
+    post: PostsFeed,
+    navigationController: NavHostController,
+    onCommentClick: (postData: PostsFeed) -> Unit
+) {
 
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val images = listOf(R.drawable.hi)
@@ -278,7 +285,7 @@ fun ContentPage(post: PostsFeed, navigationController: NavHostController) {
                                 modifier = Modifier
                                     .size(20.dp)
                                     .clickable {
-                                               navigationController.navigate("add_comment")
+                                        onCommentClick(post)
                                     },
                                 contentScale = ContentScale.FillBounds
                             )
@@ -309,7 +316,7 @@ data class tabItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenNavigation(navController: NavHostController) {
+fun HomeScreenNavigation(navController: NavHostController, onCommentClick : (postData: PostsFeed) -> Unit) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navigationController = rememberNavController()
@@ -570,7 +577,7 @@ fun HomeScreenNavigation(navController: NavHostController) {
                         .fillMaxSize(),
                 ) {
                     Spacer(modifier = Modifier.height(6.dp))
-                    HomeApp(modifier = Modifier, navController)
+                    HomeApp(modifier = Modifier, navController, onCommentClick)
                 }
             }
             )
@@ -581,7 +588,11 @@ fun HomeScreenNavigation(navController: NavHostController) {
 }
 
 @Composable
-fun HomeApp(modifier: Modifier = Modifier, navigationController: NavHostController) {
+fun HomeApp(
+    modifier: Modifier = Modifier,
+    navigationController: NavHostController,
+    onCommentClick: (postData: PostsFeed) -> Unit
+) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabItems = listOf(
         tabItem("All"), tabItem("School"), tabItem("Class")
@@ -595,7 +606,7 @@ fun HomeApp(modifier: Modifier = Modifier, navigationController: NavHostControll
         when (selectedTabIndex) {
             0 -> {
                 item {
-                    PostsSection(navigationController)
+                    PostsSection(navigationController, onCommentClick)
                 }
             }
         }
