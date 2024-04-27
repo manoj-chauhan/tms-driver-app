@@ -140,7 +140,7 @@ fun CommentPost(postsFeed: PostsFeed?) {
 
             Row(modifier = Modifier
                 .fillMaxWidth().padding(horizontal = 10.dp)
-                .background(Color.White), horizontalArrangement = Arrangement.SpaceBetween
+                .background(Color.White), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
             )
             {
                 BasicTextField(value = comment,
@@ -168,7 +168,7 @@ fun CommentPost(postsFeed: PostsFeed?) {
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent
                             ),
-                            singleLine = true,
+                            singleLine = false,
                             enabled = true,
                             interactionSource = interactionSource,
                             contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
