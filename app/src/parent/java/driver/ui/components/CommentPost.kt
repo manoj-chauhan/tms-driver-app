@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,17 +30,23 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drishto.driver.R
@@ -183,6 +190,14 @@ fun PostContent(postDetails: PostsFeed?) {
                     }
 
                     Spacer(modifier = Modifier.size(15.dp))
+
+                    Box(modifier = Modifier.fillMaxWidth()                            .padding(horizontal = 10.dp)
+
+                    ){
+                        ExpandableText("The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger. The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.")
+                    }
+                    Spacer(modifier = Modifier.size(15.dp))
+
 
                     val images = listOf(
                         "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
@@ -376,7 +391,7 @@ fun CommentsInPost() {
                     Text(
                         text = "The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.",
                         style = TextStyle(
-                            fontSize = 16.sp,
+                            fontSize = 14.sp,
                             fontFamily = FontFamily.SansSerif,
                             color = Color.Black
                         )
@@ -402,7 +417,10 @@ fun CommentsInPost() {
                     )
                 }
 
-                VerticalDivider(modifier = Modifier.width(2.dp).height(14.dp).background(Color.LightGray))
+                VerticalDivider(modifier = Modifier
+                    .width(2.dp)
+                    .height(14.dp)
+                    .background(Color.LightGray))
 
                 TextButton(
                     onClick = {
@@ -418,4 +436,42 @@ fun CommentsInPost() {
             }
         }
     }
+}
+
+@Composable
+fun ExpandableText(
+    text: String,
+    maxLines: Int = 4,
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = text,
+            maxLines = if (expanded) Int.MAX_VALUE else maxLines,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        expanded = !expanded
+                    }
+                )
+            }.background(Color.Transparent)
+        )
+
+        if (!expanded && text.countLines() > maxLines) {
+            Text(
+                text = "Show more",
+                style = TextStyle(color = Color.LightGray),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+//                    .clickable { expanded = true }
+                    .padding(0.dp)
+            )
+        }
+    }
+}
+
+fun String.countLines(): Int {
+    return this.split("\n").size
 }

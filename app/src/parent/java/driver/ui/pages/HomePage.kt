@@ -94,6 +94,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import driver.models.PostsFeed
+import driver.ui.components.ExpandableText
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
 
@@ -233,6 +234,13 @@ fun ContentPage(
                     }
 
                     Spacer(modifier = Modifier.size(15.dp))
+                    Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+
+                    ){
+                        post.message?.let { ExpandableText(it) }
+                    }
+                    Spacer(modifier = Modifier.size(15.dp))
+
 
                     val images = post.media.map { it.mediaUrl }.toList()
                     Row(
