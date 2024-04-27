@@ -169,7 +169,7 @@ fun CommentPost(postsFeed: PostsFeed?) {
                                 )
                             },
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.LightGray,
+                                containerColor = Color.White,
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent
                             ),
@@ -318,19 +318,20 @@ fun PostContent(postsFeed: PostsFeed?) {
                         .padding(horizontal = 10.dp)
 
                     ){
-                        ExpandableText("The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger. The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.")
+                    ExpandableText("${postsFeed?.message}")
                     }
                     Spacer(modifier = Modifier.size(15.dp))
 
 
-                    val images = listOf(
-                        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-                        "https://picsum.photos/200/300",
-                    )
+                    val images =  postsFeed?.media?.let {
+                        it.map { it.mediaUrl }.toList()
+                    }
                     Row(
                         modifier = Modifier
                     ) {
-                        ImageScrollWithTextOverlay(images = images)
+                        if (images != null) {
+                            ImageScrollWithTextOverlay(images = images)
+                        }
 
                     }
 
@@ -410,6 +411,7 @@ fun PostContent(postsFeed: PostsFeed?) {
 
 @Composable
 fun CommentsArea() {
+
     Box(
         modifier = Modifier
             .padding(vertical = 0.dp, horizontal = 10.dp)
