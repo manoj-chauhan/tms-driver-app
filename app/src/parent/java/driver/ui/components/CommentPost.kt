@@ -5,29 +5,37 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
@@ -46,6 +55,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,73 +63,179 @@ import com.drishto.driver.R
 import driver.models.PostsFeed
 import driver.ui.pages.ImageScrollWithTextOverlay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentPost(postDetails: PostsFeed?) {
+fun CommentPost(postsFeed: PostsFeed?) {
+    
+    var comment by remember {
+        mutableStateOf("")
+    }
+    val interactionSource = remember { MutableInteractionSource() }
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        LazyColumn(modifier = Modifier) {
-            item {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .shadow(2.dp, RectangleShape)
-                            .height(50.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(
+        Column (modifier = Modifier, verticalArrangement = Arrangement.SpaceBetween){
+            Box(modifier = Modifier.fillMaxHeight(0.95f)) {
+                LazyColumn(modifier = Modifier) {
+                    item {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxHeight()
-                                    .width(70.dp)
-                                    .padding(start = 16.dp),
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically
+                                    .fillMaxWidth()
+                                    .shadow(2.dp, RectangleShape)
+                                    .height(50.dp)
                             ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .width(70.dp)
+                                            .padding(start = 16.dp),
+                                        horizontalArrangement = Arrangement.Start,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
 
-                                Icon(
-                                    imageVector = Icons.Outlined.ArrowBack,
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .size(30.dp)
-                                        .height(25.dp)
-                                        .clickable {
-//                                    navController.popBackStack()
-                                        },
-                                )
+                                        Icon(
+                                            imageVector = Icons.Outlined.ArrowBack,
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .size(30.dp)
+                                                .height(25.dp)
+                                                .clickable {
+                                                    //                                    navController.popBackStack()
+                                                },
+                                        )
 
+                                    }
+                                    Box(modifier = Modifier.fillMaxWidth(0.65f)) {
+                                        Text(
+                                            text = "Post",
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 20.sp,
+                                                fontFamily = FontFamily.SansSerif,
+                                                fontWeight = FontWeight.W600
+                                            )
+                                        )
+                                    }
+                                }
                             }
-                            Box(modifier = Modifier.fillMaxWidth(0.65f)) {
-                                Text(
-                                    text = "Post",
-                                    style = TextStyle(
-                                        color = Color.Black,
-                                        fontSize = 20.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        fontWeight = FontWeight.W600
-                                    )
-                                )
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Column(modifier = Modifier) {
+                                PostContent(postsFeed)
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Column(modifier = Modifier) {
-                        PostContent(postDetails)
+                }
+            }
+
+
+            Row(modifier = Modifier
+                .fillMaxWidth().padding(horizontal = 10.dp)
+                .background(Color.White), horizontalArrangement = Arrangement.SpaceBetween
+            )
+            {
+                BasicTextField(value = comment,
+                    onValueChange = { comment = it },
+                    textStyle = TextStyle(fontSize = 20.sp),
+                    modifier = Modifier
+                        .height(35.dp).fillMaxWidth(0.8f),
+
+                    enabled = true,
+                    singleLine = true,
+                    decorationBox = { innerTextField ->
+                        TextFieldDefaults.TextFieldDecorationBox(
+                            value = comment,
+                            innerTextField = innerTextField,
+                            visualTransformation = VisualTransformation.None,
+                            trailingIcon = { /* ... */ },
+                            placeholder = {
+                                Text(
+                                    text = "Type your comment",
+                                    fontSize = 14.sp,
+                                )
+                            },
+                            colors = TextFieldDefaults.textFieldColors(
+                                containerColor = Color.LightGray,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            singleLine = true,
+                            enabled = true,
+                            interactionSource = interactionSource,
+                            contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
+                                top = 0.dp, bottom = 0.dp
+                            ),
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                    }
+
+                )
+
+                Spacer(modifier = Modifier.width(7.dp))
+
+                Button(
+                    modifier = Modifier
+                        .height(35.dp).width(100.dp)
+                        .align(Alignment.Bottom),
+                    enabled = true,
+                    onClick = {
+
+                    },
+                    contentPadding = PaddingValues(),
+                    colors = ButtonDefaults.buttonColors(
+                        Color.Transparent
+                    ),
+                    shape = RoundedCornerShape(5.dp)
+                ) {
+                    val primary = Color(0xFF92A3FD)
+                    val secondary = Color(0XFF9DCEFF)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(35.dp)
+                            .align(Alignment.Bottom)
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    listOf(
+                                        primary,
+                                        secondary
+                                    )
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            ), contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            modifier = Modifier,
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "Send",
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
                     }
                 }
+
             }
         }
     }
 }
 
 @Composable
-fun PostContent(postDetails: PostsFeed?) {
+fun PostContent(postsFeed: PostsFeed?) {
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val images = listOf(R.drawable.hi)
 
@@ -191,7 +307,9 @@ fun PostContent(postDetails: PostsFeed?) {
 
                     Spacer(modifier = Modifier.size(15.dp))
 
-                    Box(modifier = Modifier.fillMaxWidth()                            .padding(horizontal = 10.dp)
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
 
                     ){
                         ExpandableText("The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger. The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.")
@@ -224,14 +342,14 @@ fun PostContent(postDetails: PostsFeed?) {
                     ) {
                         Row {
                             Text(
-                                text = "${postDetails?.comments} comments",
+                                text = "${postsFeed?.comments} comments",
                                 style = TextStyle(fontSize = 12.sp, color = gry)
                             )
 
                             Spacer(modifier = Modifier.width(12.dp))
 
                             Text(
-                                text = "${postDetails?.likes} likes",
+                                text = "${postsFeed?.likes} likes",
                                 style = TextStyle(fontSize = 12.sp, color = gry)
                             )
                         }
@@ -450,13 +568,15 @@ fun ExpandableText(
             text = text,
             maxLines = if (expanded) Int.MAX_VALUE else maxLines,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        expanded = !expanded
-                    }
-                )
-            }.background(Color.Transparent)
+            modifier = Modifier
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            expanded = !expanded
+                        }
+                    )
+                }
+                .background(Color.Transparent)
         )
 
         if (!expanded && text.countLines() > maxLines) {
