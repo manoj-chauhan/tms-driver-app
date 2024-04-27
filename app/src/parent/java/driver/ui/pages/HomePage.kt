@@ -640,16 +640,16 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
                     .fillMaxWidth()
                     .aspectRatio(1f)
             ) {
-//                if(images[page].endsWith(".mp4")){
-//                    videoPlayer(url = images[page])
-//                }else {
+                if(images[page].endsWith(".mp4")){
+                    videoPlayer(url = images[page])
+                }else {
                     AsyncImage(
                         model = images[page],
                         contentDescription = null,
                         modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Crop
                     )
-//                }
+                }
 
                 Text(
                     text = "${page + 1}/${images.size}",

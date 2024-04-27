@@ -59,9 +59,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.drishto.driver.R
 import driver.models.PostsFeed
 import driver.ui.pages.ImageScrollWithTextOverlay
+import driver.ui.viewmodels.PostActionsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,6 +74,7 @@ fun CommentPost(postsFeed: PostsFeed?) {
     }
     val interactionSource = remember { MutableInteractionSource() }
 
+    val pa: PostActionsViewModel = hiltViewModel()
 
     Box(
         modifier = Modifier
@@ -139,7 +142,8 @@ fun CommentPost(postsFeed: PostsFeed?) {
 
 
             Row(modifier = Modifier
-                .fillMaxWidth().padding(horizontal = 10.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
                 .background(Color.White), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
             )
             {
@@ -147,7 +151,8 @@ fun CommentPost(postsFeed: PostsFeed?) {
                     onValueChange = { comment = it },
                     textStyle = TextStyle(fontSize = 20.sp),
                     modifier = Modifier
-                        .height(35.dp).fillMaxWidth(0.8f),
+                        .height(35.dp)
+                        .fillMaxWidth(0.8f),
 
                     enabled = true,
                     singleLine = true,
@@ -184,11 +189,12 @@ fun CommentPost(postsFeed: PostsFeed?) {
 
                 Button(
                     modifier = Modifier
-                        .height(35.dp).width(100.dp)
+                        .height(35.dp)
+                        .width(100.dp)
                         .align(Alignment.Bottom),
                     enabled = true,
                     onClick = {
-
+                        postsFeed?.let { pa.uploadComments(it.id, comment) }
                     },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(

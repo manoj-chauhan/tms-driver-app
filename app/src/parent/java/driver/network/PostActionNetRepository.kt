@@ -7,22 +7,31 @@ import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpPost
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import dagger.hilt.android.qualifiers.ApplicationContext
+import driver.models.Comment
 import javax.inject.Inject
 
 class PostActionNetRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val errorManager: ErrManager
-)  {
-    fun sendComment(postId:String){
+) {
+    fun sendComment(postId: String, comment: String) {
         try {
+
+            val moshi = Moshi.Builder().build()
+            val jsonAdapter: JsonAdapter<Comment> = moshi.adapter(Comment::class.java)
+            val sendComment = Comment(comment)
+            val requestBody = jsonAdapter.toJson(sendComment)
 
             getAccessToken(context)?.let {
 
-                val url = context.resources.getString(R.string.url_upload_comment)
+                val url = context.resources.getString(R.string.url_upload_comment) + postId
 
                 val (request1, response, result) = url.httpPost()
                     .authentication().bearer(it)
+                    .body(requestBody)
                     .response()
 
                 if (response.statusCode == 200) {
