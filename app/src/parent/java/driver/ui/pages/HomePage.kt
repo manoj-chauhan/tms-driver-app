@@ -94,10 +94,8 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import driver.models.PostsFeed
-import driver.ui.components.ExpandableText
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
-
 
 data class NavigationItem(
     val title: String,
@@ -165,7 +163,9 @@ fun ContentPage(
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val images = listOf(R.drawable.hi)
 
-
+    val likeViewModel: LikeViewModel = hiltViewModel()
+    var likesCount by remember { mutableStateOf(post.likes ?: 0) }
+    var isLiked by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize(1f)
@@ -279,15 +279,29 @@ fun ContentPage(
 
                         Row {
                             Image(
-                                painter = painterResource(id = R.drawable.like),
+                                painter = painterResource(
+                                    id = if (isLiked) R.drawable.likenew else R.drawable.like
+                                ),
                                 contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
+
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable {
+                                        if (isLiked) {
+                                            likeViewModel.dislikePost(post.id)
+                                            likesCount--
+                                            isLiked = false
+                                        } else {
+                                            likeViewModel.likePost(post.id)
+                                            likesCount++
+                                            isLiked = true
+                                        }
+                                    }
                             )
 
                             Spacer(modifier = Modifier.width(12.dp))
 
-                            Image(
+                            Icon(
                                 painter = painterResource(id = R.drawable.message),
                                 contentDescription = "",
                                 modifier = Modifier
@@ -315,6 +329,7 @@ fun ContentPage(
             Spacer(modifier = Modifier.height(12.dp))
         }
     }
+
 }
 
 data class tabItem(
@@ -585,7 +600,7 @@ fun HomeScreenNavigation(navController: NavHostController, onCommentClick : (pos
                         .fillMaxSize(),
                 ) {
                     Spacer(modifier = Modifier.height(6.dp))
-                    HomeApp(modifier = Modifier, navController, onCommentClick)
+                    HomeApp(modifier = Modifier)
                 }
             }
             )
