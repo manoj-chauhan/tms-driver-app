@@ -36,7 +36,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -429,7 +428,6 @@ fun CommentsArea() {
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     CommentsInPost()
-
                 }
 
             }
@@ -441,6 +439,9 @@ fun CommentsArea() {
 
 @Composable
 fun CommentsInPost() {
+
+    Column {
+
 
     Row(modifier = Modifier.fillMaxWidth()) {
         Box(modifier = Modifier.width(33.dp)) {
@@ -543,25 +544,147 @@ fun CommentsInPost() {
                     )
                 }
 
-                VerticalDivider(modifier = Modifier
-                    .width(2.dp)
-                    .height(14.dp)
-                    .background(Color.LightGray))
-
-                TextButton(
-                    onClick = {
-                    }
-                ) {
-                    Text(
-                        "Reply", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
+//                VerticalDivider(modifier = Modifier
+//                    .width(2.dp)
+//                    .height(14.dp)
+//                    .background(Color.LightGray))
+//
+//                TextButton(
+//                    onClick = {
+//                    }
+//                ) {
+//                    Text(
+//                        "Reply", style = TextStyle(
+//                            fontSize = 12.sp,
+//                            fontWeight = FontWeight.Bold
+//                        )
+//                    )
+//                }
+            }
+        }
+    }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Box(modifier = Modifier.width(33.dp)) {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            Color.White, shape = CircleShape
                         )
+                        .size(35.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.atul),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(200.dp)
+                            .clip(CircleShape)
+                            .border(
+                                width = 0.dp, Color.White, shape = CircleShape
+                            ),
+                        contentScale = ContentScale.FillBounds
                     )
+                }
+            }
+            Spacer(modifier = Modifier.width(15.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(shape = RoundedCornerShape(6.dp))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding()
+                        .fillMaxWidth()
+                        .background(Color.LightGray),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = "Delhi Public School", style = TextStyle(
+                                        fontSize = 16.sp, fontFamily = FontFamily.SansSerif
+                                    )
+                                )
+                            }
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = "Sonipath, Haryana", style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily.SansSerif,
+                                        color = Color.Gray
+                                    )
+                                )
+                            }
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, bottom = 10.dp)
+                    ) {
+                        Text(
+                            text = "The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = FontFamily.SansSerif,
+                                color = Color.Black
+                            )
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    TextButton(
+                        onClick = {
+                        }
+                    ) {
+                        Text(
+                            "Like", style = TextStyle(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
+
+//                VerticalDivider(modifier = Modifier
+//                    .width(2.dp)
+//                    .height(14.dp)
+//                    .background(Color.LightGray))
+//
+//                TextButton(
+//                    onClick = {
+//                    }
+//                ) {
+//                    Text(
+//                        "Reply", style = TextStyle(
+//                            fontSize = 12.sp,
+//                            fontWeight = FontWeight.Bold
+//                        )
+//                    )
+//                }
                 }
             }
         }
     }
+
 }
 
 @Composable

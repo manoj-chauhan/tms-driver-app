@@ -28,7 +28,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.material.icons.outlined.Business
 import androidx.compose.material.icons.outlined.CarCrash
@@ -705,12 +707,13 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
 @Composable
 fun videoPlayer(url: String) {
     val context = LocalContext.current
+    val exoPlayer = remember { ExoPlayer.Builder(context).build() }
+    val mediaItem = remember { MediaItem.fromUri(Uri.parse(url)) }
 
-    val exoPlayer = ExoPlayer.Builder(context).build()
-    val mediaItem = MediaItem.fromUri(Uri.parse(url))
+    var isPlaying by remember { mutableStateOf(false) }
+
 
     exoPlayer.setMediaItem(mediaItem)
-    exoPlayer.playWhenReady = true
     exoPlayer.prepare()
 
     val playerView = StyledPlayerView(context)
@@ -731,29 +734,48 @@ fun videoPlayer(url: String) {
         }
     }
 
-    AndroidView(
-        factory = { context ->
-            PlayerView(context).also {
-                it.player = exoPlayer
-                it.useController = false
-            }
-        },
-        update = {
-            when (lifecycle) {
-                Lifecycle.Event.ON_PAUSE -> {
-                    it.onPause()
-                    it.player?.pause()
-                }
 
-                Lifecycle.Event.ON_RESUME -> {
-                    it.onResume()
-                }
+    Box(modifier = Modifier.fillMaxSize()) {
 
-                else -> Unit
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-    )
+
+        AndroidView(
+            factory = { context ->
+                PlayerView(context).also {
+                    it.player = exoPlayer
+                    it.useController = false
+                }
+            },
+            update = {
+                when (lifecycle) {
+                    Lifecycle.Event.ON_PAUSE -> {
+                        it.onPause()
+                        it.player?.pause()
+                    }
+
+                    Lifecycle.Event.ON_RESUME -> {
+                        it.onResume()
+                    }
+
+                    else -> Unit
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+        )
+        IconButton(
+            onClick = {
+                exoPlayer.playWhenReady = !exoPlayer.playWhenReady
+                isPlaying = !isPlaying
+            },
+            modifier = Modifier.size(80.dp).background(Color.LightGray, CircleShape).align(Alignment.Center)
+        ) {
+            Icon(
+                imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                contentDescription = if (exoPlayer.playWhenReady) "Pause" else "Play",
+                modifier = Modifier.size(50.dp)
+            )
+        }
+    }
+
 }
