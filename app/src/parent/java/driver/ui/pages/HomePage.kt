@@ -373,7 +373,7 @@ fun HomeScreenNavigation(
             title = "Events",
             selectedIcon = Icons.Outlined.BookmarkAdd,
             unselectedIcon = Icons.Outlined.BookmarkAdd,
-            navigate = "add-Institute"
+            navigate = "events"
         ),
         NavigationItem(
             title = "Add post",

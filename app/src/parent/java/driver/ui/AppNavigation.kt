@@ -30,6 +30,7 @@ import driver.ui.components.CommentPost
 import driver.ui.components.MapsView
 import driver.ui.components.pastTrips
 import driver.ui.pages.AddInstitute
+import driver.ui.pages.Eventpage
 import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
@@ -93,6 +94,10 @@ fun AppNavigationHost(
             navController.navigate("userList")
 
         }
+        composable("events"){
+            Eventpage()
+        }
+
         composable("post_page"){
             PostItem(navController = navController)
         }
