@@ -94,6 +94,8 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import driver.models.PostsFeed
+import driver.ui.components.ExpandableText
+import driver.ui.viewmodels.LikeViewModel
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
 
@@ -234,9 +236,12 @@ fun ContentPage(
                     }
 
                     Spacer(modifier = Modifier.size(15.dp))
-                    Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
 
-                    ){
+                    ) {
                         post.message?.let { ExpandableText(it) }
                     }
                     Spacer(modifier = Modifier.size(15.dp))
@@ -272,7 +277,7 @@ fun ContentPage(
                             Spacer(modifier = Modifier.width(12.dp))
 
                             Text(
-                                text = "${post.likes} likes",
+                                text = "$likesCount likes",
                                 style = TextStyle(fontSize = 12.sp, color = gry)
                             )
                         }
@@ -283,7 +288,6 @@ fun ContentPage(
                                     id = if (isLiked) R.drawable.likenew else R.drawable.like
                                 ),
                                 contentDescription = "",
-
                                 modifier = Modifier
                                     .size(20.dp)
                                     .clickable {
@@ -309,7 +313,6 @@ fun ContentPage(
                                     .clickable {
                                         onCommentClick(post)
                                     },
-                                contentScale = ContentScale.FillBounds
                             )
 
                             Spacer(modifier = Modifier.width(10.dp))
@@ -339,7 +342,10 @@ data class tabItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenNavigation(navController: NavHostController, onCommentClick : (postData: PostsFeed) -> Unit) {
+fun HomeScreenNavigation(
+    navController: NavHostController,
+    onCommentClick: (postData: PostsFeed) -> Unit
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navigationController = rememberNavController()
@@ -600,7 +606,7 @@ fun HomeScreenNavigation(navController: NavHostController, onCommentClick : (pos
                         .fillMaxSize(),
                 ) {
                     Spacer(modifier = Modifier.height(6.dp))
-                    HomeApp(modifier = Modifier)
+                    HomeApp(modifier = Modifier, navController, onCommentClick)
                 }
             }
             )
@@ -655,9 +661,9 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
                     .fillMaxWidth()
                     .aspectRatio(1f)
             ) {
-                if(images[page].endsWith(".mp4")){
+                if (images[page].endsWith(".mp4")) {
                     videoPlayer(url = images[page])
-                }else {
+                } else {
                     AsyncImage(
                         model = images[page],
                         contentDescription = null,
