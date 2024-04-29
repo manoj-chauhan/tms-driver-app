@@ -39,6 +39,7 @@ import java.time.LocalDate
 
 @Composable
 fun EventCard(event: Event, onRegisterClick: () -> Unit) {
+
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.LightGray),
@@ -46,66 +47,51 @@ fun EventCard(event: Event, onRegisterClick: () -> Unit) {
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-
-        Column() {
-            Box(modifier= Modifier
-                .fillMaxWidth()
-               ){
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            ) {
                 Image(
                     painter = painterResource(id = event.imageResId),
                     contentDescription = "Event Image",
-                    modifier = Modifier
-                        .fillMaxWidth()
-
-//                        .height(200.dp),
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
                 )
-
             }
 
+            // Content below the Image
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(modifier = Modifier.fillMaxWidth(0.6f) , verticalAlignment = Alignment.CenterVertically) {
-
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-
-                        Text(
-                            text = event.eventName,
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-                        )
-                        Text(
-                            text = "Date: ${event.eventDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}",
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                        Text(
-                            text = "Institution: ${event.institutionName}",
-                            style = MaterialTheme.typography.bodySmall
-                        )
-
-                    }
-                }
-//                Spacer(modifier = Modifier.width(10.dp))
-                Row( verticalAlignment = Alignment.CenterVertically){
-                    Button(onRegisterClick,
-                       )
-                         {
-                        Text("Register")
-                    }
-
+                Column(modifier = Modifier.fillMaxWidth(0.7f)) {
+                    Text(
+                        text = event.eventName,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                    Text(
+                        text = "Date: ${event.eventDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        text = "Institution: ${event.institutionName}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
 
-
+                Button(onClick = onRegisterClick) {
+                    Text("Register")
+                }
             }
-
         }
-
-
     }
 }
+
+
 
 
 @Composable
@@ -127,26 +113,3 @@ fun Eventpage(){
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AddEventPagePreview() {
-    val sampleEvents = listOf(
-        Event(
-            imageResId = R.drawable.volley,
-            eventName = "Event One",
-            eventDate = LocalDate.now(),
-            institutionName = "Institution One"
-        ),
-        Event(
-            imageResId = R.drawable.cricket,
-            eventName = "Event Two",
-            eventDate = LocalDate.now().plusDays(7),
-            institutionName = "Institution Two"
-        )
-    )
-
-    AddEventPage(
-        events = sampleEvents,
-        onRegisterClick = { event -> }
-    )
-}

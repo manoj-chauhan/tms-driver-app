@@ -37,6 +37,7 @@ import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PostItem
+import driver.ui.pages.SavedEvents
 import driver.ui.pages.UserList
 import driver.ui.pages.notificationScreen
 import driver.ui.pages.profile
@@ -95,7 +96,7 @@ fun AppNavigationHost(
 
         }
         composable("events"){
-            Eventpage()
+            SavedEvents()
         }
 
         composable("post_page"){
