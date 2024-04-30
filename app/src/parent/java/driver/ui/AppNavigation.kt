@@ -25,12 +25,13 @@ import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.network.saveAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import com.google.android.gms.maps.model.LatLng
+import driver.models.Event
 import driver.models.PostsFeed
 import driver.ui.components.CommentPost
+import driver.ui.components.EventRegistration
 import driver.ui.components.MapsView
 import driver.ui.components.pastTrips
 import driver.ui.pages.AddInstitute
-import driver.ui.pages.Eventpage
 import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
@@ -52,8 +53,7 @@ fun AppNavigationHost(
 
     val context = LocalContext.current
 
-    var expander by remember { mutableStateOf(false) }
-    var userProfile by remember { mutableStateOf(false) }
+    var eventDetail by remember { mutableStateOf<Event?>(null) }
     var selectedAssignmentCode by remember { mutableStateOf("") }
     var operatorId by remember { mutableIntStateOf(0) }
     var passengerTripId by remember { mutableIntStateOf(0) }
@@ -96,7 +96,14 @@ fun AppNavigationHost(
 
         }
         composable("events"){
-            SavedEvents()
+            SavedEvents(onRegisterClick = {
+                eventDetail = it
+                navController.navigate("event-details")
+            })
+        }
+
+        composable("event-details"){
+            eventDetail?.let { event -> EventRegistration(event) }
         }
 
         composable("post_page"){

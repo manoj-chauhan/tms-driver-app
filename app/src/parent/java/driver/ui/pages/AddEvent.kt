@@ -45,7 +45,7 @@ import driver.models.getDummyEvents
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun EventCard(event: Event, onRegisterClick: () -> Unit) {
+fun EventCard(event: Event, onRegisterClick:(event: Event) -> Unit) {
 
     val primary = Color(0xFF92A3FD)
     val secondary = Color(0XFF9DCEFF)
@@ -117,7 +117,7 @@ fun EventCard(event: Event, onRegisterClick: () -> Unit) {
                         .height(25.dp),
                     enabled = true,
                     onClick = {
-                        onRegisterClick()
+                        onRegisterClick(event)
                     },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(
@@ -164,19 +164,17 @@ fun EventCard(event: Event, onRegisterClick: () -> Unit) {
 
 
 @Composable
-fun AddEventPage(events: List<Event>, onRegisterClick: (Event) -> Unit) {
+fun AddEventPage(events: List<Event>, onRegisterClick: (event: Event) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
         items(events) { event ->
-            EventCard(event) { onRegisterClick(event) }
+            EventCard(event,  onRegisterClick)
         }
     }
 }
 @Composable
-fun Eventpage(){
+fun Eventpage(onRegisterClick: (Event) -> Unit){
     val events:List<Event> = getDummyEvents()
-    AddEventPage(events = events) {
-
-    }
+    AddEventPage(events = events, onRegisterClick = onRegisterClick)
 }

@@ -247,7 +247,7 @@ fun PostItem(navController: NavHostController) {
                     items(selectedImageUri.size) { index ->
                         val uri = selectedImageUri[index]
                         Box {
-                            if (uri != null) {
+                            if (uri != null ) {
                                 if (uri.isImage()) {
                                     AsyncImage(
                                         model = uri,
@@ -292,14 +292,14 @@ fun PostItem(navController: NavHostController) {
 }
 
 @Composable
-private fun Uri.isImage(): Boolean {
+fun Uri.isImage(): Boolean {
     val context = LocalContext.current
     val mimeType = context.contentResolver.getType(this)
     return mimeType?.startsWith("image/") == true
 }
 
 @Composable
-private fun Uri.isVideo(): Boolean {
+fun Uri.isVideo(): Boolean {
     val context = LocalContext.current
     val mimeType = context.contentResolver.getType(this)
     return mimeType?.startsWith("video/") == true

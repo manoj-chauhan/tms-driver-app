@@ -33,6 +33,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import driver.models.Event
 import kotlinx.coroutines.launch
 
 enum class HomeTabs(
@@ -52,11 +53,10 @@ enum class HomeTabs(
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SavedEvents() {
+fun SavedEvents(onRegisterClick: (event: Event) -> Unit) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { HomeTabs.entries.size })
-
 
     Scaffold(
         topBar = { Row(
@@ -114,7 +114,8 @@ fun SavedEvents() {
             }
             when(selectedTabIndex){
                 0-> {
-                    Eventpage()
+                    Eventpage(onRegisterClick =onRegisterClick
+                 )
                 }
                 1->{
                     Box(modifier = Modifier.fillMaxSize())
