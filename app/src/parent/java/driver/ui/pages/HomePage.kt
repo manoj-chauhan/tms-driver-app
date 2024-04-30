@@ -2,6 +2,10 @@ package driver.ui.pages
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,7 +32,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.material.icons.outlined.Business
 import androidx.compose.material.icons.outlined.CarCrash
@@ -66,6 +72,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -283,25 +290,52 @@ fun ContentPage(
                         }
 
                         Row {
-                            Image(
-                                painter = painterResource(
-                                    id = if (isLiked) R.drawable.likenew else R.drawable.like
-                                ),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .clickable {
-                                        if (isLiked) {
+                            val transition = updateTransition(targetState = isLiked)
+
+                            val scale by transition.animateFloat(
+                                transitionSpec = {
+                                    keyframes {
+                                        1.6f at 0
+                                        3.0f at 300
+                                        1.0f at 200
+                                    }
+                                }, label = ""
+                            ) { liked ->
+                                if (liked) 1.0f else 0.8f
+                            }
+                            if(isLiked) {
+                                Image(
+                                    painter = painterResource(
+                                        id = R.drawable.likenew
+                                    ),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clickable {
                                             likeViewModel.dislikePost(post.id)
                                             likesCount--
                                             isLiked = false
-                                        } else {
+                                        }
+                                        .scale(scale)
+                                        .animateContentSize()
+                                )
+                            } else {
+                                Image(
+                                    painter = painterResource(
+                                        id = R.drawable.like
+                                    ),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clickable {
                                             likeViewModel.likePost(post.id)
                                             likesCount++
                                             isLiked = true
                                         }
-                                    }
-                            )
+                                        .scale(scale)
+                                        .animateContentSize()
+                                )
+                            }
 
                             Spacer(modifier = Modifier.width(12.dp))
 
@@ -705,12 +739,13 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
 @Composable
 fun videoPlayer(url: String) {
     val context = LocalContext.current
+    val exoPlayer = remember { ExoPlayer.Builder(context).build() }
+    val mediaItem = remember { MediaItem.fromUri(Uri.parse(url)) }
 
-    val exoPlayer = ExoPlayer.Builder(context).build()
-    val mediaItem = MediaItem.fromUri(Uri.parse(url))
+    var isPlaying by remember { mutableStateOf(false) }
+
 
     exoPlayer.setMediaItem(mediaItem)
-    exoPlayer.playWhenReady = true
     exoPlayer.prepare()
 
     val playerView = StyledPlayerView(context)
@@ -731,29 +766,51 @@ fun videoPlayer(url: String) {
         }
     }
 
-    AndroidView(
-        factory = { context ->
-            PlayerView(context).also {
-                it.player = exoPlayer
-                it.useController = false
-            }
-        },
-        update = {
-            when (lifecycle) {
-                Lifecycle.Event.ON_PAUSE -> {
-                    it.onPause()
-                    it.player?.pause()
-                }
 
-                Lifecycle.Event.ON_RESUME -> {
-                    it.onResume()
-                }
+    Box(modifier = Modifier.fillMaxSize()) {
 
-                else -> Unit
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-    )
+
+        AndroidView(
+            factory = { context ->
+                PlayerView(context).also {
+                    it.player = exoPlayer
+                    it.useController = false
+                }
+            },
+            update = {
+                when (lifecycle) {
+                    Lifecycle.Event.ON_PAUSE -> {
+                        it.onPause()
+                        it.player?.pause()
+                    }
+
+                    Lifecycle.Event.ON_RESUME -> {
+                        it.onResume()
+                    }
+
+                    else -> Unit
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+        )
+        IconButton(
+            onClick = {
+                exoPlayer.playWhenReady = !exoPlayer.playWhenReady
+                isPlaying = !isPlaying
+            },
+            modifier = Modifier
+                .size(80.dp)
+                .background(Color.LightGray, CircleShape)
+                .align(Alignment.Center)
+        ) {
+            Icon(
+                imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                contentDescription = if (exoPlayer.playWhenReady) "Pause" else "Play",
+                modifier = Modifier.size(50.dp)
+            )
+        }
+    }
+
 }

@@ -15,14 +15,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -54,6 +54,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -243,25 +244,48 @@ fun PostItem(navController: NavHostController) {
                         }
                     }
                 }
-                LazyColumn {
-                    items(selectedImageUri.size) { index ->
+
+                val columns = 2
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(columns),
+                    verticalArrangement = Arrangement.spacedBy(3.dp),
+                    horizontalArrangement = Arrangement.spacedBy(3.dp)
+                ) {
+                    val imageCount = selectedImageUri.size
+
+                    items(imageCount, key = { it }) { index ->
                         val uri = selectedImageUri[index]
-                        Box {
-                            if (uri != null ) {
-                                if (uri.isImage()) {
+                        if (uri != null) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                if (uri.isImage() && index < 4) {
                                     AsyncImage(
                                         model = uri,
                                         contentDescription = "Selected Image",
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clip(RoundedCornerShape(8.dp))
+                                        modifier = Modifier.fillMaxSize()
                                     )
                                 } else if (uri.isVideo()) {
                                     VideoPlayer(uri = uri)
                                 }
                             }
                         }
-                        Spacer(Modifier.height(10.dp))
+                        if (index == 3) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .zIndex(1f)
+                                    .background(Color.Black.copy(alpha = 0.4f))
+                            ) {
+                                Text(
+                                    text = "+${imageCount - (index + 1)}",
+                                    color = Color.White,
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.padding(top = 100.dp, bottom = 104.dp).align(Alignment.Center)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -292,14 +316,14 @@ fun PostItem(navController: NavHostController) {
 }
 
 @Composable
-fun Uri.isImage(): Boolean {
+private fun Uri.isImage(): Boolean {
     val context = LocalContext.current
     val mimeType = context.contentResolver.getType(this)
     return mimeType?.startsWith("image/") == true
 }
 
 @Composable
-fun Uri.isVideo(): Boolean {
+private fun Uri.isVideo(): Boolean {
     val context = LocalContext.current
     val mimeType = context.contentResolver.getType(this)
     return mimeType?.startsWith("video/") == true

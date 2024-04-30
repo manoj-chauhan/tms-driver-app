@@ -20,5 +20,7 @@
     <string name="url_upload_post">&baseUrl;/test/posts</string>
     <string name="url_upload_comment">&baseUrl;/test/posts/comment/</string>
     <string name="url_get_all_posts">&baseUrl;/test/feeds/posts</string>
+    <string name="url_get_comments_posts">&baseUrl;/test/posts/</string>
+
 
 </resources>
