@@ -164,7 +164,7 @@ fun EventCard(event: Event, onRegisterClick:(event: Event) -> Unit) {
 
 
 @Composable
-fun AddEventPage(events: List<Event>, onRegisterClick: (event: Event) -> Unit) {
+fun EventListPage(events: List<Event>, onRegisterClick: (event: Event) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -176,5 +176,5 @@ fun AddEventPage(events: List<Event>, onRegisterClick: (event: Event) -> Unit) {
 @Composable
 fun Eventpage(onRegisterClick: (Event) -> Unit){
     val events:List<Event> = getDummyEvents()
-    AddEventPage(events = events, onRegisterClick = onRegisterClick)
+    EventListPage(events = events, onRegisterClick = onRegisterClick)
 }

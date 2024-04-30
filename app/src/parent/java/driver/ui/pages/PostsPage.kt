@@ -316,7 +316,7 @@ fun PostItem(navController: NavHostController) {
 }
 
 @Composable
-private fun Uri.isImage(): Boolean {
+fun Uri.isImage(): Boolean {
     val context = LocalContext.current
     val mimeType = context.contentResolver.getType(this)
     return mimeType?.startsWith("image/") == true
@@ -346,7 +346,7 @@ fun VideoPlayer(uri: Uri) {
 }
 
 
-private fun getByteArrayFromUri(context: Context, uri: Uri): ByteArray {
+fun getByteArrayFromUri(context: Context, uri: Uri): ByteArray {
     val stream = ByteArrayOutputStream()
     val mimeType = context.contentResolver.getType(uri)
 

@@ -26,6 +26,7 @@ import com.drishto.driver.network.saveAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.models.Event
 import driver.models.PostsFeed
+import driver.ui.components.AddEventPage
 import driver.ui.components.CommentPost
 import driver.ui.components.EventRegistration
 import driver.ui.components.pastTrips
@@ -36,8 +37,8 @@ import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PostItem
-import driver.ui.pages.SavedEvents
 import driver.ui.pages.UserList
+import driver.ui.pages.allEventsPage
 import driver.ui.pages.notificationScreen
 import driver.ui.pages.profile
 
@@ -93,10 +94,14 @@ fun AppNavigationHost(
 
         }
         composable("events"){
-            SavedEvents(onRegisterClick = {
+            allEventsPage(navController, onRegisterClick = {
                 eventDetail = it
                 navController.navigate("event-details")
             })
+        }
+
+        composable("add-Event-Form"){
+            AddEventPage()
         }
 
         composable("event-details"){
