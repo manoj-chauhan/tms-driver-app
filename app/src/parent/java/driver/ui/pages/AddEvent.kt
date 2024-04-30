@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -60,7 +61,7 @@ fun EventCard(event: Event, onRegisterClick: () -> Unit) {
             .background(Color.White)
             .padding(8.dp)
     ) {
-        Column {
+        Column(modifier = Modifier.fillMaxHeight()) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,7 +167,6 @@ fun EventCard(event: Event, onRegisterClick: () -> Unit) {
 fun AddEventPage(events: List<Event>, onRegisterClick: (Event) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         items(events) { event ->
             EventCard(event) { onRegisterClick(event) }
@@ -180,4 +180,3 @@ fun Eventpage(){
 
     }
 }
-
