@@ -36,11 +36,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.LatLng
 import driver.models.ContactList
+import driver.ui.components.MapsView
 import driver.ui.viewmodels.AddInstitueViewModel
 
 
 @Composable
-fun AddInstitute(navController: NavHostController, markerPosition: LatLng?) {
+fun AddInstitute(navController: NavHostController) {
 
 
     var instituteName by remember { mutableStateOf("") }
@@ -57,6 +58,8 @@ fun AddInstitute(navController: NavHostController, markerPosition: LatLng?) {
     val indiaLatLng = LatLng(20.5937, 78.9629)
     var latitude by remember { mutableStateOf("") }
     var longitude by remember { mutableStateOf("") }
+    var isMapToBeShown = remember { mutableStateOf(false); }
+    var markerPosition by remember { mutableStateOf<LatLng?>(null) }
 
 
     Box(
@@ -162,7 +165,7 @@ fun AddInstitute(navController: NavHostController, markerPosition: LatLng?) {
                     Text(text = "Mark Institute's Location", fontWeight =FontWeight.Bold , fontSize = 18.sp)
                     TextButton(
                         onClick = {
-                            navController.navigate("marker-map")
+                            isMapToBeShown.value = true
                         }
                     ) {
                         Text(
@@ -203,8 +206,8 @@ fun AddInstitute(navController: NavHostController, markerPosition: LatLng?) {
 //                }
 
                 if(markerPosition != null) {
-                    latitude = markerPosition.latitude.toString()
-                    longitude = markerPosition.longitude.toString()
+                    latitude = markerPosition!!.latitude.toString()
+                    longitude = markerPosition!!.longitude.toString()
                     OutlinedTextField(
                         value = latitude,
                         enabled = false,
@@ -282,6 +285,14 @@ fun AddInstitute(navController: NavHostController, markerPosition: LatLng?) {
 
             }
         }
+    }
+
+    if(isMapToBeShown.value){
+        MapsView(onMarkerSelected ={
+                markerPosition = it
+            }, setShowDialog = {
+                isMapToBeShown.value = it
+        })
     }
 }
 
