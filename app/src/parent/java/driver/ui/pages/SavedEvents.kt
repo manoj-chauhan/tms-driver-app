@@ -85,7 +85,7 @@ fun allEventsPage(navController: NavHostController,onRegisterClick: (event: Even
                 IconButton(modifier = Modifier
                     .size(25.dp)
                     .align(Alignment.Center), onClick = {
-
+                    navController.popBackStack()
                 }) {
                     Icon(
                         modifier = Modifier,

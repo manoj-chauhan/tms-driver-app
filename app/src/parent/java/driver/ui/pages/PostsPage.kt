@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -245,45 +246,58 @@ fun PostItem(navController: NavHostController) {
                     }
                 }
 
-                val columns = 2
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(columns),
-                    verticalArrangement = Arrangement.spacedBy(3.dp),
-                    horizontalArrangement = Arrangement.spacedBy(3.dp)
-                ) {
-                    val imageCount = selectedImageUri.size
+                val columns = when (selectedImageUri.size) {
+                    1 -> 1
+                    2 -> 2
+                    3 -> 2
+                    else -> 2
+                }
 
-                    items(imageCount, key = { it }) { index ->
-                        val uri = selectedImageUri[index]
-                        if (uri != null) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                if (uri.isImage() && index < 4) {
-                                    AsyncImage(
-                                        model = uri,
-                                        contentDescription = "Selected Image",
-                                        modifier = Modifier.fillMaxSize()
-                                    )
-                                } else if (uri.isVideo()) {
-                                    VideoPlayer(uri = uri)
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .heightIn(max = 450.dp)
+                ) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(columns),
+                        verticalArrangement = Arrangement.spacedBy(3.dp),
+                        horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    ) {
+                        val imageCount = selectedImageUri.size
+
+                        items(imageCount, key = { it }) { index ->
+                            val uri = selectedImageUri[index]
+                            if (uri != null) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                ) {
+                                    if (uri.isImage() && index < 4) {
+                                        AsyncImage(
+                                            model = uri,
+                                            contentDescription = "Selected Image",
+                                            modifier = Modifier.fillMaxSize()
+                                        )
+                                    } else if (uri.isVideo()) {
+                                        VideoPlayer(uri = uri)
+                                    }
                                 }
                             }
-                        }
-                        if (index == 3) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .zIndex(1f)
-                                    .background(Color.Black.copy(alpha = 0.4f))
-                            ) {
-                                Text(
-                                    text = "+${imageCount - (index + 1)}",
-                                    color = Color.White,
-                                    fontSize = 18.sp,
-                                    modifier = Modifier.padding(top = 100.dp, bottom = 104.dp).align(Alignment.Center)
-                                )
+                            if (index == 3) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .zIndex(1f)
+                                        .background(Color.Black.copy(alpha = 0.4f))
+                                ) {
+                                    Text(
+                                        text = "+${imageCount - (index + 1)}",
+                                        color = Color.White,
+                                        fontSize = 18.sp,
+                                        modifier = Modifier.padding(top = 100.dp, bottom = 104.dp)
+                                            .align(Alignment.Center)
+                                    )
+                                }
                             }
                         }
                     }

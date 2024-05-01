@@ -26,7 +26,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,18 +40,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
-import driver.ui.pages.getByteArrayFromUri
+import com.google.android.gms.maps.model.LatLng
 import java.util.Calendar
 import java.util.Date
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddEventPage() {
+fun addEventPage() {
 
     val context = LocalContext.current
     var title by remember { mutableStateOf("") }
@@ -76,8 +73,8 @@ fun AddEventPage() {
 
     val timePickerDialog = android.app.TimePickerDialog(
         context,
-        { _, mHour: Int, mMinute: Int ->
-            mTime.value = "$mHour:$mMinute"
+        { _, hour: Int, minute: Int ->
+            mTime.value = "$hour:$minute"
         }, mHour, mMinute, false
     )
 
@@ -95,14 +92,23 @@ fun AddEventPage() {
         mutableStateOf<List<Uri?>>(emptyList())
     }
 
+    val isMapToBeShown = remember { mutableStateOf(false); }
+    var markerPosition by remember { mutableStateOf<LatLng?>(null) }
+    var latitude by remember { mutableStateOf("") }
+    var longitude by remember { mutableStateOf("") }
+
+
+    var placeName by remember { mutableStateOf("") }
+
+
     val getCoverImage = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         selectedCoverImageUri = uri
 
         uri?.let {
-            val mimeType = context.contentResolver.getType(uri)
-            val byteArray = getByteArrayFromUri(context, it)
+//            val mimeType = context.contentResolver.getType(uri)
+//            val byteArray = getByteArrayFromUri(context, it)
 //                postUploadViewModel.uploadPosts(byteArray, mimeType)
         }
 
@@ -114,8 +120,8 @@ fun AddEventPage() {
         selectedImageUris = uris
         uris.forEach { uri ->
             uri?.let {
-                val mimeType = context.contentResolver.getType(uri)
-                val byteArray = getByteArrayFromUri(context, it)
+//                val mimeType = context.contentResolver.getType(uri)
+//                val byteArray = getByteArrayFromUri(context, it)
 //                postUploadViewModel.uploadPosts(byteArray, mimeType)
             }
         }
@@ -127,13 +133,6 @@ fun AddEventPage() {
             .fillMaxSize()
             .background(Color.White)
     ) {
-        Row(modifier = Modifier.fillMaxWidth(1f)) {
-            Text(
-                text = "NEW EVENT REGISTRATION",
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W500)
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
 
         Column(
             modifier = Modifier
@@ -141,10 +140,17 @@ fun AddEventPage() {
                 .padding(12.dp)
         ) {
 
+        Row(modifier = Modifier.fillMaxWidth(1f)) {
+            Text(
+                text = "NEW EVENT REGISTRATION",
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W500)
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = instituteName,
                 onValueChange = { instituteName = it },
-                label = { Text("Institute Name") },
+                label = { Text("Institute Names") },
                 placeholder = { Text("Enter Institute name ") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -215,11 +221,67 @@ fun AddEventPage() {
                 value = mTime.value,
                 onValueChange = {},
                 trailingIcon = { Icons.Default.DateRange },
-                interactionSource = interactTime
+//                interactionSource = interactTime
             )
             if (isTimePressed) {
                 timePickerDialog.show()
             }
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Select event location", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                TextButton(
+                    onClick = {
+                        isMapToBeShown.value = true
+
+                    }
+                ) {
+                    Text(
+                        "Select location", style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+            }
+
+            if(markerPosition != null) {
+                latitude = markerPosition!!.latitude.toString()
+                longitude = markerPosition!!.longitude.toString()
+                OutlinedTextField(
+                    value = latitude,
+                    enabled = false,
+                    onValueChange = {  },
+                    label = { Text("Latitude") },
+                    placeholder = { Text("Latitude") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = longitude,
+                    enabled = false,
+                    onValueChange = {  },
+                    label = { Text("Longitude") },
+                    placeholder = { Text("Longitude") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = placeName,
+                    enabled = true,
+                    onValueChange = { placeName = it },
+                    label = { Text("Place Name") },
+                    placeholder = { Text("State,Country") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
 
@@ -246,14 +308,18 @@ fun AddEventPage() {
                 }
             }
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)) {
-                AsyncImage(
-                    model = selectedCoverImageUri,
-                    contentDescription = "Selected Image",
-                    modifier = Modifier.fillMaxSize()
-                )
+            if(selectedCoverImageUri != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 200.dp)
+                ) {
+                    AsyncImage(
+                        model = selectedCoverImageUri,
+                        contentDescription = "Selected Image",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -261,7 +327,7 @@ fun AddEventPage() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Select Description photos",
+                    text = "Select description photos",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
@@ -302,7 +368,7 @@ fun AddEventPage() {
                     items(imageCount, key = { it }) { index ->
                         val uri = selectedImageUris[index]
                         if (uri != null) {
-                            if (index < 4) {
+                            if (index < 4 ) {
 
                                 Box(
                                     modifier = Modifier
@@ -312,7 +378,10 @@ fun AddEventPage() {
                                     AsyncImage(
                                         model = uri,
                                         contentDescription = "Selected Image",
-                                        modifier = Modifier.fillMaxSize().fillMaxHeight().align(Alignment.TopStart)
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .fillMaxHeight()
+                                            .align(Alignment.TopStart)
                                     )
                                 }
                             }
@@ -339,10 +408,12 @@ fun AddEventPage() {
             }
         }
     }
-}
 
-@Composable
-@Preview
-fun AddEventPreview() {
-    AddEventPage()
+    if(isMapToBeShown.value){
+        MapsView(onMarkerSelected ={
+            markerPosition = it
+        }, setShowDialog = {
+            isMapToBeShown.value = it
+        })
+    }
 }

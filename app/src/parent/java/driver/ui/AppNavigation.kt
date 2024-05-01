@@ -26,9 +26,9 @@ import com.drishto.driver.network.saveAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.models.Event
 import driver.models.PostsFeed
-import driver.ui.components.AddEventPage
 import driver.ui.components.CommentPost
 import driver.ui.components.EventRegistration
+import driver.ui.components.addEventPage
 import driver.ui.components.pastTrips
 import driver.ui.pages.AddInstitute
 import driver.ui.pages.GoogleMapView
@@ -101,7 +101,7 @@ fun AppNavigationHost(
         }
 
         composable("add-Event-Form"){
-            AddEventPage()
+            addEventPage()
         }
 
         composable("event-details"){
