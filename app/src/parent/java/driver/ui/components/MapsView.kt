@@ -1,5 +1,9 @@
 package driver.ui.components
 
+import android.app.Activity.RESULT_OK
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +19,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -37,8 +44,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -46,6 +57,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import driver.ui.viewmodels.SearchPlaceGoogleMapsViewModel
 
 @Composable
 fun MapsView(onMarkerSelected: (marker: LatLng) -> Unit, setShowDialog: (Boolean) -> Unit) {
@@ -61,16 +73,44 @@ fun MapsView(onMarkerSelected: (marker: LatLng) -> Unit, setShowDialog: (Boolean
         position = defaultCameraPositionState
     }
 
-    Dialog(onDismissRequest = { setShowDialog(false) },     properties = DialogProperties(usePlatformDefaultWidth = false),
+
+    val searchPlaceGoogleMapsViewModel:SearchPlaceGoogleMapsViewModel = hiltViewModel()
+
+    val context = LocalContext.current
+
+    val intent =
+        Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, searchPlaceGoogleMapsViewModel.field)
+            .build(context)
+
+    var latLng by remember { mutableStateOf<LatLng?>(null) }
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+
+            if (it.resultCode == RESULT_OK) {
+
+                val place = it.data?.let { it1 -> Autocomplete.getPlaceFromIntent(it1) }
+                latLng = place?.latLng
+                Log.d("place LatLng: ", latLng.toString())
+
+                latLng?.let { it1 -> CameraUpdateFactory.newLatLngZoom(it1, 15f) }
+                    ?.let { it2 -> cameraPositionState.move(it2) }
+            }
+
+        }
+
+    Dialog(
+        onDismissRequest = { setShowDialog(false) },
+        properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
-            modifier = Modifier.fillMaxSize().background(Color.White)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -170,7 +210,18 @@ fun MapsView(onMarkerSelected: (marker: LatLng) -> Unit, setShowDialog: (Boolean
                             }
                         }
 
+
                     }
+                        FloatingActionButton(modifier = Modifier
+                            .padding(10.dp),
+                            onClick = {
+                                launcher.launch(intent)
+                            }) {
+                            Icon(
+                                imageVector = Icons.Default.Search, contentDescription =
+                                ""
+                            )
+                        }
 
                     Box(
                         modifier = Modifier

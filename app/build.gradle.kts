@@ -181,6 +181,7 @@ dependencies {
     //maps
     implementation ("com.google.maps.android:maps-compose:4.1.1")
     implementation ("com.google.maps.android:maps-ktx:5.0.0")
+    implementation("com.google.android.libraries.places:places:3.4.0")
 
     //otp
     implementation("com.google.firebase:firebase-appcheck-playintegrity")
@@ -197,7 +198,6 @@ dependencies {
 
     //video player
     implementation("com.google.android.exoplayer:exoplayer:2.18.0")
-
 
 
 
