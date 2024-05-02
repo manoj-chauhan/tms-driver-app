@@ -35,8 +35,12 @@ import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MapsActivityContent
+import driver.ui.pages.Notice
+import driver.ui.pages.NoticeCard
+import driver.ui.pages.NoticeListPage
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PostItem
+import driver.ui.pages.SavedNoticesPage
 import driver.ui.pages.UserList
 import driver.ui.pages.allEventsPage
 import driver.ui.pages.notificationScreen
@@ -106,6 +110,12 @@ fun AppNavigationHost(
 
         composable("event-details"){
             eventDetail?.let { event -> EventRegistration(event) }
+        }
+        composable("notice_lists"){
+            NoticeListPage(
+            onReadClick= {},
+            onDownloadClick={},)
+
         }
 
         composable("post_page"){

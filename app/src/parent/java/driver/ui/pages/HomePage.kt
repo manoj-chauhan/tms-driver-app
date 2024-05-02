@@ -400,7 +400,7 @@ fun HomeScreenNavigation(
             selectedIcon = Icons.Outlined.Flag,
             unselectedIcon = Icons.Outlined.Flag,
             badgeCount = 45,
-            navigate = "post_page"
+            navigate = "notice_lists"
 
         ),
         NavigationItem(

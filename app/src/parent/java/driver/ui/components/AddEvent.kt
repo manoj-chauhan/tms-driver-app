@@ -384,6 +384,7 @@ fun addEventPage() {
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(5.dp))
 
             if (selectedCoverImageUri != null) {
                 Row(
@@ -397,6 +398,7 @@ fun addEventPage() {
                         modifier = Modifier.fillMaxSize()
                     )
                 }
+                Spacer(modifier = Modifier.height(5.dp))
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -423,6 +425,7 @@ fun addEventPage() {
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(5.dp))
             val columns = when (selectedImageUris.size) {
                 1 -> 1
                 2 -> 2
