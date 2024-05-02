@@ -8,11 +8,11 @@ data class EventRegistration(
     val description: String,
     val location: locationInfo,
     val scope: String,
-    val dateOfEvent: String ,
-    val timeOfEvent :  String ,
-    val coverImage :ImagesInfo,
-    val descriptionImage : List<ImagesInfo>?,
-    val institute :  String
+    val dateOfEvent: String,
+    val timeOfEvent:  String,
+    val coverImage:ImagesInfo,
+    val descriptionImage: List<ImagesInfo?>,
+    val institute:  String
 )
 
 @JsonClass(generateAdapter = true)

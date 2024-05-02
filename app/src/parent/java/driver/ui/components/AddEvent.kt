@@ -2,6 +2,7 @@ package driver.ui.components
 
 import android.app.DatePickerDialog
 import android.net.Uri
+import android.util.Log
 import android.widget.DatePicker
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -26,11 +27,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,8 +47,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.google.android.gms.maps.model.LatLng
+import driver.models.ImagesInfo
+import driver.ui.pages.getByteArrayFromUri
+import driver.ui.viewmodels.EventsViewModel
+import driver.ui.viewmodels.PostsViewModel
 import java.util.Calendar
 import java.util.Date
 
@@ -99,6 +109,8 @@ fun addEventPage() {
 
 
     var placeName by remember { mutableStateOf("") }
+    val postUploadViewModel: PostsViewModel = hiltViewModel()
+    val eventsViewModel: EventsViewModel = hiltViewModel()
 
 
     val getCoverImage = rememberLauncherForActivityResult(
@@ -107,9 +119,9 @@ fun addEventPage() {
         selectedCoverImageUri = uri
 
         uri?.let {
-//            val mimeType = context.contentResolver.getType(uri)
-//            val byteArray = getByteArrayFromUri(context, it)
-//                postUploadViewModel.uploadPosts(byteArray, mimeType)
+            val mimeType = context.contentResolver.getType(uri)
+            val byteArray = getByteArrayFromUri(context, it)
+            eventsViewModel.uploadPosts(byteArray, mimeType)
         }
 
     }
@@ -120,12 +132,58 @@ fun addEventPage() {
         selectedImageUris = uris
         uris.forEach { uri ->
             uri?.let {
-//                val mimeType = context.contentResolver.getType(uri)
-//                val byteArray = getByteArrayFromUri(context, it)
-//                postUploadViewModel.uploadPosts(byteArray, mimeType)
+                val mimeType = context.contentResolver.getType(uri)
+                val byteArray = getByteArrayFromUri(context, it)
+                postUploadViewModel.uploadPosts(byteArray, mimeType)
             }
         }
     }
+
+    val mediaId by postUploadViewModel.postDetails.collectAsStateWithLifecycle()
+    var mediaPosts = remember { mutableStateListOf<ImagesInfo?>() }
+
+    LaunchedEffect(mediaId) {
+        mediaPosts.clear()
+
+        if (mediaId?.isNotEmpty() == true) {
+            mediaId?.forEach { media ->
+                mediaPosts.add(
+                    ImagesInfo(
+                        type = when (media.second) {
+                            "video/mp4" -> "Video"
+                            "image/jpeg", "image/png" -> "Image"
+                            else -> "Unknown"
+                        },
+                        mediaId = media.first,
+                        caption = "Command 1"
+                    )
+                )
+            }
+        Log.d("mediaPosts", "addEventPage: ${mediaPosts.toList()}")
+        }
+    }
+    val eventViewModel:EventsViewModel= hiltViewModel()
+    val coverPhoto by eventViewModel.postDetails.collectAsStateWithLifecycle()
+    var coverImage = remember { mutableStateOf<ImagesInfo?>(null) }
+
+    LaunchedEffect(coverPhoto) {
+//        coverImage=null
+
+        if (coverPhoto!=null) {
+            coverImage.value= ImagesInfo(
+                    type = when (coverPhoto!!.second) {
+                        "video/mp4" -> "Video"
+                        "image/jpeg", "image/png" -> "Image"
+                        else -> "Unknown"
+                    },
+                    mediaId = coverPhoto!!.first,
+                    caption = "Command 1"
+                )
+
+        }
+        Log.d("mediaPosts", "cover photo: ${coverImage.value}")
+    }
+
 
 
     Box(
@@ -140,13 +198,13 @@ fun addEventPage() {
                 .padding(12.dp)
         ) {
 
-        Row(modifier = Modifier.fillMaxWidth(1f)) {
-            Text(
-                text = "NEW EVENT REGISTRATION",
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W500)
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+            Row(modifier = Modifier.fillMaxWidth(1f)) {
+                Text(
+                    text = "NEW EVENT REGISTRATION",
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W500)
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = instituteName,
                 onValueChange = { instituteName = it },
@@ -221,7 +279,7 @@ fun addEventPage() {
                 value = mTime.value,
                 onValueChange = {},
                 trailingIcon = { Icons.Default.DateRange },
-//                interactionSource = interactTime
+                interactionSource = interactTime
             )
             if (isTimePressed) {
                 timePickerDialog.show()
@@ -235,7 +293,11 @@ fun addEventPage() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Select event location", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(
+                    text = "Select event location",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
                 TextButton(
                     onClick = {
                         isMapToBeShown.value = true
@@ -251,13 +313,13 @@ fun addEventPage() {
                 }
             }
 
-            if(markerPosition != null) {
+            if (markerPosition != null) {
                 latitude = markerPosition!!.latitude.toString()
                 longitude = markerPosition!!.longitude.toString()
                 OutlinedTextField(
                     value = latitude,
                     enabled = false,
-                    onValueChange = {  },
+                    onValueChange = { },
                     label = { Text("Latitude") },
                     placeholder = { Text("Latitude") },
                     modifier = Modifier.fillMaxWidth()
@@ -266,7 +328,7 @@ fun addEventPage() {
                 OutlinedTextField(
                     value = longitude,
                     enabled = false,
-                    onValueChange = {  },
+                    onValueChange = { },
                     label = { Text("Longitude") },
                     placeholder = { Text("Longitude") },
                     modifier = Modifier.fillMaxWidth()
@@ -290,7 +352,11 @@ fun addEventPage() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Select cover photo", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(
+                    text = "Select cover photo",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
                 TextButton(
                     onClick = {
 
@@ -308,7 +374,7 @@ fun addEventPage() {
                 }
             }
 
-            if(selectedCoverImageUri != null) {
+            if (selectedCoverImageUri != null) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -368,7 +434,7 @@ fun addEventPage() {
                     items(imageCount, key = { it }) { index ->
                         val uri = selectedImageUris[index]
                         if (uri != null) {
-                            if (index < 4 ) {
+                            if (index < 4) {
 
                                 Box(
                                     modifier = Modifier
@@ -406,11 +472,21 @@ fun addEventPage() {
                     }
                 }
             }
+
+            Button(onClick = { coverImage.value?.let {
+                eventsViewModel.addEvents(title, description, latitude,longitude,placeName, scope, selectedDate, mTime.value,
+                    it, mediaPosts.toList(), instituteName)
+            } }){
+
+
+            }
+
         }
+
     }
 
-    if(isMapToBeShown.value){
-        MapsView(onMarkerSelected ={
+    if (isMapToBeShown.value) {
+        MapsView(onMarkerSelected = {
             markerPosition = it
         }, setShowDialog = {
             isMapToBeShown.value = it

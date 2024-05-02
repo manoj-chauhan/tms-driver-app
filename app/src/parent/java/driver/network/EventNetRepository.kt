@@ -1,19 +1,24 @@
 package driver.network
 
 import android.content.Context
+import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
+import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
+import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
+import driver.models.EventRegistration
 import driver.models.Events
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
+import kotlin.math.log
 
 
 class EventNetRepository @Inject constructor(
@@ -68,4 +73,39 @@ class EventNetRepository @Inject constructor(
         }
 
     }
-}
+    fun addEvent(event: EventRegistration)
+        {
+            try {
+
+                val moshi = Moshi.Builder().build()
+                val jsonAdapter: JsonAdapter<EventRegistration> = moshi.adapter(EventRegistration::class.java)
+                val requestBody = jsonAdapter.toJson(event)
+
+                Log.d("json check", requestBody)
+
+
+//                val url = context.resources.getString(R.string.url_get_mediaId)
+//
+//
+//                getAccessToken(context)?.let { token ->
+//                    val fuelManager = FuelManager()
+//                    val (_, response, result) = fuelManager.post(url)
+//                        .authentication().bearer(token)
+//                        .jsonBody(requestBody)
+//                        .response()
+//
+//                    if (response.statusCode == 200) {
+//
+//
+//
+//                    } else {
+////                        handleErrors(response)
+//
+//                    }
+//                }
+            } catch (e: Exception) {
+                Log.e("AddEventNetRepository", "Error adding event", e)
+            }
+
+        }
+    }
