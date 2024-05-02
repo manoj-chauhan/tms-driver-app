@@ -13,6 +13,7 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -24,10 +25,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,9 +44,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,6 +66,11 @@ import java.util.Date
 
 @Composable
 fun addEventPage() {
+
+    val primary = Color(0xFF92A3FD)
+    val secondary = Color(0XFF9DCEFF)
+
+    val fontFamily = FontFamily.SansSerif
 
     val context = LocalContext.current
     var title by remember { mutableStateOf("") }
@@ -472,18 +483,47 @@ fun addEventPage() {
                     }
                 }
             }
+            Button(
+                modifier = Modifier,
+                shape = RoundedCornerShape(10.dp),
+                onClick = { coverImage.value?.let {
+                    eventsViewModel.addEvents(title, description, latitude,longitude,placeName, scope, selectedDate, mTime.value,
+                        it, mediaPosts.toList(), instituteName)
+                } },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent
+                ),
+                contentPadding = PaddingValues(0.dp)
+            ) {
 
-            Button(onClick = { coverImage.value?.let {
-                eventsViewModel.addEvents(title, description, latitude,longitude,placeName, scope, selectedDate, mTime.value,
-                    it, mediaPosts.toList(), instituteName)
-            } }){
-
-
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                listOf(primary, secondary)
+                            ),
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Submit",
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
             }
+
+
 
         }
 
     }
+
 
     if (isMapToBeShown.value) {
         MapsView(onMarkerSelected = {
