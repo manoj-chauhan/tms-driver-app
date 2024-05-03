@@ -1,8 +1,11 @@
 package driver.ui.pages
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -27,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +40,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.Tasks
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 import driver.models.ContactList
 import driver.ui.components.MapsView
 import driver.ui.viewmodels.AddInstitueViewModel
@@ -55,11 +66,22 @@ fun AddInstitute(navController: NavHostController) {
     var facilityFields by remember { mutableStateOf(listOf("")) }
     val addNewInstitute: AddInstitueViewModel = hiltViewModel()
 
-    val indiaLatLng = LatLng(20.5937, 78.9629)
     var latitude by remember { mutableStateOf("") }
     var longitude by remember { mutableStateOf("") }
     var isMapToBeShown = remember { mutableStateOf(false); }
     var markerPosition by remember { mutableStateOf<LatLng?>(null) }
+
+    val context = LocalContext.current
+
+    var searchText by remember { mutableStateOf("") }
+    var searchResults by remember { mutableStateOf(emptyList<Place>()) }
+    var selectedPlace by remember { mutableStateOf<String>("") }
+    var mapView by remember { mutableStateOf<Boolean>(false) }
+    Places.initialize(context, "AIzaSyANMz3n_soyBll2XNWR8inxnDeFb2ipdAc")
+    val placesClient: PlacesClient = Places.createClient(context)
+
+
+
 
 
     Box(
@@ -163,70 +185,61 @@ fun AddInstitute(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(modifier =  Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "Mark Institute's Location", fontWeight =FontWeight.Bold , fontSize = 18.sp)
-                    TextButton(
-                        onClick = {
-                            isMapToBeShown.value = true
-                        }
-                    ) {
-                        Text(
-                            "View Map", style = TextStyle(
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold
+
+                    if(mapView) {
+                        TextButton(
+                            onClick = {
+                                isMapToBeShown.value = true
+                            }
+                        ) {
+                            Text(
+                                "View Map", style = TextStyle(
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
                             )
-                        )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-//                GoogleMap(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(800.dp),
-//                    onMapLoaded = {  },
-//                    uiSettings = mapUiSettings,
-//                    cameraPositionState = cameraPositionState,
-//                    properties = mapProperties,
-//
-//                    onMapClick = { latLng ->
-//                        markerPosition = latLng
-//                    }
-//                ) {
-//                    if(markerPosition != null) {
-//                        Marker(
-//                            state = MarkerState(
-//                                position = cameraPositionState.position.target
-//                            ),
-//                            draggable = true,
-//                            title = "Marker Title",
-//                            onClick = {
-//                                it.showInfoWindow()
-//                                true
-//                            }
-//                        )
-//                    }
-//                }
 
-                if(markerPosition != null) {
-                    latitude = markerPosition!!.latitude.toString()
-                    longitude = markerPosition!!.longitude.toString()
+
+                Column(
+                ) {
                     OutlinedTextField(
-                        value = latitude,
-                        enabled = false,
-                        onValueChange = { null },
-                        label = { Text("Latitude") },
-                        placeholder = { Text("Latitude") },
+                        value = searchText,
+                        onValueChange = {
+                            searchText = it
+                            if (it.length > 3) {
+                                searchPlaces(it, placesClient, context) { places ->
+                                    searchResults = places
+                                }
+                            } else {
+                                searchResults = emptyList()
+                            }
+                        },
+                        label = { Text("Enter the place") },
+                        placeholder = { Text("Enter the place ") },
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    OutlinedTextField(
-                        value = longitude,
-                        enabled = false,
-                        onValueChange = { null },
-                        label = { Text("Longitude") },
-                        placeholder = { Text("Longitude") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Column {
+                        searchResults.forEach { place ->
+                            DropdownMenuItem(
+                                text = { Text(text = place.name ?: "") },
+                                onClick = {
+                                    markerPosition = place.latLng
+                                    selectedPlace = place.name
+                                    mapView = true
+                                    searchText = place.name ?: ""
+                                    searchResults = emptyList()
+                                }
+                            )
+                        }
+                    }
                 }
-
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -271,8 +284,8 @@ fun AddInstitute(navController: NavHostController) {
                             address,
                             state,
                             city,
-                            latitude,
-                            longitude
+                            markerPosition?.latitude.toString(),
+                            markerPosition?.longitude.toString()
                         );
                     },
                     modifier = Modifier
@@ -288,22 +301,53 @@ fun AddInstitute(navController: NavHostController) {
     }
 
     if(isMapToBeShown.value){
-        MapsView(onMarkerSelected ={
-                markerPosition = it
-            }, setShowDialog = {
-                isMapToBeShown.value = it
-        })
+        markerPosition?.let {
+            MapsView(
+                it,
+                selectedPlace,
+                setShowDialog = {
+                    isMapToBeShown.value = it
+            })
+        }
     }
 }
 
 
+private fun searchPlaces(
+    query: String,
+    placesClient: PlacesClient,
+    context: Context,
+    onSearchResult: (List<Place>) -> Unit
+) {
+    val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG)
 
+    val request = FindAutocompletePredictionsRequest.builder()
+        .setQuery(query)
+        .build()
 
+    placesClient.findAutocompletePredictions(request)
+        .addOnSuccessListener { response ->
+            val places = mutableListOf<Place>()
+            val predictions = response.autocompletePredictions
 
+            val fetchPlaceTasks = predictions.mapNotNull { prediction ->
+                prediction.placeId?.let { placeId ->
+                    val placeRequest = FetchPlaceRequest.newInstance(placeId, fields)
+                    placesClient.fetchPlace(placeRequest)
+                        .addOnSuccessListener { fetchPlaceResponse ->
+                            places.add(fetchPlaceResponse.place)
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.e("Autocomplete", "Place not found: ${exception.message}")
+                        }
+                }
+            }
 
-
-
-
-
-
-
+            Tasks.whenAllComplete(fetchPlaceTasks).addOnCompleteListener { _ ->
+                onSearchResult(places)
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.e("Autocomplete", "Autocomplete prediction failed: ${exception.message}")
+        }
+}

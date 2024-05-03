@@ -1,9 +1,5 @@
 package driver.ui.components
 
-import android.app.Activity.RESULT_OK
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,26 +16,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -47,12 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -60,59 +46,16 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import driver.ui.viewmodels.SearchPlaceGoogleMapsViewModel
-import kotlinx.coroutines.launch
 
 @Composable
-fun MapsView(onMarkerSelected: (marker: LatLng) -> Unit, setShowDialog: (Boolean) -> Unit) {
-    val indiaLatLng = LatLng(20.5937, 78.9629)
+fun MapsView(marker: LatLng,selectedPlace:String, setShowDialog: (Boolean) -> Unit) {
 
     val mapUiSettings by remember { mutableStateOf(MapUiSettings(compassEnabled = false)) }
     val mapProperties by remember { mutableStateOf(MapProperties(mapType = MapType.NORMAL)) }
-    var markerPosition by remember { mutableStateOf<LatLng?>(null) }
 
-
-    val defaultCameraPositionState = CameraPosition.fromLatLngZoom(indiaLatLng, 4f)
     val cameraPositionState = rememberCameraPositionState {
-        position = defaultCameraPositionState
+        position = CameraPosition.fromLatLngZoom(marker, 15f)
     }
-
-
-    val searchPlaceGoogleMapsViewModel: SearchPlaceGoogleMapsViewModel = hiltViewModel()
-
-    val context = LocalContext.current
-
-    var selectedPlace by remember { mutableStateOf<String>("") }
-    val coroutineScope = rememberCoroutineScope()
-
-
-    val intent =
-        Autocomplete.IntentBuilder(
-            AutocompleteActivityMode.OVERLAY,
-            searchPlaceGoogleMapsViewModel.field
-        )
-            .build(context)
-
-    var latLng by remember { mutableStateOf<LatLng?>(null) }
-    val launcher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-
-            if (it.resultCode == RESULT_OK) {
-
-                val place = it.data?.let { it1 -> Autocomplete.getPlaceFromIntent(it1) }
-                coroutineScope.launch {
-                    selectedPlace = place?.name ?: ""
-                }
-                markerPosition = place?.latLng
-
-
-                Log.d("place LatLng: ", latLng.toString())
-
-                markerPosition?.let { it1 -> CameraUpdateFactory.newLatLngZoom(it1, 15f) }
-                    ?.let { it2 -> cameraPositionState.move(it2) }
-            }
-
-        }
 
     Dialog(
         onDismissRequest = { setShowDialog(false) },
@@ -176,13 +119,8 @@ fun MapsView(onMarkerSelected: (marker: LatLng) -> Unit, setShowDialog: (Boolean
                                 Button(
                                     modifier = Modifier
                                         .height(25.dp),
-                                    enabled = if (markerPosition != null) {
-                                        true
-                                    } else {
-                                        false
-                                    },
+                                    enabled =true,
                                     onClick = {
-                                        markerPosition?.let { onMarkerSelected(it) }
                                         setShowDialog(false)
                                     },
                                     contentPadding = PaddingValues(),
@@ -230,7 +168,6 @@ fun MapsView(onMarkerSelected: (marker: LatLng) -> Unit, setShowDialog: (Boolean
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -250,10 +187,10 @@ fun MapsView(onMarkerSelected: (marker: LatLng) -> Unit, setShowDialog: (Boolean
 
                             }
                         ) {
-                            if (markerPosition != null) {
+                            if (marker != null) {
                                 Marker(
                                     state = MarkerState(
-                                        position = markerPosition!!,
+                                        position = marker!!,
                                     ),
                                     draggable = true,
                                     title = selectedPlace,
@@ -264,48 +201,6 @@ fun MapsView(onMarkerSelected: (marker: LatLng) -> Unit, setShowDialog: (Boolean
                                 )
                             }
                         }
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 10.dp, top = 14.dp)
-                                .align(Alignment.TopStart)
-                                .background(Color.White, shape = RoundedCornerShape(20.dp))
-                                .clip(RoundedCornerShape(20.dp))
-                                .height(40.dp)
-                                .clickable {
-                                    val intent = Autocomplete
-                                        .IntentBuilder(
-                                            AutocompleteActivityMode.OVERLAY,
-                                            searchPlaceGoogleMapsViewModel.field
-                                        )
-                                        .build(context)
-                                    launcher.launch(intent)
-                                }
-                        ) {
-                            Row (modifier = Modifier.align(Alignment.CenterStart)
-                            ){
-
-                                Box(modifier = Modifier
-                                    .width(60.dp)
-                                    ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Search,
-                                        contentDescription = "Search",
-                                        tint = LocalContentColor.current,
-                                    modifier = Modifier.align(Alignment.Center)
-                                    )
-                                }
-
-
-                                if(selectedPlace != ""){
-                                    Text(text = selectedPlace,modifier = Modifier.align(Alignment.CenterVertically))
-                                }else{
-                                    Text(text = "Enter the place Name",modifier = Modifier.align(Alignment.CenterVertically))
-                                }
-                            }
-                        }
-
                     }
                 }
             }
