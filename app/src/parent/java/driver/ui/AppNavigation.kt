@@ -26,9 +26,11 @@ import com.drishto.driver.network.saveAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.models.Event
 import driver.models.PostsFeed
+import driver.ui.components.AddNoticeEvent
 import driver.ui.components.CommentPost
 import driver.ui.components.EventRegistration
 import driver.ui.components.addEventPage
+import driver.ui.components.AddNoticeEvent
 import driver.ui.components.pastTrips
 import driver.ui.pages.AddInstitute
 import driver.ui.pages.GoogleMapView
@@ -112,10 +114,12 @@ fun AppNavigationHost(
             eventDetail?.let { event -> EventRegistration(event) }
         }
         composable("notice_lists"){
-            NoticeListPage(
-            onReadClick= {},
-            onDownloadClick={},)
+            SavedNoticesPage(
+            navController= navController)
 
+        }
+        composable("add-Notice-Form"){
+            AddNoticeEvent()
         }
 
         composable("post_page"){

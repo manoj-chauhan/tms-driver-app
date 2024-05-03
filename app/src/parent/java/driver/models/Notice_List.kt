@@ -18,15 +18,15 @@ fun getDummyNotices(): List<Notice> {
             title = "School Closure",
             description = "The school will be closed due to a national holiday.",
             date = LocalDate.of(2024, 5, 5),
-            fileUrl = "https://example.com/closure.pdf",
+            fileUrl = "https://www.clickdimensions.com/links/TestPDFfile.pdf",
             fileType = "PDF"
         ),
         Notice(
             title = "New Timetable",
             description = "A new timetable will be implemented from the next term.",
             date = LocalDate.of(2024, 6, 10),
-            fileUrl = "https://example.com/timetable.docx",
-            fileType = "Word"
+            fileUrl = "https://www.clickdimensions.com/links/TestPDFfile.pdf",
+            fileType = "PDF"
         ),
         Notice(
             title = "PTA Meeting",
