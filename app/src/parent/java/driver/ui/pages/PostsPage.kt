@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -249,7 +250,8 @@ fun PostItem(navController: NavHostController) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(columns),
                     verticalArrangement = Arrangement.spacedBy(3.dp),
-                    horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    horizontalArrangement = Arrangement.spacedBy(3.dp),
+                    modifier = Modifier.aspectRatio(1f)
                 ) {
                     val imageCount = selectedImageUri.size
 
@@ -259,12 +261,13 @@ fun PostItem(navController: NavHostController) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .aspectRatio(1f)
                             ) {
                                 if (uri.isImage() && index < 4) {
                                     AsyncImage(
                                         model = uri,
                                         contentDescription = "Selected Image",
-                                        modifier = Modifier.fillMaxSize()
+                                        modifier = Modifier.fillMaxWidth()
                                     )
                                 } else if (uri.isVideo()) {
                                     VideoPlayer(uri = uri)
@@ -272,18 +275,24 @@ fun PostItem(navController: NavHostController) {
                             }
                         }
                         if (index == 3) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .zIndex(1f)
-                                    .background(Color.Black.copy(alpha = 0.4f))
-                            ) {
-                                Text(
-                                    text = "+${imageCount - (index + 1)}",
-                                    color = Color.White,
-                                    fontSize = 18.sp,
-                                    modifier = Modifier.padding(top = 100.dp, bottom = 104.dp).align(Alignment.Center)
-                                )
+                            val value= imageCount - (index + 1)
+                            if(value>0) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .zIndex(1f)
+                                        .aspectRatio(1f)
+                                        .background(Color.Black.copy(alpha = 0.4f)),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "+${imageCount - (index + 1)}",
+                                        color = Color.White,
+                                        fontSize = 18.sp,
+                                        modifier = Modifier
+                                    )
+                                }
                             }
                         }
                     }

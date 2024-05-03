@@ -248,7 +248,8 @@ fun PhotoView() {
             .height(250.dp)
     ) {
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.width(200.dp)
+                .height(200.dp),
             columns = GridCells.Fixed(columns),
         ) {
             val imageCount = selectedImageUri.size
@@ -261,16 +262,13 @@ fun PhotoView() {
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        if (uri != null ) {
-                            if (index < 4) {
-                                AsyncImage(
-                                    model = uri,
-                                    contentDescription = "Selected Image",
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .fillMaxHeight()
-                                )
-                            }
+                        if (index < 4) {
+                            AsyncImage(
+                                model = uri,
+                                contentDescription = "Selected Image",
+                                modifier = Modifier
+
+                            )
                         }
                     }
                 }
