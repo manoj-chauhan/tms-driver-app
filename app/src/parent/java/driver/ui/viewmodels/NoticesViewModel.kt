@@ -1,6 +1,5 @@
 package driver.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +19,8 @@ import javax.inject.Inject
 
 class NoticesViewModel @Inject constructor(
     private val addNotice: NoticeManager,
-    private val postUploadManager: PostUploadManager
-
+    private val postUploadManager: PostUploadManager,
+    private val noticeManager: NoticeManager
 
 ) : ViewModel() {
 
@@ -40,13 +39,14 @@ class NoticesViewModel @Inject constructor(
             }
         }
     }
+
     private val _uploadedPosts: MutableStateFlow<Pair<String, String>?> = MutableStateFlow(null)
     val postDetails: StateFlow<Pair<String, String>?> = _uploadedPosts.asStateFlow()
-    fun uploadPosts(image: ByteArray?, mimeType: String?){
+    fun uploadPosts(image: ByteArray?, mimeType: String?) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
 
-                if (image != null  && mimeType != null) {
+                if (image != null && mimeType != null) {
                     val postResponse = postUploadManager.uploadPosts(image, mimeType)
 
                     _uploadedPosts.update {
@@ -59,28 +59,15 @@ class NoticesViewModel @Inject constructor(
         }
     }
 
-    fun addNotice (
+    fun addNotice(
         noticeName: String,
         selectedDate: String,
         description: String,
-
         ) {
 
-        viewModelScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
-                if (noticeName != null  && selectedDate != null && description != null) {
-                    val postResponse = NoticeManager.addNotice(noticeName, selectedDate, description)
-
-                    _uploadedPosts.update {
-                        postResponse to mimeType
-                    }
-                }
-                addNotice.addNotice(noticeName,description, selectedDate)
-
-
-
-
-
+                noticeManager.addNotice(noticeName, selectedDate, description)
             } catch (e: Exception) {
                 null
 

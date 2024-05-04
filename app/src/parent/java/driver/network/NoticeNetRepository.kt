@@ -9,15 +9,10 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
-import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
-import driver.models.AddressInfo
-import driver.models.ContactList
-import driver.models.GeoCordinates
-import driver.models.InstituteAddInfo
 import driver.ui.pages.Notice
 import javax.inject.Inject
 
@@ -51,8 +46,7 @@ class NoticeNetRepository @Inject constructor(
 //                    }
 //                )
 //            }
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Log.e("NoticeNetRepository", "Error fetching notices", e)
             null
         }
@@ -72,52 +66,69 @@ class NoticeNetRepository @Inject constructor(
         }
     }
 
-//    fun addNotice(
-//        name: String,
-//
-//        description: String,
-//        date:String,
-//    ) {
-//        try {
-//
-//
-//
-//
-////                if (response.statusCode == 200) {
-////                } else {
-////                    result.fold(
-////                        { _ ->
-////                        },
-////                        { error ->
-////                            Log.d("TAG1", "addInstitute: $error")
-////                            if (error.response.statusCode == 401) {
-////                                errorManager.getErrorDescription(context)
-////                            }
-////
-////                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
-////
-////                            if (error.response.statusCode == 403) {
-////                                errorManager.getErrorDescription403(context, errorResponse)
-////                            }
-////
-////                            if (error.response.statusCode == 404) {
-////                                errorManager.getErrorDescription404(context, "No url found")
-////                            }
-////
-////                            if (error.response.statusCode == 500) {
-////                                errorManager.getErrorDescription500(context, "Something Went Wrong")
-////                            }
-////                        }
-//                    )
-//                }
-//
-//            }
-//
-//        } catch (e: Exception) {
-//            Log.d("o", "$e")
-//
-//        }
-//
-//    }
+    fun addNotice(
+        name: String,
+        description: String,
+        date: String,
+    ) {
+        try {
+            val addNotice = driver.models.Notice(name, description)
+            Log.d("JSON", "addInstitute: $addNotice")
+
+            val moshi = Moshi.Builder().build()
+
+            val jsonAdapter: JsonAdapter<driver.models.Notice> = moshi.adapter(driver.models.Notice::class.java)
+            val requestBody = jsonAdapter.toJson(addNotice)
+
+            Log.d("anirudh", "addInstitute: $requestBody")
+            val url = context.resources.getString(R.string.url_add_notice)
+
+            getAccessToken(context)?.let {
+                val fuelManager = FuelManager()
+                val (_, response, result) = fuelManager.post(url)
+                    .authentication().bearer(it)
+                    .header("Profile-Id","6634dc7cf684864e6508590c")
+                    .jsonBody(requestBody)
+                    .response()
+
+                Log.d("TAG", "addInstitute: $response")
+
+                if (response.statusCode == 200) {
+                } else {
+                    result.fold(
+                        { _ ->
+                        },
+                        { error ->
+                            Log.d("TAG1", "addInstitute: $error")
+                            if (error.response.statusCode == 401) {
+                                errorManager.getErrorDescription(context)
+                            }
+
+                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                            if (error.response.statusCode == 403) {
+                                errorManager.getErrorDescription403(context, errorResponse)
+                            }
+
+                            if (error.response.statusCode == 404) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if (error.response.statusCode == 500) {
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
+                            }
+                        }
+                    )
+                }
+
+            }
+
+
+        } catch (e: Exception) {
+            Log.d("o", "$e")
+
+        }
+
+    }
 
 }

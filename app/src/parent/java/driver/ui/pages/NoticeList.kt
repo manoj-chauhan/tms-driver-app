@@ -17,9 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.InsertDriveFile
-import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkAdd
-import androidx.compose.material.icons.outlined.InsertDriveFile
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -48,7 +46,7 @@ val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 data class Notice(
     val title: String,
     val description: String,
-    val date: LocalDate,
+    val date: LocalDate?,
     val fileUrl: String? = null,
     val fileType: String? = null
 )
@@ -82,7 +80,7 @@ fun NoticeCard(
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    text = "${notice.date.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}",
+                    text = "${notice.date?.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}",
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(8.dp))
