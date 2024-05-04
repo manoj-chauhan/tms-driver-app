@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,7 +24,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -43,33 +43,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import driver.models.Event
+import driver.models.Notice_List
+import driver.models.getDummyNotices
 import kotlinx.coroutines.launch
 
-enum class HomeTabs(
-
-    val text: String,
+enum class NoticeTabs(
+    val text: String
 ) {
     All(
         text = "All"
     ),
     Saved(
         text = "Saved"
-
     )
-
-
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun allEventsPage(navController: NavHostController,onRegisterClick: (event: Event) -> Unit) {
+fun SavedNoticesPage(navController: NavHostController) {
     val primary = Color(0xFF92A3FD)
     val secondary = Color(0XFF9DCEFF)
 
     var selectedTabIndex by remember { mutableStateOf(0) }
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(pageCount = { HomeTabs.entries.size })
+    val pagerState = rememberPagerState(pageCount = { NoticeTabs.entries.size })
 
     Scaffold(
         topBar = { Row(
@@ -98,7 +95,7 @@ fun allEventsPage(navController: NavHostController,onRegisterClick: (event: Even
             Box(
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = "Events", style =  TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
+                Text(text = "Notices", style =  TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
             }
 
             Box(modifier = Modifier.width(100.dp).padding(end = 10.dp)) {
@@ -107,7 +104,7 @@ fun allEventsPage(navController: NavHostController,onRegisterClick: (event: Even
                         .height(25.dp),
                     enabled = true,
                     onClick = {
-                        navController.navigate("add-Event-Form")
+                        navController.navigate("add-Notice-Form")
                     },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(
@@ -136,7 +133,7 @@ fun allEventsPage(navController: NavHostController,onRegisterClick: (event: Even
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Add Event",
+                                text = "Add Notice",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold
@@ -158,42 +155,40 @@ fun allEventsPage(navController: NavHostController,onRegisterClick: (event: Even
                 selectedTabIndex = selectedTabIndex,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                HomeTabs.entries.forEachIndexed { index, currentTab ->
+                NoticeTabs.entries.forEachIndexed { index, tab ->
                     Tab(
                         selected = selectedTabIndex == index,
-                        modifier = Modifier.height(40.dp),
-                        selectedContentColor = MaterialTheme.colorScheme.primary,
-                        unselectedContentColor = MaterialTheme.colorScheme.outline,
                         onClick = {
-                            selectedTabIndex=index
+                            selectedTabIndex = index
                             scope.launch {
-                                pagerState.animateScrollToPage(currentTab.ordinal)
-
+                                pagerState.animateScrollToPage(tab.ordinal)
                             }
                         },
-                        text = { Text(text = currentTab.text) },
+                        text = { Text(tab.text) }
                     )
                 }
             }
-            when(selectedTabIndex){
-                0-> {
-                    Eventpage(onRegisterClick =onRegisterClick
-                 )
+
+            when (selectedTabIndex) {
+
+                0 -> {
+                    NoticeListPage(
+                        onReadClick = {},
+                        onDownloadClick = {},
+                    )
                 }
-                1->{
-                    Box(modifier = Modifier.fillMaxSize())
+                1 -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray),
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                    }
 
                 }
             }
         }
     }
-
-
-
-
 }
-
-
-
-
-

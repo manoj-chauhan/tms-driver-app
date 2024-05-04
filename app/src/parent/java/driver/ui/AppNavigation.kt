@@ -26,18 +26,25 @@ import com.drishto.driver.network.saveAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.models.Event
 import driver.models.PostsFeed
+import driver.ui.components.AddNoticeEvent
 import driver.ui.components.CommentPost
 import driver.ui.components.EventRegistration
+import driver.ui.components.addEventPage
+import driver.ui.components.AddNoticeEvent
 import driver.ui.components.pastTrips
 import driver.ui.pages.AddInstitute
 import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MapsActivityContent
+import driver.ui.pages.Notice
+import driver.ui.pages.NoticeCard
+import driver.ui.pages.NoticeListPage
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PostItem
-import driver.ui.pages.SavedEvents
+import driver.ui.pages.SavedNoticesPage
 import driver.ui.pages.UserList
+import driver.ui.pages.allEventsPage
 import driver.ui.pages.notificationScreen
 import driver.ui.pages.profile
 
@@ -93,14 +100,26 @@ fun AppNavigationHost(
 
         }
         composable("events"){
-            SavedEvents(onRegisterClick = {
+            allEventsPage(navController, onRegisterClick = {
                 eventDetail = it
                 navController.navigate("event-details")
             })
         }
 
+        composable("add-Event-Form"){
+            addEventPage()
+        }
+
         composable("event-details"){
             eventDetail?.let { event -> EventRegistration(event) }
+        }
+        composable("notice_lists"){
+            SavedNoticesPage(
+            navController= navController)
+
+        }
+        composable("add-Notice-Form"){
+            AddNoticeEvent()
         }
 
         composable("post_page"){

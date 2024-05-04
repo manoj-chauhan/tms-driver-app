@@ -240,16 +240,20 @@ fun PhotoView() {
 
         )
 
-    val columns = 2
+    val columns = when (selectedImageUri.size) {
+        1 -> 1
+        2 -> 2
+        3 -> 2
+        else -> 2
+    }
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(250.dp)
+            .fillMaxSize()
+            .heightIn(max = 450.dp)
     ) {
         LazyVerticalGrid(
-            modifier = Modifier.width(200.dp)
-                .height(200.dp),
+            modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Fixed(columns),
         ) {
             val imageCount = selectedImageUri.size
@@ -262,13 +266,14 @@ fun PhotoView() {
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        if (index < 4) {
-                            AsyncImage(
-                                model = uri,
-                                contentDescription = "Selected Image",
-                                modifier = Modifier
-
-                            )
+                        if (uri != null ) {
+                            if (index < 4) {
+                                AsyncImage(
+                                    model = uri,
+                                    contentDescription = "Selected Image",
+                                    modifier = Modifier.fillMaxSize().fillMaxHeight().align(Alignment.TopStart)
+                                )
+                            }
                         }
                     }
                 }

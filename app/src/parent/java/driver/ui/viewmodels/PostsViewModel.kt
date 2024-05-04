@@ -23,6 +23,8 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
     private val _postsFeed: MutableStateFlow<List<PostsFeed>?> = MutableStateFlow(emptyList())
     val postFeedsDetails: StateFlow<List<PostsFeed>?> = _postsFeed.asStateFlow()
 
+
+
     fun uploadPosts(image: ByteArray?, mimeType: String?){
         CoroutineScope(Dispatchers.IO).launch {
             try {
