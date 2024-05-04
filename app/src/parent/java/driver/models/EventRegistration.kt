@@ -6,11 +6,11 @@ import com.squareup.moshi.JsonClass
 data class EventRegistration(
     val title: String,
     val description: String,
-    val location: locationInfo,
+    val location: String,
     val scope: String,
-    val dateOfEvent: String,
-    val timeOfEvent:  String,
-    val coverImage:ImagesInfo,
+    val dateOfEvent: String?,
+    val timeOfEvent:  String?,
+    val coverImage:ImagesInfo?,
     val descriptionImage: List<ImagesInfo?>,
     val institute:  String
 )

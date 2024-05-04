@@ -7,7 +7,6 @@ import driver.EventManagement.EventManager
 import driver.models.EventRegistration
 import driver.models.Events
 import driver.models.ImagesInfo
-import driver.models.locationInfo
 import driver.postUploadManagement.PostUploadManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,17 +59,17 @@ class EventsViewModel @Inject constructor(private val eventManager: EventManager
         longitude: String,
         placeName: String,
         scope: String,
-        dateOfEvent: String,
-        timeOfEvent: String,
-        coverImage: ImagesInfo,
+        dateOfEvent: String?,
+        timeOfEvent: String?,
+        coverImage: ImagesInfo?,
         descriptionImage: List<ImagesInfo?>,
-        institute: String
+        institute: String,
+        profileId: String
     ) {
-        val location = locationInfo(latitude, longitude)
-        val eventRegistration= EventRegistration(title, description, location, scope, dateOfEvent, timeOfEvent, coverImage, descriptionImage, institute)
-        viewModelScope.launch {
-            eventManager.addEvent(eventRegistration)
-
+//        val location = locationInfo(latitude, longitude)
+        val eventRegistration= EventRegistration(title, description, placeName, scope, dateOfEvent, timeOfEvent, coverImage, descriptionImage, institute)
+        CoroutineScope(Dispatchers.IO).launch {
+            eventManager.addEvent(eventRegistration, profileId)
         }
     }
 

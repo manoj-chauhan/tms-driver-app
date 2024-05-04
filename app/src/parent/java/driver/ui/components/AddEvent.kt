@@ -69,7 +69,7 @@ import java.util.Calendar
 import java.util.Date
 
 @Composable
-fun addEventPage() {
+fun addEventPage(profileId: String) {
 
     val primary = Color(0xFF92A3FD)
     val secondary = Color(0XFF9DCEFF)
@@ -508,10 +508,10 @@ fun addEventPage() {
             Button(
                 modifier = Modifier,
                 shape = RoundedCornerShape(10.dp),
-                onClick = { coverImage.value?.let {
-                    eventsViewModel.addEvents(title, description, latitude,longitude,placeName, scope, selectedDate, mTime.value,
-                        it, mediaPosts.toList(), instituteName)
-                } },
+                onClick = {
+                    eventsViewModel.addEvents(title, description, latitude,longitude,selectedPlace, scope, selectedDate, mTime.value,
+                       coverImage.value, mediaPosts.toList(), instituteName, profileId)
+                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent
                 ),
@@ -549,7 +549,7 @@ fun addEventPage() {
 
     if (isMapToBeShown.value) {
         markerPosition?.let {
-            MapsView(it, selectedPlace = placeName, setShowDialog = {
+            MapsView(it, selectedPlace = selectedPlace, setShowDialog = {
                 isMapToBeShown.value = it
             })
         }

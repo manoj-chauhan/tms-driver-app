@@ -14,7 +14,7 @@ class EventManagerImpl @Inject constructor(
         return eventNetRepository.getAllEvents()
     }
 
-    override suspend fun addEvent(event: EventRegistration) {
-        return eventNetRepository.addEvent(event)
+    override suspend fun addEvent(event: EventRegistration, profileId: String) {
+        return eventNetRepository.addEvent(event, profileId)
     }
 }

@@ -30,7 +30,6 @@ import driver.ui.components.AddNoticeEvent
 import driver.ui.components.CommentPost
 import driver.ui.components.EventRegistration
 import driver.ui.components.addEventPage
-import driver.ui.components.AddNoticeEvent
 import driver.ui.components.pastTrips
 import driver.ui.pages.AccountsProfile
 import driver.ui.pages.AddInstitute
@@ -38,9 +37,6 @@ import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MapsActivityContent
-import driver.ui.pages.Notice
-import driver.ui.pages.NoticeCard
-import driver.ui.pages.NoticeListPage
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PostItem
 import driver.ui.pages.SavedNoticesPage
@@ -115,7 +111,7 @@ fun AppNavigationHost(
         }
 
         composable("add-Event-Form"){
-            addEventPage()
+            addEventPage(profileId)
         }
 
         composable("event-details"){

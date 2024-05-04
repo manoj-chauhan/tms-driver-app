@@ -18,7 +18,6 @@ import driver.models.EventRegistration
 import driver.models.Events
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
-import kotlin.math.log
 
 
 class EventNetRepository @Inject constructor(
@@ -73,7 +72,7 @@ class EventNetRepository @Inject constructor(
         }
 
     }
-    fun addEvent(event: EventRegistration)
+    fun addEvent(event: EventRegistration, profileId: String)
         {
             try {
 
@@ -84,25 +83,52 @@ class EventNetRepository @Inject constructor(
                 Log.d("json check", requestBody)
 
 
-//                val url = context.resources.getString(R.string.url_get_mediaId)
-//
-//
-//                getAccessToken(context)?.let { token ->
-//                    val fuelManager = FuelManager()
-//                    val (_, response, result) = fuelManager.post(url)
-//                        .authentication().bearer(token)
-//                        .jsonBody(requestBody)
-//                        .response()
-//
-//                    if (response.statusCode == 200) {
-//
-//
-//
-//                    } else {
-////                        handleErrors(response)
-//
-//                    }
-//                }
+                val url = context.resources.getString(R.string.url_add_event)
+
+
+                getAccessToken(context)?.let { token ->
+                    val fuelManager = FuelManager()
+                    val (_, response, result) = fuelManager.post(url)
+                        .authentication().bearer(token)
+                        .header("Profile-Id", profileId)
+                        .jsonBody(requestBody)
+                        .response()
+
+                    if (response.statusCode == 200) {
+
+
+
+                    } else {
+
+                        result.fold(
+                            { _ ->
+
+                            },
+                            { error ->
+                                Log.d("Error", "addEvent: $error")
+                                Log.d("Error", "addEvent: ${error.response.statusCode}")
+
+                                if (error.response.statusCode == 401 ) {
+                                    errorManager.getErrorDescription(context)
+                                }
+
+                                val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                                if (error.response.statusCode == 403 ) {
+                                    errorManager.getErrorDescription403(context, errorResponse)
+                                }
+
+                                if (error.response.statusCode == 404 ) {
+                                    errorManager.getErrorDescription404(context, "No url found")
+                                }
+
+                                if(error.response.statusCode == 500){
+                                    errorManager.getErrorDescription500(context, "Something Went Wrong")
+                                }
+                            }
+                        )
+                    }
+                }
             } catch (e: Exception) {
                 Log.e("AddEventNetRepository", "Error adding event", e)
             }

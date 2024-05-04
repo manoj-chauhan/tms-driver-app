@@ -5,5 +5,5 @@ import driver.models.Events
 
 interface EventManager {
     suspend fun getAllEvents():List<Events>?
-    suspend fun addEvent(event: EventRegistration)
+    suspend fun addEvent(event: EventRegistration, profileId: String)
 }
