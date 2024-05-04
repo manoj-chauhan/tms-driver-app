@@ -29,6 +29,7 @@ import driver.models.PostsFeed
 import driver.ui.components.CommentPost
 import driver.ui.components.EventRegistration
 import driver.ui.components.pastTrips
+import driver.ui.pages.AccountsProfile
 import driver.ui.pages.AddInstitute
 import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomeScreen
@@ -55,7 +56,7 @@ fun AppNavigationHost(
     var selectedAssignmentCode by remember { mutableStateOf("") }
     var operatorId by remember { mutableIntStateOf(0) }
     var passengerTripId by remember { mutableIntStateOf(0) }
-
+    var profileId by remember { mutableStateOf("") }
     var postDetails by remember { mutableStateOf<PostsFeed?>(null) }
 
 
@@ -92,6 +93,13 @@ fun AppNavigationHost(
             navController.navigate("userList")
 
         }
+
+        composable("profilesList"){
+            AccountsProfile(onProfileSelected = {
+                profileId = it.id
+                navController.navigate("home-screen")
+            })
+        }
         composable("events"){
             SavedEvents(onRegisterClick = {
                 eventDetail = it
@@ -114,7 +122,7 @@ fun AppNavigationHost(
             UserList(onUserSelected = {
                 Log.d("token", "AppNavigationHost: $it")
                 saveAccessToken(context,it)
-                navController.navigate("home-screen")
+                navController.navigate("profilesList")
             })
         }
         composable("home-screen"){
