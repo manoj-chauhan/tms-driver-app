@@ -313,7 +313,7 @@ fun AddInstitute(navController: NavHostController) {
 }
 
 
-private fun searchPlaces(
+fun searchPlaces(
     query: String,
     placesClient: PlacesClient,
     context: Context,

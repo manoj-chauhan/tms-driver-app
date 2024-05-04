@@ -31,7 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,8 +57,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.PlacesClient
 import driver.models.ImagesInfo
 import driver.ui.pages.getByteArrayFromUri
+import driver.ui.pages.searchPlaces
 import driver.ui.viewmodels.EventsViewModel
 import driver.ui.viewmodels.PostsViewModel
 import java.util.Calendar
@@ -122,6 +126,14 @@ fun addEventPage() {
     var placeName by remember { mutableStateOf("") }
     val postUploadViewModel: PostsViewModel = hiltViewModel()
     val eventsViewModel: EventsViewModel = hiltViewModel()
+
+    var mapView by remember { mutableStateOf<Boolean>(false) }
+    var searchText by remember { mutableStateOf("") }
+    var searchResults by remember { mutableStateOf(emptyList<Place>()) }
+    var selectedPlace by remember { mutableStateOf<String>("") }
+    Places.initialize(context, "AIzaSyANMz3n_soyBll2XNWR8inxnDeFb2ipdAc")
+    val placesClient: PlacesClient = Places.createClient(context)
+
 
 
     val getCoverImage = rememberLauncherForActivityResult(
@@ -309,50 +321,57 @@ fun addEventPage() {
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
-                TextButton(
-                    onClick = {
-                        isMapToBeShown.value = true
-
-                    }
-                ) {
-                    Text(
-                        "Select location", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
+                if(mapView) {
+                    TextButton(
+                        onClick = {
+                            isMapToBeShown.value = true
+                        }
+                    ) {
+                        Text(
+                            "View Map", style = TextStyle(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                    )
+                    }
                 }
             }
 
-            if (markerPosition != null) {
-                latitude = markerPosition!!.latitude.toString()
-                longitude = markerPosition!!.longitude.toString()
+            Column(
+            ) {
                 OutlinedTextField(
-                    value = latitude,
-                    enabled = false,
-                    onValueChange = { },
-                    label = { Text("Latitude") },
-                    placeholder = { Text("Latitude") },
+                    value = searchText,
+                    onValueChange = {
+                        searchText = it
+                        if (it.length > 3) {
+                            searchPlaces(it, placesClient, context) { places ->
+                                searchResults = places
+                            }
+                        } else {
+                            searchResults = emptyList()
+                        }
+                    },
+                    label = { Text("Enter the place") },
+                    placeholder = { Text("Enter the place ") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                OutlinedTextField(
-                    value = longitude,
-                    enabled = false,
-                    onValueChange = { },
-                    label = { Text("Longitude") },
-                    placeholder = { Text("Longitude") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = placeName,
-                    enabled = true,
-                    onValueChange = { placeName = it },
-                    label = { Text("Place Name") },
-                    placeholder = { Text("State,Country") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Column {
+                    searchResults.forEach { place ->
+                        DropdownMenuItem(
+                            text = { Text(text = place.name ?: "") },
+                            onClick = {
+                                markerPosition = place.latLng
+                                selectedPlace = place.name
+                                mapView = true
+                                searchText = place.name ?: ""
+                                searchResults = emptyList()
+                            }
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -529,10 +548,10 @@ fun addEventPage() {
 
 
     if (isMapToBeShown.value) {
-        MapsView(onMarkerSelected = {
-            markerPosition = it
-        }, setShowDialog = {
-            isMapToBeShown.value = it
-        })
+        markerPosition?.let {
+            MapsView(it, selectedPlace = placeName, setShowDialog = {
+                isMapToBeShown.value = it
+            })
+        }
     }
 }
