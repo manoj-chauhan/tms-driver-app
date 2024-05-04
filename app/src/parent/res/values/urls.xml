@@ -22,6 +22,8 @@
     <string name="url_get_all_posts">&baseUrl;/test/feeds/posts</string>
     <string name="url_get_comments_posts">&baseUrl;/test/posts/</string>
     <string name="url_get_all_events">&baseUrl;/test/events</string>
+    <string name="url_add_notice">&baseUrl;/test/notices</string>
+
     <string name="url_get_all_profiles">&baseUrl;/test/profiles</string>
     <string name="url_add_event">&baseUrl;/test/events</string>
 
