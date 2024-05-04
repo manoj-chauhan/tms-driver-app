@@ -68,7 +68,7 @@ class PostNetRepository @Inject constructor(
         }
     }
 
-    fun uploadPosts(media: List<PostUpload?>, message: String) {
+    fun uploadPosts(media: List<PostUpload?>, message: String, profileId: String) {
         try {
             val moshi = Moshi.Builder().build()
             val jsonAdapter: JsonAdapter<UploadPosts> = moshi.adapter(UploadPosts::class.java)
@@ -84,6 +84,7 @@ class PostNetRepository @Inject constructor(
 
                 val (request1, response, result) = url.httpPost()
                     .authentication().bearer(it)
+                    .header("Profile-Id", profileId)
                     .jsonBody(requestBody)
                     .response()
 

@@ -112,7 +112,7 @@ fun AppNavigationHost(
         }
 
         composable("post_page"){
-            PostItem(navController = navController)
+            PostItem(profileId,navController = navController)
         }
         
         composable("user_profile"){

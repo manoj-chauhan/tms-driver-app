@@ -67,7 +67,7 @@ import java.io.ByteArrayOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PostItem(navController: NavHostController) {
+fun PostItem(profileId: String, navController: NavHostController) {
     val primary = Color(0xFF92A3FD)
     val secondary = Color(0XFF9DCEFF)
 
@@ -149,7 +149,7 @@ fun PostItem(navController: NavHostController) {
                     modifier = Modifier
                         .padding(8.dp),
                     onClick = {
-                        postUploadViewModel.addPost(mediaPosts.toList(), text)
+                        postUploadViewModel.addPost(mediaPosts.toList(), text,profileId)
                         navController.popBackStack()
                     },
                     contentPadding = PaddingValues(),

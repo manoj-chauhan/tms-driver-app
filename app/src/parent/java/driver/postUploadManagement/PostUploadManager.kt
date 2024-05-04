@@ -5,7 +5,7 @@ import driver.models.PostsFeed
 
 interface PostUploadManager {
     fun uploadPosts(image: ByteArray, mimeType: String): String
-    fun addPost(media: List<PostUpload?>, message: String)
+    fun addPost(media: List<PostUpload?>, message: String, profileId: String)
     fun getFeedPosts(profile:String):List<PostsFeed>?
 
 }
