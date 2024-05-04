@@ -68,7 +68,7 @@ class PostNetRepository @Inject constructor(
         }
     }
 
-    fun uploadPosts(media: List<PostUpload?>, message: String) {
+    fun uploadPosts(media: List<PostUpload?>, message: String, profileId: String) {
         try {
             val moshi = Moshi.Builder().build()
             val jsonAdapter: JsonAdapter<UploadPosts> = moshi.adapter(UploadPosts::class.java)
@@ -84,6 +84,7 @@ class PostNetRepository @Inject constructor(
 
                 val (request1, response, result) = url.httpPost()
                     .authentication().bearer(it)
+                    .header("Profile-Id", profileId)
                     .jsonBody(requestBody)
                     .response()
 
@@ -122,7 +123,7 @@ class PostNetRepository @Inject constructor(
         }
     }
 
-    fun getAllFeeds(context: Context): List<PostsFeed>? {
+    fun getAllFeeds(context: Context, profileId: String): List<PostsFeed>? {
         val postsFeeds = Types.newParameterizedType(List::class.java, PostsFeed::class.java)
         val adapter: JsonAdapter<List<PostsFeed>> = Moshi.Builder().build().adapter(postsFeeds)
 
@@ -135,6 +136,7 @@ class PostNetRepository @Inject constructor(
 
             val (_, _, result) = postUrl.httpGet()
                 .authentication().bearer(it)
+                .header("Profile-Id", profileId)
                 .responseObject(moshiDeserializerOf(adapter))
 
             result.fold(

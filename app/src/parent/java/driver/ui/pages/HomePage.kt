@@ -116,12 +116,13 @@ data class NavigationItem(
 
 @Composable
 fun PostsSection(
+    profileId: String,
     navigationController: NavHostController,
     onCommentClick: (postData: PostsFeed) -> Unit
 ) {
     val pf: PostsViewModel = hiltViewModel()
     val postsList by pf.postFeedsDetails.collectAsStateWithLifecycle()
-    pf.getPosts()
+    pf.getPosts(profileId)
 
     Log.d("TAG", "PostsSection: $postsList")
     Column {
@@ -377,6 +378,7 @@ data class tabItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenNavigation(
+    profileId: String,
     navController: NavHostController,
     onCommentClick: (postData: PostsFeed) -> Unit
 ) {
@@ -640,7 +642,7 @@ fun HomeScreenNavigation(
                         .fillMaxSize(),
                 ) {
                     Spacer(modifier = Modifier.height(6.dp))
-                    HomeApp(modifier = Modifier, navController, onCommentClick)
+                    HomeApp(profileId,modifier = Modifier, navController, onCommentClick)
                 }
             }
             )
@@ -652,6 +654,7 @@ fun HomeScreenNavigation(
 
 @Composable
 fun HomeApp(
+    profileId: String,
     modifier: Modifier = Modifier,
     navigationController: NavHostController,
     onCommentClick: (postData: PostsFeed) -> Unit
@@ -669,7 +672,7 @@ fun HomeApp(
         when (selectedTabIndex) {
             0 -> {
                 item {
-                    PostsSection(navigationController, onCommentClick)
+                    PostsSection(profileId,navigationController, onCommentClick)
                 }
             }
         }

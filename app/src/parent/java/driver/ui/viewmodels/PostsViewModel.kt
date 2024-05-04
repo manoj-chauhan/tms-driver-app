@@ -44,18 +44,18 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
         _uploadedPosts.update { emptyList() }
     }
 
-    fun addPost(media: List<PostUpload?>, message: String) {
+    fun addPost(media: List<PostUpload?>, message: String, profileId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                postsUploadManager.addPost(media, message)
+                postsUploadManager.addPost(media, message, profileId)
             } catch (e: Exception) {
             }
         }
     }
 
-    fun getPosts() {
+    fun getPosts(profileId: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val postsList = postsUploadManager.getFeedPosts()
+            val postsList = postsUploadManager.getFeedPosts(profileId)
             _postsFeed.update {
                 postsList
             }
