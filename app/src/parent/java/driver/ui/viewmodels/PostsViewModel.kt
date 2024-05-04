@@ -51,9 +51,9 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
         }
     }
 
-    fun getPosts() {
+    fun getPosts(profileId: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val postsList = postsUploadManager.getFeedPosts()
+            val postsList = postsUploadManager.getFeedPosts(profileId)
             _postsFeed.update {
                 postsList
             }

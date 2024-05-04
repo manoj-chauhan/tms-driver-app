@@ -17,7 +17,7 @@ class PostUploadManagerImpl @Inject constructor(
         return postNetRepository.uploadPosts(media, message)
     }
 
-    override fun getFeedPosts(): List<PostsFeed>? {
-        return postNetRepository.getAllFeeds(context)
+    override fun getFeedPosts(profileId:String): List<PostsFeed>? {
+        return postNetRepository.getAllFeeds(context, profileId)
     }
 }

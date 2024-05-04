@@ -126,13 +126,13 @@ fun AppNavigationHost(
             })
         }
         composable("home-screen"){
-            HomeScreenNavigation(navController = navController, onCommentClick= {
+            HomeScreenNavigation(profileId,navController = navController) {
                 postDetails = it
                 navController.navigate("add_comment")
 
                 Log.d("TAG", "AppNavigationHost: $postDetails")
 
-            })
+            }
         }
 
         composable("add-Institute"){
