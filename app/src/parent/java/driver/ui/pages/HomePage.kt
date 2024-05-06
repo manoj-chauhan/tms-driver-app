@@ -71,6 +71,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -804,14 +805,13 @@ fun videoPlayer(url: String) {
                 isPlaying = !isPlaying
             },
             modifier = Modifier
-                .size(80.dp)
-                .background(Color.LightGray, CircleShape)
+                .size(100.dp)
                 .align(Alignment.Center)
         ) {
             Icon(
                 imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                 contentDescription = if (exoPlayer.playWhenReady) "Pause" else "Play",
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier.size(100.dp).alpha(0.4f)
             )
         }
     }
