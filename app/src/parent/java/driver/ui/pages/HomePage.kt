@@ -73,6 +73,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -177,198 +178,187 @@ fun ContentPage(
     var likesCount by remember { mutableStateOf(post.likes ?: 0) }
     var isLiked by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier.fillMaxSize(1f)
-    ) {
-        Column {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White,
-                ),
-                shape = RoundedCornerShape(0.dp),
-                modifier = Modifier.fillMaxWidth(),
+    Column(modifier = Modifier.padding(12.dp)) {
+        Card(
+            modifier = Modifier
+                .shadow(elevation = (1).dp, RoundedCornerShape(3.dp))
+                .fillMaxWidth(),
+
+
+            shape = RoundedCornerShape(3.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            ),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+//                .padding(5.dp)
             ) {
-                Column(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 10.dp, top = 10.dp)
-                    //                verticalArrangement = Arrangement.SpaceBetween
+                        .padding(horizontal = 10.dp)
+                        .padding(vertical=2.dp)
                 ) {
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    Color.White, shape = CircleShape
-                                )
-                                .size(44.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.atul),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(200.dp)
-                                    .clip(CircleShape)
-                                    .border(
-                                        width = 0.dp, Color.White, shape = CircleShape
-                                    ),
-                                contentScale = ContentScale.FillBounds
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(14.dp))
-
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "Delhi Public School", style = TextStyle(
-                                        fontSize = 16.sp, fontFamily = FontFamily.SansSerif
-                                    )
-                                )
-                            }
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "Sonipath, Haryana", style = TextStyle(
-                                        fontSize = 14.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        color = Color.Gray
-                                    )
-                                )
-                            }
-                        }
-
-                    }
-
-                    Spacer(modifier = Modifier.size(15.dp))
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp)
-
+                            .background(
+                                Color.White, shape = CircleShape
+                            )
+                            .size(44.dp)
                     ) {
-                        post.message?.let { ExpandableText(it) }
-                    }
-                    Spacer(modifier = Modifier.size(15.dp))
-
-
-                    val images = post.media.map { it.mediaUrl }.toList()
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                    ) {
-                        ImageScrollWithTextOverlay(images = images)
-
+                        Image(
+                            painter = painterResource(id = R.drawable.dps),
+                            contentDescription = "",
+                            modifier = Modifier
+//                                .clip(CircleShape)
+                                .border(1.dp, Color.Gray, CircleShape),
+                            contentScale = ContentScale.FillBounds
+                        )
                     }
 
-                    Spacer(modifier = Modifier.size(15.dp))
+                    Spacer(modifier = Modifier.width(14.dp))
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(20.dp)
-                            .padding(
-                                vertical = 0.dp, horizontal = 10.dp
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row {
-                            Text(
-                                text = "${post.comments} comments",
-                                style = TextStyle(fontSize = 12.sp, color = gry)
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Delhi Public School",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontFamily = FontFamily.SansSerif
                             )
+                        )
 
-                            Spacer(modifier = Modifier.width(12.dp))
-
-                            Text(
-                                text = "$likesCount likes",
-                                style = TextStyle(fontSize = 12.sp, color = gry)
+                        Text(
+                            text = "Sonipath, Haryana",
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontFamily = FontFamily.SansSerif,
+                                color = Color.Gray
                             )
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                post.message?.let {
+                    Text(
+                        text = it,
+                        style = TextStyle(fontSize = 14.sp),
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+
+                val images = post.media.map { it.mediaUrl }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    ImageScrollWithTextOverlay(images = images)
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row {
+                        Text(
+                            text = "${post.comments} comments",
+                            style = TextStyle(fontSize = 12.sp, color = Color.Gray)
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Text(
+                            text = "$likesCount likes",
+                            style = TextStyle(fontSize = 12.sp, color = Color.Gray)
+                        )
+                    }
+
+                    Row {
+                        val transition = updateTransition(targetState = isLiked)
+                        val scale by transition.animateFloat(
+                            transitionSpec = {
+                                keyframes {
+                                    1.6f at 0
+                                    3.0f at 300
+                                    1.0f at 200
+                                }
+                            }
+                        ) { liked ->
+                            if (liked) 1.0f else 0.8f
                         }
 
-                        Row {
-                            val transition = updateTransition(targetState = isLiked)
-
-                            val scale by transition.animateFloat(
-                                transitionSpec = {
-                                    keyframes {
-                                        1.6f at 0
-                                        3.0f at 300
-                                        1.0f at 200
-                                    }
-                                }, label = ""
-                            ) { liked ->
-                                if (liked) 1.0f else 0.8f
-                            }
-                            if(isLiked) {
-                                Image(
-                                    painter = painterResource(
-                                        id = R.drawable.likenew
-                                    ),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .clickable {
-                                            likeViewModel.dislikePost(post.id)
-                                            likesCount--
-                                            isLiked = false
-                                        }
-                                        .scale(scale)
-                                        .animateContentSize()
-                                )
-                            } else {
-                                Image(
-                                    painter = painterResource(
-                                        id = R.drawable.like
-                                    ),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .clickable {
-                                            likeViewModel.likePost(post.id)
-                                            likesCount++
-                                            isLiked = true
-                                        }
-                                        .scale(scale)
-                                        .animateContentSize()
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.width(12.dp))
-
-                            Icon(
-                                painter = painterResource(id = R.drawable.message),
+                        if (isLiked) {
+                            Image(
+                                painter = painterResource(id = R.drawable.likenew),
                                 contentDescription = "",
                                 modifier = Modifier
                                     .size(20.dp)
                                     .clickable {
-                                        onCommentClick(post)
-                                    },
-                            )
-
-                            Spacer(modifier = Modifier.width(10.dp))
-
-                            Image(
-                                painter = painterResource(id = R.drawable.share),
-                                contentDescription = "",
-                                modifier = Modifier.size(20.dp),
+                                        likeViewModel.dislikePost(post.id)
+                                        likesCount--
+                                        isLiked = false
+                                    }
+                                    .scale(scale),
                                 contentScale = ContentScale.FillBounds
                             )
-
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.like),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable {
+                                        likeViewModel.likePost(post.id)
+                                        likesCount++
+                                        isLiked = true
+                                    }
+                                    .scale(scale),
+                                contentScale = ContentScale.FillBounds
+                            )
                         }
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.message),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clickable {
+                                    onCommentClick(post)
+                                }
+                        )
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Image(
+                            painter = painterResource(id = R.drawable.share),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(20.dp),
+
+                        )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+
+            Spacer(modifier = Modifier.height(3.dp))
         }
     }
-
 }
+
 
 data class tabItem(
     val title: String
@@ -642,7 +632,7 @@ fun HomeScreenNavigation(
                         .fillMaxSize(),
                 ) {
                     Spacer(modifier = Modifier.height(6.dp))
-                    HomeApp(profileId,modifier = Modifier, navController, onCommentClick)
+                    HomeApp(profileId, modifier = Modifier, navController, onCommentClick)
                 }
             }
             )
@@ -672,7 +662,7 @@ fun HomeApp(
         when (selectedTabIndex) {
             0 -> {
                 item {
-                    PostsSection(profileId,navigationController, onCommentClick)
+                    PostsSection(profileId, navigationController, onCommentClick)
                 }
             }
         }

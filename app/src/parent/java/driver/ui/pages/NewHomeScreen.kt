@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.outlined.DirectionsBus
 import androidx.compose.material.icons.outlined.Event
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.ModeEdit
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PostAdd
 import androidx.compose.material.icons.outlined.Search
@@ -36,6 +38,8 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -230,6 +234,7 @@ fun BottomNavBar(
     }
 }
 
+
 @Composable
 fun MainScreen(
     profileId: String,
@@ -266,7 +271,18 @@ fun MainScreen(
                     onSettingsClick = onSettingsClick
                 )
             }
-        }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {},
+//                backgroundColor = Color.Red,
+//                contentColor = Color.Purple
+            ) {
+                Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
+
     ) { paddingValues ->
         Box(
             modifier = Modifier
