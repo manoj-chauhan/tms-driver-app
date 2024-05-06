@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -59,168 +58,172 @@ fun EventRegistration(eventDetail: Event) {
             .fillMaxSize()
             .background(Color.White)
     ) {
-        LazyColumn(
-            modifier = Modifier,
-        ) {
-            item {
-                Column(modifier = Modifier) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = eventDetail.imageResId ),
-                            contentDescription = "",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
-                        Box(
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(8.dp)
-                                .align(Alignment.TopEnd)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Bookmark,
-                                contentDescription = "Save",
-                                tint = Color.White,
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
+        Column(modifier = Modifier) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = eventDetail.imageResId),
+                    contentDescription = "",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                Box(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(8.dp)
+                        .align(Alignment.TopEnd)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Bookmark,
+                        contentDescription = "Save",
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
 
-                        Box(
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(8.dp)
-                                .align(Alignment.TopStart)
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Save",
-                                tint = Color.Black,
-                                modifier = Modifier.size(30.dp)
+                Box(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(8.dp)
+                        .align(Alignment.TopStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Save",
+                        tint = Color.Black,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(12.dp)
+            ) {
+                Column(modifier = Modifier) {
+                    Column(modifier = Modifier) {
+                        Text(
+                            text = eventDetail.eventName,
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontFamily = fontFamily,
+                                color = Color.Gray,
+                                fontWeight = FontWeight.Bold
                             )
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = "Date: 13-05-2024",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = fontFamily,
+                                color = Color.LightGray,
+                                fontWeight = FontWeight.Normal
+                            )
+                        )
+                        Text(
+                            text = "Institution: ${eventDetail.institutionName}",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontFamily = fontFamily,
+                                color = Color.LightGray,
+                                fontWeight = FontWeight.Normal
+                            )
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            modifier = Modifier
+                                .height(25.dp),
+                            enabled = true,
+                            onClick = {
+//                                onRegisterClick()
+                            },
+                            contentPadding = PaddingValues(),
+                            colors = ButtonDefaults.buttonColors(
+                                Color.Transparent
+                            ),
+                            shape = RoundedCornerShape(10.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .heightIn(35.dp)
+                                    .width(100.dp)
+                                    .align(Alignment.Bottom)
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            listOf(
+                                                primary,
+                                                secondary
+                                            )
+                                        ),
+                                        shape = RoundedCornerShape(1.dp)
+                                    ), contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    modifier = Modifier,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Register",
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                }
+                            }
                         }
 
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(12.dp)
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Column(
+                        modifier = Modifier,
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.Start
                     ) {
-                        Column(modifier = Modifier) {
-                            Column(modifier = Modifier) {
-                                Text(
-                                    text = eventDetail.eventName,
-                                    style = TextStyle(
-                                        fontSize = 18.sp,
-                                        fontFamily = fontFamily,
-                                        color = Color.Gray,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                )
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Text(
-                                    text = "Date: 13-05-2024",
-                                    style = TextStyle(
-                                        fontSize = 14.sp,
-                                        fontFamily = fontFamily,
-                                        color = Color.LightGray,
-                                        fontWeight = FontWeight.Normal
-                                    )
-                                )
-                                Text(
-                                    text = "Institution: ${eventDetail.institutionName}",
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontFamily = fontFamily,
-                                        color = Color.LightGray,
-                                        fontWeight = FontWeight.Normal
-                                    )
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
+                        val string =
+                            "Sports has been hallmark in Maharaja Aggersen Public School. In keeping with Prime Minister Modi's concern about Fit India, Healthy India, Maharaja Aggersen Public School organized the Inter-School Volleyball Tournament 2019-2020 for 2 days 21st September and 23rd September 2019. Many schools all across Delhi came for the Volleyball on Saturday, 21st September, 2019 and Monday, 23rd September 2019. The volleyball matches were played for both categories Sub Junior boys, Junior Boys, Sub Junior Girls and Junior Girls. After a short programme the Chief Guests were welcomed with gifts and saplings. The semifinal matches were played on 21st September and the final matches were played on 23rd September 2019. The winning teams were given gold, silver and bronze medallions and individual trophies by the Director of Sports. The players proudly displayed their hard-earned goodies and went homewards happy and satisfied."
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = string,
+                                style = TextStyle(color = Color.Gray, textAlign = TextAlign.Justify)
+                            )
+                        }
 
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.End
-                            ) {
-                                Button(
-                                    modifier = Modifier
-                                        .height(25.dp),
-                                    enabled = true,
-                                    onClick = {
-//                                onRegisterClick()
-                                    },
-                                    contentPadding = PaddingValues(),
-                                    colors = ButtonDefaults.buttonColors(
-                                        Color.Transparent
-                                    ),
-                                    shape = RoundedCornerShape(10.dp)
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .heightIn(35.dp)
-                                            .width(100.dp)
-                                            .align(Alignment.Bottom)
-                                            .background(
-                                                brush = Brush.horizontalGradient(
-                                                    listOf(
-                                                        primary,
-                                                        secondary
-                                                    )
-                                                ),
-                                                shape = RoundedCornerShape(1.dp)
-                                            ), contentAlignment = Alignment.Center
-                                    ) {
-                                        Row(
-                                            modifier = Modifier,
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            Text(
-                                                text = "Register",
-                                                style = TextStyle(
-                                                    fontSize = 14.sp,
-                                                    fontWeight = FontWeight.Bold
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
+                        PhotoView()
 
-                            }
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                            Spacer(modifier = Modifier.height(12.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "Location",
+                                style = TextStyle(fontSize = 14.sp, color = Color.Gray)
+                            )
 
-                            Column(modifier = Modifier, verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.Start) {
-                                val string =
-                                    "Sports has been hallmark in Maharaja Aggersen Public School. In keeping with Prime Minister Modi's concern about Fit India, Healthy India, Maharaja Aggersen Public School organized the Inter-School Volleyball Tournament 2019-2020 for 2 days 21st September and 23rd September 2019. Many schools all across Delhi came for the Volleyball on Saturday, 21st September, 2019 and Monday, 23rd September 2019. The volleyball matches were played for both categories Sub Junior boys, Junior Boys, Sub Junior Girls and Junior Girls. After a short programme the Chief Guests were welcomed with gifts and saplings. The semifinal matches were played on 21st September and the final matches were played on 23rd September 2019. The winning teams were given gold, silver and bronze medallions and individual trophies by the Director of Sports. The players proudly displayed their hard-earned goodies and went homewards happy and satisfied."
-                                Row(modifier = Modifier.fillMaxWidth()) {
-                                    Text(text = string, style = TextStyle(color = Color.Gray, textAlign = TextAlign.Justify))
-                                }
-
-                                Spacer(modifier = Modifier.height(20.dp))
-
-                                PhotoView()
-
-                                Spacer(modifier = Modifier.height(20.dp))
-
-                                Row (modifier = Modifier.fillMaxWidth()){
-                                    Text(text = "Location", style = TextStyle(fontSize = 14.sp,color = Color.Gray))
-                                    
-                                }
-                            }
                         }
                     }
                 }
             }
         }
-
     }
+
 
 }
 
@@ -266,12 +269,15 @@ fun PhotoView() {
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        if (uri != null ) {
+                        if (uri != null) {
                             if (index < 4) {
                                 AsyncImage(
                                     model = uri,
                                     contentDescription = "Selected Image",
-                                    modifier = Modifier.fillMaxSize().fillMaxHeight().align(Alignment.TopStart)
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .fillMaxHeight()
+                                        .align(Alignment.TopStart)
                                 )
                             }
                         }
