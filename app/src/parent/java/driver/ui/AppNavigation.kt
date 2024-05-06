@@ -36,6 +36,7 @@ import driver.ui.pages.AddInstitute
 import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
+import driver.ui.pages.MainScreen
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PostItem
@@ -67,11 +68,17 @@ fun AppNavigationHost(
     var deBoardingPlaceId by remember { mutableStateOf("") }
 
 
+//    var startScreen: String by remember {
+//        mutableStateOf(
+//            if (getAccessToken(context) != null) "home" else "login"
+//        )
+//    }
     var startScreen: String by remember {
         mutableStateOf(
-            if (getAccessToken(context) != null) "home" else "login"
+            if (getAccessToken(context) != null) "newHomeScreen" else "login"
         )
     }
+
     if (startScreen == "login") {
         val myIntent = Intent(LocalContext.current, PhoneNumberActivity::class.java)
         myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -180,6 +187,15 @@ fun AppNavigationHost(
         }
         composable("login") {
 
+        }
+        composable("newHomeScreen"){
+            MainScreen(
+                onTripsClick = { /*TODO*/ },
+                onEventsClick = { /*TODO*/ },
+                onHomeClick = { /*TODO*/ },
+                onNoticesClick = { /*TODO*/ }) {
+
+            }
         }
 
         composable("map-screen") {
