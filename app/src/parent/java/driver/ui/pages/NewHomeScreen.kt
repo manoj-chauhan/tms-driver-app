@@ -64,11 +64,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.drishto.driver.R
+import driver.models.PostsFeed
 import kotlinx.coroutines.selects.select
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
+
     username: String,
     profileImageResId: Int,
     onSearchClick: () -> Unit,
@@ -128,6 +130,7 @@ fun TopBar(
 
 @Composable
 fun BottomNavBar(
+    onTabSelected:(selectedIndex:Int)->Unit,
     onTripsClick: () -> Unit,
     onEventsClick: () -> Unit,
     onHomeClick: () -> Unit,
@@ -188,7 +191,10 @@ fun BottomNavBar(
         bottomBar.forEachIndexed { index, bottomNavItem ->
             NavigationBarItem(
                 selected = index == selected,
-                onClick = { selected = index },
+                onClick = {
+                    selected = index
+                    onTabSelected(index)
+                          },
                 icon = {
                     BadgedBox(
                         badge = {
@@ -226,6 +232,9 @@ fun BottomNavBar(
 
 @Composable
 fun MainScreen(
+    profileId: String,
+    navigationController: NavHostController,
+    onCommentClick: (postData: PostsFeed) -> Unit,
 
 
     onTripsClick: () -> Unit,
@@ -234,6 +243,10 @@ fun MainScreen(
     onNoticesClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
+
+    var selectedIndex by remember {
+        mutableStateOf(2)
+    }
     Scaffold(
 
         bottomBar = {
@@ -245,6 +258,7 @@ fun MainScreen(
 
 
                 BottomNavBar(
+                    onTabSelected = {selectedIndex =it  },
                     onTripsClick = onTripsClick,
                     onEventsClick = onEventsClick,
                     onHomeClick = onHomeClick,
@@ -264,6 +278,7 @@ fun MainScreen(
             ) {
                 item {
                     TopBar(
+
                         username = "Krish Chauhan",
                         profileImageResId = R.drawable.boy,
                         onSearchClick = { },
@@ -271,6 +286,14 @@ fun MainScreen(
                         onProfileClick = { }
                     )
                 }
+                when (selectedIndex){
+                    2->{
+                        item{
+                            PostsSection(profileId,navigationController, onCommentClick={})
+                        }
+                    }
+                }
+
 
             }
         }
@@ -279,16 +302,16 @@ fun MainScreen(
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewMainScreen() {
-    MainScreen(
-
-        onTripsClick = { },
-        onEventsClick = { },
-        onHomeClick = { },
-        onNoticesClick = { },
-        onSettingsClick = { }
-
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewMainScreen() {
+//    MainScreen(
+//
+//        onTripsClick = { },
+//        onEventsClick = { },
+//        onHomeClick = { },
+//        onNoticesClick = { },
+//        onSettingsClick = { }
+//
+//    )
+//}

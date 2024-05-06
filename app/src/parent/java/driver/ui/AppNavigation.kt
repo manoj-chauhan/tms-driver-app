@@ -68,16 +68,12 @@ fun AppNavigationHost(
     var deBoardingPlaceId by remember { mutableStateOf("") }
 
 
-//    var startScreen: String by remember {
-//        mutableStateOf(
-//            if (getAccessToken(context) != null) "home" else "login"
-//        )
-//    }
     var startScreen: String by remember {
         mutableStateOf(
-            if (getAccessToken(context) != null) "newHomeScreen" else "login"
+            if (getAccessToken(context) != null) "home" else "login"
         )
     }
+
 
     if (startScreen == "login") {
         val myIntent = Intent(LocalContext.current, PhoneNumberActivity::class.java)
@@ -107,7 +103,7 @@ fun AppNavigationHost(
         composable("profilesList"){
             AccountsProfile(onProfileSelected = {
                 profileId = it.id
-                navController.navigate("home-screen")
+                navController.navigate("newHomeScreen")
             })
         }
         composable("events"){
@@ -190,6 +186,9 @@ fun AppNavigationHost(
         }
         composable("newHomeScreen"){
             MainScreen(
+                profileId,
+                navController,
+                onCommentClick = {},
                 onTripsClick = { /*TODO*/ },
                 onEventsClick = { /*TODO*/ },
                 onHomeClick = { /*TODO*/ },
