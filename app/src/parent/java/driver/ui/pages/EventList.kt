@@ -44,8 +44,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun EventCard(event: Event, onRegisterClick:(event: Event) -> Unit) {
 
-    val primary = Color(0xFF92A3FD)
-    val secondary = Color(0XFF9DCEFF)
+    val primary = Color(0xFF471647)
 
     val fontFamily = FontFamily.SansSerif
 
@@ -136,7 +135,7 @@ fun EventCard(event: Event, onRegisterClick:(event: Event) -> Unit) {
                                             brush = Brush.horizontalGradient(
                                                 listOf(
                                                     primary,
-                                                    secondary
+                                                    primary
                                                 )
                                             ),
                                             shape = RoundedCornerShape(1.dp)
