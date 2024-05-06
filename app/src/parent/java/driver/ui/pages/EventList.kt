@@ -31,7 +31,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import driver.models.Event
 import driver.models.getDummyEvents
 import java.time.format.DateTimeFormatter
+import androidx.compose.ui.res.painterResource as painterResource1
 
 @Composable
 fun EventCard(event: Event, onRegisterClick:(event: Event) -> Unit) {
@@ -49,26 +49,27 @@ fun EventCard(event: Event, onRegisterClick:(event: Event) -> Unit) {
     val fontFamily = FontFamily.SansSerif
 
     Card(
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(6.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
             .padding(10.dp)
-            .shadow(elevation = (1).dp, RoundedCornerShape(2.dp)),
+            .shadow(elevation = (1).dp, RoundedCornerShape(3.dp)),
         content = {
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
-
+                        .fillMaxWidth()
+                    .height(200.dp)
                 ) {
                     Image(
-                        painter = painterResource(id = event.imageResId),
+                        painter = painterResource1(id = event.imageResId),
                         contentDescription = "",
-                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                        modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
+
                     Box(
                         modifier = Modifier
                             .size(50.dp)
