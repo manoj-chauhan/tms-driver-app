@@ -275,7 +275,9 @@ fun MainScreen(
                 .fillMaxSize()
         ) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize().background(Color.White)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
             ) {
                 item {
                     Row (modifier = Modifier.height(50.dp), verticalAlignment = Alignment.CenterVertically){
@@ -302,6 +304,12 @@ fun MainScreen(
                     2->{
                         item{
                             PostsSection(profileId,navigationController, onCommentClick={})
+                        }
+                    }
+                    3->{
+                        item{
+                            NoticeListPage()
+
                         }
                     }
                 }
