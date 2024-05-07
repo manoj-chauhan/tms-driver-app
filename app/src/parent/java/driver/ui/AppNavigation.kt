@@ -101,7 +101,7 @@ fun AppNavigationHost(
 
         composable("profilesList"){
             AccountsProfile(onProfileSelected = {
-                profileId = it.id
+                profileId = it
                 navController.navigate("newHomeScreen")
             })
         }

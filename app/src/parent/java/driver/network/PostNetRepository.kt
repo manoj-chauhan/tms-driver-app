@@ -5,6 +5,7 @@ import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
+import com.drishto.driver.network.getProfileId
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
@@ -128,15 +129,16 @@ class PostNetRepository @Inject constructor(
         val adapter: JsonAdapter<List<PostsFeed>> = Moshi.Builder().build().adapter(postsFeeds)
 
         val postUrl = context.resources.getString(R.string.url_get_all_posts)
+        var profile = ""
+         getProfileId(context)?.let {
+           profile =  it
+        }
 
         return try {
             getAccessToken(context)?.let {
-                Log.d("access token check", "$it")
-
-
             val (_, _, result) = postUrl.httpGet()
                 .authentication().bearer(it)
-                .header("Profile-Id", profileId)
+                .header("Profile-Id", profile)
                 .responseObject(moshiDeserializerOf(adapter))
 
             result.fold(

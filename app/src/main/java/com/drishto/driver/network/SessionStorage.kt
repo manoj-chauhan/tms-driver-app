@@ -8,6 +8,7 @@ import android.util.Log
 private val authStorage = "AUTHENTICATION"
 private val authTokenKey = "AUTH_TOKEN"
 private val driverIdKey = "DRIVER_ID"
+private val profileId = "PROFILE_ID"
 private val companyCodeKey = "COMPANY_CODE"
 private val companyIdKey = "COMPANY_ID"
 private val userId = "USER_ID"
@@ -18,6 +19,18 @@ fun saveAccessToken(context: Context, token: String) {
     val editor = sharedPreference.edit()
     editor.putString(authTokenKey, token)
     editor.apply()
+}
+
+fun saveProfileId(context: Context, id: String) {
+    val sharedPreference = context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
+    val editor = sharedPreference.edit()
+    editor.putString(profileId, id)
+    editor.apply()
+}
+
+fun getProfileId(context: Context): String? {
+    return context.getSharedPreferences(authStorage, Context.MODE_PRIVATE)
+        .getString(profileId, null)
 }
 
 fun saveAccessDriverId(context: Context, driverId: Int) {

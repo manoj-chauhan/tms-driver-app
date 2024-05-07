@@ -1,6 +1,5 @@
 package driver.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +24,6 @@ class AccountsProfileViewModel @Inject constructor(
     fun getProfileList() {
         viewModelScope.launch(Dispatchers.IO) {
             val profiles = accountsProfileManager.getAllProfile()
-            Log.d("checking1", "$profiles")
             _profilesList.update { _ ->
                 profiles
             }
