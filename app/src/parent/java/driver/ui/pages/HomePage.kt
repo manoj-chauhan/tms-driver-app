@@ -126,7 +126,7 @@ fun PostsSection(
     pf.getPosts(profileId)
 
     Log.d("TAG", "PostsSection: $postsList")
-    Column {
+    Column(modifier = Modifier.padding(10.dp)) {
         postsList?.take(postsList!!.size)?.forEach { post ->
             ContentPage(post, navigationController, onCommentClick)
         }
@@ -176,179 +176,181 @@ fun ContentPage(
     val actions = Color(android.graphics.Color.parseColor("#aeaeae"))
 
 
-
     val likeViewModel: LikeViewModel = hiltViewModel()
     var likesCount by remember { mutableStateOf(post.likes ?: 0) }
     var isLiked by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(12.dp)) {
-        ElevatedCard(
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+    ElevatedCard(
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(3.dp, RoundedCornerShape(12.dp)),
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(3.dp, RoundedCornerShape(12.dp)),
         ) {
-            Column(
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+                    .padding(vertical = 8.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            Color.White, shape = CircleShape
+                        )
+                        .size(38.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.dps),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .clip(CircleShape),
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(14.dp))
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Delhi Public School",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            color = text,
+                            fontFamily = FontFamily.SansSerif
+                        )
+                    )
+
+                    Text(
+                        text = "Sonipath, Haryana",
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontFamily = FontFamily.SansSerif,
+                            color = subText
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            post.message?.let {
+                Text(
+                    text = it,
+                    style = TextStyle(fontSize = 14.sp),
+                    modifier = Modifier.padding(horizontal = 10.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+
+            val images = post.media.map { it.mediaUrl }
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
+                ImageScrollWithTextOverlay(images = images)
+            }
+
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(modifier = Modifier.fillMaxWidth(0.7f)) {
+                    Text(
+                        text = "${post.comments} comments",
+                        style = TextStyle(fontSize = 14.sp, color = actions)
+                    )
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Text(
+                        text = "$likesCount likes",
+                        style = TextStyle(fontSize = 14.sp, color = actions)
+                    )
+                }
+
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
-                        .padding(vertical = 8.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                Color.White, shape = CircleShape
-                            )
-                            .size(38.dp)
-                    ) {
+                    val transition = updateTransition(targetState = isLiked)
+                    val scale by transition.animateFloat(
+                        transitionSpec = {
+                            keyframes {
+                                1.6f at 0
+                                3.0f at 300
+                                1.0f at 200
+                            }
+                        }
+                    ) { liked ->
+                        if (liked) 1.0f else 0.8f
+                    }
+
+                    if (isLiked) {
                         Image(
-                            painter = painterResource(id = R.drawable.dps),
+                            painter = painterResource(id = R.drawable.likenew),
                             contentDescription = "",
                             modifier = Modifier
-                                .clip(CircleShape),
+                                .size(25.dp)
+                                .clickable {
+                                    likeViewModel.dislikePost(post.id)
+                                    likesCount--
+                                    isLiked = false
+                                }
+                                .scale(scale),
+                            contentScale = ContentScale.FillBounds
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.like),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(23.dp)
+                                .clickable {
+                                    likeViewModel.likePost(post.id)
+                                    likesCount++
+                                    isLiked = true
+                                }
+                                .scale(scale),
                             contentScale = ContentScale.FillBounds
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(14.dp))
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = "Delhi Public School",
-                            style = TextStyle(
-                                fontSize = 15.sp,
-                                color = text,
-                                fontFamily = FontFamily.SansSerif
-                            )
-                        )
-
-                        Text(
-                            text = "Sonipath, Haryana",
-                            style = TextStyle(
-                                fontSize = 13.sp,
-                                fontFamily = FontFamily.SansSerif,
-                                color = subText
-                            )
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                post.message?.let {
-                    Text(
-                        text = it,
-                        style = TextStyle(fontSize = 14.sp),
-                        modifier = Modifier.padding(horizontal = 10.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-
-                val images = post.media.map { it.mediaUrl }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    ImageScrollWithTextOverlay(images = images)
-                }
-
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
-                        .padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(modifier =Modifier.fillMaxWidth(0.7f)){
-                        Text(
-                            text = "${post.comments} comments",
-                            style = TextStyle(fontSize = 12.sp, color = actions)
-                        )
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        Text(
-                            text = "$likesCount likes",
-                            style = TextStyle(fontSize = 12.sp, color = actions)
-                        )
-                    }
-
-                    Row(modifier =Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
-                        val transition = updateTransition(targetState = isLiked)
-                        val scale by transition.animateFloat(
-                            transitionSpec = {
-                                keyframes {
-                                    1.6f at 0
-                                    3.0f at 300
-                                    1.0f at 200
-                                }
+                    Icon(
+                        imageVector = Icons.Outlined.Message,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable {
+                                onCommentClick(post)
                             }
-                        ) { liked ->
-                            if (liked) 1.0f else 0.8f
-                        }
+                    )
 
-                        if (isLiked) {
-                            Image(
-                                painter = painterResource(id = R.drawable.likenew),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(25.dp)
-                                    .clickable {
-                                        likeViewModel.dislikePost(post.id)
-                                        likesCount--
-                                        isLiked = false
-                                    }
-                                    .scale(scale),
-                                contentScale = ContentScale.FillBounds
-                            )
-                        } else {
-                            Image(
-                                painter = painterResource(id = R.drawable.like),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(23.dp)
-                                    .clickable {
-                                        likeViewModel.likePost(post.id)
-                                        likesCount++
-                                        isLiked = true
-                                    }
-                                    .scale(scale),
-                                contentScale = ContentScale.FillBounds
-                            )
-                        }
-
-                        Icon(
-                            imageVector = Icons.Outlined.Message,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clickable {
-                                    onCommentClick(post)
-                                }
-                        )
-
-                        Icon(
-                            imageVector = Icons.Outlined.Share,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clickable {
-                                    onCommentClick(post)
-                                }
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Outlined.Share,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable {
+                                onCommentClick(post)
+                            }
+                    )
                 }
             }
         }
     }
+    Spacer(modifier = Modifier.fillMaxWidth().height(15.dp))
 }
 
 
@@ -691,7 +693,7 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
                     )
                 }
 
-                if(pagerState.pageCount > 1 )
+                if (pagerState.pageCount > 1)
                     Text(
                         text = "${page + 1}/${images.size}",
                         color = Color.White,
@@ -702,7 +704,7 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
                     )
             }
         }
-        if(pagerState.pageCount > 1 ) {
+        if (pagerState.pageCount > 1) {
             Row(
                 modifier = Modifier
                     .padding(vertical = 8.dp)

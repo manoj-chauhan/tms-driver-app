@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -42,20 +43,21 @@ import driver.models.getDummyEvents
 @Composable
 fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
 
-    val primary = Color(0xFF471647)
-
+    val primary = Color(android.graphics.Color.parseColor("#6750a4"))
+    val color = Color(android.graphics.Color.parseColor("#828282"))
+    val school = Color(android.graphics.Color.parseColor("#a1a1a1"))
     val fontFamily = FontFamily.SansSerif
-    Spacer(modifier = Modifier.height(20.dp))
 
 
     ElevatedCard(
+        colors = CardDefaults.cardColors(Color.White),
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(6.dp, RoundedCornerShape(12.dp)),
+            .shadow(3.dp, RoundedCornerShape(12.dp)),
     ) {
         Box(
             modifier = Modifier
-                .height(180.dp)
+                .height(150.dp)
         ) {
             Image(
                 painter = painterResource(id = event.imageResId),
@@ -78,6 +80,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
             }
 
         }
+        Spacer(modifier = Modifier.height(6.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,7 +97,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = fontFamily,
-                        color = Color.Gray,
+                        color = color,
                         fontWeight = FontWeight.Normal
                     )
                 )
@@ -103,23 +106,24 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth(0.7f)) {
+                    Column(modifier = Modifier.fillMaxWidth(0.69f)) {
                         Text(
                             text = "${event.eventDate}",
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontFamily = fontFamily,
-                                color = Color.Gray,
-                                fontWeight = FontWeight.Normal
+                                color = color,
+                                fontWeight = FontWeight.W400
                             )
                         )
+                        Spacer(modifier = Modifier.height(3.dp))
                         Text(
-                            text = "${event.institutionName}",
+                            text = event.institutionName,
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = fontFamily,
-                                color = Color.Gray,
-                                fontWeight = FontWeight.Normal
+                                color = school,
+                                fontWeight = FontWeight.W400
                             )
                         )
                     }
@@ -127,7 +131,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     Button(
                         modifier = Modifier
                             .height(35.dp)
-                            .width(140.dp),
+                            .width(100.dp),
                         enabled = true,
                         onClick = {
                             onRegisterClick(event)
@@ -136,7 +140,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                         colors = ButtonDefaults.buttonColors(
                             Color.Transparent
                         ),
-                        shape = RoundedCornerShape(15.dp)
+                        shape = RoundedCornerShape(20.dp)
                     ) {
                         Box(
                             modifier = Modifier
@@ -171,7 +175,13 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                 }
             }
         }
+        Spacer(modifier = Modifier.height(3.dp))
     }
+    Spacer(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(15.dp)
+    )
 }
 
 

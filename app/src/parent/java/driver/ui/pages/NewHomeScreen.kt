@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -242,10 +243,11 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            Box(
+            Row(
                 modifier = Modifier
 //                    .padding(6.dp)
-                    .shadow(20.dp)
+                    .shadow(20.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 BottomNavBar(
                     onTabSelected = {selectedIndex =it  },
@@ -266,24 +268,25 @@ fun MainScreen(
         },
         floatingActionButtonPosition = FabPosition.End
 
-    ) { paddingValues ->
+    ) { padding->
         Box(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(padding)
                 .fillMaxSize()
         ) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize().background(Color.White)
             ) {
                 item {
-                    TopBar(
-
-                        username = "Krish Chauhan",
-                        profileImageResId = R.drawable.boy,
-                        onSearchClick = { },
-                        onNotificationClick = { },
-                        onProfileClick = { }
-                    )
+                    Row (modifier = Modifier.height(50.dp), verticalAlignment = Alignment.CenterVertically){
+                        TopBar(
+                            username = "Krish Chauhan",
+                            profileImageResId = R.drawable.boy,
+                            onSearchClick = { },
+                            onNotificationClick = { },
+                            onProfileClick = { }
+                        )
+                    }
                 }
                 when (selectedIndex){
                     1 ->{
@@ -293,7 +296,8 @@ fun MainScreen(
                                     eventDetail = it
                                     navigationController.navigate("event-details")
                                 }
-                            )                        }
+                            )
+                        }
                     }
                     2->{
                         item{
@@ -301,8 +305,6 @@ fun MainScreen(
                         }
                     }
                 }
-
-
             }
         }
     }
