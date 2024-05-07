@@ -12,26 +12,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.BookmarkAdd
-import androidx.compose.material.icons.outlined.Business
-import androidx.compose.material.icons.outlined.CarCrash
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.DirectionsBus
 import androidx.compose.material.icons.outlined.Event
-import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.ModeEdit
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.PostAdd
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
@@ -41,10 +33,8 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -59,17 +49,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.drishto.driver.R
 import driver.models.Event
 import driver.models.PostsFeed
-import kotlinx.coroutines.selects.select
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -254,15 +241,12 @@ fun MainScreen(
     var eventDetail by remember { mutableStateOf<Event?>(null) }
 
     Scaffold(
-
         bottomBar = {
             Box(
                 modifier = Modifier
 //                    .padding(6.dp)
                     .shadow(20.dp)
             ) {
-
-
                 BottomNavBar(
                     onTabSelected = {selectedIndex =it  },
                     onTripsClick = onTripsClick,
@@ -276,8 +260,6 @@ fun MainScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {},
-//                backgroundColor = Color.Red,
-//                contentColor = Color.Purple
             ) {
                 Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
             }
@@ -325,17 +307,3 @@ fun MainScreen(
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewMainScreen() {
-//    MainScreen(
-//
-//        onTripsClick = { },
-//        onEventsClick = { },
-//        onHomeClick = { },
-//        onNoticesClick = { },
-//        onSettingsClick = { }
-//
-//    )
-//}

@@ -2,14 +2,12 @@ package driver.ui.pages
 
 import android.net.Uri
 import android.util.Log
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -40,12 +38,14 @@ import androidx.compose.material.icons.outlined.Business
 import androidx.compose.material.icons.outlined.CarCrash
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Mail
+import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.PostAdd
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Card
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -103,7 +103,6 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import driver.models.PostsFeed
-import driver.ui.components.ExpandableText
 import driver.ui.viewmodels.LikeViewModel
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
@@ -172,49 +171,45 @@ fun ContentPage(
     onCommentClick: (postData: PostsFeed) -> Unit
 ) {
 
-    val gry = Color(android.graphics.Color.parseColor("#838383"))
-    val images = listOf(R.drawable.hi)
+    val text = Color(android.graphics.Color.parseColor("#585858"))
+    val subText = Color(android.graphics.Color.parseColor("#c5c5c5"))
+    val actions = Color(android.graphics.Color.parseColor("#aeaeae"))
+
+
 
     val likeViewModel: LikeViewModel = hiltViewModel()
     var likesCount by remember { mutableStateOf(post.likes ?: 0) }
     var isLiked by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(12.dp)) {
-        Card(
+        ElevatedCard(
+            colors = CardDefaults.cardColors(containerColor = Color.White),
             modifier = Modifier
-                .shadow(elevation = (1).dp, RoundedCornerShape(3.dp))
-                .fillMaxWidth(),
-
-
-            shape = RoundedCornerShape(3.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White,
-            ),
+                .fillMaxWidth()
+                .shadow(3.dp, RoundedCornerShape(12.dp)),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-//                .padding(5.dp)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp)
-                        .padding(vertical=2.dp)
+                        .padding(vertical = 8.dp),
                 ) {
                     Box(
                         modifier = Modifier
                             .background(
                                 Color.White, shape = CircleShape
                             )
-                            .size(44.dp)
+                            .size(38.dp)
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.dps),
                             contentDescription = "",
                             modifier = Modifier
-//                                .clip(CircleShape)
-                                .border(1.dp, Color.Gray, CircleShape),
+                                .clip(CircleShape),
                             contentScale = ContentScale.FillBounds
                         )
                     }
@@ -226,6 +221,7 @@ fun ContentPage(
                             text = "Delhi Public School",
                             style = TextStyle(
                                 fontSize = 15.sp,
+                                color = text,
                                 fontFamily = FontFamily.SansSerif
                             )
                         )
@@ -235,13 +231,13 @@ fun ContentPage(
                             style = TextStyle(
                                 fontSize = 13.sp,
                                 fontFamily = FontFamily.SansSerif,
-                                color = Color.Gray
+                                color = subText
                             )
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 post.message?.let {
                     Text(
@@ -251,7 +247,7 @@ fun ContentPage(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
 
                 val images = post.media.map { it.mediaUrl }
@@ -262,30 +258,30 @@ fun ContentPage(
                     ImageScrollWithTextOverlay(images = images)
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
+                        .padding(horizontal = 10.dp)
+                        .padding(vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row {
+                    Row(modifier =Modifier.fillMaxWidth(0.7f)){
                         Text(
                             text = "${post.comments} comments",
-                            style = TextStyle(fontSize = 12.sp, color = Color.Gray)
+                            style = TextStyle(fontSize = 12.sp, color = actions)
                         )
 
                         Spacer(modifier = Modifier.width(12.dp))
 
                         Text(
                             text = "$likesCount likes",
-                            style = TextStyle(fontSize = 12.sp, color = Color.Gray)
+                            style = TextStyle(fontSize = 12.sp, color = actions)
                         )
                     }
 
-                    Row {
+                    Row(modifier =Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
                         val transition = updateTransition(targetState = isLiked)
                         val scale by transition.animateFloat(
                             transitionSpec = {
@@ -304,7 +300,7 @@ fun ContentPage(
                                 painter = painterResource(id = R.drawable.likenew),
                                 contentDescription = "",
                                 modifier = Modifier
-                                    .size(20.dp)
+                                    .size(25.dp)
                                     .clickable {
                                         likeViewModel.dislikePost(post.id)
                                         likesCount--
@@ -318,7 +314,7 @@ fun ContentPage(
                                 painter = painterResource(id = R.drawable.like),
                                 contentDescription = "",
                                 modifier = Modifier
-                                    .size(20.dp)
+                                    .size(23.dp)
                                     .clickable {
                                         likeViewModel.likePost(post.id)
                                         likesCount++
@@ -329,10 +325,8 @@ fun ContentPage(
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(12.dp))
-
                         Icon(
-                            painter = painterResource(id = R.drawable.message),
+                            imageVector = Icons.Outlined.Message,
                             contentDescription = "",
                             modifier = Modifier
                                 .size(20.dp)
@@ -341,21 +335,18 @@ fun ContentPage(
                                 }
                         )
 
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        Image(
-                            painter = painterResource(id = R.drawable.share),
+                        Icon(
+                            imageVector = Icons.Outlined.Share,
                             contentDescription = "",
                             modifier = Modifier
-                                .size(20.dp),
-
+                                .size(20.dp)
+                                .clickable {
+                                    onCommentClick(post)
+                                }
                         )
                     }
                 }
             }
-
-
-            Spacer(modifier = Modifier.height(3.dp))
         }
     }
 }
@@ -700,31 +691,34 @@ fun ImageScrollWithTextOverlay(images: List<String>) {
                     )
                 }
 
-                Text(
-                    text = "${page + 1}/${images.size}",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(12.dp)
-                )
+                if(pagerState.pageCount > 1 )
+                    Text(
+                        text = "${page + 1}/${images.size}",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(12.dp)
+                    )
             }
         }
-        Row(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .align(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            repeat(pagerState.pageCount) { index ->
-                val color = if (pagerState.currentPage == index) Color.Cyan else Color.LightGray
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .size(10.dp)
-                )
+        if(pagerState.pageCount > 1 ) {
+            Row(
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .align(Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                repeat(pagerState.pageCount) { index ->
+                    val color = if (pagerState.currentPage == index) Color.Cyan else Color.LightGray
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .clip(CircleShape)
+                            .background(color)
+                            .size(10.dp)
+                    )
+                }
             }
         }
     }
@@ -801,7 +795,9 @@ fun videoPlayer(url: String) {
             Icon(
                 imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                 contentDescription = if (exoPlayer.playWhenReady) "Pause" else "Play",
-                modifier = Modifier.size(100.dp).alpha(0.4f)
+                modifier = Modifier
+                    .size(100.dp)
+                    .alpha(0.4f)
             )
         }
     }
