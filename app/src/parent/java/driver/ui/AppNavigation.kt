@@ -42,7 +42,6 @@ import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PostItem
 import driver.ui.pages.SavedNoticesPage
 import driver.ui.pages.UserList
-import driver.ui.pages.allEventsPage
 import driver.ui.pages.notificationScreen
 import driver.ui.pages.profile
 
@@ -104,12 +103,6 @@ fun AppNavigationHost(
             AccountsProfile(onProfileSelected = {
                 profileId = it.id
                 navController.navigate("newHomeScreen")
-            })
-        }
-        composable("events"){
-            allEventsPage(navController, onRegisterClick = {
-                eventDetail = it
-                navController.navigate("event-details")
             })
         }
 

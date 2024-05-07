@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -68,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.drishto.driver.R
+import driver.models.Event
 import driver.models.PostsFeed
 import kotlinx.coroutines.selects.select
 
@@ -234,7 +234,6 @@ fun BottomNavBar(
     }
 }
 
-
 @Composable
 fun MainScreen(
     profileId: String,
@@ -252,6 +251,8 @@ fun MainScreen(
     var selectedIndex by remember {
         mutableStateOf(2)
     }
+    var eventDetail by remember { mutableStateOf<Event?>(null) }
+
     Scaffold(
 
         bottomBar = {
@@ -303,6 +304,15 @@ fun MainScreen(
                     )
                 }
                 when (selectedIndex){
+                    1 ->{
+                        item {
+                            EventsListPage(
+                                navigationController, onRegisterClick = {
+                                    eventDetail = it
+                                    navigationController.navigate("event-details")
+                                }
+                            )                        }
+                    }
                     2->{
                         item{
                             PostsSection(profileId,navigationController, onCommentClick={})
@@ -315,8 +325,6 @@ fun MainScreen(
         }
     }
 }
-
-
 
 //@Preview(showBackground = true)
 //@Composable
