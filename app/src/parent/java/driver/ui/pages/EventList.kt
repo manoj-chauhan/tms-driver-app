@@ -180,7 +180,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
     Spacer(
         modifier = Modifier
             .fillMaxWidth()
-            .height(15.dp)
+            .height(10.dp)
     )
 }
 

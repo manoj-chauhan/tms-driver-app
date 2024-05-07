@@ -5,12 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import com.drishto.driver.R
-import java.time.LocalDate
 
 data class Event(
     @DrawableRes val imageResId: Int,
     val eventName: String,
-    val eventDate: LocalDate,
+    val eventDate: String,
     val institutionName: String
 )
 
@@ -20,25 +19,25 @@ fun getDummyEvents(): List<Event> {
         Event(
             imageResId = R.drawable.volley,
             eventName = "Inter School Volley Tournament",
-            eventDate = LocalDate.of(2024, 12, 10),
+            eventDate = "12 jul 2023",
             institutionName = "Greenwood High"
         ),
         Event(
             imageResId = R.drawable.chess,
             eventName = "Inter School Chess Tournament",
-            eventDate = LocalDate.of(2024, 11, 15),
+            eventDate = "12 jul 2023",
             institutionName = "Maplewood Academy"
         ),
         Event(
             imageResId = R.drawable.cricket,
             eventName = "Inter School Cricket Tournament",
-            eventDate = LocalDate.of(2024, 10, 20),
+            eventDate = "12 jul 2023",
             institutionName = "Lakeside School"
         ),
         Event(
             imageResId = R.drawable.tt,
             eventName = "Inter School Table Tennis Tournament",
-            eventDate = LocalDate.of(2024, 9, 25),
+            eventDate = "12 jul 2023",
             institutionName = "Riverdale Institute"
         )
     )
