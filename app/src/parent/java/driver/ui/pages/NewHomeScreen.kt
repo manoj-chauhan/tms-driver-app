@@ -58,6 +58,8 @@ import androidx.navigation.NavHostController
 import com.drishto.driver.R
 import driver.models.Event
 import driver.models.PostsFeed
+import driver.ui.components.ProfileDialog
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -241,6 +243,10 @@ fun MainScreen(
     }
     var eventDetail by remember { mutableStateOf<Event?>(null) }
 
+    var profileDialog by remember {
+        mutableStateOf(false)
+    }
+
     Scaffold(
         bottomBar = {
             Row(
@@ -286,7 +292,7 @@ fun MainScreen(
                             profileImageResId = R.drawable.boy,
                             onSearchClick = { },
                             onNotificationClick = { },
-                            onProfileClick = { }
+                            onProfileClick = { profileDialog=true}
                         )
                     }
                 }
@@ -314,6 +320,11 @@ fun MainScreen(
                     }
                 }
             }
+        }
+    }
+    if(profileDialog){
+        ProfileDialog {
+            profileDialog=it
         }
     }
 }
