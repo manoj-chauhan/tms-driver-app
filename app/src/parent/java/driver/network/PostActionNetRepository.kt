@@ -2,9 +2,12 @@ package driver.network
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
+import com.drishto.driver.network.getProfileId
+import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
@@ -72,14 +75,15 @@ class PostActionNetRepository @Inject constructor(
         }
     }
 
-    fun getComments(postId: String): List<Comments>?{
+    fun getComments(postId: String): List<Comments>? {
 
         val comment = Types.newParameterizedType(List::class.java, Comments::class.java)
         val adapter: JsonAdapter<List<Comments>> = Moshi.Builder().build().adapter(comment)
 
         return try {
             getAccessToken(context)?.let {
-                val url = context.resources.getString(R.string.url_get_comments_posts) + postId +"/comment"
+                val url =
+                    context.resources.getString(R.string.url_get_comments_posts) + postId + "/comment"
                 val (request, response, result) = url.httpGet()
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(adapter))
@@ -115,6 +119,104 @@ class PostActionNetRepository @Inject constructor(
             }
         } catch (e: Exception) {
             null
+        }
+
+    }
+
+    fun likePost(postId: String) {
+        try {
+            val url = context.resources.getString(R.string.url_likePost) + postId
+            var profileId = ""
+            getProfileId(context)?.let {
+                profileId = it
+            }
+            getAccessToken(context)?.let {
+
+
+                val fuelManager = FuelManager()
+                val (_, response, result) = fuelManager.post(url)
+                    .authentication().bearer(it)
+                    .header("Profile-Id",profileId)
+                    .response()
+
+                Log.d("resp and res", "likePost: $response , $result")
+
+
+                if (response.statusCode == 200) {
+//                Toast.makeText(context, "Post Liked Successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    val errorCode = response.statusCode
+                    val errorResponse = response.data.toString(Charsets.UTF_8)
+
+                    when (errorCode) {
+                        401 -> errorManager.getErrorDescription(context)
+                        403 -> errorManager.getErrorDescription403(context, errorResponse)
+                        404 -> errorManager.getErrorDescription404(context, "No URL found")
+                        500 -> errorManager.getErrorDescription500(context, "Something went wrong")
+                        else -> Log.e("LikeNetRepository", "Unknown error: $errorCode")
+
+                    }
+                    Toast.makeText(
+                        context,
+                        "An error occurred. Status code: $errorCode",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+        } catch (e: Exception) {
+            Log.e("LikeNetRepository", "Error liking post", e)
+            Toast.makeText(context, "An error occurred. Please try again.", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    fun dislikePost(postId: String) {
+        try {
+            val url = context.resources.getString(R.string.url_likePost) + postId
+            var profileId = ""
+            getProfileId(context)?.let {
+                profileId = it
+            }
+            getAccessToken(context)?.let {
+
+
+                val fuelManager = FuelManager()
+                val (_, response, result) = fuelManager.post(url)
+                    .authentication().bearer(it)
+                    .header("Profile-Id",profileId)
+                    .response()
+
+                Log.d("resp and res", "DislikePost: $response , $result")
+
+
+                if (response.statusCode == 200) {
+//                Toast.makeText(context, "Post DisLiked Successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    val errorCode = response.statusCode
+                    val errorResponse = response.data.toString(Charsets.UTF_8)
+
+                    when (errorCode) {
+                        401 -> errorManager.getErrorDescription(context)
+                        403 -> errorManager.getErrorDescription403(context, errorResponse)
+                        404 -> errorManager.getErrorDescription404(context, "No URL found")
+                        500 -> errorManager.getErrorDescription500(context, "Something went wrong")
+                        else -> Log.e("LikeNetRepository", "Unknown error: $errorCode")
+
+                    }
+                    Toast.makeText(
+                        context,
+                        "An error occurred. Status code: $errorCode",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+
+        } catch (e: Exception) {
+            Log.e("LikeNetRepository", "Error liking post", e)
+            Toast.makeText(context, "An error occurred. Please try again.", Toast.LENGTH_SHORT)
+                .show()
         }
 
     }

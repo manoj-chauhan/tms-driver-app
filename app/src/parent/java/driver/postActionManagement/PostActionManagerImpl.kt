@@ -18,5 +18,12 @@ class PostActionManagerImpl @Inject constructor(
         return postActionNetRepository.getComments(postId)
     }
 
+    override suspend fun likePost(postId: String) {
+        return postActionNetRepository.likePost(postId)
+    }
+
+    override suspend fun dislikePost(postId: String) {
+        return postActionNetRepository.dislikePost(postId)
+    }
 
 }
