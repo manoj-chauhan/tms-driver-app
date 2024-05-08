@@ -152,6 +152,7 @@ fun TopBar(
 
 @Composable
 fun BottomNavBar(
+
     onTabSelected: (selectedIndex: Int) -> Unit,
     onTripsClick: () -> Unit,
     onEventsClick: () -> Unit,
@@ -206,7 +207,11 @@ fun BottomNavBar(
         mutableStateOf(2)
     }
     NavigationBar(
-        tonalElevation = 10.dp,
+
+        modifier = Modifier
+//                    .padding(6.dp)
+            .shadow(500.dp),
+        tonalElevation = 20.dp,
 //        modifier = Modifier.shadow(60.dp, RoundedCornerShape(8.dp)),
         containerColor = Color.White,
     ) {
@@ -266,6 +271,8 @@ fun MainScreen(
     onSettingsClick: () -> Unit
 ) {
 
+
+
     var selectedIndex by remember {
         mutableStateOf(2)
     }
@@ -280,10 +287,11 @@ fun MainScreen(
             Row(
                 modifier = Modifier
 //                    .padding(6.dp)
-                    .shadow(20.dp),
+                    .shadow(500.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BottomNavBar(
+
                     onTabSelected = { selectedIndex = it },
                     onTripsClick = onTripsClick,
                     onEventsClick = onEventsClick,

@@ -199,6 +199,9 @@ dependencies {
     //video player
     implementation("com.google.android.exoplayer:exoplayer:2.18.0")
 
+    //systemuicontroller
+    implementation( "com.google.accompanist:accompanist-systemuicontroller:0.27.0")
+
 
 
 

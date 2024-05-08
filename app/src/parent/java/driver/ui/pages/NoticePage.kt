@@ -3,6 +3,7 @@ package driver.ui.pages
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +26,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,16 +42,18 @@ data class NoticeAll(
     val time: String,
     val imageResId: Int
 )
+val primary = Color(android.graphics.Color.parseColor("#6750a4"))
+val color = Color(android.graphics.Color.parseColor("#828282"))
+val school = Color(android.graphics.Color.parseColor("#a1a1a1"))
+val fontFamily = FontFamily.SansSerif
 
 @Composable
 fun NoticeCard(notice: NoticeAll) {
     ElevatedCard(
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(Color.White),
         modifier = Modifier
             .fillMaxWidth()
-            .height(230.dp)
-            .padding(8.dp)
-            .shadow(3.dp, RoundedCornerShape(12.dp))
+            .shadow(3.dp, RoundedCornerShape(12.dp)),
     ) {
         Column(
             modifier = Modifier
@@ -66,33 +72,76 @@ fun NoticeCard(notice: NoticeAll) {
 //                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text(text = notice.text, fontSize = 12.sp)
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = notice.text,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = fontFamily,
+                            color = color,
+                            fontWeight = FontWeight.Normal
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                    Text(text = notice.institue, fontSize = 10.sp, fontWeight = FontWeight.Light)
+                    Text(
+                        text = notice.institue,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = fontFamily,
+                            color = school,
+                            fontWeight = FontWeight.W400
+                        )
+                    )
 
                 }
+//                Spacer(modifier = Modifier.height(9.dp))
 
-                Row {
-                    Text(text = notice.date, fontSize = 9.sp, fontWeight = FontWeight.Light)
+                Row (modifier=Modifier.padding(top=2.dp)){
 
-                    Spacer(modifier = Modifier.width(2.dp))
+                    Text(
+                        text = notice.date,
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = fontFamily,
+                            color = color,
+                            fontWeight = FontWeight.W400
+                        )
+                    )
 
-                    Text(text = notice.time, fontSize = 9.sp, fontWeight = FontWeight.Light)
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text(
+                        text = notice.time,
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = fontFamily,
+                            color = color,
+                            fontWeight = FontWeight.W400
+                        )
+                    )
                 }
             }
+        }
 
-            val imageHeight = if (notice.imageResId == R.drawable.doc) {
-                100.dp
-            } else {
-                220.dp
-            }
-            val paddingtop= if (notice.imageResId == R.drawable.doc) {
-                23.dp
-            } else {
-                0.dp
-            }
-
+        val imageHeight = if (notice.imageResId == R.drawable.doc) {
+            150.dp
+        } else {
+            220.dp
+        }
+        val paddingtop = if (notice.imageResId == R.drawable.doc) {
+            30.dp
+        } else {
+            0.dp
+        }
+        val paddingbottom = if (notice.imageResId == R.drawable.doc) {
+            30.dp
+        } else {
+            0.dp
+        }
+        Box(modifier = Modifier
+            .height(220.dp)
+            .background(Color.White)
+            .align(Alignment.CenterHorizontally)) {
             Image(
                 painter = painterResource(id = notice.imageResId),
                 contentDescription = "Notice Image",
@@ -100,21 +149,31 @@ fun NoticeCard(notice: NoticeAll) {
                 modifier = Modifier
                     .height(imageHeight)
                     .padding(top = paddingtop)
+                    .padding(bottom = paddingbottom)
                     .aspectRatio(16f / 9f)
             )
+
         }
+
+
     }
+    Spacer(modifier=Modifier.height(10.dp))
 }
+
+
+
+
+
+
 
 @Composable
 fun NoticeListPage() {
     Column(
-        modifier = Modifier.fillMaxSize()
-            .padding(start=6.dp)
-            .padding(end=6.dp)
-            .padding(bottom=6.dp)
-            .padding(top=3.dp),
-        verticalArrangement = Arrangement.spacedBy(1.dp)
+        modifier = Modifier
+            .fillMaxSize()
+
+            .padding(10.dp),
+
     ) {
          noticeData.let{  notice->
              notice.forEach{
@@ -131,21 +190,21 @@ val noticeData = listOf(
     NoticeAll(
         text = "Meeting with Parents",
         institue = "Maharaja Agrasen Public School",
-        date = "22 June 2024",
+        date = "22 Jun'24",
         time = "09:00 AM",
         imageResId = R.drawable.notice1
     ),
     NoticeAll(
         text = "School Picnic",
         institue = "HMRITM",
-        date = "23 June 2024",
+        date = "23 June'24",
         time = "10:00 AM",
         imageResId = R.drawable.notice2
     ),
     NoticeAll(
         text = "Annual Day Celebration",
         institue = "Maharaja Agresen Public School",
-        date = "24 June 2024",
+        date = "24 Jun'24",
         time = "11:00 AM",
         imageResId = R.drawable.doc
     )
