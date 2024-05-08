@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.models.Comments
 import driver.postActionManagement.PostActionManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PostActionsViewModel @Inject constructor(private val postActionManager: PostActionManager) : ViewModel() {
+class PostActionsViewModel @Inject constructor(private val postActionManager: PostActionManager) :
+    ViewModel() {
 
     private val _comments: MutableStateFlow<List<Comments>?> = MutableStateFlow(emptyList())
     val commentsList: StateFlow<List<Comments>?> = _comments.asStateFlow()
@@ -22,14 +24,14 @@ class PostActionsViewModel @Inject constructor(private val postActionManager: Po
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 postActionManager.uploadPostComment(postId, message)
-            }catch (e:Exception){
+            } catch (e: Exception) {
 
             }
         }
 
     }
 
-    fun getComments(postId: String){
+    fun getComments(postId: String) {
         try {
             viewModelScope.launch {
                 val commentList = postActionManager.getPostComment(postId)
@@ -38,8 +40,30 @@ class PostActionsViewModel @Inject constructor(private val postActionManager: Po
                 }
             }
 
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
+    }
+
+    fun likePost(postId: String) {
+        try {
+            CoroutineScope(Dispatchers.IO).launch {
+                postActionManager.likePost(postId)
+            }
+        } catch (e: Exception) {
+
+        }
+
+    }
+
+    fun dislikePost(postId: String) {
+        try {
+            CoroutineScope(Dispatchers.IO).launch {
+                postActionManager.dislikePost(postId)
+            }
+        } catch (e: Exception) {
+
+        }
+
     }
 }

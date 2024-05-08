@@ -103,7 +103,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import driver.models.PostsFeed
-import driver.ui.viewmodels.LikeViewModel
+import driver.ui.viewmodels.PostActionsViewModel
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
 
@@ -176,9 +176,9 @@ fun ContentPage(
     val actions = Color(android.graphics.Color.parseColor("#aeaeae"))
 
 
-    val likeViewModel: LikeViewModel = hiltViewModel()
+    val postActionViewModel: PostActionsViewModel = hiltViewModel()
     var likesCount by remember { mutableStateOf(post.likes ?: 0) }
-    var isLiked by remember { mutableStateOf(false) }
+    var isLiked by remember { mutableStateOf(post.likedStatus) }
 
     ElevatedCard(
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -292,7 +292,7 @@ fun ContentPage(
                                 3.0f at 300
                                 1.0f at 200
                             }
-                        }
+                        }, label = ""
                     ) { liked ->
                         if (liked) 1.0f else 0.8f
                     }
@@ -302,9 +302,9 @@ fun ContentPage(
                             painter = painterResource(id = R.drawable.likenew),
                             contentDescription = "",
                             modifier = Modifier
-                                .size(25.dp)
+                                .size(23.dp)
                                 .clickable {
-                                    likeViewModel.dislikePost(post.id)
+                                    postActionViewModel.dislikePost(post.id)
                                     likesCount--
                                     isLiked = false
                                 }
@@ -318,7 +318,7 @@ fun ContentPage(
                             modifier = Modifier
                                 .size(23.dp)
                                 .clickable {
-                                    likeViewModel.likePost(post.id)
+                                    postActionViewModel.likePost(post.id)
                                     likesCount++
                                     isLiked = true
                                 }
