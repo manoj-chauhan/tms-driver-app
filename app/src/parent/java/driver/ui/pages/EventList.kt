@@ -152,48 +152,49 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                             )
                         )
                     }
-
-                    Button(
-                        modifier = Modifier
-                            .height(35.dp)
-                            .width(90.dp),
-                        enabled = true,
-                        onClick = {
-                            onRegisterClick(event)
-                        },
-                        contentPadding = PaddingValues(),
-                        colors = ButtonDefaults.buttonColors(
-                            Color.Transparent
-                        ),
-                        shape = RoundedCornerShape(20.dp)
-                    ) {
-                        Box(
+                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
+                        Button(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(35.dp)
-                                .align(Alignment.Bottom)
-                                .background(
-                                    brush = Brush.horizontalGradient(
-                                        listOf(
-                                            primary,
-                                            primary
-                                        )
-                                    ),
-                                    shape = RoundedCornerShape(1.dp)
-                                ), contentAlignment = Alignment.Center
+                                .height(35.dp)
+                                .width(90.dp),
+                            enabled = true,
+                            onClick = {
+                                onRegisterClick(event)
+                            },
+                            contentPadding = PaddingValues(),
+                            colors = ButtonDefaults.buttonColors(
+                                Color.Transparent
+                            ),
+                            shape = RoundedCornerShape(20.dp)
                         ) {
-                            Row(
-                                modifier = Modifier,
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(35.dp)
+                                    .align(Alignment.Bottom)
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            listOf(
+                                                primary,
+                                                primary
+                                            )
+                                        ),
+                                        shape = RoundedCornerShape(1.dp)
+                                    ), contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = "Register",
-                                    style = TextStyle(
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold
+                                Row(
+                                    modifier = Modifier,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Register",
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                     }
