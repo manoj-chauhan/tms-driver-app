@@ -37,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,21 +60,27 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.drishto.driver.R
 import driver.models.PostsFeed
 import driver.ui.pages.ImageScrollWithTextOverlay
-import driver.ui.viewmodels.PostActionsViewModel
+import driver.ui.viewmodels.PostsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentPost(postsFeed: PostsFeed?) {
-    
+fun CommentPost(navController:NavHostController,postId: String?) {
     var comment by remember {
         mutableStateOf("")
     }
     val interactionSource = remember { MutableInteractionSource() }
-
-    val pa: PostActionsViewModel = hiltViewModel()
+    val pa: PostsViewModel = hiltViewModel()
+    val postsFeed by pa.postDetail.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        if (postId != null) {
+            pa.getPostDetails(postId)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -112,7 +119,7 @@ fun CommentPost(postsFeed: PostsFeed?) {
                                                 .size(30.dp)
                                                 .height(25.dp)
                                                 .clickable {
-                                                    //                                    navController.popBackStack()
+                                                    navController.popBackStack()
                                                 },
                                         )
 
@@ -193,7 +200,7 @@ fun CommentPost(postsFeed: PostsFeed?) {
                         .align(Alignment.Bottom),
                     enabled = true,
                     onClick = {
-                        postsFeed?.let { pa.uploadComments(it.id, comment) }
+//                        postsFeed?.let { pa.uploadComments(it.id, comment) }
                     },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(

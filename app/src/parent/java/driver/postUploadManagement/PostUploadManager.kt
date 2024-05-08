@@ -8,4 +8,6 @@ interface PostUploadManager {
     fun addPost(media: List<PostUpload?>, message: String, profileId: String)
     fun getFeedPosts(profile:String):List<PostsFeed>?
 
+    fun getPostDetail(postId:String):PostsFeed?
+
 }

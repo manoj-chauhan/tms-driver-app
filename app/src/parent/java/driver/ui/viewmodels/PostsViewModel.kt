@@ -1,6 +1,7 @@
 package driver.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.models.PostUpload
 import driver.models.PostsFeed
@@ -23,7 +24,8 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
     private val _postsFeed: MutableStateFlow<List<PostsFeed>?> = MutableStateFlow(emptyList())
     val postFeedsDetails: StateFlow<List<PostsFeed>?> = _postsFeed.asStateFlow()
 
-
+    private val _postDetail: MutableStateFlow<PostsFeed?> = MutableStateFlow(null)
+    val postDetail: StateFlow<PostsFeed?> = _postDetail.asStateFlow()
 
     fun uploadPosts(image: ByteArray?, mimeType: String?){
         CoroutineScope(Dispatchers.IO).launch {
@@ -59,6 +61,19 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
             _postsFeed.update {
                 postsList
             }
+        }
+    }
+
+    fun getPostDetails(postId:String){
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                val postDetails = postsUploadManager.getPostDetail(postId)
+                _postDetail.update {
+                    postDetails
+                }
+            }
+        }catch (e:Exception){
+
         }
     }
 }

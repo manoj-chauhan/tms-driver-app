@@ -257,8 +257,6 @@ fun MainScreen(
     profileId: String,
     navigationController: NavHostController,
     onCommentClick: (postData: PostsFeed) -> Unit,
-
-
     onTripsClick: () -> Unit,
     onEventsClick: () -> Unit,
     onHomeClick: () -> Unit,
@@ -341,7 +339,9 @@ fun MainScreen(
 
                     2 -> {
                         item {
-                            PostsSection(profileId, navigationController, onCommentClick = {})
+                            PostsSection(profileId, navigationController, onCommentClick = {
+                                navigationController.navigate("add_comment/${it.id}")
+                            })
                         }
                     }
 

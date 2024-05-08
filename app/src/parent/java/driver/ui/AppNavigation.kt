@@ -150,8 +150,13 @@ fun AppNavigationHost(
             AddInstitute(navController)
         }
 
-        composable("add_comment"){
-            CommentPost(postDetails)
+        composable("add_comment/{postId}", arguments = listOf(
+            navArgument("postId"){
+                type = NavType.StringType
+            }
+        )){
+            val postId = it.arguments!!.getString("postId")
+            CommentPost(navController,postId)
         }
         composable("MainScreen"){
             val activity = LocalContext.current as? ComponentActivity

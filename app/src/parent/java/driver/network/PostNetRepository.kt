@@ -176,4 +176,52 @@ class PostNetRepository @Inject constructor(
         }
 
     }
+    fun getPostDetail(context: Context, postId: String): PostsFeed? {
+
+        val postUrl = context.resources.getString(R.string.url_get_post_detail)+postId
+        var profile = ""
+        getProfileId(context)?.let {
+            profile =  it
+        }
+
+        return try {
+            getAccessToken(context)?.let {
+                val (_, _, result) = postUrl.httpGet()
+                    .authentication().bearer(it)
+                    .header("Profile-Id", profile)
+                    .responseObject(moshiDeserializerOf(PostsFeed::class.java))
+
+                result.fold(
+                    {
+                    },
+                    { error ->
+                        EventBus.getDefault().post("AUTH_FAILED")
+                        if (error.response.statusCode == 401) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if (error.response.statusCode == 500) {
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
+                    }
+                )
+
+                result.get()
+            }
+
+        } catch (e: Exception) {
+            null
+        }
+
+    }
 }
