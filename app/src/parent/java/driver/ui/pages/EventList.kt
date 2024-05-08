@@ -106,7 +106,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth(0.69f)) {
+                    Column(modifier = Modifier.fillMaxWidth(0.72f)) {
                         Text(
                             text = "${event.eventDate}",
                             style = TextStyle(
@@ -131,7 +131,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     Button(
                         modifier = Modifier
                             .height(35.dp)
-                            .width(100.dp),
+                            .width(90.dp),
                         enabled = true,
                         onClick = {
                             onRegisterClick(event)
@@ -175,7 +175,6 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                 }
             }
         }
-        Spacer(modifier = Modifier.height(3.dp))
     }
     Spacer(
         modifier = Modifier
