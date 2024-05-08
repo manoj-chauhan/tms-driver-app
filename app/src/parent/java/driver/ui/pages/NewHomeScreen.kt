@@ -2,6 +2,7 @@ package driver.ui.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +35,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -51,6 +52,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,6 +71,7 @@ fun TopBar(
     onNotificationClick: () -> Unit,
     onProfileClick: () -> Unit
 ) {
+    val fontFamily = FontFamily.SansSerif
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,40 +79,65 @@ fun TopBar(
             .background(Color.White)
     ) {
         TopAppBar(
-
             title = {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = username,
-                        fontSize = 16.sp,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Normal
-                    )
+                    Row(modifier = Modifier.fillMaxWidth(0.62f)) {
+                        Text(
+                            text = username,
+                            fontSize = 18.sp,
+                            color = Color.DarkGray,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight.W400,
+
+                        )
+                    }
 
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(3.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        IconButton(onClick = onSearchClick) {
-                            Icon(Icons.Outlined.Search, contentDescription = "Search")
-                        }
+                        Icon(
+                            imageVector = Icons.Outlined.Search,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(22.dp)
+                                .clickable {
+                                    onSearchClick()
+                                }
+                        )
 
-                        IconButton(onClick = onNotificationClick) {
-                            Icon(Icons.Outlined.Notifications, contentDescription = "Notifications")
-                        }
+                        Icon(
+                            imageVector = Icons.Outlined.Notifications,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(22.dp)
+                                .clickable {
+                                    onNotificationClick()
+                                }
+                        )
 
-                        IconButton(onClick = onProfileClick) {
+                        Box(
+                            modifier = Modifier
+                                .background(Color.White, shape = CircleShape)
+                                .width(30.dp)
+                                .align(Alignment.CenterVertically)
+                        ) {
                             Image(
-                                painter = painterResource(id = profileImageResId),
-
-                                contentDescription = "User Profile",
+                                painter = painterResource(id = R.drawable.atul),
+                                contentDescription = "Edit Icon",
                                 modifier = Modifier
-                                    .size(32.dp)
+                                    .size(28.dp)
                                     .clip(CircleShape)
-
+                                    .clickable { onProfileClick() }
+                                    .align(Alignment.Center)
                             )
                         }
                     }
@@ -122,7 +150,7 @@ fun TopBar(
 
 @Composable
 fun BottomNavBar(
-    onTabSelected:(selectedIndex:Int)->Unit,
+    onTabSelected: (selectedIndex: Int) -> Unit,
     onTripsClick: () -> Unit,
     onEventsClick: () -> Unit,
     onHomeClick: () -> Unit,
@@ -186,7 +214,7 @@ fun BottomNavBar(
                 onClick = {
                     selected = index
                     onTabSelected(index)
-                          },
+                },
                 icon = {
                     BadgedBox(
                         badge = {
@@ -206,9 +234,9 @@ fun BottomNavBar(
                                 bottomNavItem.unselectedIcon
                             },
                             contentDescription = bottomNavItem.title,
-                            tint =  Color.DarkGray
+                            tint = Color.DarkGray
 
-                            )
+                        )
                     }
 
 
@@ -250,7 +278,7 @@ fun MainScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BottomNavBar(
-                    onTabSelected = {selectedIndex =it  },
+                    onTabSelected = { selectedIndex = it },
                     onTripsClick = onTripsClick,
                     onEventsClick = onEventsClick,
                     onHomeClick = onHomeClick,
@@ -268,7 +296,7 @@ fun MainScreen(
         },
         floatingActionButtonPosition = FabPosition.End
 
-    ) { padding->
+    ) { padding ->
         Box(
             modifier = Modifier
                 .padding(padding)
@@ -280,7 +308,10 @@ fun MainScreen(
                     .background(Color.White)
             ) {
                 item {
-                    Row (modifier = Modifier.height(50.dp), verticalAlignment = Alignment.CenterVertically){
+                    Row(
+                        modifier = Modifier.height(50.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         TopBar(
                             username = "Krish Chauhan",
                             profileImageResId = R.drawable.boy,
@@ -290,8 +321,8 @@ fun MainScreen(
                         )
                     }
                 }
-                when (selectedIndex){
-                    1 ->{
+                when (selectedIndex) {
+                    1 -> {
                         item {
                             EventsListPage(
                                 navigationController, onRegisterClick = {
@@ -301,13 +332,15 @@ fun MainScreen(
                             )
                         }
                     }
-                    2->{
-                        item{
-                            PostsSection(profileId,navigationController, onCommentClick={})
+
+                    2 -> {
+                        item {
+                            PostsSection(profileId, navigationController, onCommentClick = {})
                         }
                     }
-                    3->{
-                        item{
+
+                    3 -> {
+                        item {
                             NoticeListPage()
 
                         }
