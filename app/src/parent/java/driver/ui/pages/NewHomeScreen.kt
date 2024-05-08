@@ -128,7 +128,7 @@ fun TopBar(
 
                         Box(
                             modifier = Modifier
-                                .background(Color.White, shape = CircleShape)
+                                .background(Color.Gray, shape = CircleShape)
                                 .width(30.dp)
                                 .align(Alignment.CenterVertically)
                         ) {
@@ -302,14 +302,15 @@ fun MainScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {},
-            ) {
-                Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
+            if (selectedIndex != 4) {
+                FloatingActionButton(
+                    onClick = {  },
+                ) {
+                    Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
+                }
             }
         },
         floatingActionButtonPosition = FabPosition.End
-
     ) { padding ->
         Box(
             modifier = Modifier
@@ -358,6 +359,11 @@ fun MainScreen(
                             NoticeListPage()
 
                         }
+                    }
+                    4 -> {
+                        item {SettingsPage()  }
+
+
                     }
                 }
             }

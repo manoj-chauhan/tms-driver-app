@@ -47,6 +47,8 @@ val color = Color(android.graphics.Color.parseColor("#828282"))
 val school = Color(android.graphics.Color.parseColor("#a1a1a1"))
 val fontFamily = FontFamily.SansSerif
 
+val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
+
 @Composable
 fun NoticeCard(notice: NoticeAll) {
     ElevatedCard(
@@ -77,7 +79,7 @@ fun NoticeCard(notice: NoticeAll) {
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontFamily = fontFamily,
-                            color = color,
+                            color = colortext,
                             fontWeight = FontWeight.Normal
                         )
                     )
