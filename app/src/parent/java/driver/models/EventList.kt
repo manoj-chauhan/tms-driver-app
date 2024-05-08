@@ -23,6 +23,12 @@ fun getDummyEvents(): List<Event> {
             institutionName = "Greenwood High"
         ),
         Event(
+            imageResId = R.drawable.sky,
+            eventName = "Inter School Volley Tournament",
+            eventDate = "12 jul 2023",
+            institutionName = "Greenwood High"
+        ),
+        Event(
             imageResId = R.drawable.chess,
             eventName = "Inter School Chess Tournament",
             eventDate = "12 jul 2023",

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BookmarkBorder
@@ -27,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -46,6 +48,10 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
     val primary = Color(android.graphics.Color.parseColor("#6750a4"))
     val color = Color(android.graphics.Color.parseColor("#828282"))
     val school = Color(android.graphics.Color.parseColor("#a1a1a1"))
+
+    val first = Color(android.graphics.Color.parseColor("#ffffff"))
+    val second = Color(android.graphics.Color.parseColor("#ffffff"))
+
     val fontFamily = FontFamily.SansSerif
 
 
@@ -72,11 +78,30 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     .padding(12.dp)
                     .align(Alignment.TopEnd)
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.BookmarkBorder,
-                    contentDescription = "Save",
-                    tint = Color.DarkGray
-                )
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(2.dp)
+                        .clip(CircleShape)
+                        .shadow(5.dp, CircleShape)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(first, second),
+                                startX = 0.5f,
+                                endX = 0.2f
+                            ),
+                            shape = CircleShape
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.BookmarkBorder,
+                        contentDescription = "Save",
+                        tint = Color.Gray,
+                        modifier = Modifier
+                            .size(46.dp)
+                            .align(Alignment.Center)
+                    )
+                }
             }
 
         }
@@ -101,12 +126,12 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                         fontWeight = FontWeight.Normal
                     )
                 )
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth(0.69f)) {
+                    Column(modifier = Modifier.fillMaxWidth(0.72f)) {
                         Text(
                             text = "${event.eventDate}",
                             style = TextStyle(
@@ -131,7 +156,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     Button(
                         modifier = Modifier
                             .height(35.dp)
-                            .width(100.dp),
+                            .width(90.dp),
                         enabled = true,
                         onClick = {
                             onRegisterClick(event)
@@ -175,7 +200,6 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                 }
             }
         }
-        Spacer(modifier = Modifier.height(3.dp))
     }
     Spacer(
         modifier = Modifier

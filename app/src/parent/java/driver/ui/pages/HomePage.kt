@@ -171,9 +171,10 @@ fun ContentPage(
     onCommentClick: (postData: PostsFeed) -> Unit
 ) {
 
-    val text = Color(android.graphics.Color.parseColor("#585858"))
     val subText = Color(android.graphics.Color.parseColor("#c5c5c5"))
     val actions = Color(android.graphics.Color.parseColor("#aeaeae"))
+    val color= Color(android.graphics.Color.parseColor("#1c1b1f"))
+
 
 
     val likeViewModel: LikeViewModel = hiltViewModel()
@@ -195,6 +196,7 @@ fun ContentPage(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
                     .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
@@ -219,7 +221,7 @@ fun ContentPage(
                         text = "Delhi Public School",
                         style = TextStyle(
                             fontSize = 15.sp,
-                            color = text,
+                            color = color,
                             fontFamily = FontFamily.SansSerif
                         )
                     )
@@ -350,7 +352,7 @@ fun ContentPage(
             }
         }
     }
-    Spacer(modifier = Modifier.fillMaxWidth().height(15.dp))
+    Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
 }
 
 

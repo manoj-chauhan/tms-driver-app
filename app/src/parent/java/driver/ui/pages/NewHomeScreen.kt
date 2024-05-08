@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DirectionsBus
@@ -74,10 +73,11 @@ fun TopBar(
     onProfileClick: () -> Unit
 ) {
     val fontFamily = FontFamily.SansSerif
+    val first = Color(android.graphics.Color.parseColor("#1c1b1f"))
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
     ) {
         TopAppBar(
@@ -92,10 +92,9 @@ fun TopBar(
                         Text(
                             text = username,
                             fontSize = 18.sp,
-                            color = Color.DarkGray,
+                            color = first,
                             fontFamily = fontFamily,
                             fontWeight = FontWeight.W400,
-
                         )
                     }
 
@@ -208,11 +207,8 @@ fun BottomNavBar(
     }
     NavigationBar(
 
-        modifier = Modifier
-//                    .padding(6.dp)
-            .shadow(500.dp),
         tonalElevation = 20.dp,
-//        modifier = Modifier.shadow(60.dp, RoundedCornerShape(8.dp)),
+
         containerColor = Color.White,
     ) {
         bottomBar.forEachIndexed { index, bottomNavItem ->
@@ -287,7 +283,10 @@ fun MainScreen(
             Row(
                 modifier = Modifier
 //                    .padding(6.dp)
-                    .shadow(500.dp),
+
+
+                    .shadow(78.dp),
+
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BottomNavBar(
