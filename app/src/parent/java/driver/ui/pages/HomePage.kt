@@ -212,7 +212,7 @@ fun ContentPage(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(14.dp))
+                Spacer(modifier = Modifier.width(9.dp))
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
@@ -265,7 +265,7 @@ fun ContentPage(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(modifier = Modifier.fillMaxWidth(0.7f)) {
+                Row(modifier = Modifier.fillMaxWidth(0.75f)) {
                     Text(
                         text = "${post.comments} comments",
                         style = TextStyle(fontSize = 14.sp, color = actions)
@@ -282,7 +282,7 @@ fun ContentPage(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     val transition = updateTransition(targetState = isLiked)
                     val scale by transition.animateFloat(
