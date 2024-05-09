@@ -206,11 +206,17 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(13.dp))
                 Column(modifier=Modifier.fillMaxWidth()) {
-                    Text( text = "Manage Account",
-                        modifier = Modifier.padding(start = 10.dp),
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.Gray)
+
+                    TextButton(onClick = { }) {
+                        Text("Manage Account", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                    }
+
+//                    Text( text = "Manage Account",
+//                        modifier = Modifier.padding(start = 10.dp),
+//                        fontSize = 15.sp,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = Color.Gray)
+
                     Spacer(modifier = Modifier.height(5.dp))
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

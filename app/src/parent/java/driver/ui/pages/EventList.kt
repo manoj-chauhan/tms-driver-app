@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.drishto.driver.R
 import driver.models.Event
 import driver.models.getDummyEvents
 
@@ -48,6 +50,8 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
     val primary = Color(android.graphics.Color.parseColor("#6750a4"))
     val color = Color(android.graphics.Color.parseColor("#828282"))
     val school = Color(android.graphics.Color.parseColor("#a1a1a1"))
+
+    val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
 
     val first = Color(android.graphics.Color.parseColor("#ffffff"))
     val second = Color(android.graphics.Color.parseColor("#ffffff"))
@@ -77,34 +81,66 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     .size(50.dp)
                     .padding(12.dp)
                     .align(Alignment.TopEnd)
+
             ) {
+
                 Box(
                     modifier = Modifier
                         .size(50.dp)
-                        .padding(2.dp)
                         .clip(CircleShape)
-                        .shadow(5.dp, CircleShape)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(first, second),
-                                startX = 0.5f,
-                                endX = 0.2f
-                            ),
-                            shape = CircleShape
-                        )
+                        .background(Color.Transparent)
+
+//                        .shadow(5.dp, CircleShape)
                 ) {
+
                     Icon(
                         imageVector = Icons.Outlined.BookmarkBorder,
                         contentDescription = "Save",
-                        tint = Color.Gray,
+                        tint = Color.Black,
                         modifier = Modifier
                             .size(46.dp)
                             .align(Alignment.Center)
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(Color.White.copy(alpha = 0.7f), Color.White),
+                                    startY = 0f,
+                                    endY = 1f
+                                ),
+                                shape = CircleShape
+                            )
                     )
+
+
+
                 }
             }
+//            Box(
+//                modifier = Modifier
+//                    .size(50.dp)
+//                    .padding(12.dp)
+//                    .align(Alignment.TopEnd)
+//            ) {
+//
+//                Box(
+//                    modifier = Modifier
+//                        .size(50.dp)
+//                        .clip(CircleShape)
+////                        .shadow(5.dp, CircleShape)
+//                ) {
+//
+//                    Image(
+//                        painter = painterResource(id = R.drawable.save), // Replace with your image resource ID
+//                        contentDescription = "Save",
+//                        modifier = Modifier
+//                            .size(46.dp)
+//                            .align(Alignment.Center)
+//                    )
+//                }
+//            }
+
 
         }
+
         Spacer(modifier = Modifier.height(6.dp))
         Row(
             modifier = Modifier
@@ -122,7 +158,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = fontFamily,
-                        color = color,
+                        color = colortext,
                         fontWeight = FontWeight.Normal
                     )
                 )
@@ -153,47 +189,49 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                         )
                     }
 
-                    Button(
-                        modifier = Modifier
-                            .height(35.dp)
-                            .width(90.dp),
-                        enabled = true,
-                        onClick = {
-                            onRegisterClick(event)
-                        },
-                        contentPadding = PaddingValues(),
-                        colors = ButtonDefaults.buttonColors(
-                            Color.Transparent
-                        ),
-                        shape = RoundedCornerShape(20.dp)
-                    ) {
-                        Box(
+                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
+                        Button(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(35.dp)
-                                .align(Alignment.Bottom)
-                                .background(
-                                    brush = Brush.horizontalGradient(
-                                        listOf(
-                                            primary,
-                                            primary
-                                        )
-                                    ),
-                                    shape = RoundedCornerShape(1.dp)
-                                ), contentAlignment = Alignment.Center
+                                .height(35.dp)
+                                .width(90.dp),
+                            enabled = true,
+                            onClick = {
+                                onRegisterClick(event)
+                            },
+                            contentPadding = PaddingValues(),
+                            colors = ButtonDefaults.buttonColors(
+                                Color.Transparent
+                            ),
+                            shape = RoundedCornerShape(20.dp)
                         ) {
-                            Row(
-                                modifier = Modifier,
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(35.dp)
+                                    .align(Alignment.Bottom)
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            listOf(
+                                                primary,
+                                                primary
+                                            )
+                                        ),
+                                        shape = RoundedCornerShape(1.dp)
+                                    ), contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = "Register",
-                                    style = TextStyle(
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold
+                                Row(
+                                    modifier = Modifier,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Register",
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                     }
