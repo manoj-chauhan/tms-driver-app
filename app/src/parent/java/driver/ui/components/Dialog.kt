@@ -56,20 +56,16 @@ import driver.ui.pages.noticeData
 import driver.ui.viewmodels.AccountsProfileViewModel
 import java.nio.file.WatchEvent
 
-
 @Composable
 fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
     val customLightGray = Color(android.graphics.Color.parseColor("#F0F0F0"))
     val ap: AccountsProfileViewModel = hiltViewModel()
-
 
     LaunchedEffect(key1 = Unit) {
         ap.getProfileList()
     }
 
     val profilesList by ap.profileList.collectAsStateWithLifecycle()
-    Log.d("{Profile}", "AccountsProfile:$profilesList")
-
 
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
@@ -80,10 +76,7 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                 modifier = Modifier
                     .padding(16.dp)
                     .width(280.dp)
-            )
-
-            {
-
+            ) {
                 Spacer(modifier = Modifier.height(7.dp))
 
                 Text(
@@ -92,19 +85,19 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
 
-                profilesList?.forEach { profile ->           //doubt here
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(customLightGray)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp, bottom = 8.dp, start = 14.dp, end = 14.dp)
-                        ) {
+
+                Box(
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(20.dp))
+                        .background(customLightGray)
+                        .padding(14.dp)
+                ) {
+                    Column {
+
+                        profilesList?.forEach { profile ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -129,47 +122,46 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                                     textAlign = TextAlign.Center
                                 )
                             }
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
+
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(40.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        Color.LightGray, shape = CircleShape
+                                    )
+                                    .size(30.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.PersonAdd,
+                                    contentDescription = "Add Account",
+                                    tint = Color.Gray,
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clip(CircleShape)
+                                        .align(Alignment.Center)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = "Create Profile",
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
-
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(40.dp)
-                        .padding(bottom = 2.dp), verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                Color.LightGray, shape = CircleShape
-                            )
-                            .align(Alignment.CenterVertically)
-
-
-                            .size(30.dp)
-                    ) {
-
-                        Icon(
-                            imageVector = Icons.Outlined.PersonAdd,
-                            contentDescription = "Add Account",
-                            tint = Color.Gray,
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clip(CircleShape)
-                                .align(Alignment.Center)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = "Create Profile", textAlign = TextAlign.Center);
-
-                }
-
 
 
                 Spacer(modifier = Modifier.height(13.dp))
+
+
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "Manage Account",
@@ -178,6 +170,7 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Gray
                     )
+
                     Spacer(modifier = Modifier.height(5.dp))
 
                     Row(
@@ -185,7 +178,11 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         TextButton(onClick = { }) {
-                            Text("Terms Of Use", fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            Text(
+                                "Terms of Use",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
 
                         TextButton(onClick = { }) {
@@ -196,19 +193,10 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                             )
                         }
                     }
+
                     Spacer(modifier = Modifier.height(3.dp))
                 }
             }
         }
     }
 }
-
-
-//@Preview
-//@Composable
-//fun DialogPreview(){
-//    Dialog(setShowDialog ={true})
-//
-//
-//}
-
