@@ -1,5 +1,6 @@
 package driver.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,10 +47,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.drishto.driver.R
 import driver.ui.pages.NoticeAll
 import driver.ui.pages.NoticeCard
 import driver.ui.pages.noticeData
+import driver.ui.viewmodels.AccountsProfileViewModel
 import java.nio.file.WatchEvent
 
 
@@ -57,6 +62,15 @@ import java.nio.file.WatchEvent
 @Composable
 fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
     val customLightGray = Color(android.graphics.Color.parseColor("#F0F0F0"))
+    val ap: AccountsProfileViewModel = hiltViewModel()
+
+
+    LaunchedEffect(key1 = Unit) {
+        ap.getProfileList()
+    }
+
+    val profilesList by ap.profileList.collectAsStateWithLifecycle()
+    Log.d("{Profile}", "AccountsProfile:$profilesList")
 
 
     Dialog(onDismissRequest = { setShowDialog(false) }) {
