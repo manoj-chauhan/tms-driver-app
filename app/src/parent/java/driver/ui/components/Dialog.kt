@@ -57,8 +57,6 @@ import driver.ui.viewmodels.AccountsProfileViewModel
 import java.nio.file.WatchEvent
 
 
-
-
 @Composable
 fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
     val customLightGray = Color(android.graphics.Color.parseColor("#F0F0F0"))
@@ -78,173 +76,132 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
             shape = RoundedCornerShape(20.dp),
             color = Color.White
         ) {
-            Column(modifier = Modifier
-                .padding(16.dp)
-                .width(280.dp)
-                )
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .width(280.dp)
+            )
 
             {
 
-
-//                Box(modifier = Modifier
-//                    .clip(shape = RoundedCornerShape(10.dp))
-//                    .background(Color.LightGray)){}
-
                 Spacer(modifier = Modifier.height(7.dp))
 
-                Text( text = "Profiles",
+                Text(
+                    text = "Profiles",
                     color = Color.Gray,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Box(
-                    modifier = Modifier
-                        .clip(shape = RoundedCornerShape(20.dp))
-                        .background(customLightGray)
-                ) {
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)
-                        .padding(bottom = 8.dp)
-                        .padding(start = 14.dp)
-                        .padding(end = 14.dp)) {
-                        Row(modifier= Modifier
-                            .fillMaxWidth()
-                            .height(40.dp)
-                            .padding(bottom = 2.dp), verticalAlignment = Alignment.CenterVertically
 
-                            ) {
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        Color.White, shape = CircleShape
-                                    )
-                                    .size(30.dp)
-
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.boy),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .clip(CircleShape),
-                                    contentScale = ContentScale.FillBounds
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Text(text = "Krish Chauhan", textAlign = TextAlign.Center);
-
-                        }
-                        Row(modifier= Modifier
-                            .fillMaxWidth()
-                            .height(40.dp)
-                            .padding(bottom = 2.dp), verticalAlignment = Alignment.CenterVertically
+                profilesList?.forEach { profile ->           //doubt here
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(customLightGray)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, bottom = 8.dp, start = 14.dp, end = 14.dp)
                         ) {
-                            Box(
+                            Row(
                                 modifier = Modifier
-                                    .background(
-                                        Color.White, shape = CircleShape
-                                    )
-                                    .size(30.dp)
+                                    .fillMaxWidth()
+                                    .height(40.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.boy),
-                                    contentDescription = "",
+                                Box(
                                     modifier = Modifier
-                                        .clip(CircleShape),
-                                    contentScale = ContentScale.FillBounds
+                                        .background(Color.White, shape = CircleShape)
+                                        .size(30.dp)
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.boy),
+                                        contentDescription = "",
+                                        modifier = Modifier.clip(CircleShape),
+                                        contentScale = ContentScale.FillBounds
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Text(
+                                    text = profile.name,
+                                    textAlign = TextAlign.Center
                                 )
                             }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Text(text = "Krish Chauhan", textAlign = TextAlign.Center);
-
                         }
-                        Row(modifier= Modifier
-                            .fillMaxWidth()
-                            .height(40.dp)
-                            .padding(bottom = 2.dp), verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        Color.White, shape = CircleShape
-                                    )
-                                    .size(30.dp)
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.boy),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .clip(CircleShape),
-                                    contentScale = ContentScale.FillBounds
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Text(text = "Krish Chauhan", textAlign = TextAlign.Center);
-
-                        }
-                        Row(modifier= Modifier
-                            .fillMaxWidth()
-                            .height(40.dp)
-                            .padding(bottom = 2.dp), verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        Color.LightGray, shape = CircleShape
-                                    )
-                                    .align(Alignment.CenterVertically)
-
-
-                                    .size(30.dp)
-                            ) {
-
-                                Icon(
-                                    imageVector = Icons.Outlined.PersonAdd,
-                                    contentDescription = "Add Account",
-                                    tint = Color.Gray,
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .clip(CircleShape)
-                                        .align(Alignment.Center)
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Text(text = "Create Profile", textAlign = TextAlign.Center);
-
-                        }
-
-
                     }
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .padding(bottom = 2.dp), verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                Color.LightGray, shape = CircleShape
+                            )
+                            .align(Alignment.CenterVertically)
+
+
+                            .size(30.dp)
+                    ) {
+
+                        Icon(
+                            imageVector = Icons.Outlined.PersonAdd,
+                            contentDescription = "Add Account",
+                            tint = Color.Gray,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clip(CircleShape)
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = "Create Profile", textAlign = TextAlign.Center);
 
                 }
+
+
+
                 Spacer(modifier = Modifier.height(13.dp))
-                Column(modifier=Modifier.fillMaxWidth()) {
-                    Text( text = "Manage Account",
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Manage Account",
                         modifier = Modifier.padding(start = 10.dp),
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.Gray)
+                        color = Color.Gray
+                    )
                     Spacer(modifier = Modifier.height(5.dp))
 
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         TextButton(onClick = { }) {
                             Text("Terms Of Use", fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
                         }
 
                         TextButton(onClick = { }) {
-                            Text("Privacy Policy", fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            Text(
+                                "Privacy Policy",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(3.dp))
                 }
-
-
             }
         }
     }
 }
-
 
 
 //@Preview
