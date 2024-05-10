@@ -299,7 +299,7 @@ fun MainScreen(
             }
         },
         floatingActionButton = {
-            if (selectedIndex != 4) {
+            if (selectedIndex != 0 && selectedIndex != 4) {
                 FloatingActionButton(
                     onClick = {  },
                 ) {
@@ -334,6 +334,9 @@ fun MainScreen(
                     }
                 }
                 when (selectedIndex) {
+                    0 -> {
+                        item{ temptrips() }
+                    }
                     1 -> {
                         item {
                             EventsListPage(

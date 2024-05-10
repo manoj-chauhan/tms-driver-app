@@ -81,25 +81,27 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                 Box(
                     modifier = Modifier
                         .size(50.dp)
-                        .padding(2.dp)
                         .clip(CircleShape)
-                        .shadow(5.dp, CircleShape)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(first, second),
-                                startX = 0.5f,
-                                endX = 0.2f
-                            ),
-                            shape = CircleShape
-                        )
+                        .background(Color.Transparent)
+
+//                        .shadow(5.dp, CircleShape)
                 ) {
+
                     Icon(
                         imageVector = Icons.Outlined.BookmarkBorder,
                         contentDescription = "Save",
-                        tint = Color.Gray,
+                        tint = Color.Black,
                         modifier = Modifier
                             .size(46.dp)
                             .align(Alignment.Center)
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(Color.White.copy(alpha = 0.7f), Color.White),
+                                    startY = 0f,
+                                    endY = 1f
+                                ),
+                                shape = CircleShape
+                            )
                     )
                 }
             }
@@ -122,7 +124,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = fontFamily,
-                        color = color,
+                        color = colortext,
                         fontWeight = FontWeight.Normal
                     )
                 )
@@ -152,6 +154,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                             )
                         )
                     }
+
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
                         Button(
                             modifier = Modifier
