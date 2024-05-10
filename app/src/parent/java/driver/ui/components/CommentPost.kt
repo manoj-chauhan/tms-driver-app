@@ -92,6 +92,8 @@ fun CommentPost(navController: NavHostController, postId: String?) {
             pa.getPostComments(postId)
         }
     }
+    val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -138,10 +140,10 @@ fun CommentPost(navController: NavHostController, postId: String?) {
                                         Text(
                                             text = "Post",
                                             style = TextStyle(
-                                                color = Color.Black,
+                                                color = colortext,
                                                 fontSize = 20.sp,
                                                 fontFamily = FontFamily.SansSerif,
-                                                fontWeight = FontWeight.W600
+                                                fontWeight = FontWeight.W500,
                                             )
                                         )
                                     }
@@ -263,6 +265,7 @@ fun CommentPost(navController: NavHostController, postId: String?) {
 fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val images = listOf(R.drawable.hi)
+    val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
 
     Box(
         modifier = Modifier.fillMaxSize(1f)
@@ -315,8 +318,9 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
                                 if (postsFeed != null) {
                                     Text(
                                         text = postsFeed.userName, style = TextStyle(
-                                            fontSize = 16.sp, fontFamily = FontFamily.SansSerif
-                                        )
+                                            fontSize = 16.sp, fontFamily = FontFamily.SansSerif,
+                                            color = colortext
+                                    )
                                     )
                                 }
                             }
@@ -434,6 +438,8 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
 
 @Composable
 fun CommentsArea(postComments: List<CommentPost>?) {
+    val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
+
 
     Box(
         modifier = Modifier
@@ -443,7 +449,7 @@ fun CommentsArea(postComments: List<CommentPost>?) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = "Comments",
-                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W500)
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W500, color = colortext)
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -474,6 +480,8 @@ fun CommentsArea(postComments: List<CommentPost>?) {
 
 @Composable
 fun CommentsInPost(commentPost: CommentPost) {
+    val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
+
     Column {
         Row(modifier = Modifier.fillMaxWidth()) {
             Box(modifier = Modifier.width(33.dp)) {
@@ -522,7 +530,7 @@ fun CommentsInPost(commentPost: CommentPost) {
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 Text(
                                     text = commentPost.commentedBy, style = TextStyle(
-                                        fontSize = 16.sp, fontFamily = FontFamily.SansSerif
+                                        fontSize = 16.sp, fontFamily = FontFamily.SansSerif, color = colortext
                                     )
                                 )
                             }
