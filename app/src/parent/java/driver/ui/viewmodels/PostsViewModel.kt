@@ -3,6 +3,7 @@ package driver.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import driver.models.CommentPost
 import driver.models.PostUpload
 import driver.models.PostsFeed
 import driver.postUploadManagement.PostUploadManager
@@ -26,6 +27,9 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
 
     private val _postDetail: MutableStateFlow<PostsFeed?> = MutableStateFlow(null)
     val postDetail: StateFlow<PostsFeed?> = _postDetail.asStateFlow()
+
+    private val _postComments: MutableStateFlow<List<CommentPost>?> = MutableStateFlow(emptyList())
+    val postComments: StateFlow<List<CommentPost>?> = _postComments.asStateFlow()
 
     fun uploadPosts(image: ByteArray?, mimeType: String?){
         CoroutineScope(Dispatchers.IO).launch {
@@ -74,6 +78,15 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
             }
         }catch (e:Exception){
 
+        }
+    }
+
+    fun getPostComments(postId: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val postsList = postsUploadManager.getPostComments(postId)
+            _postComments.update {
+                postsList
+            }
         }
     }
 }

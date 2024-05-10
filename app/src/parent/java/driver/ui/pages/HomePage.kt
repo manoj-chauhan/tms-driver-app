@@ -218,7 +218,7 @@ fun ContentPage(
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "Delhi Public School",
+                        text = post.userName,
                         style = TextStyle(
                             fontSize = 15.sp,
                             color = color,
