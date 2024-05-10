@@ -63,18 +63,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.drishto.driver.R
+import driver.models.CommentPost
 import driver.models.PostsFeed
 import driver.ui.pages.ImageScrollWithTextOverlay
+import driver.ui.viewmodels.PostActionsViewModel
 import driver.ui.viewmodels.PostsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentPost(navController:NavHostController,postId: String?) {
+fun CommentPost(navController: NavHostController, postId: String?) {
     var comment by remember {
         mutableStateOf("")
     }
     val interactionSource = remember { MutableInteractionSource() }
     val pa: PostsViewModel = hiltViewModel()
+    val postActions: PostActionsViewModel = hiltViewModel()
+
     val postsFeed by pa.postDetail.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         if (postId != null) {
@@ -82,12 +86,18 @@ fun CommentPost(navController:NavHostController,postId: String?) {
         }
     }
 
+    val postComments by pa.postComments.collectAsStateWithLifecycle()
+    LaunchedEffect(postsFeed) {
+        if (postId != null) {
+            pa.getPostComments(postId)
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        Column (modifier = Modifier, verticalArrangement = Arrangement.SpaceBetween){
+        Column(modifier = Modifier, verticalArrangement = Arrangement.SpaceBetween) {
             Box(modifier = Modifier.fillMaxHeight(0.95f)) {
                 LazyColumn(modifier = Modifier) {
                     item {
@@ -139,7 +149,7 @@ fun CommentPost(navController:NavHostController,postId: String?) {
                             }
                             Spacer(modifier = Modifier.height(12.dp))
                             Column(modifier = Modifier) {
-                                PostContent(postsFeed)
+                                PostContent(postsFeed, postComments)
                             }
                         }
                     }
@@ -147,10 +157,13 @@ fun CommentPost(navController:NavHostController,postId: String?) {
             }
 
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-                .background(Color.White), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+                    .background(Color.White),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             )
             {
                 BasicTextField(value = comment,
@@ -200,7 +213,7 @@ fun CommentPost(navController:NavHostController,postId: String?) {
                         .align(Alignment.Bottom),
                     enabled = true,
                     onClick = {
-//                        postsFeed?.let { pa.uploadComments(it.id, comment) }
+                        postsFeed?.let { postActions.uploadComments(it.id, comment) }
                     },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(
@@ -247,7 +260,7 @@ fun CommentPost(navController:NavHostController,postId: String?) {
 }
 
 @Composable
-fun PostContent(postsFeed: PostsFeed?) {
+fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
     val gry = Color(android.graphics.Color.parseColor("#838383"))
     val images = listOf(R.drawable.hi)
 
@@ -272,7 +285,8 @@ fun PostContent(postsFeed: PostsFeed?) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 10.dp)
+                            .padding(horizontal = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
@@ -298,11 +312,13 @@ fun PostContent(postsFeed: PostsFeed?) {
 
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "Delhi Public School", style = TextStyle(
-                                        fontSize = 16.sp, fontFamily = FontFamily.SansSerif
+                                if (postsFeed != null) {
+                                    Text(
+                                        text = postsFeed.userName, style = TextStyle(
+                                            fontSize = 16.sp, fontFamily = FontFamily.SansSerif
+                                        )
                                     )
-                                )
+                                }
                             }
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 Text(
@@ -319,17 +335,18 @@ fun PostContent(postsFeed: PostsFeed?) {
 
                     Spacer(modifier = Modifier.size(15.dp))
 
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
 
-                    ){
-                    ExpandableText("${postsFeed?.message}")
+                    ) {
+                        ExpandableText("${postsFeed?.message}")
                     }
                     Spacer(modifier = Modifier.size(15.dp))
 
 
-                    val images =  postsFeed?.media?.let {
+                    val images = postsFeed?.media?.let {
                         it.map { it.mediaUrl }.toList()
                     }
                     Row(
@@ -408,7 +425,7 @@ fun PostContent(postsFeed: PostsFeed?) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            CommentsArea()
+            CommentsArea(postComments)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -416,7 +433,7 @@ fun PostContent(postsFeed: PostsFeed?) {
 }
 
 @Composable
-fun CommentsArea() {
+fun CommentsArea(postComments: List<CommentPost>?) {
 
     Box(
         modifier = Modifier
@@ -434,7 +451,18 @@ fun CommentsArea() {
             Box(modifier = Modifier.fillMaxWidth()) {
 
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    CommentsInPost()
+                    if (postComments?.size != 0) {
+                        postComments?.forEach {
+                            CommentsInPost(it)
+                        }
+                    } else {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Text(
+                                text = "No comments in this post",
+                                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W500)
+                            )
+                        }
+                    }
                 }
 
             }
@@ -445,131 +473,8 @@ fun CommentsArea() {
 }
 
 @Composable
-fun CommentsInPost() {
-
+fun CommentsInPost(commentPost: CommentPost) {
     Column {
-
-
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Box(modifier = Modifier.width(33.dp)) {
-            Box(
-                modifier = Modifier
-                    .background(
-                        Color.White, shape = CircleShape
-                    )
-                    .size(35.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.atul),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(200.dp)
-                        .clip(CircleShape)
-                        .border(
-                            width = 0.dp, Color.White, shape = CircleShape
-                        ),
-                    contentScale = ContentScale.FillBounds
-                )
-            }
-        }
-        Spacer(modifier = Modifier.width(15.dp))
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(shape = RoundedCornerShape(6.dp))
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding()
-                    .fillMaxWidth()
-                    .background(Color.LightGray),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Top
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                text = "Delhi Public School", style = TextStyle(
-                                    fontSize = 16.sp, fontFamily = FontFamily.SansSerif
-                                )
-                            )
-                        }
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                text = "Sonipath, Haryana", style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily.SansSerif,
-                                    color = Color.Gray
-                                )
-                            )
-                        }
-                    }
-
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, bottom = 10.dp)
-                ) {
-                    Text(
-                        text = "The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily.SansSerif,
-                            color = Color.Black
-                        )
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                TextButton(
-                    onClick = {
-                    }
-                ) {
-                    Text(
-                        "Like", style = TextStyle(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
-
-//                VerticalDivider(modifier = Modifier
-//                    .width(2.dp)
-//                    .height(14.dp)
-//                    .background(Color.LightGray))
-//
-//                TextButton(
-//                    onClick = {
-//                    }
-//                ) {
-//                    Text(
-//                        "Reply", style = TextStyle(
-//                            fontSize = 12.sp,
-//                            fontWeight = FontWeight.Bold
-//                        )
-//                    )
-//                }
-            }
-        }
-    }
         Row(modifier = Modifier.fillMaxWidth()) {
             Box(modifier = Modifier.width(33.dp)) {
                 Box(
@@ -616,7 +521,7 @@ fun CommentsInPost() {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 Text(
-                                    text = "Delhi Public School", style = TextStyle(
+                                    text = commentPost.commentedBy, style = TextStyle(
                                         fontSize = 16.sp, fontFamily = FontFamily.SansSerif
                                     )
                                 )
@@ -643,7 +548,7 @@ fun CommentsInPost() {
                             .padding(start = 10.dp, bottom = 10.dp)
                     ) {
                         Text(
-                            text = "The event was really enjoying. We had talked about a lot of changes that can be made within an organization to make it grow a bit larger.",
+                            text = commentPost.content,
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily.SansSerif,
@@ -670,26 +575,10 @@ fun CommentsInPost() {
                             )
                         )
                     }
-
-//                VerticalDivider(modifier = Modifier
-//                    .width(2.dp)
-//                    .height(14.dp)
-//                    .background(Color.LightGray))
-//
-//                TextButton(
-//                    onClick = {
-//                    }
-//                ) {
-//                    Text(
-//                        "Reply", style = TextStyle(
-//                            fontSize = 12.sp,
-//                            fontWeight = FontWeight.Bold
-//                        )
-//                    )
-//                }
                 }
             }
         }
+
     }
 
 }

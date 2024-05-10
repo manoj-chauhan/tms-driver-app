@@ -1,5 +1,6 @@
 package driver.postUploadManagement
 
+import driver.models.CommentPost
 import driver.models.PostUpload
 import driver.models.PostsFeed
 
@@ -9,5 +10,6 @@ interface PostUploadManager {
     fun getFeedPosts(profile:String):List<PostsFeed>?
 
     fun getPostDetail(postId:String):PostsFeed?
+    fun getPostComments(postId: String):List<CommentPost>?
 
 }

@@ -16,6 +16,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
+import driver.models.CommentPost
 import driver.models.PostUpload
 import driver.models.PostsFeed
 import driver.models.UploadPosts
@@ -190,6 +191,57 @@ class PostNetRepository @Inject constructor(
                     .authentication().bearer(it)
                     .header("Profile-Id", profile)
                     .responseObject(moshiDeserializerOf(PostsFeed::class.java))
+
+                result.fold(
+                    {
+                    },
+                    { error ->
+                        EventBus.getDefault().post("AUTH_FAILED")
+                        if (error.response.statusCode == 401) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if (error.response.statusCode == 500) {
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
+                    }
+                )
+
+                result.get()
+            }
+
+        } catch (e: Exception) {
+            null
+        }
+
+    }
+
+    fun getCommentsByPost(context: Context, postId: String): List<CommentPost>? {
+        val commentsPost = Types.newParameterizedType(List::class.java, CommentPost::class.java)
+        val adapter: JsonAdapter<List<CommentPost>> = Moshi.Builder().build().adapter(commentsPost)
+
+        val commentUrl = context.resources.getString(R.string.url_get_comments_posts)+postId+"/comments"
+        var profile = ""
+        getProfileId(context)?.let {
+            profile =  it
+        }
+
+        return try {
+            getAccessToken(context)?.let {
+                val (_, _, result) = commentUrl.httpGet()
+                    .authentication().bearer(it)
+                    .header("Profile-Id", profile)
+                    .responseObject(moshiDeserializerOf(adapter))
 
                 result.fold(
                     {

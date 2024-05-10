@@ -9,6 +9,7 @@ import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.network.getProfileId
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
+import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
@@ -27,10 +28,18 @@ class PostActionNetRepository @Inject constructor(
     fun sendComment(postId: String, comment: String) {
         try {
 
+            val message = Comment(comment)
             val moshi = Moshi.Builder().build()
             val jsonAdapter: JsonAdapter<Comment> = moshi.adapter(Comment::class.java)
-            val sendComment = Comment(comment)
-            val requestBody = jsonAdapter.toJson(sendComment)
+            val requestBody = jsonAdapter.toJson(message)
+
+
+            var profileId =""
+            getProfileId(context).let {
+                if (it != null) {
+                    profileId = it
+                }
+            }
 
             getAccessToken(context)?.let {
 
@@ -38,7 +47,8 @@ class PostActionNetRepository @Inject constructor(
 
                 val (request1, response, result) = url.httpPost()
                     .authentication().bearer(it)
-                    .body(requestBody)
+                    .header("Profile-Id", profileId)
+                    .jsonBody(requestBody)
                     .response()
 
                 if (response.statusCode == 200) {
@@ -47,7 +57,7 @@ class PostActionNetRepository @Inject constructor(
                         { _ ->
                         },
                         { error ->
-                            Log.d("TAG", "uploadPosts: $error")
+                            Log.d("Error", "uploadPosts: $error")
                             if (error.response.statusCode == 401) {
                                 errorManager.getErrorDescription(context)
                             }

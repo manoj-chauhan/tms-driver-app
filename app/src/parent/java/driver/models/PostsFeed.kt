@@ -12,7 +12,8 @@ data class PostsFeed(
     val shares: String?,
     val message: String?,
     val media: List<MediaList>,
-    val likedStatus: Boolean
+    val likedStatus: Boolean,
+    val userName :String
 )
 
 @JsonClass(generateAdapter = true)

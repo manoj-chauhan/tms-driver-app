@@ -2,6 +2,7 @@ package driver.postUploadManagement
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import driver.models.CommentPost
 import driver.models.PostUpload
 import driver.models.PostsFeed
 import driver.network.PostNetRepository
@@ -23,6 +24,10 @@ class PostUploadManagerImpl @Inject constructor(
 
     override fun getPostDetail(postId: String): PostsFeed? {
         return postNetRepository.getPostDetail(context,postId)
+    }
+
+    override fun getPostComments(postId: String): List<CommentPost>? {
+        return postNetRepository.getCommentsByPost(context, postId)
     }
 
 

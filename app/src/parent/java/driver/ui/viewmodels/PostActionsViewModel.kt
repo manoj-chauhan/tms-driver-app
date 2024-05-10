@@ -1,5 +1,6 @@
 package driver.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,10 +22,12 @@ class PostActionsViewModel @Inject constructor(private val postActionManager: Po
     private val _comments: MutableStateFlow<List<Comments>?> = MutableStateFlow(emptyList())
     val commentsList: StateFlow<List<Comments>?> = _comments.asStateFlow()
     fun uploadComments(postId: String, message: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch{
             try {
                 postActionManager.uploadPostComment(postId, message)
+
             } catch (e: Exception) {
+                Log.e("TAG", "uploadComments: error", )
 
             }
         }
