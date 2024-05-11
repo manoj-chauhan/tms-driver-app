@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 //import androidx.compose.ui.node.CanFocusChecker.start
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +50,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.drishto.driver.R
+import com.drishto.driver.network.getProfileId
 import driver.ui.pages.NoticeAll
 import driver.ui.pages.NoticeCard
 import driver.ui.pages.noticeData
@@ -62,6 +64,10 @@ import java.nio.file.WatchEvent
 fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
     val customLightGray = Color(android.graphics.Color.parseColor("#F0F0F0"))
     val ap: AccountsProfileViewModel = hiltViewModel()
+
+    val activecolor =Color(android.graphics.Color.parseColor("#6200EE"))
+
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
         ap.getProfileList()
@@ -103,24 +109,49 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                                     .height(40.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(Color.White, shape = CircleShape)
-                                        .size(30.dp)
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.boy),
-                                        contentDescription = "",
-                                        modifier = Modifier.clip(CircleShape),
-                                        contentScale = ContentScale.FillBounds
+                                Row(modifier = Modifier.weight(0.7f)
+                                        ,verticalAlignment = Alignment.CenterVertically) {
+
+
+                                    Box(
+                                        modifier = Modifier
+                                            .background(Color.White, shape = CircleShape)
+                                            .size(30.dp)
+
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.boy),
+                                            contentDescription = "",
+                                            modifier = Modifier.clip(CircleShape),
+                                            contentScale = ContentScale.FillBounds
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(
+                                        text = profile.name,
+                                        textAlign = TextAlign.Center,
+
                                     )
                                 }
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Text(
-                                    text = profile.name,
-                                    textAlign = TextAlign.Center
-                                )
+
+
+                                if (getProfileId(context) == profile.id) {
+
+                                    Box(modifier = Modifier.align(Alignment.CenterVertically)
+                                        ) {
+                                        Text(
+                                            text = "ACTIVE",
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = activecolor
+                                        )
+                                    }
+                                }
+
+
+
                             }
+
                             Spacer(modifier = Modifier.height(10.dp))
                         }
 
