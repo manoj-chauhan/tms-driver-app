@@ -1,5 +1,9 @@
 package driver.ui.components
 
+import android.util.Log
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,6 +30,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Message
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -39,12 +45,14 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -86,6 +94,7 @@ fun CommentPost(navController: NavHostController, postId: String?) {
         }
     }
 
+            Log.d("TAG", "CommentPost: $postsFeed")
     val postComments by pa.postComments.collectAsStateWithLifecycle()
     LaunchedEffect(postsFeed) {
         if (postId != null) {
@@ -151,7 +160,9 @@ fun CommentPost(navController: NavHostController, postId: String?) {
                             }
                             Spacer(modifier = Modifier.height(12.dp))
                             Column(modifier = Modifier) {
-                                PostContent(postsFeed, postComments)
+                                if(postsFeed!=null) {
+                                    PostContent(postsFeed, postComments)
+                                }
                             }
                         }
                     }
@@ -263,9 +274,13 @@ fun CommentPost(navController: NavHostController, postId: String?) {
 
 @Composable
 fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
-    val gry = Color(android.graphics.Color.parseColor("#838383"))
-    val images = listOf(R.drawable.hi)
     val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
+
+    val postActionViewModel: PostActionsViewModel = hiltViewModel()
+    Log.d("Post FEded", "PostContent: $postsFeed")
+    var likesCount by remember { mutableIntStateOf(postsFeed?.likes ?: 0) }
+    var isLiked by remember { mutableStateOf(postsFeed?.likedStatus) }
+
 
     Box(
         modifier = Modifier.fillMaxSize(1f)
@@ -367,53 +382,95 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(20.dp)
-                            .padding(
-                                vertical = 0.dp, horizontal = 10.dp
-                            ),
+                            .padding(horizontal = 10.dp)
+                            .padding(vertical = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Row {
+                        Row(modifier = Modifier.fillMaxWidth(0.75f)) {
                             Text(
                                 text = "${postsFeed?.comments} comments",
-                                style = TextStyle(fontSize = 12.sp, color = gry)
+                                style = TextStyle(fontSize = 14.sp)
                             )
 
                             Spacer(modifier = Modifier.width(12.dp))
 
                             Text(
-                                text = "${postsFeed?.likes} likes",
-                                style = TextStyle(fontSize = 12.sp, color = gry)
+                                text = "$likesCount likes",
+                                style = TextStyle(fontSize = 14.sp)
                             )
                         }
 
-                        Row {
-                            Image(
-                                painter = painterResource(id = R.drawable.like),
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            val transition = updateTransition(targetState = isLiked)
+                            val scale by transition.animateFloat(
+                                transitionSpec = {
+                                    keyframes {
+                                        1.6f at 0
+                                        3.0f at 300
+                                        1.0f at 200
+                                    }
+                                }, label = ""
+                            ) { liked ->
+                                if (liked == true) 1.0f else 0.8f
+                            }
+
+                            if (isLiked == true) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.likenew),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(23.dp)
+                                        .clickable {
+                                            postsFeed?.let { postActionViewModel.dislikePost(it.id) }
+                                            likesCount--
+                                            isLiked = false
+                                        }
+                                        .scale(scale),
+                                    contentScale = ContentScale.FillBounds
+                                )
+                            } else {
+                                Image(
+                                    painter = painterResource(id = R.drawable.like),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(23.dp)
+                                        .clickable {
+                                            if (postsFeed != null) {
+                                                postActionViewModel.likePost(postsFeed.id)
+                                            }
+                                            likesCount++
+                                            isLiked = true
+                                        }
+                                        .scale(scale),
+                                    contentScale = ContentScale.FillBounds
+                                )
+                            }
+
+                            Icon(
+                                imageVector = Icons.Outlined.Message,
                                 contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable {
+//                                        onCommentClick(post)
+                                    }
                             )
 
-                            Spacer(modifier = Modifier.width(12.dp))
-
-                            Image(
-                                painter = painterResource(id = R.drawable.message),
+                            Icon(
+                                imageVector = Icons.Outlined.Share,
                                 contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable {
+//                                        onCommentClick(post)
+                                    }
                             )
-
-                            Spacer(modifier = Modifier.width(10.dp))
-
-                            Image(
-                                painter = painterResource(id = R.drawable.share),
-                                contentDescription = "",
-                                modifier = Modifier.size(20.dp),
-                                contentScale = ContentScale.FillBounds
-                            )
-
                         }
                     }
                 }
