@@ -2,6 +2,7 @@ package driver.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +68,8 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
 
     val activecolor =Color(android.graphics.Color.parseColor("#6200EE"))
 
+    var selectedProfileId by remember { mutableStateOf<String?>(null) }
+
     val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
@@ -106,11 +109,14 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(40.dp),
+                                    .height(40.dp)
+                                    .clickable {
+                                        selectedProfileId = profile.id
+                                    },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Row(modifier = Modifier.weight(0.7f)
-                                        ,verticalAlignment = Alignment.CenterVertically) {
+                                    ,verticalAlignment = Alignment.CenterVertically) {
 
 
                                     Box(
@@ -130,15 +136,15 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                                     Text(
                                         text = profile.name,
                                         textAlign = TextAlign.Center,
-
                                     )
                                 }
 
 
-                                if (getProfileId(context) == profile.id) {
-
-                                    Box(modifier = Modifier.align(Alignment.CenterVertically)
-                                        ) {
+                                if (selectedProfileId == profile.id) {
+                                    Box(
+                                        modifier = Modifier.align(Alignment.CenterVertically),
+                                        contentAlignment = Alignment.Center
+                                    ) {
                                         Text(
                                             text = "ACTIVE",
                                             fontSize = 12.sp,
@@ -146,10 +152,8 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                                             color = activecolor
                                         )
                                     }
+
                                 }
-
-
-
                             }
 
                             Spacer(modifier = Modifier.height(10.dp))
@@ -160,6 +164,7 @@ fun ProfileDialog(setShowDialog: (Boolean) -> Unit) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(40.dp),
+
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Box(
