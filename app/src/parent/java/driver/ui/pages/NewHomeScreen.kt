@@ -1,6 +1,5 @@
 package driver.ui.pages
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,9 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DirectionsBus
@@ -47,10 +44,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -88,7 +84,7 @@ fun TopBar(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(modifier = Modifier.fillMaxWidth(0.62f)) {
+                    Row(modifier = Modifier.fillMaxWidth(0.7f)) {
                         Text(
                             text = username,
                             fontSize = 18.sp,
@@ -125,22 +121,22 @@ fun TopBar(
                                 }
                         )
 
-                        Box(
-                            modifier = Modifier
-                                .background(Color.Gray, shape = CircleShape)
-                                .width(30.dp)
-                                .align(Alignment.CenterVertically)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.atul),
-                                contentDescription = "Edit Icon",
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .clip(CircleShape)
-                                    .clickable { onProfileClick() }
-                                    .align(Alignment.Center)
-                            )
-                        }
+//                        Box(
+//                            modifier = Modifier
+//                                .background(Color.Gray, shape = CircleShape)
+//                                .width(30.dp)
+//                                .align(Alignment.CenterVertically)
+//                        ) {
+//                            Image(
+//                                painter = painterResource(id = R.drawable.atul),
+//                                contentDescription = "Edit Icon",
+//                                modifier = Modifier
+//                                    .size(28.dp)
+//                                    .clip(CircleShape)
+//                                    .clickable { onProfileClick() }
+//                                    .align(Alignment.Center)
+//                            )
+//                        }
                     }
                 }
             },
@@ -208,7 +204,7 @@ fun BottomNavBar(
     NavigationBar(
 
         tonalElevation = 20.dp,
-
+        modifier = Modifier.height(60.dp),
         containerColor = Color.White,
     ) {
         bottomBar.forEachIndexed { index, bottomNavItem ->
@@ -236,6 +232,7 @@ fun BottomNavBar(
                             } else {
                                 bottomNavItem.unselectedIcon
                             },
+                            modifier = Modifier.size(20.dp),
                             contentDescription = bottomNavItem.title,
                             tint = Color.DarkGray
 
@@ -244,7 +241,17 @@ fun BottomNavBar(
 
 
                 },
-                label = { Text(text = bottomNavItem.title) }
+                label = {
+                    Text(
+                        text = bottomNavItem.title,
+                        style = TextStyle(
+                            color = Color.DarkGray,
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.W400
+                        ),
+                    )
+                }
 
             )
 
@@ -264,7 +271,6 @@ fun MainScreen(
     onNoticesClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-
 
 
     var selectedIndex by remember {
@@ -301,7 +307,7 @@ fun MainScreen(
         floatingActionButton = {
             if (selectedIndex != 0 && selectedIndex != 4) {
                 FloatingActionButton(
-                    onClick = {  },
+                    onClick = { },
                 ) {
                     Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
                 }
@@ -329,14 +335,15 @@ fun MainScreen(
                             profileImageResId = R.drawable.boy,
                             onSearchClick = { },
                             onNotificationClick = { },
-                            onProfileClick = { profileDialog=true}
+                            onProfileClick = { profileDialog = true }
                         )
                     }
                 }
                 when (selectedIndex) {
                     0 -> {
-                        item{ temptrips() }
+                        item { NewTripsDesign() }
                     }
+
                     1 -> {
                         item {
                             EventsListPage(
@@ -362,8 +369,9 @@ fun MainScreen(
 
                         }
                     }
+
                     4 -> {
-                        item {SettingsPage()  }
+                        item { SettingsPage() }
 
 
                     }
@@ -371,9 +379,9 @@ fun MainScreen(
             }
         }
     }
-    if(profileDialog){
+    if (profileDialog) {
         ProfileDialog {
-            profileDialog=it
+            profileDialog = it
         }
     }
 }
