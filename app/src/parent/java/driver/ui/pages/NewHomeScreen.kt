@@ -49,6 +49,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -57,6 +59,12 @@ import driver.models.Event
 import driver.models.PostsFeed
 import driver.ui.components.ProfileDialog
 
+
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,8 +76,14 @@ fun TopBar(
     onNotificationClick: () -> Unit,
     onProfileClick: () -> Unit
 ) {
-    val fontFamily = FontFamily.SansSerif
+    val fontName = GoogleFont("Russo One")
+
+    val fontFamily = FontFamily(
+        Font(googleFont = fontName, fontProvider = provider)
+    )
     val first = Color(android.graphics.Color.parseColor("#1c1b1f"))
+    val logo = Color(android.graphics.Color.parseColor("#ef2427"))
+
 
     Box(
         modifier = Modifier
@@ -84,22 +98,22 @@ fun TopBar(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(modifier = Modifier.fillMaxWidth(0.7f)) {
+                    Row(modifier = Modifier.fillMaxWidth(0.78f)) {
                         Text(
-                            text = username,
-                            fontSize = 18.sp,
-                            color = first,
+                            text = "DRISHTO",
+                            fontSize = 22.sp,
+                            color = logo,
                             fontFamily = fontFamily,
-                            fontWeight = FontWeight.W400,
+                            fontWeight = FontWeight.W700,
                         )
                     }
 
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(3.dp),
+                            .padding(10.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Search,
@@ -120,23 +134,6 @@ fun TopBar(
                                     onNotificationClick()
                                 }
                         )
-
-//                        Box(
-//                            modifier = Modifier
-//                                .background(Color.Gray, shape = CircleShape)
-//                                .width(30.dp)
-//                                .align(Alignment.CenterVertically)
-//                        ) {
-//                            Image(
-//                                painter = painterResource(id = R.drawable.atul),
-//                                contentDescription = "Edit Icon",
-//                                modifier = Modifier
-//                                    .size(28.dp)
-//                                    .clip(CircleShape)
-//                                    .clickable { onProfileClick() }
-//                                    .align(Alignment.Center)
-//                            )
-//                        }
                     }
                 }
             },
@@ -147,7 +144,6 @@ fun TopBar(
 
 @Composable
 fun BottomNavBar(
-
     onTabSelected: (selectedIndex: Int) -> Unit,
     onTripsClick: () -> Unit,
     onEventsClick: () -> Unit,
@@ -222,9 +218,7 @@ fun BottomNavBar(
                                     Text(text = bottomNavItem.badgeCount.toString())
                                 }
                             }
-
                         }
-
                     ) {
                         Icon(
                             imageVector = if (index == selected) {
@@ -238,8 +232,6 @@ fun BottomNavBar(
 
                         )
                     }
-
-
                 },
                 label = {
                     Text(
@@ -252,10 +244,7 @@ fun BottomNavBar(
                         ),
                     )
                 }
-
             )
-
-
         }
     }
 }
