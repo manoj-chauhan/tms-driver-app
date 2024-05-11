@@ -3,7 +3,6 @@ package driver.ui.pages
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,7 +42,7 @@ import driver.models.AccountProfile
 import driver.ui.viewmodels.AccountsProfileViewModel
 
 @Composable
-fun SettingsPage() {
+fun SettingsPage(onProfileSelected: () -> Unit) {
     val ap: AccountsProfileViewModel = hiltViewModel()
     ap.getProfileList()
     val profilesList by ap.profileList.collectAsStateWithLifecycle()
@@ -51,13 +50,13 @@ fun SettingsPage() {
     Column(modifier = Modifier.padding(16.dp)) {
 
         UserProfilePage(
-            profilesList = profilesList ?: listOf()
+            profilesList = profilesList ?: listOf() , onProfileSelected
         )
     }
 }
 
 @Composable
-fun UserProfilePage(profilesList: List<AccountProfile>) {
+fun UserProfilePage(profilesList: List<AccountProfile>, onProfileSelected: () -> Unit) {
     val customLightGray = Color(android.graphics.Color.parseColor("#F0F0F0"))
     val activecolor = Color(android.graphics.Color.parseColor("#6200EE"))
     var selectedProfileId by remember { mutableStateOf<String?>(null) }
@@ -65,7 +64,7 @@ fun UserProfilePage(profilesList: List<AccountProfile>) {
     val fontFamily = FontFamily.SansSerif
     val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(6.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -84,10 +83,10 @@ fun UserProfilePage(profilesList: List<AccountProfile>) {
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = "Krish Chauhan",
-                    fontSize = 20.sp,
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = colortext,
                     fontFamily=fontFamily
@@ -95,20 +94,22 @@ fun UserProfilePage(profilesList: List<AccountProfile>) {
 
             }
         }
-        Text(
-            text = "Profiles",
-            color = Color.Gray,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
+
         Spacer(modifier = Modifier.height(16.dp))
         Box(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(20.dp))
                 .background(customLightGray)
-                .padding(14.dp)
+                .padding(8.dp)
         ) {
-            Column {
+            Column(modifier=Modifier.padding(10.dp)) {
+                Text(
+                    text = "Profiles",
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(10.dp))
                 profilesList.forEach { profile ->
                     Row(
                         modifier = Modifier
@@ -116,11 +117,14 @@ fun UserProfilePage(profilesList: List<AccountProfile>) {
                             .height(40.dp)
                             .clickable {
                                 selectedProfileId = profile.id
+                                onProfileSelected()
+
                             },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(modifier = Modifier.weight(0.7f)
-                            ,verticalAlignment = Alignment.CenterVertically) {
+                            ,verticalAlignment = Alignment.CenterVertically)
+                        {
 
 
                             Box(
@@ -156,6 +160,7 @@ fun UserProfilePage(profilesList: List<AccountProfile>) {
                             .fillMaxWidth()
                             .height(40.dp),
 
+
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
@@ -186,19 +191,12 @@ fun UserProfilePage(profilesList: List<AccountProfile>) {
         }
         Spacer(modifier = Modifier.height(13.dp))
         Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Manage Account",
-                modifier = Modifier.padding(start = 10.dp),
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Gray
-            )
-            Spacer(modifier = Modifier.height(5.dp))
+
             Column {
                 TextButton(onClick = {  }) {
                     Text(
                         "Terms of Use",
-                        fontSize = 11.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -206,7 +204,7 @@ fun UserProfilePage(profilesList: List<AccountProfile>) {
                 TextButton(onClick = {  }) {
                     Text(
                         "Privacy Policy",
-                        fontSize = 11.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -215,7 +213,7 @@ fun UserProfilePage(profilesList: List<AccountProfile>) {
                 TextButton(onClick = {  }) {
                     Text(
                         "Log Out",
-                        fontSize = 11.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }

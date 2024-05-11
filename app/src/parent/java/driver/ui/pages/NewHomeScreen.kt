@@ -252,7 +252,6 @@ fun BottomNavBar(
         }
     }
 }
-
 @Composable
 fun MainScreen(
     profileId: String,
@@ -264,31 +263,17 @@ fun MainScreen(
     onNoticesClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-
-
-
-    var selectedIndex by remember {
-        mutableStateOf(2)
-    }
+    var selectedIndex by remember { mutableStateOf(2) }
     var eventDetail by remember { mutableStateOf<Event?>(null) }
-
-    var profileDialog by remember {
-        mutableStateOf(false)
-    }
+    var profileDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         bottomBar = {
             Row(
-                modifier = Modifier
-//                    .padding(6.dp)
-
-
-                    .shadow(78.dp),
-
+                modifier = Modifier.shadow(78.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BottomNavBar(
-
                     onTabSelected = { selectedIndex = it },
                     onTripsClick = onTripsClick,
                     onEventsClick = onEventsClick,
@@ -315,30 +300,30 @@ fun MainScreen(
                 .fillMaxSize()
         ) {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
+                modifier = Modifier.fillMaxSize()
             ) {
-                item {
-                    Row(
-                        modifier = Modifier.height(50.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TopBar(
-                            username = "Krish Chauhan",
-                            profileImageResId = R.drawable.boy,
-                            onSearchClick = { },
-                            onNotificationClick = { },
-                            onProfileClick = { profileDialog=true}
-                        )
-                    }
-                }
                 when (selectedIndex) {
                     0 -> {
-                        item{ temptrips() }
+                        item {
+                            TopBar(
+                                username = "Krish Chauhan",
+                                profileImageResId = R.drawable.boy,
+                                onSearchClick = { },
+                                onNotificationClick = { },
+                                onProfileClick = { profileDialog = true }
+                            )
+                            temptrips()
+                        }
                     }
                     1 -> {
                         item {
+                            TopBar(
+                                username = "Krish Chauhan",
+                                profileImageResId = R.drawable.boy,
+                                onSearchClick = { },
+                                onNotificationClick = { },
+                                onProfileClick = { profileDialog = true }
+                            )
                             EventsListPage(
                                 navigationController, onRegisterClick = {
                                     eventDetail = it
@@ -347,33 +332,54 @@ fun MainScreen(
                             )
                         }
                     }
-
                     2 -> {
                         item {
+                            TopBar(
+                                username = "Krish Chauhan",
+                                profileImageResId = R.drawable.boy,
+                                onSearchClick = { },
+                                onNotificationClick = { },
+                                onProfileClick = { profileDialog = true }
+                            )
                             PostsSection(profileId, navigationController, onCommentClick = {
                                 navigationController.navigate("add_comment/${it.id}")
                             })
                         }
                     }
-
                     3 -> {
                         item {
+                            TopBar(
+                                username = "Krish Chauhan",
+                                profileImageResId = R.drawable.boy,
+                                onSearchClick = { },
+                                onNotificationClick = { },
+                                onProfileClick = { profileDialog = true }
+                            )
                             NoticeListPage()
-
                         }
                     }
                     4 -> {
-                        item {SettingsPage()  }
-
-
+                        item {
+                            SettingsPage {
+                                navigationController.navigate("user_profile")
+                            }
+                        }
                     }
                 }
             }
         }
     }
-    if(profileDialog){
+    if (profileDialog) {
         ProfileDialog {
-            profileDialog=it
+            profileDialog = it
         }
     }
 }
+
+
+//if(profileDialog){
+//    ProfileDialog {
+//        profileDialog=it
+//    }
+//}
+
