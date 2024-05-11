@@ -39,19 +39,19 @@ import driver.ui.viewmodels.EducationListViewModel
 
 @Composable
 fun profile() {
-    val vm: UserProfileViewModel = hiltViewModel()
-    val userDetail by vm.userDetail.collectAsStateWithLifecycle()
+//    val vm: UserProfileViewModel = hiltViewModel()
+//    val userDetail by vm.userDetail.collectAsStateWithLifecycle()
      val context= LocalContext.current
 
-    LaunchedEffect(Unit) {
-        vm.userDetail(context)
-    }
-    val el: EducationListViewModel = hiltViewModel()
-    val educationList by el.educationList.collectAsStateWithLifecycle()
-    LaunchedEffect(userDetail) {
-        el.getEducationList()
-    }
-    Log.d("user","$userDetail")
+//    LaunchedEffect(Unit) {
+//        vm.userDetail(context)
+//    }
+//    val el: EducationListViewModel = hiltViewModel()
+//    val educationList by el.educationList.collectAsStateWithLifecycle()
+//    LaunchedEffect(userDetail) {
+//        el.getEducationList()
+//    }
+//    Log.d("user","$userDetail")
 
 
     Box(
@@ -84,13 +84,18 @@ fun profile() {
                         .padding(start = 20.dp, top = 20.dp, bottom = 20.dp)
                 ) {
                     Text(
-                        text = "${userDetail?.name}",
+                        text = "Krish Chauhan",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black
                     )
                     Text(
-                        text = "${userDetail?.userName}",
+                        text = "@kris",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Light,
+                        color = Color.Black)
+                    Text(
+                        text = "Student at MAAPS",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Light,
                         color = Color.Black)
@@ -119,9 +124,9 @@ fun profile() {
                             , color = Color.Black)
                     }
 
-                    educationList?.let {
-                        driver.ui.pages.educationList(it)
-                    }
+//                    educationList?.let {
+//                        driver.ui.pages.educationList(it)
+//                    }
                 }
             }
         }
@@ -129,8 +134,10 @@ fun profile() {
 }
 
 @Composable
-fun educationList(educationList:List<EducationList>){
-    educationList?.forEach() { information ->
+//fun educationList(educationList:List<EducationList>){
+//    educationList?.forEach() { information ->
+fun educationList(){
+
 
 
         Row(
@@ -164,20 +171,20 @@ fun educationList(educationList:List<EducationList>){
             Box(modifier = Modifier.fillMaxWidth()) {
                 Column {
                     Text(
-                        text = "${information.schoolName}",
+                        text = "{information.schoolName}",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black
                     )
 
                     Text(
-                        text = "${information.schoolAddress}",
+                        text = "{information.schoolAddress}",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Light,
                         color = Color.Black
                     )
                     Text(
-                        text = "${information.status}",
+                        text = "{information.status}",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Light,
                         color = Color.Black
@@ -187,7 +194,7 @@ fun educationList(educationList:List<EducationList>){
 
             }
         }
-    }
+
 
 
 

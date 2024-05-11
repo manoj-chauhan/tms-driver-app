@@ -1,5 +1,6 @@
 package driver.ui.pages
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DirectionsBus
@@ -44,8 +47,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -134,6 +139,23 @@ fun TopBar(
                                     onNotificationClick()
                                 }
                         )
+
+                        Box(
+                            modifier = Modifier
+                                .background(Color.Gray, shape = CircleShape)
+                                .width(30.dp)
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.atul),
+                                contentDescription = "Edit Icon",
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .clip(CircleShape)
+                                    .clickable { onProfileClick() }
+                                    .align(Alignment.Center)
+                            )
+                        }
                     }
                 }
             },
@@ -144,6 +166,7 @@ fun TopBar(
 
 @Composable
 fun BottomNavBar(
+
     onTabSelected: (selectedIndex: Int) -> Unit,
     onTripsClick: () -> Unit,
     onEventsClick: () -> Unit,
@@ -218,7 +241,9 @@ fun BottomNavBar(
                                     Text(text = bottomNavItem.badgeCount.toString())
                                 }
                             }
+
                         }
+
                     ) {
                         Icon(
                             imageVector = if (index == selected) {
@@ -245,6 +270,8 @@ fun BottomNavBar(
                     )
                 }
             )
+
+
         }
     }
 }
@@ -260,6 +287,7 @@ fun MainScreen(
     onNoticesClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
+
 
 
     var selectedIndex by remember {
@@ -296,7 +324,7 @@ fun MainScreen(
         floatingActionButton = {
             if (selectedIndex != 0 && selectedIndex != 4) {
                 FloatingActionButton(
-                    onClick = { },
+                    onClick = {  },
                 ) {
                     Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
                 }
@@ -314,27 +342,28 @@ fun MainScreen(
                     .fillMaxSize()
                     .background(Color.White)
             ) {
-                item {
-                    Row(
-                        modifier = Modifier.height(50.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TopBar(
-                            username = "Krish Chauhan",
-                            profileImageResId = R.drawable.boy,
-                            onSearchClick = { },
-                            onNotificationClick = { },
-                            onProfileClick = { profileDialog = true }
-                        )
-                    }
-                }
                 when (selectedIndex) {
                     0 -> {
-                        item { NewTripsDesign() }
+                        item {
+                            TopBar(
+                                username = "Krish Chauhan",
+                                profileImageResId = R.drawable.boy,
+                                onSearchClick = { },
+                                onNotificationClick = { },
+                                onProfileClick = { profileDialog = true }
+                            )
+                            NewTripsDesign()
+                        }
                     }
-
                     1 -> {
                         item {
+                            TopBar(
+                                username = "Krish Chauhan",
+                                profileImageResId = R.drawable.boy,
+                                onSearchClick = { },
+                                onNotificationClick = { },
+                                onProfileClick = { profileDialog = true }
+                            )
                             EventsListPage(
                                 navigationController, onRegisterClick = {
                                     eventDetail = it
@@ -346,6 +375,13 @@ fun MainScreen(
 
                     2 -> {
                         item {
+                            TopBar(
+                                username = "Krish Chauhan",
+                                profileImageResId = R.drawable.boy,
+                                onSearchClick = { },
+                                onNotificationClick = { },
+                                onProfileClick = { profileDialog = true }
+                            )
                             PostsSection(profileId, navigationController, onCommentClick = {
                                 navigationController.navigate("add_comment/${it.id}")
                             })
@@ -354,23 +390,31 @@ fun MainScreen(
 
                     3 -> {
                         item {
+                            TopBar(
+                                username = "Krish Chauhan",
+                                profileImageResId = R.drawable.boy,
+                                onSearchClick = { },
+                                onNotificationClick = { },
+                                onProfileClick = { profileDialog = true }
+                            )
                             NoticeListPage()
 
                         }
                     }
-
                     4 -> {
-                        item { SettingsPage() }
-
-
+                        item {
+                            SettingsPage {
+                                navigationController.navigate("user_profile")
+                            }
+                        }
                     }
                 }
             }
         }
     }
-    if (profileDialog) {
+    if(profileDialog){
         ProfileDialog {
-            profileDialog = it
+            profileDialog=it
         }
     }
 }
