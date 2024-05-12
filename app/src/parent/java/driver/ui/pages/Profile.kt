@@ -63,7 +63,7 @@ fun Profile(navController: NavController) {
 
         PersonalDetail(onBackPressed = onBackPressed)
         Spacer(modifier = Modifier.height(20.dp))
-        Column(modifier=Modifier.padding(start=25.dp)) {
+        Column(modifier=Modifier.padding(start=24.dp)) {
             ExperienceDetail()
             EducationDetail()
             ExtraCurricularActivitiesDetail()
@@ -145,7 +145,7 @@ fun PersonalDetail(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 25.dp)
+            .padding(start = 24.dp)
     ) {
         Text(
             text = "Krish Chauhan",
@@ -179,7 +179,7 @@ fun ExperienceDetail() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 10.dp)
+            .padding(vertical = 16.dp)
     ) {
         Text(
             text = "EXPERIENCE",
@@ -189,9 +189,7 @@ fun ExperienceDetail() {
             color = colortext,
 
             )
-        Spacer(modifier = Modifier.height(6.dp))
         Experience();
-        Spacer(modifier = Modifier.height(6.dp))
         Experience();
 
     }
@@ -199,6 +197,7 @@ fun ExperienceDetail() {
 
 @Composable
 fun Experience() {
+    Spacer(modifier = Modifier.height(8.dp))
     Column() {
         Row() {
             Image(
@@ -233,8 +232,6 @@ fun Experience() {
 
             modifier = Modifier.padding(top = 4.dp)
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -243,7 +240,7 @@ fun EducationDetail() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 10.dp)
+            .padding(vertical = 16.dp)
     ) {
         Text(
             text = "EDUCATION",
@@ -253,9 +250,7 @@ fun EducationDetail() {
             color = colortext,
 
             )
-        Spacer(modifier = Modifier.height(6.dp))
         Education();
-        Spacer(modifier = Modifier.height(6.dp))
         Education();
 
     }
@@ -263,6 +258,7 @@ fun EducationDetail() {
 
 @Composable
 fun Education() {
+    Spacer(modifier = Modifier.height(8.dp))
     Row() {
         Image(
             painter = painterResource(id = R.drawable.dps),
@@ -295,7 +291,7 @@ fun ExtraCurricularActivitiesDetail() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 10.dp)
+            .padding(vertical = 16.dp)
     ) {
         Text(
             text = "EXTRA CURRICULAR ACTIVITIES",
@@ -305,9 +301,7 @@ fun ExtraCurricularActivitiesDetail() {
             color = colortext,
 
             )
-        Spacer(modifier = Modifier.height(6.dp))
         ExtraCurricularActivity();
-        Spacer(modifier = Modifier.height(6.dp))
         ExtraCurricularActivity();
 
     }
@@ -315,6 +309,7 @@ fun ExtraCurricularActivitiesDetail() {
 
 @Composable
 fun ExtraCurricularActivity() {
+    Spacer(modifier = Modifier.height(8.dp))
     Row() {
         Image(
             painter = painterResource(id = R.drawable.dps),
@@ -346,7 +341,7 @@ fun AchievementsDetail() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 10.dp)
+            .padding(vertical = 16.dp)
     ) {
         Text(
             text = "ACHIEVEMENTS",
@@ -356,9 +351,7 @@ fun AchievementsDetail() {
             color = colortext,
 
             )
-        Spacer(modifier = Modifier.height(6.dp))
         Achievement();
-        Spacer(modifier = Modifier.height(6.dp))
         Achievement();
 
     }
@@ -366,6 +359,7 @@ fun AchievementsDetail() {
 
 @Composable
 fun Achievement() {
+    Spacer(modifier = Modifier.height(8.dp))
     Row() {
         Image(
             painter = painterResource(id = R.drawable.dps),
@@ -387,7 +381,6 @@ fun Achievement() {
                 color = Color.Gray,
                 modifier = Modifier.padding(top = 4.dp)
             )
-
         }
     }
 }
