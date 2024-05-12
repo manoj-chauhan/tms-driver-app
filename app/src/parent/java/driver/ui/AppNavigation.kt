@@ -127,7 +127,7 @@ fun AppNavigationHost(
         }
         
         composable("user_profile"){
-            profile()
+            profile(navController)
         }
         composable("userList"){
             UserList(onUserSelected = {

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,9 +18,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,40 +45,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.drishto.driver.R
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import driver.models.EducationList
 import driver.ui.viewmodels.EducationListViewModel
 
 
 @Composable
-fun profile() {
-//    val vm: UserProfileViewModel = hiltViewModel()
-//    val userDetail by vm.userDetail.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-
-//    LaunchedEffect(Unit) {
-//        vm.userDetail(context)
-//    }
-//    val el: EducationListViewModel = hiltViewModel()
-//    val educationList by el.educationList.collectAsStateWithLifecycle()
-//    LaunchedEffect(userDetail) {
-//        el.getEducationList()
-//    }
-//    Log.d("user","$userDetail")
-
+fun profile(navController: NavController) {
     val customLightGray = Color(android.graphics.Color.parseColor("#F0F0F0"))
     val activecolor = Color(android.graphics.Color.parseColor("#6200EE"))
     var selectedProfileId by remember { mutableStateOf<String?>(null) }
 
     val fontFamily = FontFamily.SansSerif
-    val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
+    val colortext = Color(android.graphics.Color.parseColor("#1c1b1f"))
 
-
-
-
+    val onBackPressed: () -> Unit = {
+        navController.navigateUp()
+    }
 
     Box(
         modifier = Modifier
@@ -79,26 +76,78 @@ fun profile() {
     ) {
         Column(
             modifier = Modifier
+                .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
+
         ) {
+            Box(modifier =Modifier.background(Color.Transparent)) {
 
 
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Box(
+
+
+
+
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.boy),
+                            contentDescription = "student's photo",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(300.dp)
+                        .background(Color.Transparent),
+
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.boy),
-                        contentDescription = "student's photo",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+//            modifier = Modifier.zIndex(1f)
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Transparent)
+                    ) {
+                        IconButton(
+                            onClick = onBackPressed,
+//                    modifier = Modifier
+//                        .padding(16.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Transparent)
+                    ) {
+                        IconButton(
+                            onClick = { },
+//                    modifier = Modifier
+//                        .padding(16.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "Menu"
+                            )
+                        }
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Box(modifier = Modifier.height(20.dp))
+
 
             // About Section
             Column(
@@ -108,33 +157,35 @@ fun profile() {
             ) {
                 Text(
                     text = "Krish Chauhan",
-                    fontSize = 20.sp,
+                    fontSize = 24.sp,
 
-                    fontFamily=fontFamily,
+                    fontFamily = fontFamily,
                     color = colortext
                 )
                 Text(
                     text = "@kris",
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Light,
-                    fontFamily=fontFamily,
+                    fontFamily = fontFamily,
                     color = Color.Gray,
                     modifier = Modifier.padding(top = 4.dp)
                 )
                 Text(
                     text = "Student at MAAPS",
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Light,
-                    fontFamily=fontFamily,
+                    fontFamily = fontFamily,
                     color = Color.Gray,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
-            Column(modifier = Modifier
-                .background(Color.Transparent)
-                .padding(horizontal = 25.dp)) {
+            Column(
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .padding(horizontal = 25.dp)
+            ) {
 
 
                 // Experience Section
@@ -145,14 +196,14 @@ fun profile() {
                 ) {
                     Text(
                         text = "EXPERIENCE",
-                        fontSize = 17.sp,
-                        fontFamily=fontFamily,
+                        fontSize = 14.sp,
+                        fontFamily = fontFamily,
 
                         color = colortext,
 
-                    )
+                        )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
 
                     Column() {
@@ -163,20 +214,22 @@ fun profile() {
                                 painter = painterResource(id = R.drawable.dps),
                                 contentDescription = "dps",
 
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(36.dp)
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Column {
                                 Text(
                                     text = "Delhi Public School",
-                                    fontFamily=fontFamily,
+                                    fontSize = 14.sp,
+                                    fontFamily = fontFamily,
                                     color = colortext,
 
-                                )
+
+                                    )
                                 Text(
                                     text = "PGT",
 
-                                    fontFamily=fontFamily,
+                                    fontFamily = fontFamily,
                                     color = Color.Gray,
                                     modifier = Modifier.padding(top = 4.dp)
                                 )
@@ -185,7 +238,8 @@ fun profile() {
                         }
                         Text(
                             text = "Taught science and mathematics to secondary level",
-                            fontFamily=fontFamily,
+                            fontSize = 12.sp,
+                            fontFamily = fontFamily,
                             color = Color.Gray,
 
                             modifier = Modifier.padding(top = 4.dp)
@@ -210,20 +264,20 @@ fun profile() {
                                 painter = painterResource(id = R.drawable.dps),
                                 contentDescription = "dps",
 
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(36.dp)
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Column {
                                 Text(
                                     text = "Delhi Public School",
-                                    fontFamily=fontFamily,
+                                    fontFamily = fontFamily,
                                     color = colortext,
 
-                                )
+                                    )
                                 Text(
                                     text = "PGT",
 
-                                    fontFamily=fontFamily,
+                                    fontFamily = fontFamily,
                                     color = Color.Gray,
                                     modifier = Modifier.padding(top = 4.dp)
                                 )
@@ -232,7 +286,8 @@ fun profile() {
                         }
                         Text(
                             text = "Taught science and mathematics to secondary level",
-                            fontFamily=fontFamily,
+                            fontSize = 12.sp,
+                            fontFamily = fontFamily,
                             color = Color.Gray,
 
                             modifier = Modifier.padding(top = 4.dp)
@@ -250,12 +305,12 @@ fun profile() {
                 ) {
                     Text(
                         text = "EDUCATION",
-                        fontFamily=fontFamily,
-                        fontSize = 17.sp,
+                        fontFamily = fontFamily,
+                        fontSize = 14.sp,
 
                         color = colortext
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     Column {
                         Row(
@@ -264,18 +319,18 @@ fun profile() {
                             Image(
                                 painter = painterResource(id = R.drawable.dps),
                                 contentDescription = "dps",
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(36.dp)
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Column {
                                 Text(
                                     text = "Delhi Public School",
-                                    fontFamily=fontFamily,
+                                    fontFamily = fontFamily,
 
-                                )
+                                    )
                                 Text(
                                     text = "12th Standard (2023-2024)",
-                                    fontFamily=fontFamily,
+                                    fontFamily = fontFamily,
                                     color = Color.Gray,
                                     modifier = Modifier.padding(top = 4.dp)
                                 )
@@ -294,12 +349,13 @@ fun profile() {
                 ) {
                     Text(
                         text = "EXTRA CURRICULAR ACTIVITIES",
-                        fontSize = 17.sp,
-                        fontFamily=fontFamily,
+                        fontSize = 14.sp,
+                        fontFamily = fontFamily,
 
                         color = colortext
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
+
 
                     Column {
                         Row(
@@ -308,18 +364,18 @@ fun profile() {
                             Image(
                                 painter = painterResource(id = R.drawable.dps),
                                 contentDescription = "dps",
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(36.dp)
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Column {
                                 Text(
                                     text = "Football Club",
-                                    fontFamily=fontFamily,
-                                    color= colortext
+                                    fontFamily = fontFamily,
+                                    color = colortext
                                 )
                                 Text(
                                     text = "Member (2023-2024)",
-                                    fontFamily=fontFamily,
+                                    fontFamily = fontFamily,
                                     color = Color.Gray,
                                     modifier = Modifier.padding(top = 4.dp)
                                 )
@@ -338,13 +394,14 @@ fun profile() {
                 ) {
                     Text(
                         text = "ACHIEVEMENTS",
-                        fontSize = 17.sp,
-                        fontFamily=fontFamily,
+                        fontSize = 14.sp,
+                        fontFamily = fontFamily,
 
                         color = colortext,
                     )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
+
 
                     Column {
                         Row(
@@ -353,18 +410,18 @@ fun profile() {
                             Image(
                                 painter = painterResource(id = R.drawable.dps),
                                 contentDescription = "dps",
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(36.dp)
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Column {
                                 Text(
                                     text = "Inter School Robotic Championship",
-                                    fontFamily=fontFamily,
+                                    fontFamily = fontFamily,
 
-                                )
+                                    )
                                 Text(
                                     text = "Secured 1st Position",
-                                    fontFamily=fontFamily,
+                                    fontFamily = fontFamily,
                                     color = Color.Gray,
                                     modifier = Modifier.padding(top = 4.dp)
                                 )
@@ -373,8 +430,11 @@ fun profile() {
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
+
                 }
             }
+
+
         }
     }
 }
@@ -445,8 +505,8 @@ fun profile() {
 //}
 
 
-@Composable
-@Preview
-fun proPreview() {
-    profile()
-}
+//@Composable
+//@Preview
+//fun proPreview() {
+//    profile()
+//}
