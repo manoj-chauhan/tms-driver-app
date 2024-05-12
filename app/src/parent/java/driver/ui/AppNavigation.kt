@@ -43,7 +43,7 @@ import driver.ui.pages.PostItem
 import driver.ui.pages.SavedNoticesPage
 import driver.ui.pages.UserList
 import driver.ui.pages.notificationScreen
-import driver.ui.pages.profile
+import driver.ui.pages.Profile
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -127,7 +127,7 @@ fun AppNavigationHost(
         }
         
         composable("user_profile"){
-            profile(navController)
+            Profile(navController)
         }
         composable("userList"){
             UserList(onUserSelected = {
