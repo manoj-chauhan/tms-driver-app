@@ -56,16 +56,21 @@ fun Profile(navController: NavController) {
         modifier = Modifier
             .background(Color.White)
             .fillMaxWidth()
+
             .verticalScroll(rememberScrollState())
 
     ) {
 
         PersonalDetail(onBackPressed = onBackPressed)
         Spacer(modifier = Modifier.height(20.dp))
-        ExperienceDetail()
-        EducationDetail()
-        ExtraCurricularActivitiesDetail()
-        AchievementsDetail();
+        Column(modifier=Modifier.padding(start=25.dp)) {
+            ExperienceDetail()
+            EducationDetail()
+            ExtraCurricularActivitiesDetail()
+            AchievementsDetail();
+
+        }
+
 
     }
 
