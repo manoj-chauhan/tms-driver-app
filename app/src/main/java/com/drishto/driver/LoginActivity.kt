@@ -91,6 +91,7 @@ class LoginActivity : ComponentActivity() {
     private lateinit var signInRequest: BeginSignInRequest
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

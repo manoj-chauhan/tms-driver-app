@@ -11,9 +11,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,13 +28,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -51,6 +58,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -59,6 +67,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -307,7 +316,7 @@ class PhoneNumberActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(brush = gradient)
-                    .padding(18.dp)
+                    .padding(10.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -450,10 +459,110 @@ class PhoneNumberActivity : ComponentActivity() {
                             }
                         }
                     }
-                    Row(modifier = Modifier
-                        .fillMaxHeight(0.7f)
+
+                    Spacer(modifier = Modifier.padding(20.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Divider(modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f), color = Color.Gray, thickness = 1.dp)
+
+                        Text( text ="Or", style = TextStyle(fontSize = 18.sp, color = Color.Black), modifier = Modifier.padding(8.dp))
+
+                        Divider(modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f), color = Color.Gray, thickness = 1.dp)
+
+                    }
+
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .width(80.dp)
+                                .background(
+                                    color = Color(0xFFF7F8F8),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .height(60.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box(modifier = Modifier.fillMaxWidth())
+                                Icon(
+                                    painter = painterResource(id = R.drawable.google),
+                                    contentDescription = "Home Icon",
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clickable {
+                                            oneTapClient
+                                                .beginSignIn(signInRequest)
+                                                .addOnSuccessListener { result ->
+                                                    Log.d("TAG", "OnOneTapClient Success")
+                                                    val intentSenderRequest =
+                                                        IntentSenderRequest
+                                                            .Builder(result.pendingIntent.intentSender)
+                                                            .build()
+                                                    resultLauncher.launch(intentSenderRequest)
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Log.d("TAG", e.localizedMessage)
+                                                }
+                                        }
+                                )
+                                Text(
+                                    text = "Google",
+                                    style = TextStyle(color = Color.Black),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .width(80.dp)
+                                .background(
+                                    color = Color(0xFFF7F8F8),
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .height(60.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box(modifier = Modifier.fillMaxWidth())
+                                Icon(
+                                    imageVector = Icons.Default.Email,
+                                    contentDescription = "Home Icon",
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clickable {
+                                            startLoginActivity()
+                                        }
+                                )
+
+                                Text(
+                                    text = "Email",
+                                    style = TextStyle(color = Color.Black),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    }
+
+                        Row(modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Center) {
+                        .padding(start = 8.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                         val agreementText = "By continuing you agree that you have read and accepted"
 
                         val annotatedString = buildAnnotatedString {

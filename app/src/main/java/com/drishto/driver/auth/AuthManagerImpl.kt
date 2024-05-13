@@ -30,15 +30,30 @@ class AuthManagerImpl @Inject constructor(private val authNetRepo: AuthNetReposi
                     context.contentResolver,
                     Settings.Secure.ANDROID_ID
                 )
+                val appType = if (context.packageName == "com.drishto") {
+                    "parentApp"
+                } else if (context.packageName == "com.drishto.driver") {
+                    "driverApp"
+                } else {
+                    "unknown"
+                }
+                val androidVersion = Build.VERSION.RELEASE ?: "Unknown"
+
+                val packageName = context.packageName
+                val packageInfo = context.packageManager.getPackageInfo(packageName, 0)
+                val versionNumber = packageInfo.versionName ?: "Unknown"
+
                 val deviceRegDetail = DeviceRegistrationDetail(
                     fcmToken,
                     deviceIdentifier,
                     deviceName,
                     "ANDROID",
-                    context.packageName
+                    appType,
+                    versionNumber,
+                    androidVersion
                 )
-                Log.i("Login"," ${deviceRegDetail.toString()}${context.packageName}")
-                authNetRepo.registerDevice(context, authToken, deviceRegDetail)
+                Log.i("Login"," ${deviceRegDetail}")
+                authNetRepo.registerDevice(context, authToken,appType ,deviceRegDetail)
                 saveAccessToken(context, authToken)
                 CoroutineScope(Dispatchers.Main).launch {
                     onAuthenticated()

@@ -24,8 +24,10 @@ data class DeviceRegistrationDetail(
     val fcmToken: String,
     val deviceIdentifier: String,
     val deviceName: String,
-    val typeCode: String,
-    val appName: String
+    val platform: String,
+    val appName: String,
+    val appVersion: String,
+    val platformVersion: String
 )
 
 
@@ -50,15 +52,24 @@ class AuthNetRepository @Inject constructor() {
         return result.get().authToken;
     }
 
-    fun registerDevice(context: Context, accessToken:String, deviceRegDetail:DeviceRegistrationDetail) {
+    fun registerDevice(
+        context: Context,
+        accessToken: String,
+        appType: String,
+        deviceRegDetail: DeviceRegistrationDetail
+    ) {
 
         val moshi = Moshi.Builder().build()
         val jsonAdapter: JsonAdapter<DeviceRegistrationDetail> =
             moshi.adapter(DeviceRegistrationDetail::class.java)
         val requestBody: String = jsonAdapter.toJson(deviceRegDetail)
+        var url:String = ""
 
-
-        val url = context.resources.getString(R.string.url_device_registration)
+        if(appType == "driverApp"){
+             url = context.resources.getString(R.string.url_device_registration)
+        }else{
+            url = ""
+        }
 
         val fuelManager = FuelManager()
         val (_, response, result) = fuelManager.post(url).authentication().bearer(accessToken)
