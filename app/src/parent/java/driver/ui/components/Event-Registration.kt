@@ -1,5 +1,6 @@
 package driver.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +29,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,11 +48,33 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import driver.models.Event
+import driver.ui.pages.EventListPage
+import driver.ui.viewmodels.EventsViewModel
 
 @Composable
-fun EventRegistration(eventDetail: Event) {
+//fun EventRegistration(eventDetail: Event) {
+fun EventRegistration(eventId: String?, navController: NavHostController){
+
+    val eventsViewModel: EventsViewModel = hiltViewModel()
+
+    val eventDetail by eventsViewModel.eventDetail.collectAsState()
+
+
+    LaunchedEffect(Unit) {
+        eventId?.let { id ->
+            eventsViewModel.getEventById(id)
+        }
+    }
+
+//    events?.let { EventListPage(events = it, onRegisterClick = onRegisterClick) }
+
     val fontFamily = FontFamily.SansSerif
     val primary = Color(0xFF92A3FD)
     val secondary = Color(0XFF9DCEFF)
@@ -58,16 +84,18 @@ fun EventRegistration(eventDetail: Event) {
             .fillMaxSize()
             .background(Color.White)
     ) {
+        LazyColumn { item()
+            {
         Column(modifier = Modifier) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
             ) {
-                Image(
-                    painter = painterResource(id = eventDetail.imageResId),
-                    contentDescription = "",
-                    modifier = Modifier.fillMaxSize(),
+                AsyncImage(
+                    model = eventDetail?.descriptionImage,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )
                 Box(
@@ -107,15 +135,17 @@ fun EventRegistration(eventDetail: Event) {
             ) {
                 Column(modifier = Modifier) {
                     Column(modifier = Modifier) {
-                        Text(
-                            text = eventDetail.eventName,
-                            style = TextStyle(
-                                fontSize = 18.sp,
-                                fontFamily = fontFamily,
-                                color = Color.Gray,
-                                fontWeight = FontWeight.Bold
+                        eventDetail?.let {
+                            Text(
+                                text = it.title,
+                                style = TextStyle(
+                                    fontSize = 18.sp,
+                                    fontFamily = fontFamily,
+                                    color = Color.Gray,
+                                    fontWeight = FontWeight.Bold
+                                )
                             )
-                        )
+                        }
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
                             text = "Date: 13-05-2024",
@@ -127,7 +157,7 @@ fun EventRegistration(eventDetail: Event) {
                             )
                         )
                         Text(
-                            text = "Institution: ${eventDetail.institutionName}",
+                            text = "Institution: ${eventDetail?.institute}",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontFamily = fontFamily,
@@ -222,9 +252,13 @@ fun EventRegistration(eventDetail: Event) {
                 }
             }
         }
+
+
+            }
+        }
     }
 
-
+    Log.d("event id check", "EventRegistration: $eventId")
 }
 
 @Composable

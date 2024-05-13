@@ -53,7 +53,7 @@ import driver.ui.viewmodels.PostsViewModel
 import java.util.Vector
 
 @Composable
-fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
+fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
 
     val primary = Color(android.graphics.Color.parseColor("#6750a4"))
     val color = Color(android.graphics.Color.parseColor("#828282"))
@@ -76,7 +76,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                 .height(150.dp)
         ) {
             AsyncImage(
-                model = event.descriptionImage,
+                model = event.coverImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxWidth(),
                 contentScale = ContentScale.Crop
@@ -171,7 +171,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                                 .width(90.dp),
                             enabled = true,
                             onClick = {
-                                onRegisterClick(event)
+                                onRegisterClick(event.id)
                             },
                             contentPadding = PaddingValues(),
                             colors = ButtonDefaults.buttonColors(
@@ -223,7 +223,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
 
 
 @Composable
-fun EventListPage(events: List<Event>, onRegisterClick: (event: Event) -> Unit) {
+fun EventListPage(events: List<Event>, onRegisterClick: (event: String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -236,7 +236,7 @@ fun EventListPage(events: List<Event>, onRegisterClick: (event: Event) -> Unit) 
 }
 
 @Composable
-fun Eventpage(onRegisterClick: (Event) -> Unit) {
+fun Eventpage(onRegisterClick: (String) -> Unit) {
 
     val eventsViewModel: EventsViewModel = hiltViewModel()
     val events by eventsViewModel.eventList.collectAsStateWithLifecycle()

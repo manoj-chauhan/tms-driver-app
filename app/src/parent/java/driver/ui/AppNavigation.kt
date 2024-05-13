@@ -110,9 +110,30 @@ fun AppNavigationHost(
             addEventPage(profileId)
         }
 
-        composable("event-details"){
-            eventDetail?.let { event -> EventRegistration(event) }
+//        composable("event-details"){
+//            eventDetail?.let { event -> EventRegistration(event) }
+//        }
+
+        composable("event-details/{eventId}",arguments = listOf(
+                navArgument("eventId"){
+                    type = NavType.StringType
+                }
+                )) {
+
+            val eventId = it.arguments!!.getString("eventId")
+            EventRegistration(eventId, navController)
         }
+
+//        composable("event-details/{id}", arguments = listOf(
+//            navArgument("id"){
+//                type = NavType.StringType
+//            }
+//        )){
+//            val id = it.arguments!!.getString("postId")
+//            EventRegistration(event,navController,id)
+//        }
+
+
         composable("notice_lists"){
             SavedNoticesPage(
             navController= navController)

@@ -1,11 +1,5 @@
 package driver.models
 
-import androidx.annotation.DrawableRes
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
-import com.drishto.driver.R
-
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -18,7 +12,7 @@ data class Event(
     val scope: Scope,
     val dateOfEvent: String?,
     val timeOfEvent: String?,
-    val coverImage: String?,
+    val coverImage: Image?,
     val descriptionImage: String?,
     val active: Boolean,
     val createdBy: String
@@ -34,10 +28,16 @@ data class Location(
 @JsonClass(generateAdapter = true)
 data class Scope(
     val type: String,
-    val targetClasses: List<String>?
-//    val targetUsers: List<String>?
+    val targetClasses: List<String>?,
+    val targetUsers:List<String>?
 )
 
+@JsonClass(generateAdapter = true)
+data class Image(
+    val type: String,
+    val mediaId: String,
+    val caption: String?
+)
 
 
 

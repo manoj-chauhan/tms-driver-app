@@ -135,4 +135,51 @@ class EventNetRepository @Inject constructor(
             }
 
         }
+
+    fun getEventById(eventId:String):Event?{
+
+        val eventsurl = context.resources.getString(R.string.url_get_event_by_ID)
+
+        return try {
+            getAccessToken(context)?.let {
+                val (_, _, result) = eventsurl.httpGet()
+                    .authentication().bearer(it)
+                    .responseObject(moshiDeserializerOf(Event::class.java))
+
+                result.fold(
+                    {
+                    },
+                    { error ->
+                        Log.d("eventerror", "$error")
+                        EventBus.getDefault().post("AUTH_FAILED")
+                        if (error.response.statusCode == 401) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if (error.response.statusCode == 500) {
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
+                    }
+                )
+
+                result.get()
+
+
+            }
+
+        } catch (e: Exception) {
+            null
+        }
+
     }
+}

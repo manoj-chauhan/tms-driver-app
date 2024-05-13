@@ -1,5 +1,6 @@
 package driver.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +23,9 @@ class EventsViewModel @Inject constructor(private val eventManager: EventManager
 
     private val _eventsList: MutableStateFlow<List<Event>?> = MutableStateFlow(null)
     val eventList: StateFlow<List<Event>?> = _eventsList.asStateFlow()
+
+    private val _eventDetail: MutableStateFlow<Event?> = MutableStateFlow(null)
+    val eventDetail: StateFlow<Event?> = _eventDetail.asStateFlow()
 
 
 
@@ -51,6 +55,20 @@ class EventsViewModel @Inject constructor(private val eventManager: EventManager
             }
         }
     }
+
+
+    fun getEventById(eventId: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val event = eventManager.getEventById(eventId)
+                _eventDetail.value = event
+            } catch (e: Exception) {
+
+                Log.d("event by id error", "getEventById: error in getting eventByid")
+            }
+        }
+    }
+
 
     fun addEvents(
         title: String,
