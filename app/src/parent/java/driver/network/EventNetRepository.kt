@@ -14,8 +14,8 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
+import driver.models.Event
 import driver.models.EventRegistration
-import driver.models.Events
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
@@ -25,11 +25,11 @@ class EventNetRepository @Inject constructor(
     private val errorManager: ErrManager
 ) {
 
-    fun getAllEvents():List<Events>?{
-        val eventsList = Types.newParameterizedType(List::class.java, Events::class.java)
-        val adapter: JsonAdapter<List<Events>> = Moshi.Builder().build().adapter(eventsList)
+    fun getAllEvents():List<Event>?{
+        val eventsList = Types.newParameterizedType(List::class.java, Event::class.java)
+        val adapter: JsonAdapter<List<Event>> = Moshi.Builder().build().adapter(eventsList)
 
-        val eventsurl = context.resources.getString(R.string.url_get_all_events)
+        val eventsurl = context.resources.getString(R.string.url_get_all_public_events)+"?pageno=0"
 
         return try {
             getAccessToken(context)?.let {
@@ -41,6 +41,7 @@ class EventNetRepository @Inject constructor(
                     {
                     },
                     { error ->
+                        Log.d("eventerror", "$error")
                         EventBus.getDefault().post("AUTH_FAILED")
                         if (error.response.statusCode == 401) {
                             errorManager.getErrorDescription(context)

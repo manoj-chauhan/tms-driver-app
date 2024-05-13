@@ -26,6 +26,9 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,8 +42,15 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import driver.models.Event
-import driver.models.getDummyEvents
+import driver.models.PostUpload
+
+import driver.ui.viewmodels.EventsViewModel
+import driver.ui.viewmodels.PostsViewModel
+import java.util.Vector
 
 @Composable
 fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
@@ -65,13 +75,12 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
             modifier = Modifier
                 .height(150.dp)
         ) {
-            Image(
-                painter = painterResource(id = event.imageResId),
-                contentDescription = "",
+            AsyncImage(
+                model = event.descriptionImage,
+                contentDescription = null,
                 modifier = Modifier.fillMaxWidth(),
                 contentScale = ContentScale.Crop
             )
-
             Box(
                 modifier = Modifier
                     .size(50.dp)
@@ -120,7 +129,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     .fillMaxWidth(1f),
             ) {
                 Text(
-                    text = event.eventName,
+                    text = event.title,
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = fontFamily,
@@ -135,7 +144,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                 ) {
                     Column(modifier = Modifier.fillMaxWidth(0.72f)) {
                         Text(
-                            text = "${event.eventDate}",
+                            text = "${event.dateOfEvent}",
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontFamily = fontFamily,
@@ -145,7 +154,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                         )
                         Spacer(modifier = Modifier.height(3.dp))
                         Text(
-                            text = event.institutionName,
+                            text = event.institute,
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = fontFamily,
@@ -228,6 +237,11 @@ fun EventListPage(events: List<Event>, onRegisterClick: (event: Event) -> Unit) 
 
 @Composable
 fun Eventpage(onRegisterClick: (Event) -> Unit) {
-    val events: List<Event> = getDummyEvents()
-    EventListPage(events = events, onRegisterClick = onRegisterClick)
+
+    val eventsViewModel: EventsViewModel = hiltViewModel()
+    val events by eventsViewModel.eventList.collectAsStateWithLifecycle()
+
+    eventsViewModel.getAllEvents()
+
+    events?.let { EventListPage(events = it, onRegisterClick = onRegisterClick) }
 }
