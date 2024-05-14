@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.AccountsProfile.AccountsProfileManager
 import driver.models.AccountProfile
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,9 +28,29 @@ class AccountsProfileViewModel @Inject constructor(
             _profilesList.update { _ ->
                 profiles
             }
-
         }
+    }
 
+    fun addProfile(
+        name: String,
+        role: String,
+        anchor: String,
+        standard: String,
+        section: String,
+        session: String,
+        instituteId: String,
+        description: String,
+        childClass: String,
+        schoolName: String
+    ) {
+
+        try {
+            CoroutineScope(Dispatchers.IO).launch {
+                accountsProfileManager.addProfile(name, role, anchor, standard, section, session, instituteId, description, childClass, schoolName)
+            }
+        } catch (e: Exception) {
+            null
+        }
 
     }
 
