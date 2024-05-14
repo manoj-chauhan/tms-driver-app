@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,6 +62,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import driver.models.Event
 import driver.models.Location
+import driver.ui.pages.colortext
 import driver.ui.viewmodels.EventsViewModel
 
 @Composable
@@ -71,14 +73,11 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
 
     val eventDetail by eventsViewModel.eventDetail.collectAsState()
 
-//    val cameraPositionState = rememberCameraPositionState {
-//        position = CameraPosition(
-//            target = LatLng(eventDetail.latitude, eventDetail.longitude),
-//            zoom = 15f,
-//            bearing = 0f,
-//            tilt = 0f
-//        )
-//    }
+    val onBackPressed: () -> Unit = {
+        navController.navigateUp()
+    }
+
+
 
 
     LaunchedEffect(Unit) {
@@ -127,18 +126,26 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
                             )
                         }
 
+
+
                         Box(
                             modifier = Modifier
+                                .background(Color.Transparent)
                                 .size(60.dp)
                                 .padding(8.dp)
                                 .align(Alignment.TopStart)
                         ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Save",
-                                tint = Color.Black,
-                                modifier = Modifier.size(30.dp)
-                            )
+                            IconButton(
+                                onClick = onBackPressed,
+
+                                ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Back",
+                                    tint = Color.Black,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            }
                         }
 
                     }
@@ -156,8 +163,8 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
                                         style = TextStyle(
                                             fontSize = 18.sp,
                                             fontFamily = fontFamily,
-                                            color = Color.Gray,
-                                            fontWeight = FontWeight.Bold
+                                            color = colortext,
+
                                         )
                                     )
                                 }
