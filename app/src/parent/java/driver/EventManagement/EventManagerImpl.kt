@@ -1,7 +1,7 @@
 package driver.EventManagement
 
+import driver.models.Event
 import driver.models.EventRegistration
-import driver.models.Events
 import driver.network.EventNetRepository
 import javax.inject.Inject
 
@@ -10,11 +10,15 @@ class EventManagerImpl @Inject constructor(
 
 ) : EventManager {
 
-    override suspend fun getAllEvents(): List<Events>? {
+    override suspend fun getAllEvents(): List<Event>? {
         return eventNetRepository.getAllEvents()
     }
 
     override suspend fun addEvent(event: EventRegistration, profileId: String) {
         return eventNetRepository.addEvent(event, profileId)
+    }
+
+    override  suspend fun getEventById(eventId:String):Event?{
+        return eventNetRepository.getEventById(eventId)
     }
 }

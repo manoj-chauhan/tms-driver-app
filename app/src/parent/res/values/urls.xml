@@ -29,6 +29,11 @@
     <string name="url_get_post_detail">&baseUrl;/test/feeds/</string>
     <string name="url_get_post_comments">&baseUrl;/test/posts/</string>
 
+    <string name="url_get_all_public_events">&baseUrl;/test/events</string>
+    <string name="url_get_event_by_ID">&baseUrl;/test/events/</string>
+
+
+
 
 
 

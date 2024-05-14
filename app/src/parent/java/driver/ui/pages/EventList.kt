@@ -26,6 +26,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,15 +40,26 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import driver.buttonColor
 import driver.headingColor
 import driver.models.Event
 import driver.models.getDummyEvents
 import driver.subHeadingColor
 import driver.textColor
+import driver.ui.viewmodels.EventsViewModel
 
 @Composable
-fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
+fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
+
+    val primary = Color(android.graphics.Color.parseColor("#6750a4"))
+    val color = Color(android.graphics.Color.parseColor("#828282"))
+    val school = Color(android.graphics.Color.parseColor("#a1a1a1"))
+
+    val first = Color(android.graphics.Color.parseColor("#ffffff"))
+    val second = Color(android.graphics.Color.parseColor("#ffffff"))
 
     val fontFamily = FontFamily.SansSerif
 
@@ -62,9 +74,9 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
             modifier = Modifier
                 .height(150.dp)
         ) {
-            Image(
-                painter = painterResource(id = event.imageResId),
-                contentDescription = "",
+            AsyncImage(
+                model = event.coverImage,
+                contentDescription = null,
                 modifier = Modifier.fillMaxWidth(),
                 contentScale = ContentScale.Crop
             )
@@ -117,7 +129,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     .fillMaxWidth(1f),
             ) {
                 Text(
-                    text = event.eventName,
+                    text = event.title,
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = fontFamily,
@@ -132,7 +144,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                 ) {
                     Column(modifier = Modifier.fillMaxWidth(0.72f)) {
                         Text(
-                            text = "${event.eventDate}",
+                            text = "${event.dateOfEvent}",
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontFamily = fontFamily,
@@ -142,7 +154,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                         )
                         Spacer(modifier = Modifier.height(3.dp))
                         Text(
-                            text = event.institutionName,
+                            text = event.institute,
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = fontFamily,
@@ -159,7 +171,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                                 .width(90.dp),
                             enabled = true,
                             onClick = {
-                                onRegisterClick(event)
+                                onRegisterClick(event.id)
                             },
                             contentPadding = PaddingValues(),
                             colors = ButtonDefaults.buttonColors(
@@ -211,7 +223,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
 
 
 @Composable
-fun EventListPage(events: List<Event>, onRegisterClick: (event: Event) -> Unit) {
+fun EventListPage(events: List<Event>, onRegisterClick: (event: String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -224,7 +236,12 @@ fun EventListPage(events: List<Event>, onRegisterClick: (event: Event) -> Unit) 
 }
 
 @Composable
-fun Eventpage(onRegisterClick: (Event) -> Unit) {
-    val events: List<Event> = getDummyEvents()
-    EventListPage(events = events, onRegisterClick = onRegisterClick)
+fun Eventpage(onRegisterClick: (String) -> Unit) {
+
+    val eventsViewModel: EventsViewModel = hiltViewModel()
+    val events by eventsViewModel.eventList.collectAsStateWithLifecycle()
+
+    eventsViewModel.getAllEvents()
+
+    events?.let { EventListPage(events = it, onRegisterClick = onRegisterClick) }
 }

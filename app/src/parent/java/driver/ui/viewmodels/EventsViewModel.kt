@@ -1,11 +1,12 @@
 package driver.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.EventManagement.EventManager
+import driver.models.Event
 import driver.models.EventRegistration
-import driver.models.Events
 import driver.models.ImagesInfo
 import driver.postUploadManagement.PostUploadManager
 import kotlinx.coroutines.CoroutineScope
@@ -20,13 +21,16 @@ import javax.inject.Inject
 @HiltViewModel
 class EventsViewModel @Inject constructor(private val eventManager: EventManager,private val postUploadManager: PostUploadManager) : ViewModel() {
 
-    private val _eventsList: MutableStateFlow<List<Events>?> = MutableStateFlow(null)
-    val eventList: StateFlow<List<Events>?> = _eventsList.asStateFlow()
+    private val _eventsList: MutableStateFlow<List<Event>?> = MutableStateFlow(null)
+    val eventList: StateFlow<List<Event>?> = _eventsList.asStateFlow()
+
+    private val _eventDetail: MutableStateFlow<Event?> = MutableStateFlow(null)
+    val eventDetail: StateFlow<Event?> = _eventDetail.asStateFlow()
 
 
 
     fun getAllEvents() {
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val events = eventManager.getAllEvents()
             _eventsList.update {
                 events
@@ -51,6 +55,20 @@ class EventsViewModel @Inject constructor(private val eventManager: EventManager
             }
         }
     }
+
+
+    fun getEventById(eventId: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val event = eventManager.getEventById(eventId)
+                _eventDetail.value = event
+            } catch (e: Exception) {
+
+                Log.d("event by id error", "getEventById: error in getting eventByid")
+            }
+        }
+    }
+
 
     fun addEvents(
         title: String,

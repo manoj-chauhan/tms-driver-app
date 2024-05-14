@@ -28,7 +28,8 @@ import driver.models.Event
 import driver.models.PostsFeed
 import driver.ui.components.AddNoticeEvent
 import driver.ui.components.CommentPost
-import driver.ui.components.EventRegistration
+import driver.ui.components.EventDetail
+
 import driver.ui.components.addEventPage
 import driver.ui.components.pastTrips
 import driver.ui.pages.AccountsProfile
@@ -43,7 +44,7 @@ import driver.ui.pages.PostItem
 import driver.ui.pages.SavedNoticesPage
 import driver.ui.pages.UserList
 import driver.ui.pages.notificationScreen
-import driver.ui.pages.profile
+import driver.ui.pages.Profile
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -110,9 +111,30 @@ fun AppNavigationHost(
             addEventPage(profileId)
         }
 
-        composable("event-details"){
-            eventDetail?.let { event -> EventRegistration(event) }
+//        composable("event-details"){
+//            eventDetail?.let { event -> EventRegistration(event) }
+//        }
+
+        composable("event-details/{eventId}",arguments = listOf(
+                navArgument("eventId"){
+                    type = NavType.StringType
+                }
+                )) {
+
+            val eventId = it.arguments!!.getString("eventId")
+            EventDetail(eventId, navController)
         }
+
+//        composable("event-details/{id}", arguments = listOf(
+//            navArgument("id"){
+//                type = NavType.StringType
+//            }
+//        )){
+//            val id = it.arguments!!.getString("postId")
+//            EventRegistration(event,navController,id)
+//        }
+
+
         composable("notice_lists"){
             SavedNoticesPage(
             navController= navController)
@@ -127,7 +149,7 @@ fun AppNavigationHost(
         }
         
         composable("user_profile"){
-            profile()
+            Profile(navController)
         }
         composable("userList"){
             UserList(onUserSelected = {

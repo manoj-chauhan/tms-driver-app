@@ -340,10 +340,10 @@ fun MainScreen(
                                 onNotificationClick = { },
                                 onProfileClick = { profileDialog = true }
                             )
-                            EventsListPage(
-                                navigationController, onRegisterClick = {
-                                    eventDetail = it
-                                    navigationController.navigate("event-details")
+                            Eventpage(
+                                 onRegisterClick = {
+
+                                    navigationController.navigate("event-details/${it}")
                                 }
                             )
                         }

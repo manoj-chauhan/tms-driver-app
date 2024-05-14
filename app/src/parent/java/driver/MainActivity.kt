@@ -19,6 +19,8 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import dagger.hilt.android.AndroidEntryPoint
 import driver.ui.DrishtoParentApp
+//import driver.ui.pages.TransparentStatusBarPage
+
 
 
 @AndroidEntryPoint
@@ -53,6 +55,11 @@ class MainActivity : ComponentActivity() {
                     color = Color.White
                 )
             }
+
+
+
+
+
             DrishtoParentApp()
         }
     }
