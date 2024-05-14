@@ -39,18 +39,15 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import driver.buttonColor
+import driver.headingColor
 import driver.models.Event
 import driver.models.getDummyEvents
+import driver.subHeadingColor
+import driver.textColor
 
 @Composable
 fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
-
-    val primary = Color(android.graphics.Color.parseColor("#6750a4"))
-    val color = Color(android.graphics.Color.parseColor("#828282"))
-    val school = Color(android.graphics.Color.parseColor("#a1a1a1"))
-
-    val first = Color(android.graphics.Color.parseColor("#ffffff"))
-    val second = Color(android.graphics.Color.parseColor("#ffffff"))
 
     val fontFamily = FontFamily.SansSerif
 
@@ -124,7 +121,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = fontFamily,
-                        color = colortext,
+                        color = headingColor,
                         fontWeight = FontWeight.Normal
                     )
                 )
@@ -139,7 +136,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontFamily = fontFamily,
-                                color = color,
+                                color = subHeadingColor,
                                 fontWeight = FontWeight.W400
                             )
                         )
@@ -149,7 +146,7 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = fontFamily,
-                                color = school,
+                                color = textColor,
                                 fontWeight = FontWeight.W400
                             )
                         )
@@ -178,8 +175,8 @@ fun EventCard(event: Event, onRegisterClick: (event: Event) -> Unit) {
                                     .background(
                                         brush = Brush.horizontalGradient(
                                             listOf(
-                                                primary,
-                                                primary
+                                                buttonColor,
+                                                buttonColor
                                             )
                                         ),
                                         shape = RoundedCornerShape(1.dp)

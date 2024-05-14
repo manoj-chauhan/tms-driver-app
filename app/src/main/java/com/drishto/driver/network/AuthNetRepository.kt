@@ -68,7 +68,7 @@ class AuthNetRepository @Inject constructor() {
         if(appType == "driverApp"){
              url = context.resources.getString(R.string.url_device_registration)
         }else{
-            url = ""
+            url = context.resources.getString(R.string.url_device_registration)
         }
 
         val fuelManager = FuelManager()

@@ -1,0 +1,14 @@
+package driver
+
+import androidx.compose.ui.graphics.Color
+
+val headingColor = Color(0xFF1C1B1F)
+val subHeadingColor = Color(0xFF828282)
+val textColor = Color(0xFFA1A1A1)
+val buttonColor = Color(0xFF6750A4)
+val subText = Color(0xFFC5C5C5)
+val actionColors = Color(0xFFAEAEAE)
+val cardColor = Color(0xFFDAE2FF)
+val arrivalTripColor = Color(0xFFEF2427)
+val placeColor = Color(0xFF999999)
+

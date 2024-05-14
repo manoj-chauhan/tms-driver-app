@@ -102,7 +102,10 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
+import driver.actionColors
+import driver.headingColor
 import driver.models.PostsFeed
+import driver.subText
 import driver.ui.viewmodels.PostActionsViewModel
 import driver.ui.viewmodels.PostsViewModel
 import kotlinx.coroutines.launch
@@ -170,13 +173,6 @@ fun ContentPage(
     navigationController: NavHostController,
     onCommentClick: (postData: PostsFeed) -> Unit
 ) {
-
-    val subText = Color(android.graphics.Color.parseColor("#c5c5c5"))
-    val actions = Color(android.graphics.Color.parseColor("#aeaeae"))
-    val color= Color(android.graphics.Color.parseColor("#1c1b1f"))
-
-
-
     val postActionViewModel: PostActionsViewModel = hiltViewModel()
     var likesCount by remember { mutableStateOf(post.likes ?: 0) }
     var isLiked by remember { mutableStateOf(post.likedStatus) }
@@ -221,7 +217,7 @@ fun ContentPage(
                         text = post.userName,
                         style = TextStyle(
                             fontSize = 15.sp,
-                            color = color,
+                            color = headingColor,
                             fontFamily = FontFamily.SansSerif
                         )
                     )
@@ -270,14 +266,14 @@ fun ContentPage(
                 Row(modifier = Modifier.fillMaxWidth(0.75f)) {
                     Text(
                         text = "${post.comments} comments",
-                        style = TextStyle(fontSize = 14.sp, color = actions)
+                        style = TextStyle(fontSize = 14.sp, color = actionColors)
                     )
 
                     Spacer(modifier = Modifier.width(12.dp))
 
                     Text(
                         text = "$likesCount likes",
-                        style = TextStyle(fontSize = 14.sp, color = actions)
+                        style = TextStyle(fontSize = 14.sp, color = actionColors)
                     )
                 }
 

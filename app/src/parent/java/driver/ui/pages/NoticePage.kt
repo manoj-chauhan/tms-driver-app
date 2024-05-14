@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -29,11 +27,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drishto.driver.R
+import driver.headingColor
+import driver.textColor
 
 data class NoticeAll(
     val text: String,
@@ -42,15 +40,11 @@ data class NoticeAll(
     val time: String,
     val imageResId: Int
 )
-val primary = Color(android.graphics.Color.parseColor("#6750a4"))
-val color = Color(android.graphics.Color.parseColor("#828282"))
-val school = Color(android.graphics.Color.parseColor("#a1a1a1"))
-val fontFamily = FontFamily.SansSerif
 
-val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
 
 @Composable
 fun NoticeCard(notice: NoticeAll) {
+    val fontFamily = FontFamily.SansSerif
     ElevatedCard(
         colors = CardDefaults.cardColors(Color.White),
         modifier = Modifier
@@ -79,7 +73,7 @@ fun NoticeCard(notice: NoticeAll) {
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontFamily = fontFamily,
-                            color = colortext,
+                            color = headingColor,
                             fontWeight = FontWeight.Normal
                         )
                     )
@@ -90,7 +84,7 @@ fun NoticeCard(notice: NoticeAll) {
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = fontFamily,
-                            color = school,
+                            color = textColor,
                             fontWeight = FontWeight.W400
                         )
                     )
@@ -105,7 +99,7 @@ fun NoticeCard(notice: NoticeAll) {
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
-                            color = color,
+                            color = textColor,
                             fontWeight = FontWeight.W400
                         )
                     )
@@ -117,7 +111,7 @@ fun NoticeCard(notice: NoticeAll) {
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
-                            color = color,
+                            color = textColor,
                             fontWeight = FontWeight.W400
                         )
                     )

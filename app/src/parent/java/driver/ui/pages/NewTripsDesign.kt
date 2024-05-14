@@ -31,18 +31,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import driver.arrivalTripColor
+import driver.cardColor
+import driver.headingColor
 import driver.models.PastTrip
 import driver.models.PresentTrip
 import driver.models.getDummyPastTrip
 import driver.models.getDummyPresentTrip
+import driver.placeColor
+import driver.subHeadingColor
 
 @Composable
 fun NewTripsDesign() {
     val tripList = getDummyPresentTrip()
-    val headingColor = Color(android.graphics.Color.parseColor("#1c1b1f"))
 
     Box(
         modifier = Modifier
@@ -80,7 +83,6 @@ fun NewTripsDesign() {
 
 @Composable
 fun PastTripDesign() {
-    val headingColor = Color(android.graphics.Color.parseColor("#1c1b1f"))
     val pastTrips = getDummyPastTrip()
 
     Box(
@@ -118,10 +120,6 @@ fun PastTripDesign() {
 
 @Composable
 fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
-    val colors = Color(android.graphics.Color.parseColor("#828282"))
-    val arrival = Color(android.graphics.Color.parseColor("#ef2427"))
-    val place = Color(android.graphics.Color.parseColor("#999999"))
-
     val fontStyle: FontFamily = FontFamily.SansSerif
 
 
@@ -146,7 +144,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                 Text(
                     text = trip.date,
                     style = TextStyle(
-                        color = colors,
+                        color = subHeadingColor,
                         fontSize = 12.sp,
                         fontFamily = fontStyle,
                         fontWeight = FontWeight.W400
@@ -157,7 +155,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                 Text(
                     text = trip.status,
                     style = TextStyle(
-                        color = arrival,
+                        color = arrivalTripColor,
                         fontSize = 12.sp,
                         fontFamily = fontStyle,
                         fontWeight = FontWeight.W600
@@ -178,7 +176,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                         Text(
                             text = "Departure",
                             style = TextStyle(
-                                color = colors,
+                                color = subHeadingColor,
                                 fontSize = 12.sp,
                                 fontFamily = fontStyle,
                                 fontWeight = FontWeight.W600
@@ -189,7 +187,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                         Text(
                             text = trip.departure,
                             style = TextStyle(
-                                color = place,
+                                color = placeColor,
                                 fontSize = 12.sp,
                                 fontFamily = fontStyle,
                                 fontWeight = FontWeight.W400
@@ -204,7 +202,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                         Text(
                             text = trip.departureTime,
                             style = TextStyle(
-                                color = place,
+                                color = placeColor,
                                 fontSize = 12.sp,
                                 fontFamily = fontStyle,
                                 fontWeight = FontWeight.W400
@@ -224,7 +222,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                         Text(
                             text = "Arrival",
                             style = TextStyle(
-                                color = colors,
+                                color = subHeadingColor,
                                 fontSize = 12.sp,
                                 fontFamily = fontStyle,
                                 fontWeight = FontWeight.W600
@@ -235,7 +233,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                         Text(
                             text = trip.arrival,
                             style = TextStyle(
-                                color = place,
+                                color = placeColor,
                                 fontSize = 12.sp,
                                 fontFamily = fontStyle,
                                 fontWeight = FontWeight.W400
@@ -250,7 +248,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                         Text(
                             text = trip.arrivalTime,
                             style = TextStyle(
-                                color = place,
+                                color = placeColor,
                                 fontSize = 12.sp,
                                 fontFamily = fontStyle,
                                 fontWeight = FontWeight.W400
@@ -267,14 +265,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
 
 @Composable
 fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
-    val cardColor = Color(android.graphics.Color.parseColor("#dae2ff"))
-    val arrival = Color(android.graphics.Color.parseColor("#ef2427"))
-    val colors = Color(android.graphics.Color.parseColor("#828282"))
     val message = Color(android.graphics.Color.parseColor("#939499"))
-    val destination = Color(android.graphics.Color.parseColor("#a3a6b1"))
-
-
-
     val fontStyle: FontFamily = FontFamily.SansSerif
 
     val destinations = AnnotatedString.Builder().apply {
@@ -291,7 +282,7 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
 
         pushStyle(
             style = SpanStyle(
-                color = colors,
+                color = subHeadingColor,
                 fontSize = 14.sp,
                 fontFamily = fontStyle,
                 fontWeight = FontWeight.W500
@@ -315,7 +306,7 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
 
         pushStyle(
             style = SpanStyle(
-                color = colors,
+                color = subHeadingColor,
                 fontSize = 12.sp,
                 fontFamily = fontStyle,
                 fontWeight = FontWeight.W400
@@ -326,7 +317,7 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
 
         pushStyle(
             style = SpanStyle(
-                color = colors,
+                color = subHeadingColor,
                 fontSize = 12.sp,
                 fontFamily = fontStyle,
                 fontWeight = FontWeight.W400
@@ -359,7 +350,7 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
                 Text(
                     text = trip.day,
                     style = TextStyle(
-                        color = colors,
+                        color = subHeadingColor,
                         fontSize = 12.sp,
                         fontFamily = fontStyle,
                         fontWeight = FontWeight.W400
@@ -370,7 +361,7 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
                 Text(
                     text = trip.arrival,
                     style = TextStyle(
-                        color = arrival,
+                        color = arrivalTripColor,
                         fontSize = 12.sp,
                         fontFamily = fontStyle,
                         fontWeight = FontWeight.W600
@@ -399,7 +390,7 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
                         .clickable {
 //                                onSearchClick()
                         },
-                    tint = colors
+                    tint = subHeadingColor
                 )
             }
 
@@ -424,7 +415,7 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
                         .clickable {
 //                                onSearchClick()
                         },
-                    tint = colors
+                    tint = subHeadingColor
                 )
             }
         }
@@ -432,10 +423,4 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
     
     Spacer(modifier = Modifier.height(10.dp))
 
-}
-
-@Composable
-@Preview
-fun NewTripPreview() {
-    NewTripsDesign()
 }
