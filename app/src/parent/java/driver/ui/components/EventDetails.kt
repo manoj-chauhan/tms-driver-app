@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -66,7 +67,6 @@ import driver.ui.pages.colortext
 import driver.ui.viewmodels.EventsViewModel
 
 @Composable
-//fun EventRegistration(eventDetail: Event) {
 fun EventDetail(eventId: String?, navController: NavHostController) {
 
     val eventsViewModel: EventsViewModel = hiltViewModel()
@@ -77,210 +77,169 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
         navController.navigateUp()
     }
 
-
-
-
     LaunchedEffect(Unit) {
         eventId?.let { id ->
             eventsViewModel.getEventById(id)
         }
     }
 
-//    events?.let { EventListPage(events = it, onRegisterClick = onRegisterClick) }
-
-    val fontFamily = FontFamily.SansSerif
-    val primary = Color(0xFF92A3FD)
-    val secondary = Color(0XFF9DCEFF)
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        LazyColumn {
-            item()
-            {
-                Column(modifier = Modifier) {
+        LazyColumn(
+            modifier = Modifier.padding(12.dp)
+        ) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                ) {
+                    AsyncImage(
+                        model = eventDetail?.descriptionImage,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.Crop
+                    )
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
+                            .size(60.dp)
+                            .padding(8.dp)
+                            .align(Alignment.TopEnd)
                     ) {
-                        AsyncImage(
-                            model = eventDetail?.descriptionImage,
-                            contentDescription = null,
-                            modifier = Modifier.fillMaxWidth(),
-                            contentScale = ContentScale.Crop
+                        Icon(
+                            imageVector = Icons.Filled.Bookmark,
+                            contentDescription = "Save",
+                            tint = Color.White,
+                            modifier = Modifier.size(30.dp)
                         )
-                        Box(
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(8.dp)
-                                .align(Alignment.TopEnd)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Bookmark,
-                                contentDescription = "Save",
-                                tint = Color.White,
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
-
-
-
-                        Box(
-                            modifier = Modifier
-                                .background(Color.Transparent)
-                                .size(60.dp)
-                                .padding(8.dp)
-                                .align(Alignment.TopStart)
-                        ) {
-                            IconButton(
-                                onClick = onBackPressed,
-
-                                ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back",
-                                    tint = Color.Black,
-                                    modifier = Modifier.size(30.dp)
-                                )
-                            }
-                        }
-
                     }
+                }
 
-                    Box(
+                Spacer(modifier = Modifier.height(16.dp))
+
+                eventDetail?.let {
+                    Text(
+                        text = it.title,
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontFamily = FontFamily.SansSerif,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Date: 13-05-2024",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        color = Color.LightGray,
+                        fontWeight = FontWeight.Normal
+                    )
+                )
+
+                Text(
+                    text = "Institution: ${eventDetail?.institute}",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        color = Color.LightGray,
+                        fontWeight = FontWeight.Normal
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Button(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(12.dp)
+                            .height(25.dp),
+                        enabled = true,
+                        onClick = {  },
+                        contentPadding = PaddingValues(),
+                        colors = ButtonDefaults.buttonColors(
+                            Color.Transparent
+                        ),
+                        shape = RoundedCornerShape(10.dp)
                     ) {
-                        Column(modifier = Modifier) {
-                            Column(modifier = Modifier) {
-                                eventDetail?.let {
-                                    Text(
-                                        text = it.title,
-                                        style = TextStyle(
-                                            fontSize = 18.sp,
-                                            fontFamily = fontFamily,
-                                            color = colortext,
-
+                        Box(
+                            modifier = Modifier
+                                .heightIn(35.dp)
+                                .width(100.dp)
+                                .align(Alignment.Bottom)
+                                .background(
+                                    brush = Brush.horizontalGradient(
+                                        listOf(
+                                            Color(0xFF92A3FD),
+                                            Color(0XFF9DCEFF)
                                         )
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Text(
-                                    text = "Date: 13-05-2024",
-                                    style = TextStyle(
-                                        fontSize = 14.sp,
-                                        fontFamily = fontFamily,
-                                        color = Color.LightGray,
-                                        fontWeight = FontWeight.Normal
-                                    )
-                                )
-                                Text(
-                                    text = "Institution: ${eventDetail?.institute}",
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontFamily = fontFamily,
-                                        color = Color.LightGray,
-                                        fontWeight = FontWeight.Normal
-                                    )
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
-
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.End
-                            ) {
-                                Button(
-                                    modifier = Modifier
-                                        .height(25.dp),
-                                    enabled = true,
-                                    onClick = {
-//                                onRegisterClick()
-                                    },
-                                    contentPadding = PaddingValues(),
-                                    colors = ButtonDefaults.buttonColors(
-                                        Color.Transparent
                                     ),
-                                    shape = RoundedCornerShape(10.dp)
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .heightIn(35.dp)
-                                            .width(100.dp)
-                                            .align(Alignment.Bottom)
-                                            .background(
-                                                brush = Brush.horizontalGradient(
-                                                    listOf(
-                                                        primary,
-                                                        secondary
-                                                    )
-                                                ),
-                                                shape = RoundedCornerShape(1.dp)
-                                            ), contentAlignment = Alignment.Center
-                                    ) {
-                                        Row(
-                                            modifier = Modifier,
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            Text(
-                                                text = "Register",
-                                                style = TextStyle(
-                                                    fontSize = 14.sp,
-                                                    fontWeight = FontWeight.Bold
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
-
-                            }
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            Column(
-                                modifier = Modifier,
-                                verticalArrangement = Arrangement.SpaceBetween,
-                                horizontalAlignment = Alignment.Start
-                            ) {
-                                Row(modifier = Modifier.fillMaxWidth()) {
-                                    eventDetail?.let {
-                                        Text(
-                                            text = it.description,
-                                            style = TextStyle(
-                                                color = Color.Gray,
-                                                textAlign = TextAlign.Justify
-                                            )
-                                        )
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(20.dp))
-
-                                PhotoView()
-
-
-                                Spacer(modifier = Modifier.height(20.dp))
-
-                                eventDetail?.location?.let { location ->
-                                    ShowGoogleMap(event = location)
-                                }
-                            }
+                                    shape = RoundedCornerShape(1.dp)
+                                ), contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Register",
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            )
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+
+                eventDetail?.description?.let {
+                    Text(
+                        text = it,
+                        style = TextStyle(
+                            color = Color.Gray,
+                            textAlign = TextAlign.Justify,
+                            fontFamily = FontFamily.SansSerif
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PhotoView()
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                eventDetail?.location?.let { location ->
+                    ShowGoogleMap(event = location)
+                }
             }
         }
+
+
+        IconButton(
+            onClick = onBackPressed,
+            modifier = Modifier
+                .size(60.dp)
+                .padding(8.dp)
+                .align(Alignment.TopStart)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.Black,
+                modifier = Modifier.size(30.dp)
+            )
+        }
     }
-
-    Log.d("event id check", "EventRegistration: $eventId")
-
-
 }
 
 @Composable
