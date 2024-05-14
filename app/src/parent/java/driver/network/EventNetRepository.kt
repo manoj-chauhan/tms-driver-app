@@ -5,6 +5,7 @@ import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
+import com.drishto.driver.network.getProfileId
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
@@ -87,6 +88,8 @@ class EventNetRepository @Inject constructor(
                 val url = context.resources.getString(R.string.url_add_event)
 
 
+
+
                 getAccessToken(context)?.let { token ->
                     val fuelManager = FuelManager()
                     val (_, response, result) = fuelManager.post(url)
@@ -138,12 +141,21 @@ class EventNetRepository @Inject constructor(
 
     fun getEventById(eventId:String):Event?{
 
-        val eventsurl = context.resources.getString(R.string.url_get_event_by_ID)
+        val eventsurl = context.resources.getString(R.string.url_get_event_by_ID)+eventId
+
+
+        var profileId =""
+        getProfileId(context).let {
+            if (it != null) {
+                profileId = it
+            }
+        }
 
         return try {
             getAccessToken(context)?.let {
                 val (_, _, result) = eventsurl.httpGet()
                     .authentication().bearer(it)
+                    .header("Profile-Id",profileId)
                     .responseObject(moshiDeserializerOf(Event::class.java))
 
                 result.fold(

@@ -226,13 +226,13 @@ fun EventRegistration(eventId: String?, navController: NavHostController){
                         verticalArrangement = Arrangement.SpaceBetween,
                         horizontalAlignment = Alignment.Start
                     ) {
-                        val string =
-                            "Sports has been hallmark in Maharaja Aggersen Public School. In keeping with Prime Minister Modi's concern about Fit India, Healthy India, Maharaja Aggersen Public School organized the Inter-School Volleyball Tournament 2019-2020 for 2 days 21st September and 23rd September 2019. Many schools all across Delhi came for the Volleyball on Saturday, 21st September, 2019 and Monday, 23rd September 2019. The volleyball matches were played for both categories Sub Junior boys, Junior Boys, Sub Junior Girls and Junior Girls. After a short programme the Chief Guests were welcomed with gifts and saplings. The semifinal matches were played on 21st September and the final matches were played on 23rd September 2019. The winning teams were given gold, silver and bronze medallions and individual trophies by the Director of Sports. The players proudly displayed their hard-earned goodies and went homewards happy and satisfied."
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                text = string,
-                                style = TextStyle(color = Color.Gray, textAlign = TextAlign.Justify)
-                            )
+                       Row(modifier = Modifier.fillMaxWidth()) {
+                           eventDetail?.let {
+                               Text(
+                                   text = it.description,
+                                   style = TextStyle(color = Color.Gray, textAlign = TextAlign.Justify)
+                               )
+                           }
                         }
 
                         Spacer(modifier = Modifier.height(20.dp))
