@@ -28,7 +28,8 @@ import driver.models.Event
 import driver.models.PostsFeed
 import driver.ui.components.AddNoticeEvent
 import driver.ui.components.CommentPost
-import driver.ui.components.EventRegistration
+import driver.ui.components.EventDetail
+
 import driver.ui.components.addEventPage
 import driver.ui.components.pastTrips
 import driver.ui.pages.AccountsProfile
@@ -121,7 +122,7 @@ fun AppNavigationHost(
                 )) {
 
             val eventId = it.arguments!!.getString("eventId")
-            EventRegistration(eventId, navController)
+            EventDetail(eventId, navController)
         }
 
 //        composable("event-details/{id}", arguments = listOf(

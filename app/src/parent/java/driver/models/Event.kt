@@ -54,13 +54,7 @@ data class EventRegistration(
     val institute:  String
 )
 
-@JsonClass(generateAdapter = true)
-data class locationInfo(
 
-    val latitude:String,
-    val longitude:String
-
-)
 @JsonClass(generateAdapter = true)
 data class ImagesInfo(
     val type :  String,
