@@ -1,6 +1,5 @@
 package driver.ui.pages
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,7 +33,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -46,23 +44,13 @@ import coil.compose.AsyncImage
 import driver.buttonColor
 import driver.headingColor
 import driver.models.Event
-import driver.models.getDummyEvents
 import driver.subHeadingColor
 import driver.textColor
 import driver.ui.viewmodels.EventsViewModel
 
 @Composable
 fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
-
-    val primary = Color(android.graphics.Color.parseColor("#6750a4"))
-    val color = Color(android.graphics.Color.parseColor("#828282"))
-    val school = Color(android.graphics.Color.parseColor("#a1a1a1"))
-
-    val first = Color(android.graphics.Color.parseColor("#ffffff"))
-    val second = Color(android.graphics.Color.parseColor("#ffffff"))
-
     val fontFamily = FontFamily.SansSerif
-
 
     ElevatedCard(
         colors = CardDefaults.cardColors(Color.White),

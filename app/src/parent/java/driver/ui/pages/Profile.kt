@@ -22,10 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,17 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.drishto.driver.R
+import driver.headingColor
 
-
+val fontFamily = FontFamily.SansSerif
 @Composable
 fun Profile(navController: NavController) {
-    val customLightGray = Color(android.graphics.Color.parseColor("#F0F0F0"))
-    val activecolor = Color(android.graphics.Color.parseColor("#6200EE"))
-    var selectedProfileId by remember { mutableStateOf<String?>(null) }
-
-    val fontFamily = FontFamily.SansSerif
-    val colortext = Color(android.graphics.Color.parseColor("#1c1b1f"))
-
     val onBackPressed: () -> Unit = {
         navController.navigateUp()
     }
@@ -70,11 +60,7 @@ fun Profile(navController: NavController) {
             AchievementsDetail();
 
         }
-
-
     }
-
-
 }
 
 @Composable
@@ -152,7 +138,7 @@ fun PersonalDetail(
             fontSize = 24.sp,
 
             fontFamily = fontFamily,
-            color = colortext
+            color = headingColor
         )
         Text(
             text = "@kris",
@@ -186,7 +172,7 @@ fun ExperienceDetail() {
             fontSize = 14.sp,
             fontFamily = fontFamily,
 
-            color = colortext,
+            color = headingColor,
 
             )
         Experience();
@@ -211,7 +197,7 @@ fun Experience() {
                 Text(
                     text = "Delhi Public School",
                     fontFamily = fontFamily,
-                    color = colortext,
+                    color = headingColor,
 
                     )
                 Text(
@@ -247,7 +233,7 @@ fun EducationDetail() {
             fontSize = 14.sp,
             fontFamily = fontFamily,
 
-            color = colortext,
+            color = headingColor,
 
             )
         Education();
@@ -271,7 +257,7 @@ fun Education() {
             Text(
                 text = "Delhi Public School",
                 fontFamily = fontFamily,
-                color = colortext,
+                color = headingColor,
 
                 )
             Text(
@@ -298,7 +284,7 @@ fun ExtraCurricularActivitiesDetail() {
             fontSize = 14.sp,
             fontFamily = fontFamily,
 
-            color = colortext,
+            color = headingColor,
 
             )
         ExtraCurricularActivity();
@@ -322,7 +308,7 @@ fun ExtraCurricularActivity() {
             Text(
                 text = "Football Club",
                 fontFamily = fontFamily,
-                color = colortext,
+                color = headingColor,
 
                 )
             Text(
@@ -348,7 +334,7 @@ fun AchievementsDetail() {
             fontSize = 14.sp,
             fontFamily = fontFamily,
 
-            color = colortext,
+            color = headingColor,
 
             )
         Achievement();
@@ -372,7 +358,7 @@ fun Achievement() {
             Text(
                 text = "Inter school Championship",
                 fontFamily = fontFamily,
-                color = colortext,
+                color = headingColor,
 
                 )
             Text(
@@ -384,84 +370,3 @@ fun Achievement() {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-//@Composable
-////fun educationList(educationList:List<EducationList>){
-////    educationList?.forEach() { information ->
-//fun educationList() {
-//
-//
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(start = 16.dp, top = 20.dp, bottom = 20.dp)
-//    ) {
-//        Box(
-//            modifier = Modifier
-//                .background(
-//                    Color.White, shape = CircleShape
-//                )
-//                .size(60.dp)
-//        ) {
-//            Image(
-//                painter = painterResource(id = R.drawable.dps),
-//                contentDescription = "",
-//                modifier = Modifier
-//                    .width(200.dp)
-//                    .height(200.dp)
-//                    .clip(CircleShape)
-//                    .border(
-//                        width = 0.dp, Color.White, shape = CircleShape
-//                    ),
-//                contentScale = ContentScale.FillBounds
-//            )
-//        }
-//
-//        Spacer(modifier = Modifier.width(14.dp))
-//
-//        Box(modifier = Modifier.fillMaxWidth()) {
-//            Column {
-//                Text(
-//                    text = "{information.schoolName}",
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.SemiBold,
-//                    color = Color.Black
-//                )
-//
-//                Text(
-//                    text = "{information.schoolAddress}",
-//                    fontSize = 14.sp,
-//                    fontWeight = FontWeight.Light,
-//                    color = Color.Black
-//                )
-//                Text(
-//                    text = "{information.status}",
-//                    fontSize = 14.sp,
-//                    fontWeight = FontWeight.Light,
-//                    color = Color.Black
-//                )
-//
-//            }
-//
-//        }
-//    }
-//
-//
-//}
-
-
-//@Composable
-//@Preview
-//fun proPreview() {
-//    profile()
-//}
