@@ -40,18 +40,6 @@ data class VehicleAssignment(
     val fuelType: String
 )
 
-@JsonClass(generateAdapter = true)
-data class errorDescription(
-    val  errorCode :  String,
-    val errorDescription:String,
-    val errorShortDescription: String
-)
-
-@JsonClass(generateAdapter = true)
-data class errorDescription500(
-    val message:String
-)
-
 
 @JsonClass(generateAdapter = true)
 data class TripsAssigned(

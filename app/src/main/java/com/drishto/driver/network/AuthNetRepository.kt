@@ -63,13 +63,7 @@ class AuthNetRepository @Inject constructor() {
         val jsonAdapter: JsonAdapter<DeviceRegistrationDetail> =
             moshi.adapter(DeviceRegistrationDetail::class.java)
         val requestBody: String = jsonAdapter.toJson(deviceRegDetail)
-        var url:String = ""
-
-        if(appType == "driverApp"){
-             url = context.resources.getString(R.string.url_device_registration)
-        }else{
-            url = context.resources.getString(R.string.url_device_registration)
-        }
+        var url = context.resources.getString(R.string.url_device_registration)
 
         val fuelManager = FuelManager()
         val (_, response, result) = fuelManager.post(url).authentication().bearer(accessToken)

@@ -39,7 +39,21 @@ class UserProfileViewModel @Inject constructor(private val userProfileManager: c
 
     fun userDetail(context: Context){
         val channel1 = Channel<UserProfile>()
-        val url = context.resources.getString(R.string.url_profile)
+        val appType = if (context.packageName == "com.drishto") {
+            "parentApp"
+        } else if (context.packageName == "com.drishto.driver") {
+            "driverApp"
+        } else {
+            "unknown"
+        }
+        var url =""
+        Log.d("type", "uploadProfileImage: $appType")
+
+        if(appType == "driverApp") {
+            url = context.resources.getString(R.string.url_profile)
+        }else{
+            url = context.resources.getString(R.string.url_parent_profile)
+        }
         viewModelScope.launch(Dispatchers.IO)
         {
             getAccessToken(context)?.let {

@@ -3,6 +3,11 @@
 <resources>
     <string name="url_authenticate">&baseUrl;/auth/auth/connect</string>
     <string name="url_login">&baseUrl;/auth/auth/login</string>
+    <string name="url_device_registration">&baseUrl;/tms/device</string>
     <string name="edit_user_name">&baseUrl;/user/profile/edit</string>
+    <string name="url_profile">&baseUrl;/tms/user/profile</string>
+    <string name="url_parent_profile">&baseUrl;/user/profile</string>
     <string name="upload_parent_photo">&baseUrl;/user/</string>
+    <string name="upload_photo">&baseUrl;/tms/user/</string>
+
 </resources>

@@ -6,10 +6,10 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import com.drishto.driver.PhoneNumberActivity
+import com.drishto.driver.models.errorDescription
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.qualifiers.ApplicationContext
-import driver.ui.viewmodels.errorDescription
 import javax.inject.Inject
 
 class ErrorMangerImpl @Inject constructor(
