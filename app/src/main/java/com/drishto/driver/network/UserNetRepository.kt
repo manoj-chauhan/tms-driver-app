@@ -125,7 +125,21 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
     fun uploadProfileImage(image: ByteArray, userId:Int) {
         Log.d("Upload", "uploadProfileImage: $image")
         try {
-            val url = context.resources.getString(R.string.upload_photo) + userId + "/profile-photo"
+            val appType = if (context.packageName == "com.drishto") {
+                "parentApp"
+            } else if (context.packageName == "com.drishto.driver") {
+                "driverApp"
+            } else {
+                "unknown"
+            }
+            var url =""
+            Log.d("type", "uploadProfileImage: $appType")
+
+            if(appType == "driverApp") {
+                url = context.resources.getString(R.string.upload_photo)+ userId + "/profile-photo"
+            }else{
+                url = context.resources.getString(R.string.upload_parent_photo) + userId + "/profile-photo"
+            }
             Log.d("upload", "uploadProfileImage: $url")
             getAccessToken(context)?.let {
                 val fuelManager = FuelManager()
@@ -167,7 +181,21 @@ class UserNetRepository  @Inject constructor(@ApplicationContext private val con
     }
 
     fun getUploadedImage(userId:Int): Bitmap? {
-        val url = context.resources.getString(R.string.upload_photo) + userId + "/profile-photo"
+        val appType = if (context.packageName == "com.drishto") {
+            "parentApp"
+        } else if (context.packageName == "com.drishto.driver") {
+            "driverApp"
+        } else {
+            "unknown"
+        }
+        var url =""
+        Log.d("type", "uploadProfileImage: $appType")
+
+        if(appType == "driverApp") {
+            url = context.resources.getString(R.string.upload_photo)+ userId + "/profile-photo"
+        }else{
+            url = context.resources.getString(R.string.upload_parent_photo) + userId + "/profile-photo"
+        }
         Log.d("TAG", "getUploadedImage: $url")
 
         return try {

@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [<!ENTITY baseUrl "https://api.test.drishto.com">]>
 <resources>
-    <string name="url_authenticate">&baseUrl;/auth/connect</string>
-    <string name="url_login">&baseUrl;/auth/login</string>
-    <string name="url_trips_list">&baseUrl;/trips/assigned-to-driver</string>
-    <string name="url_old_assignments_list">&baseUrl;/drivers</string>
-    <string name="url_trips_detail">&baseUrl;/trips/</string>
-    <string name="url_user_profile">&baseUrl;/user/profile</string>
-    <string name="url_user_companies">&baseUrl;/company</string>
-    <string name="url_profile">&baseUrl;/user/profile</string>
-    <string name="url_trip_schedules">&baseUrl;/trips/</string>
-    <string name="url_trip_start">&baseUrl;/trips/start</string>
-    <string name="url_trip_check_in">&baseUrl;/trips/check-in</string>
-    <string name="url_trip_depart">&baseUrl;/trips/depart</string>
-    <string name="url_trip_end">&baseUrl;/trips/end</string>
-    <string name="url_trip_cancel">&baseUrl;/trips/cancel</string>
-    <string name="url_driver_code">&baseUrl;/driver/generate/assignment-code</string>
-    <string name="url_device_registration">&baseUrl;/device</string>
-    <string name="url_vehicle_list">&baseUrl;/vehicle</string>
-    <string name="url_device_matrix">&baseUrl;/matrix</string>
-    <string name="url_vehicle_assignment">&baseUrl;/vehicleDrivers</string>
-    <string name="url_trip_actions">&baseUrl;/trips/</string>
-    <string name="url_trip_document">&baseUrl;/trips/document/</string>
-    <string name="url_download_document">&baseUrl;/file/</string>
-    <string name="url_trip_history">&baseUrl;/driver/</string>
-    <string name="url_schedule_plan">&baseUrl;/tripPlan/</string>
-    <string name="url_addStudent_plan">&baseUrl;/passengers</string>
-    <string name="url_editStudent_detail">&baseUrl;/passengers/edit/</string>
-    <string name="url_student_list">&baseUrl;/tripPlan/</string>
+    <string name="url_trips_list">&baseUrl;/tms/trips/assigned-to-driver</string>
+    <string name="url_old_assignments_list">&baseUrl;/tms/drivers</string>
+    <string name="url_trips_detail">&baseUrl;/tms/trips/</string>
+    <string name="url_user_profile">&baseUrl;/tms/user/profile</string>
+    <string name="url_user_companies">&baseUrl;/tms/company</string>
+    <string name="url_profile">&baseUrl;/tms/user/profile</string>
+    <string name="url_trip_schedules">&baseUrl;/tms/trips/</string>
+    <string name="url_trip_start">&baseUrl;/tms/trips/start</string>
+    <string name="url_trip_check_in">&baseUrl;/tms/trips/check-in</string>
+    <string name="url_trip_depart">&baseUrl;/tms/trips/depart</string>
+    <string name="url_trip_end">&baseUrl;/tms/trips/end</string>
+    <string name="url_trip_cancel">&baseUrl;/tms/trips/cancel</string>
+    <string name="url_driver_code">&baseUrl;/tms/driver/generate/assignment-code</string>
+    <string name="url_device_registration">&baseUrl;/tms/device</string>
+    <string name="url_vehicle_list">&baseUrl;/tms/vehicle</string>
+    <string name="url_device_matrix">&baseUrl;/tms/matrix</string>
+    <string name="url_vehicle_assignment">&baseUrl;/tms/vehicleDrivers</string>
+    <string name="url_trip_actions">&baseUrl;/tms/trips/</string>
+    <string name="url_trip_document">&baseUrl;/tms/trips/document/</string>
+    <string name="url_download_document">&baseUrl;/tms/file/</string>
+    <string name="url_trip_history">&baseUrl;/tms/driver/</string>
+    <string name="url_schedule_plan">&baseUrl;/tms/tripPlan/</string>
+    <string name="url_addStudent_plan">&baseUrl;/tms/passengers</string>
+    <string name="url_editStudent_detail">&baseUrl;/tms/passengers/edit/</string>
+    <string name="url_student_list">&baseUrl;/tms/tripPlan/</string>
+    <string name="url_driver_trip_plan">&baseUrl;/tms/tripPlan/driver</string>
+    <string name="children_list">&baseUrl;/tms/parents/children?page_no=0</string>
+    <string name="upload_photo">&baseUrl;/tms/user/</string>
+
+
+
 
 
 </resources>
