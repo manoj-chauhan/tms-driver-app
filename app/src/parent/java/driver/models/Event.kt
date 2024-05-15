@@ -14,7 +14,7 @@ data class Event(
     val dateOfEvent: String?,
     val timeOfEvent: String?,
     val coverImage: Image?,
-    val descriptionImage: List<String>,
+    val descriptionImage: List<Image>?,
     val active: Boolean,
     val createdBy: String
 )

@@ -40,6 +40,7 @@ class EventNetRepository @Inject constructor(
 
                 result.fold(
                     {
+                        Log.d("EventNetRepository", "Successfully received response from backend.")
                     },
                     { error ->
                         Log.d("eventerror", "$error")

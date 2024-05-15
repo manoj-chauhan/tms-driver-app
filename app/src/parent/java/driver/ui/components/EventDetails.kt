@@ -106,11 +106,6 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
                         onBackPressed = onBackPressed
                     )
                 }
-
-
-
-
-
                 Column( modifier = Modifier.padding(horizontal = 15.dp)) {
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -212,27 +207,14 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     eventDetail?.location?.let { location ->
-                        ShowGoogleMap(event = location)
+                        GoogleMap(event = location)
                     }
                 }
             }
         }
     }
 
-//    IconButton(
-//        onClick = onBackPressed,
-//        modifier = Modifier
-//            .size(60.dp)
-//            .padding(8.dp)
-//            .align(Alignment.TopStart)
-//    ) {
-//        Icon(
-//            imageVector = Icons.Default.ArrowBack,
-//            contentDescription = "Back",
-//            tint = Color.Black,
-//            modifier = Modifier.size(30.dp)
-//        )
-//    }
+
 }
 
 
@@ -284,7 +266,7 @@ fun ImageWithBookmark(eventDetail: Event, onBackPressed: () -> Unit) {
 
 
 @Composable
-fun ShowGoogleMap(event: Location) {
+fun GoogleMap(event: Location) {
 
     val mapUiSettings by remember { mutableStateOf(MapUiSettings(compassEnabled = false)) }
     val mapProperties by remember { mutableStateOf(MapProperties(mapType = MapType.NORMAL)) }
