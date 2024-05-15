@@ -124,10 +124,10 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
                     Text(
                         text = it.title,
                         style = TextStyle(
-                            fontSize = 18.sp,
+                            fontSize = 16.sp,
                             fontFamily = FontFamily.SansSerif,
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold
+                            color = colortext,
+
                         )
                     )
                 }
@@ -145,7 +145,7 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
                 )
 
                 Text(
-                    text = "Institution: ${eventDetail?.institute}",
+                    text = "Institution: ${eventDetail?.instituteName}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = FontFamily.SansSerif,
@@ -252,14 +252,25 @@ fun ShowGoogleMap(event: Location) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Location",
+            style = TextStyle(fontSize = 12.sp, color = colortext)
+        )
+
+    }
+    Spacer(modifier = Modifier.height(6.dp))
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = event.location,
             style = TextStyle(fontSize = 14.sp, color = Color.Gray)
         )
 
     }
 
+
+
+
     val marker = LatLng(event.latitude, event.longitude)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(marker, 10f)
+        position = CameraPosition.fromLatLngZoom(marker, 20f)
 
     }
     Box(
