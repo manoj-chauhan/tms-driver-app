@@ -70,9 +70,11 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import driver.models.Event
+import driver.models.Image
 import driver.models.Location
 import driver.ui.pages.colortext
 import driver.ui.viewmodels.EventsViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun EventDetail(eventId: String?, navController: NavHostController) {
@@ -202,7 +204,7 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    PhotoView()
+                    PhotoView(eventDetail?.descriptionImage)
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -326,23 +328,12 @@ fun GoogleMap(event: Location) {
 }
 
 
+
 @Composable
-fun PhotoView() {
-    var selectedImageUri by remember {
-        mutableStateOf<List<String?>>(emptyList())
-    }
+fun PhotoView(descriptionImages: List<Image>?) {
+    val selectedImageUrls = descriptionImages?.map { it.mediaUrl } ?: emptyList()
 
-    selectedImageUri = listOf(
-        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-
-        )
-
-    val columns = when (selectedImageUri.size) {
+    val columns = when (selectedImageUrls.size) {
         1 -> 1
         2 -> 2
         3 -> 2
@@ -358,31 +349,28 @@ fun PhotoView() {
             modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Fixed(columns),
         ) {
-            val imageCount = selectedImageUri.size
+            val imageCount = selectedImageUrls.size
 
             items(imageCount, key = { it }) { index ->
-                val uri = selectedImageUri[index]
-                if (uri != null) {
+                val uri = selectedImageUrls[index]
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        if (uri != null) {
-                            if (index < 4) {
-                                AsyncImage(
-                                    model = uri,
-                                    contentDescription = "Selected Image",
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .fillMaxHeight()
-                                        .align(Alignment.TopStart)
-                                )
-                            }
-                        }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    if (index < 4) {
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = "Selected Image",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .fillMaxHeight()
+                                .align(Alignment.TopStart)
+                        )
                     }
                 }
-                if (index == 3) {
+
+                if (index == 3 && imageCount > 4) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -403,3 +391,84 @@ fun PhotoView() {
         }
     }
 }
+//
+//
+//@Composable
+//fun PhotoView() {
+//    var selectedImageUri by remember {
+//        mutableStateOf<List<String?>>(emptyList())
+//    }
+//
+//    selectedImageUri = listOf(
+//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
+//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
+//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
+//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
+//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
+//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
+//
+//        )
+//
+//    val columns = when (selectedImageUri.size) {
+//        1 -> 1
+//        2 -> 2
+//        3 -> 2
+//        else -> 2
+//    }
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .heightIn(max = 450.dp)
+//    ) {
+//        LazyVerticalGrid(
+//            modifier = Modifier.fillMaxWidth(),
+//            columns = GridCells.Fixed(columns),
+//        ) {
+//            val imageCount = selectedImageUri.size
+//
+//            items(imageCount, key = { it }) { index ->
+//                val uri = selectedImageUri[index]
+//                if (uri != null) {
+//
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                    ) {
+//                        if (uri != null) {
+//                            if (index < 4) {
+//                                AsyncImage(
+//                                    model = uri,
+//                                    contentDescription = "Selected Image",
+//                                    modifier = Modifier
+//                                        .fillMaxSize()
+//                                        .fillMaxHeight()
+//                                        .align(Alignment.TopStart)
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
+//                if (index == 3) {
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .zIndex(1f)
+//                            .background(Color.Black.copy(alpha = 0.4f))
+//                    ) {
+//                        Text(
+//                            text = "+${imageCount - (index + 1)}",
+//                            color = Color.White,
+//                            fontSize = 18.sp,
+//                            modifier = Modifier
+//                                .padding(top = 50.dp, bottom = 40.dp)
+//                                .align(Alignment.Center)
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+
+
