@@ -81,7 +81,7 @@ data class childrenAddPlan(
     var dateOfBirth: String,
     var guardianName: String,
     var schoolAddress: String,
-    var tripPlanId: Int,
+    var tripPlanId: String,
     var boardingPlanScheduleId: Int,
     var deBoardingPlanScheduleId: Int
 )

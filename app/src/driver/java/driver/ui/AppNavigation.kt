@@ -62,8 +62,12 @@ fun AppNavigationHost(
         mutableIntStateOf(0)
     }
 
+    var planCode by remember {
+        mutableStateOf("")
+    }
+
     var planId by remember {
-        mutableIntStateOf(0)
+        mutableStateOf(0)
     }
 
     var childrenList : ChildrenList? = null
@@ -140,6 +144,7 @@ fun AppNavigationHost(
                 },
                 onAssignedPlansSelected = {
                     operatorId = it.companyId
+                    planCode = it.planCode
                     planId = it.id
                     navController.navigate("driver-plans-details")
                 },
@@ -147,29 +152,29 @@ fun AppNavigationHost(
             )
         }
 
-        composable("student-addition/{operatorId}/{planId}", arguments = listOf(
+        composable("student-addition/{operatorId}/{planCode}", arguments = listOf(
             navArgument("operatorId") { type = NavType.IntType},
-            navArgument("planId") { type = NavType.IntType}
+            navArgument("planCode") { type = NavType.StringType}
         )){entry ->
             val activity = LocalContext.current as? ComponentActivity
 
             val operator = entry.arguments?.getInt("operatorId") ?: 0
-            val plan = entry.arguments?.getInt("planId") ?: 0
-            StudentInPlan(operator,plan,navController,activity = activity ?: return@composable)
+            val plan = entry.arguments?.getString("planCode") ?: ""
+            StudentInPlan(operator,plan,navController, activity = activity ?: return@composable)
         }
         composable("driver-plans-details"){
             val activity = LocalContext.current as? ComponentActivity
 
-            ChildrenPlanDetail(operatorId, planId, navController, onStudentSelected = {
+            ChildrenPlanDetail(operatorId, planId,planCode, navController, onStudentSelected = {
                 childrenList = it
                 navController.navigate("children-details")
-            },activity = activity ?: return@composable)
+            }, activity = activity ?: return@composable)
         }
 
         composable("children-details"){
             val activity = LocalContext.current as? ComponentActivity
 
-            childrenList?.let { it1 -> EditChildrenDetails(it1, operatorId, planId, navController, activity = activity ?: return@composable) }
+            childrenList?.let { it1 -> EditChildrenDetails(it1, operatorId, planCode, navController, activity = activity ?: return@composable) }
         }
 
         composable("history_detail"){

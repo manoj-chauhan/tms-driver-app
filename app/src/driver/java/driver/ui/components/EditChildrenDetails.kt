@@ -68,7 +68,7 @@ import java.util.Locale
 fun EditChildrenDetails(
     childrenDetail: ChildrenList,
     operatorId: Int,
-    planId: Int,
+    planId: String,
     navController: NavHostController,
     activity: ComponentActivity
 ) {
