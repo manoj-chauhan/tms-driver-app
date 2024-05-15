@@ -509,8 +509,8 @@ fun addEventPage(profileId: String) {
                 modifier = Modifier,
                 shape = RoundedCornerShape(10.dp),
                 onClick = {
-                    eventsViewModel.addEvents(title, description, latitude,longitude,selectedPlace, scope, selectedDate, mTime.value,
-                       coverImage.value, mediaPosts.toList(), instituteName, profileId)
+//                    eventsViewModel.addEvents(title, description, latitude,longitude,selectedPlace, scope, selectedDate, mTime.value,
+//                       coverImage.value, mediaPosts.toList(), instituteName, profileId)
                  },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent

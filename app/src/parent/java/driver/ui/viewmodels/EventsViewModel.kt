@@ -7,7 +7,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.EventManagement.EventManager
 import driver.models.Event
 import driver.models.EventRegistration
+import driver.models.Image
 import driver.models.ImagesInfo
+import driver.models.Location
+import driver.models.Scope
 import driver.postUploadManagement.PostUploadManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -69,26 +72,61 @@ class EventsViewModel @Inject constructor(private val eventManager: EventManager
         }
     }
 
+//
+//    fun addEvents(
+//        title: String,
+//        description: String,
+//        latitude: String,
+//        longitude: String,
+//        placeName: String,
+//        scope: String,
+//        dateOfEvent: String?,
+//        timeOfEvent: String?,
+//        coverImage: ImagesInfo?,
+//        descriptionImage: List<ImagesInfo?>,
+//        institute: String,
+//        profileId: String
+//    ) {
+////        val location = locationInfo(latitude, longitude)
+//        val eventRegistration= EventRegistration(title, description, placeName, scope, dateOfEvent, timeOfEvent, coverImage, descriptionImage, institute)
+//        CoroutineScope(Dispatchers.IO).launch {
+//            eventManager.addEvent(eventRegistration, profileId)
+//    }
 
-    fun addEvents(
-        title: String,
-        description: String,
-        latitude: String,
-        longitude: String,
-        placeName: String,
-        scope: String,
-        dateOfEvent: String?,
-        timeOfEvent: String?,
-        coverImage: ImagesInfo?,
-        descriptionImage: List<ImagesInfo?>,
-        institute: String,
-        profileId: String
-    ) {
-//        val location = locationInfo(latitude, longitude)
-        val eventRegistration= EventRegistration(title, description, placeName, scope, dateOfEvent, timeOfEvent, coverImage, descriptionImage, institute)
-        CoroutineScope(Dispatchers.IO).launch {
-            eventManager.addEvent(eventRegistration, profileId)
-        }
-    }
+//    fun addEvents(
+//        title: String,
+//        description: String,
+//        latitude: Double,
+//        longitude: Double,
+//        placeName: String,
+//        scope: Scope,
+//        dateOfEvent: String?,
+//        timeOfEvent: String?,
+//        coverImage: Image?,
+//        descriptionImage: List<ImagesInfo?>,
+//        institute: String,
+//        profileId: String
+//    ) {
+//        val location = Location(placeName, latitude, longitude)
+//        val eventRegistration = EventRegistration(
+//            "",
+//            "",
+//            "",
+//            "",
+//            title,
+//            description,
+//            location,
+//            scope,
+//            dateOfEvent,
+//            timeOfEvent,
+//            convertImage(coverImage),
+//            convertImages(descriptionImage),
+//            false,
+//            profileId
+//        )
+//        CoroutineScope(Dispatchers.IO).launch {
+//            eventManager.addEvent(eventRegistration, profileId)
+//        }
+//    }
 
 }

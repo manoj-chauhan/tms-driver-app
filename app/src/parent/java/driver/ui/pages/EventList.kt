@@ -75,12 +75,17 @@ fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
             modifier = Modifier
                 .height(150.dp)
         ) {
-            AsyncImage(
-                model = event.coverImage,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
+
+
+            event.coverImage?.let { coverImage ->
+                AsyncImage(
+
+                    model = coverImage.mediaUrl,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Box(
                 modifier = Modifier
                     .size(50.dp)
@@ -154,7 +159,7 @@ fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
                         )
                         Spacer(modifier = Modifier.height(3.dp))
                         Text(
-                            text = event.institute,
+                            text = event.instituteName,
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = fontFamily,
