@@ -33,7 +33,7 @@ class DriverPlanDetailsViewModel @Inject constructor(
     private val _planList: MutableStateFlow<scheduleList?> = MutableStateFlow(null)
     val planList: StateFlow<scheduleList?> = _planList.asStateFlow()
 
-    fun fetchParentTrip(context: Context, operatorId: Int, planId: Int) {
+    fun getChildrenList(context: Context, operatorId: Int, planId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val tripList = driverPlan.getChildrenList(operatorId, planId)
             _childrenList.update { _ ->
@@ -45,7 +45,7 @@ class DriverPlanDetailsViewModel @Inject constructor(
     }
 
 
-    fun fetchSchedule(context: Context, operatorId: Int, planId: Int) {
+    fun fetchSchedule(context: Context, operatorId: Int, planId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val planList = driverPlan.getTripSchedule(operatorId, planId)
             _planList.update { _ ->
@@ -68,7 +68,7 @@ class DriverPlanDetailsViewModel @Inject constructor(
         secondarynumber: String,
         boardingPlanScheduleId: Int,
         deboardingPlanScheduleId: Int,
-        planId: Int,
+        planId: String,
         operatorId: Int,
     ) {
         viewModelScope.launch(Dispatchers.IO) {

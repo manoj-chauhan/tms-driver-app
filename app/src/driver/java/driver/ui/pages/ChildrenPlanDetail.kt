@@ -48,17 +48,19 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostController, onStudentSelected: (assignment: ChildrenList) -> Unit,    activity: ComponentActivity,ch: DriverPlanDetailsViewModel = hiltViewModel()) {
+fun ChildrenPlanDetail(
+    operatorId: Int, planId: Int,planCode:String, navHostController: NavHostController, onStudentSelected: (assignment: ChildrenList) -> Unit, activity: ComponentActivity,
+    ch: DriverPlanDetailsViewModel = hiltViewModel()) {
     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     val childrens by ch.childrenList.collectAsStateWithLifecycle()
-    ch.fetchParentTrip(context = LocalContext.current, operatorId, planId)
+    ch.getChildrenList(context = LocalContext.current, operatorId, planId)
 
     val context = LocalContext.current
 
     val schedules by ch.planList.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
-        ch.fetchSchedule(context = context, operatorId, planId)
+        ch.fetchSchedule(context = context, operatorId, planCode)
     }
     Box(
         modifier = Modifier
@@ -68,8 +70,10 @@ fun ChildrenPlanDetail(operatorId: Int, planId: Int, navHostController: NavHostC
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp).verticalScroll(
-                    rememberScrollState())
+                .padding(12.dp)
+                .verticalScroll(
+                    rememberScrollState()
+                )
         ) {
             Box(
                 modifier = Modifier
@@ -536,18 +540,19 @@ fun ChildrensList(children: ChildrenList,  onClick: (children: ChildrenList) -> 
                 )
 
 
-
-                if (children.secondaryPhoneNumber?.length!! > 0) {
-                    children.secondaryPhoneNumber?.let {
-                        Text(
-                            text = ",$it",
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontFamily = FontFamily.SansSerif,
-                                fontWeight = FontWeight.W400
+                if(children.secondaryPhoneNumber != null) {
+                    if (children.secondaryPhoneNumber?.length!! > 0) {
+                        children.secondaryPhoneNumber?.let {
+                            Text(
+                                text = ",$it",
+                                style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 12.sp,
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontWeight = FontWeight.W400
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

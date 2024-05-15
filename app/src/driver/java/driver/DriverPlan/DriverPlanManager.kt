@@ -7,7 +7,7 @@ import com.drishto.driver.models.scheduleList
 interface DriverPlanManager {
     fun getChildrenList(operatorId: Int, planId: Int): List<ChildrenList>?
 
-    fun getTripSchedule(operatorId: Int, planId: Int): scheduleList
+    fun getTripSchedule(operatorId: Int, planId: String): scheduleList
     fun addStudent(
         name: String,
         schoolName: String,
@@ -18,7 +18,7 @@ interface DriverPlanManager {
         selectedDate: String,
         guardianName: String,
         schoolAddress: String,
-        planId: Int,
+        planId: String,
         boardingPlanScheduleId: Int,
         deboardingPlanScheduleId: Int,
         operatorId: Int

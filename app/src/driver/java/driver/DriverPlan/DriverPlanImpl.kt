@@ -18,7 +18,7 @@ class DriverPlanImpl @Inject constructor(
         return planNetRepository.fetchPlanChildren(planId, operatorId)
     }
 
-    override fun getTripSchedule(operatorId: Int, planId: Int): scheduleList {
+    override fun getTripSchedule(operatorId: Int, planId: String): scheduleList {
         return planNetRepository.fetchSchedules(planId, operatorId)
     }
 
@@ -32,7 +32,7 @@ class DriverPlanImpl @Inject constructor(
         selectedDate: String,
         guardianName: String,
         schoolAddress: String,
-        planId: Int,
+        planId: String,
         boardingPlanScheduleId: Int,
         deboardingPlanScheduleId: Int,
         operatorId: Int,

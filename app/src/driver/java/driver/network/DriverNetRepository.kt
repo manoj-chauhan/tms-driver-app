@@ -27,7 +27,7 @@ class DriverNetRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val errorManager: ErrManager
 ) {
-    fun fetchPlanChildren(planId:Int, operatorId: Int): List<ChildrenList>? {
+    fun fetchPlanChildren(planId: Int, operatorId: Int): List<ChildrenList>? {
         val assignedTripType =
             Types.newParameterizedType(MutableList::class.java, ChildrenList::class.java)
         val adapter: JsonAdapter<MutableList<ChildrenList>> =
@@ -76,7 +76,7 @@ class DriverNetRepository @Inject constructor(
         }
     }
 
-    fun fetchSchedules(planId: Int, operatorId: Int): scheduleList{
+    fun fetchSchedules(planId: String, operatorId: Int): scheduleList{
             val tripDetailUrl = context.resources.getString(R.string.url_schedule_plan) + planId
 
             return try {
@@ -132,7 +132,7 @@ class DriverNetRepository @Inject constructor(
         selectedDate: String,
         guardianName: String,
         schoolAddress: String,
-        planId: Int,
+        planId: String,
         boardingPlanScheduleId: Int,
         deboardingPlanScheduleId: Int,
         operatorId: Int,

@@ -63,7 +63,7 @@ import java.util.Date
 @Composable
 fun StudentInPlan(
     operatorId: Int,
-    planId: Int,
+    planId: String,
     navController: NavHostController,
     activity: ComponentActivity
 ) {
