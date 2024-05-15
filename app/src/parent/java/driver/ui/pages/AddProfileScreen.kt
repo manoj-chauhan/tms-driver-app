@@ -83,7 +83,7 @@ fun AddProfileScreen() {
     var classExpander by remember {
         mutableStateOf(false)
     }
-    val classList = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
+    val classList = listOf("1", "2", "3", "4", "5", "VI", "7", "8", "9", "10", "11", "12")
     Box(
         modifier = Modifier
             .fillMaxSize()

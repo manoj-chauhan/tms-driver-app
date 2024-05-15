@@ -5,7 +5,9 @@ import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
+import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
+import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.squareup.moshi.JsonAdapter
@@ -85,7 +87,6 @@ class AccountsProfileNetRespository @Inject constructor(
         schoolName: String
     ) {
 
-        //role, name, anchor, standard, section, session, instituteId, parentName, childName, schoolName
         try {
             val profile = when (type) {
                 "Student" -> {
@@ -106,47 +107,41 @@ class AccountsProfileNetRespository @Inject constructor(
 
             Log.d("User profile", "Profile: $requestBody")
 
-//            val url = context.resources.getString(R.string.url_send_feedback)
-//
-//            getAccessToken(context)?.let {
-//                val fuelManager = FuelManager()
-//                val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
-//                    .jsonBody(requestBody)
-//                    .response()
-//
-//                if (response.statusCode == 200) {
-//                } else {
-//                    result.fold(
-//                        { _ ->
-//                        },
-//                        { error ->
-//                            if (error.response.statusCode == 401) {
-//                                errorManager.getErrorDescription(context)
-//                            }
-//
-//                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
-//
-//                            if (error.response.statusCode == 403) {
-//                                errorManager.getErrorDescription403(context, errorResponse)
-//                            }
-//
-//                            if (error.response.statusCode == 404) {
-//                                errorManager.getErrorDescription404(context, "No url found")
-//                            }
-//
-//                            if (error.response.statusCode == 500) {
-//                                errorManager.getErrorDescription500(context, "Something Went Wrong")
-//                            }
-//                        }
-//                    )
-//                }
-//            }
+            val url = context.resources.getString(R.string.url_add_profile)
 
-//            Toast.makeText(
-//                context,
-//                "FeedBack Sent Successfully.",
-//                Toast.LENGTH_SHORT
-//            ).show()
+            getAccessToken(context)?.let {
+                val fuelManager = FuelManager()
+                val (_, response, result) = fuelManager.post(url).authentication().bearer(it)
+                    .jsonBody(requestBody)
+                    .response()
+
+                if (response.statusCode == 200) {
+                } else {
+                    result.fold(
+                        { _ ->
+                        },
+                        { error ->
+                            if (error.response.statusCode == 401) {
+                                errorManager.getErrorDescription(context)
+                            }
+
+                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                            if (error.response.statusCode == 403) {
+                                errorManager.getErrorDescription403(context, errorResponse)
+                            }
+
+                            if (error.response.statusCode == 404) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
+
+                            if (error.response.statusCode == 500) {
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
+                            }
+                        }
+                    )
+                }
+            }
 
         } catch (e: Exception) {
 
