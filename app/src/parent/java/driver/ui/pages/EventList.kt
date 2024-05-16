@@ -1,5 +1,6 @@
 package driver.ui.pages
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +36,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -47,10 +51,13 @@ import driver.models.Event
 import driver.subHeadingColor
 import driver.textColor
 import driver.ui.viewmodels.EventsViewModel
+import driver.ui.viewmodels.PostsViewModel
+import java.util.Vector
 
 @Composable
 fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
     val fontFamily = FontFamily.SansSerif
+
 
     ElevatedCard(
         colors = CardDefaults.cardColors(Color.White),
@@ -62,13 +69,17 @@ fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
             modifier = Modifier
                 .height(150.dp)
         ) {
-            AsyncImage(
-                model = event.coverImage,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
 
+
+            event.coverImage?.let { coverImage ->
+                AsyncImage(
+
+                    model = coverImage.mediaUrl,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Box(
                 modifier = Modifier
                     .size(50.dp)
@@ -142,7 +153,7 @@ fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
                         )
                         Spacer(modifier = Modifier.height(3.dp))
                         Text(
-                            text = event.institute,
+                            text = event.instituteName,
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = fontFamily,
