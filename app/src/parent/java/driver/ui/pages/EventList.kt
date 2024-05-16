@@ -1,7 +1,8 @@
 package driver.ui.pages
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.clipScrollableContainer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,8 +28,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +35,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import driver.buttonColor
 import driver.headingColor
@@ -51,11 +50,9 @@ import driver.models.Event
 import driver.subHeadingColor
 import driver.textColor
 import driver.ui.viewmodels.EventsViewModel
-import driver.ui.viewmodels.PostsViewModel
-import java.util.Vector
 
 @Composable
-fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
+fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit, navigation: NavHostController) {
     val fontFamily = FontFamily.SansSerif
 
 
@@ -132,6 +129,7 @@ fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = fontFamily,
+
                         color = headingColor,
                         fontWeight = FontWeight.Normal
                     )
@@ -154,6 +152,8 @@ fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
                         Spacer(modifier = Modifier.height(3.dp))
                         Text(
                             text = event.instituteName,
+                            modifier = Modifier.clickable {navigation.navigate("school-profile")} ,
+
                             style = TextStyle(
                                 fontSize = 14.sp,
                                 fontFamily = fontFamily,
@@ -222,25 +222,30 @@ fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit) {
 
 
 @Composable
-fun EventListPage(events: List<Event>, onRegisterClick: (event: String) -> Unit) {
+fun EventListPage(
+    events: List<Event>,
+    onRegisterClick: (event: String) -> Unit,
+    navigation: NavHostController
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(10.dp),
     ) {
         events.forEach { event ->
-            EventCard(event, onRegisterClick)
+            EventCard(event, onRegisterClick , navigation)
         }
     }
 }
 
 @Composable
-fun Eventpage(onRegisterClick: (String) -> Unit) {
+fun Eventpage(navigation:NavHostController,onRegisterClick: (String) -> Unit) {
 
     val eventsViewModel: EventsViewModel = hiltViewModel()
     val events by eventsViewModel.eventList.collectAsStateWithLifecycle()
 
+
     eventsViewModel.getAllEvents()
 
-    events?.let { EventListPage(events = it, onRegisterClick = onRegisterClick) }
+    events?.let { EventListPage(events = it, onRegisterClick = onRegisterClick,navigation) }
 }

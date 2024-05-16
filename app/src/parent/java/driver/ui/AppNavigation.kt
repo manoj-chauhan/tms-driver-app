@@ -45,6 +45,7 @@ import driver.ui.pages.SavedNoticesPage
 import driver.ui.pages.UserList
 import driver.ui.pages.notificationScreen
 import driver.ui.pages.Profile
+import driver.ui.pages.schoolProfile
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -111,9 +112,7 @@ fun AppNavigationHost(
             addEventPage(profileId)
         }
 
-//        composable("event-details"){
-//            eventDetail?.let { event -> EventRegistration(event) }
-//        }
+
 
         composable("event-details/{eventId}",arguments = listOf(
                 navArgument("eventId"){
@@ -125,14 +124,12 @@ fun AppNavigationHost(
             EventDetail(eventId, navController)
         }
 
-//        composable("event-details/{id}", arguments = listOf(
-//            navArgument("id"){
-//                type = NavType.StringType
-//            }
-//        )){
-//            val id = it.arguments!!.getString("postId")
-//            EventRegistration(event,navController,id)
-//        }
+        composable("school-profile"){
+            schoolProfile()
+        }
+
+
+
 
 
         composable("notice_lists"){
