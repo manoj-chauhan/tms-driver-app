@@ -1,10 +1,14 @@
 package driver.ui.pages
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+//import androidx.compose.foundation.layout.FlowRowScopeInstance.align
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,8 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,11 +36,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drishto.driver.R
+import driver.greybackground
+import driver.textColor
 
 @Composable
 fun schoolProfile() {
@@ -43,9 +53,11 @@ fun schoolProfile() {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+
     ) {
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight(0.3f)
@@ -71,18 +83,31 @@ fun schoolProfile() {
                         shape = CircleShape,
                         color = Color.Transparent,
                         modifier = Modifier
-                            .size(150.dp)
+                            .size(150.dp),
+                        border = BorderStroke(2.dp, Color.LightGray),
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.atul),
-                            contentDescription = "Profile Image",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
+                        Box(
+                            modifier = Modifier.fillMaxSize().background(Color.White)
+                        ) {
+                            Surface(
+                                shape = CircleShape,
+                                color = Color.Transparent,
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .align(Alignment.Center),
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.dps),
+                                    contentDescription = "Profile Image",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.FillBounds
+                                )
+                            }
+                        }
                     }
                 }
+
+
             }
             Spacer(modifier = Modifier.height(14.dp))
 
@@ -119,12 +144,13 @@ fun schoolProfile() {
             ) {
                 Text(
                     text = "We believe in nuturing the future of country by contributing to education initiatives and promoting quality in education.",
-                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W600, color = gry)
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W300, color = textColor)
                 )
+
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Divider(
+            Spacer(modifier = Modifier.height(60.dp))
+            HorizontalDivider(
                 modifier = Modifier
                     .height(2.dp)
                     .background(Color.LightGray)
@@ -133,7 +159,7 @@ fun schoolProfile() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)
+                    .background(greybackground)
             ) {
 
                 ProfileSections()
@@ -166,21 +192,34 @@ fun ProfileSections() {
 
 @Composable
 fun AboutSectionProfile() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.7f),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly
-    ) {
+
         ContentAbout()
-    }
+
 }
 
 @Composable
 fun ContentAbout() {
     val gry = Color(android.graphics.Color.parseColor("#838383"))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(1f),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        Spacer(modifier = Modifier.height(20.dp))
 
+
+        address()
+        Spacer(modifier = Modifier.height(20.dp))
+        contacts()
+
+    }
+}
+
+
+@Composable
+fun address(){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -194,18 +233,21 @@ fun ContentAbout() {
         ) {
             Text(
                 text = "ADDRESS",
-                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W600)
+                style = TextStyle(fontSize = 16.sp, fontFamily = fontFamily)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "243 Merut Road, Near GSK Factory, Sonipath, Haryana, 243954",
                 style = TextStyle(
-                    fontSize = 16.sp, fontWeight = FontWeight.W500, color = gry
+                    fontSize = 16.sp, fontWeight = FontWeight.W300, color = textColor
                 )
             )
         }
     }
-    Spacer(modifier = Modifier.height(40.dp))
+}
+
+@Composable
+fun contacts(){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -219,24 +261,25 @@ fun ContentAbout() {
         ) {
             Text(
                 text = "CONTACTS",
-                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W600)
+                style = TextStyle(fontSize = 16.sp, fontFamily = fontFamily)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "abcde@example.com", style = TextStyle(
-                    fontSize = 16.sp, fontWeight = FontWeight.W500, color = gry
+                    fontSize = 16.sp, fontWeight = FontWeight.W300, color = textColor
                 )
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "+91-7543894334", style = TextStyle(
-                    fontSize = 16.sp, fontWeight = FontWeight.W500, color = gry
+                    fontSize = 16.sp, fontWeight = FontWeight.W300, color = textColor
                 )
             )
 
         }
     }
 }
+
 
 
 @Composable

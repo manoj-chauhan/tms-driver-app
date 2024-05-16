@@ -11,4 +11,5 @@ val actionColors = Color(0xFFAEAEAE)
 val cardColor = Color(0xFFDAE2FF)
 val arrivalTripColor = Color(0xFFEF2427)
 val placeColor = Color(0xFF999999)
+val greybackground = Color(0XFFEEEEEE)
 
