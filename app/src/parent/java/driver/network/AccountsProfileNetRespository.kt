@@ -48,6 +48,7 @@ class AccountsProfileNetRespository @Inject constructor(
                     },
                     { error ->
                         EventBus.getDefault().post("AUTH_FAILED")
+                        Log.d("Error Profile", "fetchAccountProfile: $error")
                         if (error.response.statusCode == 401) {
                             errorManager.getErrorDescription(context)
                         }

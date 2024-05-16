@@ -1,15 +1,9 @@
 package driver.ui.components
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.BoxScopeInstance.align
 import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.FlowRowScopeInstance.align
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,7 +20,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material3.Button
@@ -35,13 +28,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -51,15 +42,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-//import androidx.compose.ui.tooling.data.EmptyGroup.location
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.ImageLoader
 import coil.compose.AsyncImage
-import com.android.volley.toolbox.ImageRequest
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -72,9 +60,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import driver.models.Event
 import driver.models.Image
 import driver.models.Location
-import driver.ui.pages.colortext
+import driver.textColor
 import driver.ui.viewmodels.EventsViewModel
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun EventDetail(eventId: String?, navController: NavHostController) {
@@ -108,7 +95,7 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
                         onBackPressed = onBackPressed
                     )
                 }
-                Column( modifier = Modifier.padding(horizontal = 15.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 15.dp)) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -118,7 +105,7 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontFamily = FontFamily.SansSerif,
-                                color = colortext,
+                                color = textColor,
                             )
                         )
                     }
@@ -277,7 +264,7 @@ fun GoogleMap(event: Location) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Location",
-            style = TextStyle(fontSize = 12.sp, color = colortext)
+            style = TextStyle(fontSize = 12.sp, color = textColor)
         )
 
     }
@@ -326,7 +313,6 @@ fun GoogleMap(event: Location) {
         }
     }
 }
-
 
 
 @Composable
@@ -391,84 +377,3 @@ fun PhotoView(descriptionImages: List<Image>?) {
         }
     }
 }
-//
-//
-//@Composable
-//fun PhotoView() {
-//    var selectedImageUri by remember {
-//        mutableStateOf<List<String?>>(emptyList())
-//    }
-//
-//    selectedImageUri = listOf(
-//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-//        "https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-//
-//        )
-//
-//    val columns = when (selectedImageUri.size) {
-//        1 -> 1
-//        2 -> 2
-//        3 -> 2
-//        else -> 2
-//    }
-//
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .heightIn(max = 450.dp)
-//    ) {
-//        LazyVerticalGrid(
-//            modifier = Modifier.fillMaxWidth(),
-//            columns = GridCells.Fixed(columns),
-//        ) {
-//            val imageCount = selectedImageUri.size
-//
-//            items(imageCount, key = { it }) { index ->
-//                val uri = selectedImageUri[index]
-//                if (uri != null) {
-//
-//                    Box(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                    ) {
-//                        if (uri != null) {
-//                            if (index < 4) {
-//                                AsyncImage(
-//                                    model = uri,
-//                                    contentDescription = "Selected Image",
-//                                    modifier = Modifier
-//                                        .fillMaxSize()
-//                                        .fillMaxHeight()
-//                                        .align(Alignment.TopStart)
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//                if (index == 3) {
-//                    Box(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .zIndex(1f)
-//                            .background(Color.Black.copy(alpha = 0.4f))
-//                    ) {
-//                        Text(
-//                            text = "+${imageCount - (index + 1)}",
-//                            color = Color.White,
-//                            fontSize = 18.sp,
-//                            modifier = Modifier
-//                                .padding(top = 50.dp, bottom = 40.dp)
-//                                .align(Alignment.Center)
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-
-
