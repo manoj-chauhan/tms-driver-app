@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,6 +58,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import driver.headingColor
 import driver.models.Event
 import driver.models.Image
 import driver.models.Location
@@ -105,7 +107,7 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontFamily = FontFamily.SansSerif,
-                                color = textColor,
+                                color = headingColor,
                             )
                         )
                     }
@@ -219,6 +221,8 @@ fun ImageWithBookmark(eventDetail: Event, onBackPressed: () -> Unit) {
                 model = coverImage.mediaUrl,
                 contentDescription = null,
                 modifier = Modifier.fillMaxWidth(),
+
+
                 contentScale = ContentScale.Crop
             )
         }
@@ -264,18 +268,19 @@ fun GoogleMap(event: Location) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Location",
-            style = TextStyle(fontSize = 12.sp, color = textColor)
+            style = TextStyle(fontSize = 14.sp, color = headingColor)
+        )
+
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = event.location,
+            style = TextStyle(fontSize = 16.sp, color = Color.Gray)
         )
 
     }
     Spacer(modifier = Modifier.height(6.dp))
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = event.location,
-            style = TextStyle(fontSize = 14.sp, color = Color.Gray)
-        )
-
-    }
 
 
     val marker = LatLng(event.latitude, event.longitude)
@@ -312,6 +317,7 @@ fun GoogleMap(event: Location) {
             }
         }
     }
+
 }
 
 
@@ -348,8 +354,10 @@ fun PhotoView(descriptionImages: List<Image>?) {
                         AsyncImage(
                             model = uri,
                             contentDescription = "Selected Image",
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxSize()
+                                .aspectRatio(1f)
                                 .fillMaxHeight()
                                 .align(Alignment.TopStart)
                         )
@@ -376,4 +384,5 @@ fun PhotoView(descriptionImages: List<Image>?) {
             }
         }
     }
+    Spacer(modifier = Modifier.height(20.dp))
 }
