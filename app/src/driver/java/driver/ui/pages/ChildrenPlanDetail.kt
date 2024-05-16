@@ -159,7 +159,7 @@ fun ChildrenPlanDetail(
                                 .align(Alignment.Bottom),
                             enabled = true,
                             onClick = {
-                                navHostController.navigate("student-addition/$operatorId/$planId")
+                                navHostController.navigate("student-addition/$operatorId/$planCode")
                             },
                             contentPadding = PaddingValues(),
                             colors = ButtonDefaults.buttonColors(

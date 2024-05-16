@@ -32,7 +32,7 @@ class DriverPlanImpl @Inject constructor(
         selectedDate: String,
         guardianName: String,
         schoolAddress: String,
-        planId: String,
+        planId: Int,
         boardingPlanScheduleId: Int,
         deboardingPlanScheduleId: Int,
         operatorId: Int,

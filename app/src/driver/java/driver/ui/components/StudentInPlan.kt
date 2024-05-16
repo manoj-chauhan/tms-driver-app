@@ -63,7 +63,8 @@ import java.util.Date
 @Composable
 fun StudentInPlan(
     operatorId: Int,
-    planId: String,
+    planCode: String,
+    planId: Int,
     navController: NavHostController,
     activity: ComponentActivity
 ) {
@@ -74,7 +75,7 @@ fun StudentInPlan(
 
     val ch: DriverPlanDetailsViewModel = hiltViewModel()
     val schedules by ch.planList.collectAsStateWithLifecycle()
-    ch.fetchSchedule(context = context, operatorId, planId)
+    ch.fetchSchedule(context = context, operatorId, planCode)
 
 
     Log.d("Dialog", "addStudentInPlan: $operatorId, $planId ")

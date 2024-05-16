@@ -132,7 +132,7 @@ class DriverNetRepository @Inject constructor(
         selectedDate: String,
         guardianName: String,
         schoolAddress: String,
-        planId: String,
+        planId: Int,
         boardingPlanScheduleId: Int,
         deboardingPlanScheduleId: Int,
         operatorId: Int,
@@ -153,6 +153,8 @@ class DriverNetRepository @Inject constructor(
                     .header("Company-Id", operatorId.toString()).jsonBody(requestBody)
                     .response()
 
+                Log.e("BodyA", "addStudent: $requestBody ", )
+
                 if (response.statusCode == 200) {
                 } else {
                     result.fold(
@@ -162,6 +164,7 @@ class DriverNetRepository @Inject constructor(
                             if (error.response.statusCode == 401 ) {
                                 errorManager.getErrorDescription(context)
                             }
+                            Log.e("Error", "addStudent: ${error.response}${error.response.statusCode} ", )
 
                             val errorResponse = error.response.data.toString(Charsets.UTF_8)
 

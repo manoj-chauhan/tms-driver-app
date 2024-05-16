@@ -160,7 +160,7 @@ fun AppNavigationHost(
 
             val operator = entry.arguments?.getInt("operatorId") ?: 0
             val plan = entry.arguments?.getString("planCode") ?: ""
-            StudentInPlan(operator,plan,navController, activity = activity ?: return@composable)
+            StudentInPlan(operator,plan,planId,navController, activity = activity ?: return@composable)
         }
         composable("driver-plans-details"){
             val activity = LocalContext.current as? ComponentActivity
