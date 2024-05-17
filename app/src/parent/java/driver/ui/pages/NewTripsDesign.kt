@@ -21,10 +21,12 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -33,19 +35,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import driver.arrivalTripColor
 import driver.cardColor
 import driver.headingColor
-import driver.models.PastTrip
-import driver.models.PresentTrip
-import driver.models.getDummyPastTrip
-import driver.models.getDummyPresentTrip
+import driver.models.ParentPastTrip
+import driver.models.ParentTrip
+
+
 import driver.placeColor
 import driver.subHeadingColor
+import driver.ui.viewmodels.EventsViewModel
+import driver.ui.viewmodels.parentTripAssigned
 
 @Composable
 fun NewTripsDesign() {
-    val tripList = getDummyPresentTrip()
+
+
+
+    val parentTripAssigned: parentTripAssigned = hiltViewModel()
+    val tripList by parentTripAssigned.parentTrip.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+
+
+    parentTripAssigned.fetchParentTrip(context)
 
     Box(
         modifier = Modifier
@@ -72,8 +87,8 @@ fun NewTripsDesign() {
             }
 
             Column(modifier = Modifier.padding(10.dp)) {
-                tripList.forEach { trip ->
-                    PresentTrip(trip, onTripSelected = {})
+                tripList?.forEach { trip ->
+                    CurrentTrip(trip, onTripSelected = {})
                 }
                 PastTripDesign()
             }
@@ -83,7 +98,13 @@ fun NewTripsDesign() {
 
 @Composable
 fun PastTripDesign() {
-    val pastTrips = getDummyPastTrip()
+    val parentTripAssigned: parentTripAssigned = hiltViewModel()
+    val pastTripList by parentTripAssigned.pastTripList.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+
+
+    parentTripAssigned.fetchParentPastTrip()
 
     Box(
         modifier = Modifier
@@ -110,7 +131,7 @@ fun PastTripDesign() {
             }
 
             Column(modifier = Modifier.padding(top = 13.dp)) {
-                pastTrips.forEach { trip ->
+                pastTripList?.forEach { trip ->
                     PastTripList(trip, onPastTripSelected = {})
                 }
             }
@@ -119,7 +140,7 @@ fun PastTripDesign() {
 }
 
 @Composable
-fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
+fun PastTripList(trip: ParentPastTrip, onPastTripSelected: () -> Unit) {
     val fontStyle: FontFamily = FontFamily.SansSerif
 
 
@@ -142,7 +163,8 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
             ) {
 
                 Text(
-                    text = trip.date,
+//                    text = trip.date,
+                    text= "Yesterday",
                     style = TextStyle(
                         color = subHeadingColor,
                         fontSize = 12.sp,
@@ -185,7 +207,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                     }
                     Box(modifier = Modifier.fillMaxWidth(0.7f)) {
                         Text(
-                            text = trip.departure,
+                            text = trip.boardingPlaceName,
                             style = TextStyle(
                                 color = placeColor,
                                 fontSize = 12.sp,
@@ -199,15 +221,17 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                     Spacer(modifier = Modifier.padding(3.dp))
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
-                        Text(
-                            text = trip.departureTime,
-                            style = TextStyle(
-                                color = placeColor,
-                                fontSize = 12.sp,
-                                fontFamily = fontStyle,
-                                fontWeight = FontWeight.W400
+                        trip.deBoardingPlaceTime?.let {
+                            Text(
+                                text = it,
+                                style = TextStyle(
+                                    color = placeColor,
+                                    fontSize = 12.sp,
+                                    fontFamily = fontStyle,
+                                    fontWeight = FontWeight.W400
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -231,7 +255,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                     }
                     Box(modifier = Modifier.fillMaxWidth(0.7f)) {
                         Text(
-                            text = trip.arrival,
+                            text = trip.deBoardingPlaceName,
                             style = TextStyle(
                                 color = placeColor,
                                 fontSize = 12.sp,
@@ -245,15 +269,17 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
                     Spacer(modifier = Modifier.padding(3.dp))
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
-                        Text(
-                            text = trip.arrivalTime,
-                            style = TextStyle(
-                                color = placeColor,
-                                fontSize = 12.sp,
-                                fontFamily = fontStyle,
-                                fontWeight = FontWeight.W400
+                        trip.deBoardingPlaceTime?.let {
+                            Text(
+                                text = it,
+                                style = TextStyle(
+                                    color = placeColor,
+                                    fontSize = 12.sp,
+                                    fontFamily = fontStyle,
+                                    fontWeight = FontWeight.W400
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -264,7 +290,7 @@ fun PastTripList(trip: PastTrip, onPastTripSelected: () -> Unit) {
 }
 
 @Composable
-fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
+fun CurrentTrip(trip: ParentTrip, onTripSelected: () -> Unit) {
     val message = Color(android.graphics.Color.parseColor("#939499"))
     val fontStyle: FontFamily = FontFamily.SansSerif
 
@@ -277,7 +303,8 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
                 fontWeight = FontWeight.W400
             )
         )
-        append(trip.mesage)
+//        append(trip.mesage)
+        append(text = "Please reach to your stop")
         pop()
 
         pushStyle(
@@ -288,8 +315,10 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
                 fontWeight = FontWeight.W500
             )
         )
-        append(" ${trip.reaching}")
+//        append(" ${trip.reaching}")
+        append(text="D black, Swaroop Nagar Delhi, Delhi")
         pop()
+
     }.toAnnotatedString()
 
     val expectedDestination = AnnotatedString.Builder().apply {
@@ -301,7 +330,8 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
                 fontWeight = FontWeight.W400
             )
         )
-        append(trip.destination)
+//        append(trip.destination)
+        append(text = "Expected to reach destination")
         pop()
 
         pushStyle(
@@ -312,8 +342,10 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
                 fontWeight = FontWeight.W400
             )
         )
-        append(" ${trip.destinationPlace}")
+//        append(" ${trip.destinationPlace}")
+        append(text = "Maharaja Agrasen Adarsh Public School, Pitampura")
         pop()
+
 
         pushStyle(
             style = SpanStyle(
@@ -323,8 +355,10 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
                 fontWeight = FontWeight.W400
             )
         )
-        append(" at ${trip.timing}")
+//        append(" at ${trip.timing}")
+        append(text = "at 10:00AM")
         pop()
+
     }.toAnnotatedString()
 
 
@@ -348,7 +382,8 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
             ) {
 
                 Text(
-                    text = trip.day,
+//                    text = trip.day,
+                    text="Today 09:00 AM",
                     style = TextStyle(
                         color = subHeadingColor,
                         fontSize = 12.sp,
@@ -359,7 +394,8 @@ fun PresentTrip(trip: PresentTrip, onTripSelected: () -> Unit) {
 
 
                 Text(
-                    text = trip.arrival,
+//                    text = trip.arrival,
+                    text="Arrival in 20 minutes",
                     style = TextStyle(
                         color = arrivalTripColor,
                         fontSize = 12.sp,

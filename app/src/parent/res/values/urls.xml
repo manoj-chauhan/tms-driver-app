@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [<!ENTITY baseUrl "https://api.drishto.com">]>
+
 <resources>
     <!--    parent-->
-    <string name="url_parent_trip">&baseUrl;/parents/activeTrips</string>
+    <string name="url_parent_trip">https://api.test.drishto.com/tms/parents/activeTrips</string>
     <string name="url_trip_lat_lon">&baseUrl;/parents/passengerTripRoute/</string>
     <string name="url_trip_processed">&baseUrl;/matrix/processed/</string>
-    <string name="url_past_trips">&baseUrl;/parents/pastTrips</string>
+    <string name="url_past_trips">https://api.test.drishto.com/tms/parents/pastTrips</string>
     <string name="url_place_info">&baseUrl;/places/</string>
     <string name="url_trip_detail">&baseUrl;/parents/activeTrips/</string>
     <string name="url_driver_location">&baseUrl;/passengers/latestlocation/</string>

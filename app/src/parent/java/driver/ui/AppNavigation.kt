@@ -201,6 +201,7 @@ fun AppNavigationHost(
         composable("login") {
 
         }
+
         composable("newHomeScreen"){
             MainScreen(
                 profileId,
