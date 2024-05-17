@@ -38,9 +38,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +55,7 @@ import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.drishto.driver.R
 import driver.models.Event
 import driver.models.PostsFeed
@@ -144,7 +146,7 @@ fun TopBar(
 
 @Composable
 fun BottomNavBar(
-
+    selected: Int,
     onTabSelected: (selectedIndex: Int) -> Unit,
     onTripsClick: () -> Unit,
     onEventsClick: () -> Unit,
@@ -193,9 +195,7 @@ fun BottomNavBar(
         ),
 
         )
-    var selected by remember {
-        mutableStateOf(2)
-    }
+
     NavigationBar(
 
         tonalElevation = 20.dp,
@@ -206,7 +206,6 @@ fun BottomNavBar(
             NavigationBarItem(
                 selected = index == selected,
                 onClick = {
-                    selected = index
                     onTabSelected(index)
                 },
                 icon = {
@@ -263,31 +262,32 @@ fun MainScreen(
     onNoticesClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
+    var selectedIndex by rememberSaveable { mutableStateOf(2) }
+    var eventDetail by rememberSaveable { mutableStateOf<Event?>(null) }
+    var profileDialog by rememberSaveable { mutableStateOf(false) }
+    val currentBackStackEntry by navigationController.currentBackStackEntryAsState()
 
-
-
-    var selectedIndex by remember {
-        mutableStateOf(2)
-    }
-    var eventDetail by remember { mutableStateOf<Event?>(null) }
-
-    var profileDialog by remember {
-        mutableStateOf(false)
+    LaunchedEffect(currentBackStackEntry) {
+        val currentRoute = currentBackStackEntry?.destination?.route
+        selectedIndex = when (currentRoute) {
+            "trips" -> 0
+            "events" -> 1
+            "home" -> 2
+            "notices" -> 3
+            "settings" -> 4
+            else -> selectedIndex
+        }
     }
 
     Scaffold(
         bottomBar = {
             Row(
                 modifier = Modifier
-//                    .padding(6.dp)
-
-
                     .shadow(78.dp),
-
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BottomNavBar(
-
+                    selected = selectedIndex,
                     onTabSelected = { selectedIndex = it },
                     onTripsClick = onTripsClick,
                     onEventsClick = onEventsClick,
@@ -299,9 +299,7 @@ fun MainScreen(
         },
         floatingActionButton = {
             if (selectedIndex != 0 && selectedIndex != 4) {
-                FloatingActionButton(
-                    onClick = {  },
-                ) {
+                FloatingActionButton(onClick = { }) {
                     Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
                 }
             }
@@ -340,15 +338,11 @@ fun MainScreen(
                                 onNotificationClick = { },
                                 onProfileClick = { profileDialog = true }
                             )
-                            Eventpage(navigationController,
-                                 onRegisterClick = {
-
-                                    navigationController.navigate("event-details/${it}")
-                                }
-                            )
+                            Eventpage(navigationController, onRegisterClick = {
+                                navigationController.navigate("event-details/${it}")
+                            })
                         }
                     }
-
                     2 -> {
                         item {
                             TopBar(
@@ -363,7 +357,6 @@ fun MainScreen(
                             })
                         }
                     }
-
                     3 -> {
                         item {
                             TopBar(
@@ -374,7 +367,6 @@ fun MainScreen(
                                 onProfileClick = { profileDialog = true }
                             )
                             NoticeListPage()
-
                         }
                     }
                     4 -> {
@@ -388,9 +380,10 @@ fun MainScreen(
             }
         }
     }
-    if(profileDialog){
+
+    if (profileDialog) {
         ProfileDialog {
-            profileDialog=it
+            profileDialog = it
         }
     }
 }
