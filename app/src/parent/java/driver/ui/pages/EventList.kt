@@ -2,7 +2,6 @@ package driver.ui.pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.clipScrollableContainer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -235,6 +234,8 @@ fun EventListPage(
         events.forEach { event ->
             EventCard(event, onRegisterClick , navigation)
         }
+        
+        Spacer(modifier = Modifier.height(60.dp))
     }
 }
 
