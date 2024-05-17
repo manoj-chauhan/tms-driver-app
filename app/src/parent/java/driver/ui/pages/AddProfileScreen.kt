@@ -39,15 +39,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import driver.ui.viewmodels.AccountsProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProfileScreen() {
+fun AddProfileScreen(navController: NavHostController) {
 
     val profileViewModel: AccountsProfileViewModel = hiltViewModel()
     var name by remember {
@@ -72,9 +72,6 @@ fun AddProfileScreen() {
         mutableStateOf("")
     }
 
-    var childrenName by remember {
-        mutableStateOf("")
-    }
     var typeExpander by remember {
         mutableStateOf(false)
     }
@@ -83,7 +80,7 @@ fun AddProfileScreen() {
     var classExpander by remember {
         mutableStateOf(false)
     }
-    val classList = listOf("1", "2", "3", "4", "5", "VI", "7", "8", "9", "10", "11", "12")
+    val classList = listOf("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII")
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -317,13 +314,10 @@ fun AddProfileScreen() {
                         .fillMaxWidth()
                         .height(40.dp)
                         .align(Alignment.Bottom),
-                    enabled = if (type != "") {
-                        true
-                    } else {
-                        false
-                    },
+                    enabled = true,
                     onClick = {
                         profileViewModel.addProfile(name, type, name, childClass, section, session, "", description, childClass, schoolName)
+                        navController.navigate("newHomeScreen")
                     },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(
@@ -368,10 +362,4 @@ fun AddProfileScreen() {
         }
     }
 
-}
-
-@Composable
-@Preview
-fun ProfilePreview() {
-    AddProfileScreen()
 }

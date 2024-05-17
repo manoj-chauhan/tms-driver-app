@@ -22,18 +22,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.getAccessToken
-import com.drishto.driver.network.saveAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.models.Event
 import driver.models.PostsFeed
 import driver.ui.components.AddNoticeEvent
 import driver.ui.components.CommentPost
 import driver.ui.components.EventDetail
-
 import driver.ui.components.addEventPage
 import driver.ui.components.pastTrips
 import driver.ui.pages.AccountsProfile
 import driver.ui.pages.AddInstitute
+import driver.ui.pages.AddProfileScreen
 import driver.ui.pages.GoogleMapView
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
@@ -41,10 +40,9 @@ import driver.ui.pages.MainScreen
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PostItem
-import driver.ui.pages.SavedNoticesPage
-import driver.ui.pages.UserList
-import driver.ui.pages.notificationScreen
 import driver.ui.pages.Profile
+import driver.ui.pages.SavedNoticesPage
+import driver.ui.pages.notificationScreen
 import driver.ui.pages.schoolProfile
 
 
@@ -96,23 +94,23 @@ fun AppNavigationHost(
             userProfileView(navController)
         }
         composable("home") {
-//            HomeScreenNavigation(navController)
-            navController.navigate("userList")
-
+            navController.navigate("profilesList")
         }
 
         composable("profilesList"){
-            AccountsProfile(onProfileSelected = {
+            AccountsProfile(navController ,onProfileSelected = {
                 profileId = it
                 navController.navigate("newHomeScreen")
             })
         }
 
+        composable("add-Profile"){
+            AddProfileScreen(navController)
+        }
+
         composable("add-Event-Form"){
             addEventPage(profileId)
         }
-
-
 
         composable("event-details/{eventId}",arguments = listOf(
                 navArgument("eventId"){
@@ -127,10 +125,6 @@ fun AppNavigationHost(
         composable("school-profile"){
             schoolProfile()
         }
-
-
-
-
 
         composable("notice_lists"){
             SavedNoticesPage(
@@ -148,20 +142,12 @@ fun AppNavigationHost(
         composable("user_profile"){
             Profile(navController)
         }
-        composable("userList"){
-            UserList(onUserSelected = {
-                Log.d("token", "AppNavigationHost: $it")
-                saveAccessToken(context,it)
-                navController.navigate("profilesList")
-            })
-        }
+
         composable("home-screen"){
             HomeScreenNavigation(profileId,navController = navController) {
                 postDetails = it
                 navController.navigate("add_comment")
-
                 Log.d("TAG", "AppNavigationHost: $postDetails")
-
             }
         }
 
@@ -210,7 +196,6 @@ fun AppNavigationHost(
                 onEventsClick = { /*TODO*/ },
                 onHomeClick = { /*TODO*/ },
                 onNoticesClick = { /*TODO*/ }) {
-
             }
         }
 
@@ -239,13 +224,7 @@ fun AppNavigationHost(
                 })
 
         }
-//        composable("marker-map"){
-//            MapsView(onMarkerSelected ={
-//                Log.d("TAG", "AppNavigationHost: $it")
-//                markerPosition = it
-//                navController.navigate("add-Institute")
-//            })
-//        }
+
         composable(
             "notification/{userId}", arguments = listOf(
                 navArgument("userId") { type = NavType.IntType },

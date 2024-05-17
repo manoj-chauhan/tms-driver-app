@@ -6,29 +6,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.drishto.driver.network.getProfileId
-import com.drishto.driver.network.saveProfileId
+import androidx.navigation.NavHostController
 import driver.ui.viewmodels.AccountsProfileViewModel
 
 @Composable
-fun AccountsProfile(onProfileSelected: (profile: String) -> Unit) {
+fun AccountsProfile(navController: NavHostController,onProfileSelected: (profile: String) -> Unit) {
     val ap: AccountsProfileViewModel = hiltViewModel()
     ap.getProfileList()
 
     val profilesList by ap.profileList.collectAsStateWithLifecycle()
-    Log.d("{Profile}", "AccountsProfile:$profilesList ")
-    val context = LocalContext.current
-
-    if (getProfileId(context) == null) {
-        profilesList?.firstOrNull()?.let { profile ->
-            saveProfileId(context, profile.id)
-            onProfileSelected(profile.id)
-            Log.d("TAG", "AccountsProfile $profile")
+    if(profilesList != null) {
+        if (profilesList?.size == 0) {
+            navController.navigate("add-Profile")
+        } else {
+            navController.navigate("newHomeScreen")
         }
     }else{
-        val profile = getProfileId(context)
-        if (profile != null) {
-            onProfileSelected(profile)
-        }
+        Log.d("TAG", "AccountsProfile: $profilesList")
     }
 }
