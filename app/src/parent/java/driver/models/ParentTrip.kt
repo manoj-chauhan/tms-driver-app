@@ -31,45 +31,6 @@ data class ParentTrip(
     val estTime: Int
 )
 
-@JsonClass(generateAdapter = true)
-data class PresentTrip(
-    val day: String,
-    val arrival: String,
-    val mesage:String,
-    val reaching: String,
-    val destination: String,
-    val destinationPlace:String,
-    val timing:String
-)
 
-fun getDummyPresentTrip(): List<PresentTrip> {
-    return listOf(
-        PresentTrip(
-            day= "Today 09:00 AM",
-            arrival = "Arriving in 20 minutes",
-            mesage="Please reach to your stop ",
-            reaching = "D block, Swaroop Nagar, Delhi",
-            destination = "Expected to reach destination",
-            destinationPlace =" Maharaja Agrasen Adarsh Public School, Pitampura",
-            timing = "10:00AM"
-        ),
-        PresentTrip(
-            day= "Today 09:00 AM",
-            arrival = "Arriving in 20 minutes",
-            mesage="Please reach to your stop ",
-            reaching = "D block, Swaroop Nagar, Delhi",
-            destination = "Expected to reach destination",
-            destinationPlace =" Maharaja Agrasen Adarsh Public School, Pitampura",
-            timing = "10:00AM"
-        ),
-        PresentTrip(
-            day= "Today 09:00 AM",
-            arrival = "Arriving in 20 minutes",
-            mesage="Please reach to your stop ",
-            reaching = "D block, Swaroop Nagar, Delhi",
-            destination = "Expected to reach destination",
-            destinationPlace =" Maharaja Agrasen Adarsh Public School, Pitampura",
-            timing = "10:00AM"
-        ),
-    )
-}
+
+

@@ -83,7 +83,7 @@ fun schoolProfile() {
                         shape = CircleShape,
                         color = Color.Transparent,
                         modifier = Modifier
-                            .size(150.dp),
+                            .size(130.dp),
                         border = BorderStroke(2.dp, Color.LightGray),
                     ) {
                         Box(
@@ -93,7 +93,7 @@ fun schoolProfile() {
                                 shape = CircleShape,
                                 color = Color.Transparent,
                                 modifier = Modifier
-                                    .size(120.dp)
+                                    .size(90.dp)
                                     .align(Alignment.Center),
                             ) {
                                 Image(

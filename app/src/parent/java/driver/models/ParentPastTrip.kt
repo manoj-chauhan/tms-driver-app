@@ -24,41 +24,5 @@ data class ParentPastTrip (
      val deBoardingPlaceTime: String?,
 )
 
-@JsonClass(generateAdapter = true)
-data class PastTrip (
-    val date:String,
-    val status: String,
-    val arrival:String,
-    val arrivalTime:String,
-    val departure:String,
-    val departureTime:String
-)
 
-fun getDummyPastTrip(): List<PastTrip> {
-    return listOf(
-        PastTrip(
-            date= "Yesterday",
-            status = "Arrived Late",
-            arrival = "Maharaja Agrasen Public School ",
-            arrivalTime = "01:00 pm",
-            departure = "D block, Swaroop Nagar",
-            departureTime = "01:30pm"
-        ),
-        PastTrip(
-            date= "22-Jun-2024",
-            status = "Arrived Late",
-            arrival = "Mother Divine Public School ",
-            arrivalTime = "01:00 pm",
-            departure = "D block, Swaroop Nagar",
-            departureTime = "01:30pm"
-        ),
-        PastTrip(
-            date= "25-Jul-2024",
-            status = "Arrived Late",
-            arrival = "Mount Abu International Public School ",
-            arrivalTime = "10:00 pm",
-            departure = "Mother Divine Public School",
-            departureTime = "01:30pm"
-        ),
-    )
-}
+
