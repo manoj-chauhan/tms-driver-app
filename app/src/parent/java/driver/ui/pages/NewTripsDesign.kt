@@ -48,6 +48,7 @@ import driver.placeColor
 import driver.subHeadingColor
 import driver.ui.viewmodels.EventsViewModel
 import driver.ui.viewmodels.parentTripAssigned
+import java.time.LocalDate
 
 @Composable
 fun NewTripsDesign() {
@@ -316,7 +317,7 @@ fun CurrentTrip(trip: ParentTrip, onTripSelected: () -> Unit) {
             )
         )
 //        append(" ${trip.reaching}")
-        append(text="D black, Swaroop Nagar Delhi, Delhi")
+        append(text=" D black, Swaroop Nagar Delhi, Delhi")
         pop()
 
     }.toAnnotatedString()
@@ -342,8 +343,8 @@ fun CurrentTrip(trip: ParentTrip, onTripSelected: () -> Unit) {
                 fontWeight = FontWeight.W400
             )
         )
-//        append(" ${trip.destinationPlace}")
-        append(text = "Maharaja Agrasen Adarsh Public School, Pitampura")
+        append(" ${trip.deBoardingPlaceName}")
+//        append(text = "Maharaja Agrasen Adarsh Public School, Pitampura")
         pop()
 
 
@@ -355,8 +356,8 @@ fun CurrentTrip(trip: ParentTrip, onTripSelected: () -> Unit) {
                 fontWeight = FontWeight.W400
             )
         )
-//        append(" at ${trip.timing}")
-        append(text = "at 10:00AM")
+        append(" at ${trip.deBoardingPlaceTime}")
+//        append(text = "at 10:00AM")
         pop()
 
     }.toAnnotatedString()
@@ -382,8 +383,7 @@ fun CurrentTrip(trip: ParentTrip, onTripSelected: () -> Unit) {
             ) {
 
                 Text(
-//                    text = trip.day,
-                    text="Today 09:00 AM",
+                    text = getLocalizedDayString(trip.tripDate),
                     style = TextStyle(
                         color = subHeadingColor,
                         fontSize = 12.sp,
@@ -459,4 +459,15 @@ fun CurrentTrip(trip: ParentTrip, onTripSelected: () -> Unit) {
     
     Spacer(modifier = Modifier.height(10.dp))
 
+}
+
+fun getLocalizedDayString(tripDate: String): String {
+    val localDate = LocalDate.now()
+    val tripLocalDate = LocalDate.parse(tripDate)
+
+    return when {
+        tripLocalDate == localDate -> "Today"
+        tripLocalDate == localDate.minusDays(1) -> "Yesterday"
+        else -> tripDate
+    }
 }
