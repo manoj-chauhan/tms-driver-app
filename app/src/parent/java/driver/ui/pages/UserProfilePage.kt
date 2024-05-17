@@ -38,7 +38,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.drishto.driver.R
+import driver.headingColor
 import driver.models.AccountProfile
+import driver.profileLightGray
 import driver.ui.viewmodels.AccountsProfileViewModel
 
 @Composable
@@ -48,21 +50,22 @@ fun SettingsPage(onProfileSelected: () -> Unit) {
     val profilesList by ap.profileList.collectAsStateWithLifecycle()
 
     Column(modifier = Modifier.padding(16.dp)) {
-
-        UserProfilePage(
-            profilesList = profilesList ?: listOf() , onProfileSelected
-        )
+        if(profilesList!= null) {
+            UserProfilePage(
+                profilesList = profilesList ?: listOf(), onProfileSelected
+            )
+        }
     }
 }
 
 @Composable
 fun UserProfilePage(profilesList: List<AccountProfile>, onProfileSelected: () -> Unit) {
-    val customLightGray = Color(android.graphics.Color.parseColor("#F0F0F0"))
-    val activecolor = Color(android.graphics.Color.parseColor("#6200EE"))
     var selectedProfileId by remember { mutableStateOf<String?>(null) }
-
     val fontFamily = FontFamily.SansSerif
-    val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
+    val name= profilesList.firstOrNull()?.name
+    val parentProfiles = profilesList.filter { it.type == "Parent" }
+    val firstParentName = parentProfiles.firstOrNull()?.name ?: "$name"
+
 
     Column(modifier = Modifier.padding(6.dp)) {
         Box(
@@ -85,10 +88,10 @@ fun UserProfilePage(profilesList: List<AccountProfile>, onProfileSelected: () ->
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "Krish Chauhan",
+                    text = firstParentName,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
-                    color = colortext,
+                    color = headingColor,
                     fontFamily=fontFamily
                 )
 
@@ -99,7 +102,7 @@ fun UserProfilePage(profilesList: List<AccountProfile>, onProfileSelected: () ->
         Box(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(20.dp))
-                .background(customLightGray)
+                .background(profileLightGray)
                 .padding(8.dp)
         ) {
             Column(modifier=Modifier.padding(10.dp)) {

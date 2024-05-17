@@ -12,4 +12,4 @@ val cardColor = Color(0xFFDAE2FF)
 val arrivalTripColor = Color(0xFFEF2427)
 val placeColor = Color(0xFF999999)
 val greybackground = Color(0XFFEEEEEE)
-
+val profileLightGray = Color(0XFFF0F0F0)
