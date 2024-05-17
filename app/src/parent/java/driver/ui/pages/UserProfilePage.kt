@@ -1,5 +1,6 @@
 package driver.ui.pages
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -37,7 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.R
+import com.drishto.driver.network.clearSession
 import driver.headingColor
 import driver.models.AccountProfile
 import driver.profileLightGray
@@ -60,6 +64,7 @@ fun SettingsPage(onProfileSelected: () -> Unit) {
 
 @Composable
 fun UserProfilePage(profilesList: List<AccountProfile>, onProfileSelected: () -> Unit) {
+    val context = LocalContext.current
     var selectedProfileId by remember { mutableStateOf<String?>(null) }
     val fontFamily = FontFamily.SansSerif
     val name= profilesList.firstOrNull()?.name
@@ -213,7 +218,13 @@ fun UserProfilePage(profilesList: List<AccountProfile>, onProfileSelected: () ->
                 }
                 Spacer(modifier = Modifier.height(3.dp))
 
-                TextButton(onClick = {  }) {
+                TextButton(onClick = {
+                    val myIntent =
+                    Intent(context, PhoneNumberActivity::class.java)
+                    clearSession(context)
+                    myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(myIntent)
+                }) {
                     Text(
                         "Log Out",
                         fontSize = 13.sp,
