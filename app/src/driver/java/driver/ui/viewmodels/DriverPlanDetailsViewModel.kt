@@ -68,7 +68,7 @@ class DriverPlanDetailsViewModel @Inject constructor(
         secondarynumber: String,
         boardingPlanScheduleId: Int,
         deboardingPlanScheduleId: Int,
-        planId: String,
+        planId: Int,
         operatorId: Int,
     ) {
         viewModelScope.launch(Dispatchers.IO) {

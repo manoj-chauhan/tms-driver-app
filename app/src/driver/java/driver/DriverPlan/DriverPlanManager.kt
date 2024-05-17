@@ -18,7 +18,7 @@ interface DriverPlanManager {
         selectedDate: String,
         guardianName: String,
         schoolAddress: String,
-        planId: String,
+        planId: Int,
         boardingPlanScheduleId: Int,
         deboardingPlanScheduleId: Int,
         operatorId: Int
