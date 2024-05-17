@@ -130,16 +130,10 @@ class PostNetRepository @Inject constructor(
         val adapter: JsonAdapter<List<PostsFeed>> = Moshi.Builder().build().adapter(postsFeeds)
 
         val postUrl = context.resources.getString(R.string.url_get_all_posts)
-        var profile = ""
-         getProfileId(context)?.let {
-           profile =  it
-        }
-
         return try {
             getAccessToken(context)?.let {
             val (_, _, result) = postUrl.httpGet()
                 .authentication().bearer(it)
-                .header("Profile-Id", profile)
                 .responseObject(moshiDeserializerOf(adapter))
 
             result.fold(
@@ -180,16 +174,10 @@ class PostNetRepository @Inject constructor(
     fun getPostDetail(context: Context, postId: String): PostsFeed? {
 
         val postUrl = context.resources.getString(R.string.url_get_post_detail)+postId
-        var profile = ""
-        getProfileId(context)?.let {
-            profile =  it
-        }
-
         return try {
             getAccessToken(context)?.let {
                 val (_, _, result) = postUrl.httpGet()
                     .authentication().bearer(it)
-                    .header("Profile-Id", profile)
                     .responseObject(moshiDeserializerOf(PostsFeed::class.java))
 
                 result.fold(

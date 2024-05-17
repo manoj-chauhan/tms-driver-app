@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DirectionsBus
@@ -57,7 +60,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.drishto.driver.R
-import driver.models.Event
 import driver.models.PostsFeed
 import driver.ui.components.ProfileDialog
 
@@ -76,7 +78,7 @@ fun TopBar(
     profileImageResId: Int,
     onSearchClick: () -> Unit,
     onNotificationClick: () -> Unit,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
 ) {
     val fontName = GoogleFont("Russo One")
 
@@ -263,7 +265,6 @@ fun MainScreen(
     onSettingsClick: () -> Unit
 ) {
     var selectedIndex by rememberSaveable { mutableStateOf(2) }
-    var eventDetail by rememberSaveable { mutableStateOf<Event?>(null) }
     var profileDialog by rememberSaveable { mutableStateOf(false) }
     val currentBackStackEntry by navigationController.currentBackStackEntryAsState()
 
@@ -306,78 +307,64 @@ fun MainScreen(
         },
         floatingActionButtonPosition = FabPosition.End
     ) { padding ->
-        Box(
+        Column(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            LazyColumn(
+            if(selectedIndex != 4)
+            TopBar(
+                username = "Krish Chauhan",
+                profileImageResId = R.drawable.boy,
+                onSearchClick = { },
+                onNotificationClick = { },
+                onProfileClick = { profileDialog = true },
+            )
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)
             ) {
-                when (selectedIndex) {
-                    0 -> {
-                        item {
-                            TopBar(
-                                username = "Krish Chauhan",
-                                profileImageResId = R.drawable.boy,
-                                onSearchClick = { },
-                                onNotificationClick = { },
-                                onProfileClick = { profileDialog = true }
-                            )
-                            NewTripsDesign()
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                ) {
+                    when (selectedIndex) {
+                        0 -> {
+                            item {
+                                NewTripsDesign()
+                            }
                         }
-                    }
-                    1 -> {
-                        item {
-                            TopBar(
-                                username = "Krish Chauhan",
-                                profileImageResId = R.drawable.boy,
-                                onSearchClick = { },
-                                onNotificationClick = { },
-                                onProfileClick = { profileDialog = true }
-                            )
-                            Eventpage(navigationController, onRegisterClick = {
-                                navigationController.navigate("event-details/${it}")
-                            })
+                        1 -> {
+                            item {
+                                Eventpage(navigationController, onRegisterClick = {
+                                    navigationController.navigate("event-details/${it}")
+                                })
+                            }
                         }
-                    }
-                    2 -> {
-                        item {
-                            TopBar(
-                                username = "Krish Chauhan",
-                                profileImageResId = R.drawable.boy,
-                                onSearchClick = { },
-                                onNotificationClick = { },
-                                onProfileClick = { profileDialog = true }
-                            )
-                            PostsSection(profileId, navigationController, onCommentClick = {
-                                navigationController.navigate("add_comment/${it.id}")
-                            })
+                        2 -> {
+                            item {
+                                PostsSection(profileId, navigationController, onCommentClick = {
+                                    navigationController.navigate("add_comment/${it.id}")
+                                })
+                            }
                         }
-                    }
-                    3 -> {
-                        item {
-                            TopBar(
-                                username = "Krish Chauhan",
-                                profileImageResId = R.drawable.boy,
-                                onSearchClick = { },
-                                onNotificationClick = { },
-                                onProfileClick = { profileDialog = true }
-                            )
-                            NoticeListPage()
+                        3 -> {
+                            item {
+                                NoticeListPage()
+                            }
                         }
-                    }
-                    4 -> {
-                        item {
-                            SettingsPage {
-                                navigationController.navigate("user_profile")
+                        4 -> {
+                            item {
+                                SettingsPage {
+                                    navigationController.navigate("user_profile")
+                                }
                             }
                         }
                     }
                 }
             }
+
         }
     }
 
