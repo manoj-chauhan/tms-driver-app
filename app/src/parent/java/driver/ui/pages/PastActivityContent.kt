@@ -150,7 +150,7 @@ fun PastActivityContent(
                                 .align(Alignment.Bottom),
                             enabled = true,
                             onClick = {
-                                navController.navigate("map-screen")
+                                navController.navigate("map-screen/$passengerTripId/$tripCode")
                             },
                             contentPadding = PaddingValues(),
                             colors = ButtonDefaults.buttonColors(

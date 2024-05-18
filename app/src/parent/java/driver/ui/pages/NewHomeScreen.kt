@@ -337,12 +337,19 @@ fun MainScreen(
                         0 -> {
                             item {
                                 NewTripsDesign(
+                                    navigationController,
                                     onTripSelected = {
                                         selectedAssignmentCode = it.tripCode
                                         passengerTripId = it.passengerTripId
                                         operatorId = it.companyId
                                         navigationController.navigate("current-assignment-detail/$selectedAssignmentCode/$passengerTripId/$operatorId")
-                                    }
+                                    },
+                                    onPastTripSelected = {
+                                        selectedAssignmentCode = it.tripCode
+                                        operatorId = 1
+                                        passengerTripId = it.passengerTripId
+                                        navigationController.navigate("past-assignment-detail/$selectedAssignmentCode/$passengerTripId")
+                                    },
                                 )
                             }
                         }

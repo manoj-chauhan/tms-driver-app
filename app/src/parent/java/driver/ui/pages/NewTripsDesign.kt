@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -31,13 +33,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import driver.arrivalTripColor
 import driver.cardColor
 import driver.headingColor
@@ -50,7 +55,11 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 
 @Composable
-fun NewTripsDesign(onTripSelected: (assignment: ParentTrip) -> Unit, ) {
+fun NewTripsDesign(
+    navigationController:NavHostController,
+    onTripSelected: (assignment: ParentTrip) -> Unit,
+    onPastTripSelected: (assignment: ParentPastTrip) -> Unit,
+) {
 
 
     val parentTripAssigned: parentTripAssigned = hiltViewModel()
@@ -89,49 +98,154 @@ fun NewTripsDesign(onTripSelected: (assignment: ParentTrip) -> Unit, ) {
                 tripList?.forEach { trip ->
                     CurrentTrip(trip, onTripSelected)
                 }
-                PastTripDesign()
+                PastTrip(onPastTripSelected, "home", navigationController)
             }
         }
     }
 }
 
 @Composable
-fun PastTripDesign() {
+fun PastTrip(onPastTripSelected: (assignment: ParentPastTrip) -> Unit, screen: String, navigationController: NavHostController) {
     val parentTripAssigned: parentTripAssigned = hiltViewModel()
     val pastTripList by parentTripAssigned.pastTripList.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
-
     parentTripAssigned.fetchParentPastTrip()
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 13.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 3.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            if (screen == "home") {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 13.dp)
+                ) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 3.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                Text(
-                    text = "Past Trips ",
-                    style = TextStyle(
-                        color = headingColor,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.W500
-                    )
-                )
-            }
+                            Text(
+                                text = "Past Trips ",
+                                style = TextStyle(
+                                    color = headingColor,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.W500
+                                )
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        pastTripList?.let {
+                            if (screen == "home") {
+                                Column {
+                                    it.take(4).forEach { trip ->
+                                        PastTripList(trip, onPastTripSelected)
+                                    }
+                                }
+                                if (it.size >= 3) {
+                                    val text = remember {
+                                        buildAnnotatedString {
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    color = subHeadingColor,
+                                                    fontSize = 12.sp,
+                                                    fontWeight = FontWeight.W400
+                                                )
+                                            ) {
+                                                append("SEE ALL")
+                                            }
+                                        }
+                                    }
 
-            Column(modifier = Modifier.padding(top = 13.dp)) {
-                pastTripList?.forEach { trip ->
-                    PastTripList(trip, onPastTripSelected = {})
+
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(13.dp)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.End
+                                        ) {
+
+                                            ClickableText(
+                                                text = text,
+                                                onClick = { offset -> 
+                                                    navigationController.navigate("past-trips-list")
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize().padding(10.dp)
+                    ) {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding( top = 10.dp)
+                                    .height(30.dp) ,
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Row(
+                                        modifier = Modifier.width(30.dp),
+                                        horizontalArrangement = Arrangement.Start
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.ArrowBack,
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .height(25.dp)
+                                                .clickable {
+                                                    navigationController.popBackStack()
+                                                },
+                                        )
+                                    }
+                                    Box(modifier = Modifier.fillMaxWidth(0.65f)) {
+                                        Text(
+                                            text = "Past Trips",
+                                            style = TextStyle(
+                                                color = Color.Black,
+                                                fontSize = 18.sp,
+                                                fontFamily = FontFamily.SansSerif,
+                                                fontWeight = FontWeight.W600
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            pastTripList?.forEach { trip ->
+                                PastTripList(trip, onPastTripSelected)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -139,13 +253,13 @@ fun PastTripDesign() {
 }
 
 @Composable
-fun PastTripList(trip: ParentPastTrip, onPastTripSelected: () -> Unit) {
+fun PastTripList(trip: ParentPastTrip, onPastTripSelected: (assignment: ParentPastTrip) -> Unit) {
     val fontStyle: FontFamily = FontFamily.SansSerif
 
     val tripTime = SimpleDateFormat("HH:mm:ss")
     val outputtripTime = SimpleDateFormat(" hh:mm a")
 
-    val parsedTime = remember(trip.tripTime) {tripTime.parse(trip.tripTime) }
+    val parsedTime = remember(trip.tripTime) { tripTime.parse(trip.tripTime) }
     val formattedTime = remember(parsedTime) { outputtripTime.format(parsedTime) }
 
     val inputFormat = remember { SimpleDateFormat("yyyy-MM-dd") }
@@ -168,7 +282,7 @@ fun PastTripList(trip: ParentPastTrip, onPastTripSelected: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onPastTripSelected() }
+            .clickable { onPastTripSelected(trip) }
             .shadow(3.dp, RoundedCornerShape(12.dp)),
     ) {
         Column(
@@ -241,7 +355,10 @@ fun PastTripList(trip: ParentPastTrip, onPastTripSelected: () -> Unit) {
                     }
                     Spacer(modifier = Modifier.padding(3.dp))
 
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
                         trip.deBoardingPlaceTime?.let {
                             Text(
                                 text = it,
@@ -289,7 +406,10 @@ fun PastTripList(trip: ParentPastTrip, onPastTripSelected: () -> Unit) {
                     }
                     Spacer(modifier = Modifier.padding(3.dp))
 
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
                         trip.deBoardingPlaceTime?.let {
                             Text(
                                 text = it,
@@ -318,7 +438,7 @@ fun CurrentTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) 
     val tripTime = SimpleDateFormat("HH:mm:ss")
     val outputtripTime = SimpleDateFormat(" hh:mm a")
 
-    val parsedTime = remember(trip.tripTime) {tripTime.parse(trip.tripTime) }
+    val parsedTime = remember(trip.tripTime) { tripTime.parse(trip.tripTime) }
     val formattedTime = remember(parsedTime) { outputtripTime.format(parsedTime) }
 
     val localDate = remember { LocalDate.now() }
@@ -439,7 +559,7 @@ fun CurrentTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) 
 
                 Text(
 //                    text = trip.arrival,
-                    text="Arrival in 20 minutes",
+                    text = "Arrival in 20 minutes",
                     style = TextStyle(
                         color = arrivalTripColor,
                         fontSize = 12.sp,
@@ -500,7 +620,7 @@ fun CurrentTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) 
             }
         }
     }
-    
+
     Spacer(modifier = Modifier.height(10.dp))
 
 }
