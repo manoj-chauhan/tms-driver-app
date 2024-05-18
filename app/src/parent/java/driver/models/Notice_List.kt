@@ -1,37 +1,28 @@
 package driver.models
 
-import driver.ui.pages.Notice
-import java.time.LocalDate
 
+import com.squareup.moshi.JsonClass
+@JsonClass(generateAdapter = true)
 data class Notice_List(
+    val id: String,
+    val institute: String,
+    val instituteName: String,
+    val instituteDp: String,
     val title: String,
     val description: String,
-    val date: LocalDate,
-    val fileUrl: String? = null,
-    val fileType: String? = null
+    val scope: Scope,
+    val dateOfNotice: String,
+    val timeOfNotice: String,
+    val media: Media?,
+    val createdBy: String,
+    val active: Boolean
 )
 
 
-fun getDummyNotices(): List<Notice> {
-    return listOf(
-        Notice(
-            title = "School Closure",
-            description = "The school will be closed due to a national holiday.",
-            date = LocalDate.of(2024, 5, 5),
-            fileUrl = "https://www.clickdimensions.com/links/TestPDFfile.pdf",
-            fileType = "PDF"
-        ),
-        Notice(
-            title = "New Timetable",
-            description = "A new timetable will be implemented from the next term.",
-            date = LocalDate.of(2024, 6, 10),
-            fileUrl = "https://www.clickdimensions.com/links/TestPDFfile.pdf",
-            fileType = "PDF"
-        ),
-        Notice(
-            title = "PTA Meeting",
-            description = "PTA meeting scheduled for 15 May 2024 at 5 PM.",
-            date = LocalDate.of(2024, 5, 15)
-        )
-    )
-}
+
+@JsonClass(generateAdapter = true)
+data class Media(
+    val type: String?,
+    val mediaUrl: String,
+    val caption: String?
+)

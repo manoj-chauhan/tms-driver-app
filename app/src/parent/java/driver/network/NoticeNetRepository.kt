@@ -9,62 +9,127 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
-import driver.ui.pages.Notice
+import driver.models.Notice_List
+import driver.ui.pages.NoticeListPage
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
+//
+//class NoticeNetRepository @Inject constructor(
+//    @ApplicationContext private val context: Context,
+//    private val errorManager: ErrManager
+//) {
+//
+//    suspend fun getAllNotices(): List<Notice_List>? {
+//        val moshi = Moshi.Builder().build()
+//        val noticeListType = Types.newParameterizedType(List::class.java, Notice::class.java)
+//        val jsonAdapter: JsonAdapter<List<Notice>> = moshi.adapter(noticeListType)
+//
+//        val noticesurl = context.resources.getString(R.string.url_notice_list)
+//
+//
+//
+//        getAccessToken(context)?.let {
+//            val (_, _, result) = noticesurl.httpGet()
+//                .authentication().bearer(it)
+//                .responseObject(moshiDeserializerOf(jsonAdapter))
+//
+//            result.fold(
+//                {
+//                    Log.d("NoticeNetRepository", "Successfully received response from backend.")
+//                },
+//                { error ->
+//                    Log.d("noticeerror", "$error")
+//                    EventBus.getDefault().post("AUTH_FAILED")
+//                    if (error.response.statusCode == 401) {
+//                        errorManager.getErrorDescription(context)
+//                    }
+//
+//                    val errorResponse = error.response.data.toString(Charsets.UTF_8)
+//
+//                    if (error.response.statusCode == 403) {
+//                        errorManager.getErrorDescription403(context, errorResponse)
+//                    }
+//
+//                    if (error.response.statusCode == 404) {
+//                        errorManager.getErrorDescription404(context, "No url found")
+//                    }
+//
+//                    if (error.response.statusCode == 500) {
+//                        errorManager.getErrorDescription500(context, "Something Went Wrong")
+//                    }
+//                }
+//            )
+//
+//            result.get()
+//
+//
+//
+//        }
+//
+//
+//        catch(e: Exception)
+//        {
+//            null
+//        }
+//
+//    }
 
-class NoticeNetRepository @Inject constructor(
+class   NoticeNetRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val errorManager: ErrManager
 ) {
 
-    suspend fun getAllNotices(): List<Notice>? {
-        val moshi = Moshi.Builder().build()
-        val noticeListType = Types.newParameterizedType(List::class.java, Notice::class.java)
-        val jsonAdapter: JsonAdapter<List<Notice>> = moshi.adapter(noticeListType)
+    fun getAllNotices(): List<Notice_List>? {
+        val noticeList = Types.newParameterizedType(List::class.java, Notice_List::class.java)
+        val adapter: JsonAdapter<List<Notice_List>> = Moshi.Builder().build().adapter(noticeList)
 
-//        val url = context.resources.getString(R.string.url_addInstitute)
+        val noticessurl = context.resources.getString(R.string.url_notice_list)
 
         return try {
-            null
+            getAccessToken(context)?.let {
+                val (_, _, result) = noticessurl.httpGet()
+                    .authentication().bearer(it)
+                    .responseObject(moshiDeserializerOf(adapter))
 
-//            getAccessToken(context)?.let { token ->
-//                val fuelManager = FuelManager()
-//                val (_, response, result) = fuelManager.get(url)
-//                    .authentication().bearer(token)
-//                    .responseObject(moshiDeserializerOf(jsonAdapter))
-//
-//
-//                result.fold(
-//                    { it },
-//                    { error ->
-//                        handleErrors(response)
-//                        null
-//                    }
-//                )
-//            }
+                result.fold(
+                    {
+                        Log.d("NoticeNetRepository", "Successfully received response from backend.")
+                        it
+                    },
+                    { error ->
+                        Log.d("noticeerror", "$error")
+                        EventBus.getDefault().post("AUTH_FAILED")
+                        if (error.response.statusCode == 401) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        when (error.response.statusCode) {
+                            403 -> errorManager.getErrorDescription403(context, errorResponse)
+                            404 -> errorManager.getErrorDescription404(context, "No url found")
+                            500 -> errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
+                        null
+                    }
+                )
+            }
         } catch (e: Exception) {
-            Log.e("NoticeNetRepository", "Error fetching notices", e)
             null
         }
     }
 
 
-    private fun handleErrors(response: Response) {
-        val errorCode = response.statusCode
-        val errorMessage = response.data.toString(Charsets.UTF_8)
 
-        when (errorCode) {
-            401 -> errorManager.getErrorDescription(context)
-            403 -> errorManager.getErrorDescription403(context, errorMessage)
-            404 -> errorManager.getErrorDescription404(context, "No URL found")
-            500 -> errorManager.getErrorDescription500(context, "Server error")
-            else -> Log.e("NoticeNetRepository", "Unhandled error: $errorCode")
-        }
-    }
+
+
+
 
     fun addNotice(
         name: String,
@@ -77,7 +142,8 @@ class NoticeNetRepository @Inject constructor(
 
             val moshi = Moshi.Builder().build()
 
-            val jsonAdapter: JsonAdapter<driver.models.Notice> = moshi.adapter(driver.models.Notice::class.java)
+            val jsonAdapter: JsonAdapter<driver.models.Notice> =
+                moshi.adapter(driver.models.Notice::class.java)
             val requestBody = jsonAdapter.toJson(addNotice)
 
             Log.d("anirudh", "addInstitute: $requestBody")
@@ -87,11 +153,11 @@ class NoticeNetRepository @Inject constructor(
                 val fuelManager = FuelManager()
                 val (_, response, result) = fuelManager.post(url)
                     .authentication().bearer(it)
-                    .header("Profile-Id","6634dc7cf684864e6508590c")
+                    .header("Profile-Id", "6634dc7cf684864e6508590c")
                     .jsonBody(requestBody)
                     .response()
 
-                Log.d("TAG", "addInstitute: $response")
+                Log.d("TAG", "notice: $response")
 
                 if (response.statusCode == 200) {
                 } else {

@@ -18,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -29,22 +30,24 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.drishto.driver.R
 import driver.headingColor
+import driver.models.Notice_List
 import driver.textColor
-
-data class NoticeAll(
-    val text: String,
-    val institue:String,
-    val date: String,
-    val time: String,
-    val imageResId: Int
-)
+import driver.ui.viewmodels.NoticesViewModel
+import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun NoticeCard(notice: NoticeAll) {
+fun NoticeCard(notice: Notice_List) {
     val fontFamily = FontFamily.SansSerif
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+
     ElevatedCard(
         colors = CardDefaults.cardColors(Color.White),
         modifier = Modifier
@@ -55,7 +58,6 @@ fun NoticeCard(notice: NoticeAll) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(3.dp),
-
             verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -64,12 +66,11 @@ fun NoticeCard(notice: NoticeAll) {
                     .fillMaxWidth()
                     .padding(top = 1.dp)
                     .padding(7.5.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-//                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
                     Text(
-                        text = notice.text,
+                        text = notice.title,
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontFamily = fontFamily,
@@ -80,7 +81,7 @@ fun NoticeCard(notice: NoticeAll) {
                     Spacer(modifier = Modifier.height(4.dp))
 
                     Text(
-                        text = notice.institue,
+                        text = notice.instituteName,
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = fontFamily,
@@ -88,14 +89,11 @@ fun NoticeCard(notice: NoticeAll) {
                             fontWeight = FontWeight.W400
                         )
                     )
-
                 }
-//                Spacer(modifier = Modifier.height(9.dp))
 
-                Row (modifier=Modifier.padding(top=2.dp)){
-
+                Row(modifier = Modifier.padding(top = 2.dp)) {
                     Text(
-                        text = notice.date,
+                        text = notice.dateOfNotice.format(dateFormatter),
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
@@ -103,11 +101,9 @@ fun NoticeCard(notice: NoticeAll) {
                             fontWeight = FontWeight.W400
                         )
                     )
-
                     Spacer(modifier = Modifier.width(4.dp))
-
                     Text(
-                        text = notice.time,
+                        text = notice.timeOfNotice,
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
@@ -119,100 +115,72 @@ fun NoticeCard(notice: NoticeAll) {
             }
         }
 
-        val imageHeight = if (notice.imageResId == R.drawable.doc) {
+        val imageHeight = if (notice.media?.type == "doc") {
             150.dp
         } else {
             220.dp
         }
-        val paddingtop = if (notice.imageResId == R.drawable.doc) {
+        val paddingTop = if (notice.media?.type == "doc") {
             30.dp
         } else {
             0.dp
         }
-        val paddingbottom = if (notice.imageResId == R.drawable.doc) {
+        val paddingBottom = if (notice.media?.type == "doc") {
             30.dp
         } else {
             0.dp
         }
-        Box(modifier = Modifier
-            .height(220.dp)
-            .background(Color.White)
-            .align(Alignment.CenterHorizontally)) {
-            Image(
-                painter = painterResource(id = notice.imageResId),
-                contentDescription = "Notice Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(imageHeight)
-                    .padding(top = paddingtop)
-                    .padding(bottom = paddingbottom)
-                    .aspectRatio(16f / 9f)
-            )
-
+        Box(
+            modifier = Modifier
+                .height(220.dp)
+                .background(Color.White)
+                .align(Alignment.CenterHorizontally)
+        ) {
+            notice.media?.mediaUrl?.let { imageUrl ->
+                Image(
+                    painter = rememberAsyncImagePainter(imageUrl),
+                    contentDescription = "Notice Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .height(imageHeight)
+                        .padding(top = paddingTop, bottom = paddingBottom)
+                        .aspectRatio(16f / 9f)
+                )
+            }
         }
         Spacer(modifier = Modifier.height(15.dp))
-        
-
-
     }
-    Spacer(modifier=Modifier.height(10.dp))
+    Spacer(modifier = Modifier.height(10.dp))
 }
 
-
-
-
-
-
-
 @Composable
-fun NoticeListPage() {
+fun NoticeListPage(
+    navigation: NavHostController,
+    onReadClick: (Notice_List) -> Unit,
+    onDownloadClick: (String) -> Unit
+) {
+    val noticesViewModel: NoticesViewModel = hiltViewModel()
+    val notices by noticesViewModel.noticelist.collectAsStateWithLifecycle()
+
+    noticesViewModel.getAllNotices()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-
-            .padding(10.dp),
-
+            .padding(10.dp)
     ) {
-         noticeData.let{  notice->
-             notice.forEach{
-                 NoticeCard(it)
-
-             }
-
+        notices?.let { noticeList ->
+            noticeList.forEach { notice ->
+                NoticeCard(
+                    notice = notice,
+//                    onReadClick = { onReadClick(notice) },
+//                    onDownloadClick = onDownloadClick
+                )
+            }
         }
     }
 }
 
-
-val noticeData = listOf(
-    NoticeAll(
-        text = "Meeting with Parents",
-        institue = "Maharaja Agrasen Public School",
-        date = "22 Jun'24",
-        time = "09:00 AM",
-        imageResId = R.drawable.notice1
-    ),
-    NoticeAll(
-        text = "School Picnic",
-        institue = "HMRITM",
-        date = "23 June'24",
-        time = "10:00 AM",
-        imageResId = R.drawable.notice2
-    ),
-    NoticeAll(
-        text = "Annual Day Celebration",
-        institue = "Maharaja Agresen Public School",
-        date = "24 Jun'24",
-        time = "11:00 AM",
-        imageResId = R.drawable.doc
-    )
-)
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewNoticeListPage() {
-//    NoticeListPage(notices = noticeData)
-//}
 
 
 

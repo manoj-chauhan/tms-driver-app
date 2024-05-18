@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import driver.models.Notice_List
-import driver.models.getDummyNotices
+//import driver.models.getDummyNotices
 import kotlinx.coroutines.launch
 
 enum class NoticeTabs(
@@ -172,10 +172,11 @@ fun SavedNoticesPage(navController: NavHostController) {
             when (selectedTabIndex) {
 
                 0 -> {
-                    NoticeListPage(
-                        onReadClick = {},
-                        onDownloadClick = {},
-                    )
+//                    NoticeListPage(
+//
+//                        onReadClick = {},
+//                        onDownloadClick = {},
+//                    )
                 }
                 1 -> {
                     Box(

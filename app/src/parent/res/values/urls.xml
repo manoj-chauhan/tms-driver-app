@@ -35,6 +35,14 @@
     <string name="url_add_profile">&baseUrl;/test/profiles</string>
     <string name="children_list">&baseUrl;/parents/children?page_no=0</string>
 
+    <string name="url_notice_list">&baseUrl;/test/notices</string>
+<!--    <string name="url_notice_info">&baseUrl;/test/notices/</string>-->
+
+
+
+
+
+
 
 
 
