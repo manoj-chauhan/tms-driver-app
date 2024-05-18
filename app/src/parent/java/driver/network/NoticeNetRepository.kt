@@ -5,6 +5,7 @@ import android.util.Log
 import com.drishto.driver.R
 import com.drishto.driver.errormgmt.ErrManager
 import com.drishto.driver.network.getAccessToken
+import com.drishto.driver.network.getProfileId
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.extensions.authentication
@@ -15,70 +16,12 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
+import driver.models.Event
 import driver.models.Notice_List
 import driver.ui.pages.NoticeListPage
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
-//
-//class NoticeNetRepository @Inject constructor(
-//    @ApplicationContext private val context: Context,
-//    private val errorManager: ErrManager
-//) {
-//
-//    suspend fun getAllNotices(): List<Notice_List>? {
-//        val moshi = Moshi.Builder().build()
-//        val noticeListType = Types.newParameterizedType(List::class.java, Notice::class.java)
-//        val jsonAdapter: JsonAdapter<List<Notice>> = moshi.adapter(noticeListType)
-//
-//        val noticesurl = context.resources.getString(R.string.url_notice_list)
-//
-//
-//
-//        getAccessToken(context)?.let {
-//            val (_, _, result) = noticesurl.httpGet()
-//                .authentication().bearer(it)
-//                .responseObject(moshiDeserializerOf(jsonAdapter))
-//
-//            result.fold(
-//                {
-//                    Log.d("NoticeNetRepository", "Successfully received response from backend.")
-//                },
-//                { error ->
-//                    Log.d("noticeerror", "$error")
-//                    EventBus.getDefault().post("AUTH_FAILED")
-//                    if (error.response.statusCode == 401) {
-//                        errorManager.getErrorDescription(context)
-//                    }
-//
-//                    val errorResponse = error.response.data.toString(Charsets.UTF_8)
-//
-//                    if (error.response.statusCode == 403) {
-//                        errorManager.getErrorDescription403(context, errorResponse)
-//                    }
-//
-//                    if (error.response.statusCode == 404) {
-//                        errorManager.getErrorDescription404(context, "No url found")
-//                    }
-//
-//                    if (error.response.statusCode == 500) {
-//                        errorManager.getErrorDescription500(context, "Something Went Wrong")
-//                    }
-//                }
-//            )
-//
-//            result.get()
-//
-//
-//
-//        }
-//
-//
-//        catch(e: Exception)
-//        {
-//            null
-//        }
-//
-//    }
+
 
 class   NoticeNetRepository @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -123,6 +66,62 @@ class   NoticeNetRepository @Inject constructor(
         } catch (e: Exception) {
             null
         }
+    }
+
+
+    fun getNoticeById(noticeId:String): Notice_List?{
+
+        val noticesurl = context.resources.getString(R.string.url_notice_info)+noticeId
+
+
+        var noticeId =""
+
+
+        Log.d("NoticeNetRepository", "Fetching notice with ID: $noticeId")
+
+        return try {
+            getAccessToken(context)?.let {
+                val (_, _, result) = noticesurl.httpGet()
+                    .authentication().bearer(it)
+                    .header("Profile-Id",noticeId)
+                    .responseObject(moshiDeserializerOf(Notice_List::class.java))
+
+                result.fold(
+                    {
+                    },
+                    { error ->
+                        Log.d("noticeerror", "$error")
+                        EventBus.getDefault().post("AUTH_FAILED")
+                        if (error.response.statusCode == 401) {
+                            errorManager.getErrorDescription(context)
+                        }
+
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+
+                        if (error.response.statusCode == 403) {
+                            errorManager.getErrorDescription403(context, errorResponse)
+                        }
+
+                        if (error.response.statusCode == 404) {
+                            errorManager.getErrorDescription404(context, "No url found")
+                        }
+
+                        if (error.response.statusCode == 500) {
+                            errorManager.getErrorDescription500(context, "Something Went Wrong")
+                        }
+                    }
+                )
+
+                result.get()
+
+
+
+            }
+
+        } catch (e: Exception) {
+            null
+        }
+
     }
 
 

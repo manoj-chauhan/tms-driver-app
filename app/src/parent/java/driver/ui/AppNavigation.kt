@@ -122,6 +122,16 @@ fun AppNavigationHost(
             EventDetail(eventId, navController)
         }
 
+        composable("notice-details/{noticeId}",arguments = listOf(
+            navArgument("eventId"){
+                type = NavType.StringType
+            }
+        )) {
+
+            val noticeId = it.arguments!!.getString("eventId")
+            EventDetail(noticeId, navController)
+        }
+
         composable("school-profile"){
             schoolProfile()
         }

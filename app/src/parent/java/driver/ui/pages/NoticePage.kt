@@ -19,6 +19,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -40,6 +41,8 @@ import driver.headingColor
 import driver.models.Notice_List
 import driver.textColor
 import driver.ui.viewmodels.NoticesViewModel
+import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
@@ -47,6 +50,21 @@ import java.time.format.DateTimeFormatter
 fun NoticeCard(notice: Notice_List) {
     val fontFamily = FontFamily.SansSerif
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+
+    val tripTime = SimpleDateFormat("HH:mm:ss")
+    val outputtripTime = SimpleDateFormat(" hh:mm a")
+
+    val parsedTime = remember(notice.timeOfNotice) {tripTime.parse(notice.timeOfNotice) }
+    val formattedTime = remember(parsedTime) { outputtripTime.format(parsedTime) }
+
+    val localDate = remember { LocalDate.now() }
+    val tripLocalDate = remember(notice.dateOfNotice) { LocalDate.parse(notice.dateOfNotice) }
+
+    val inputFormat = remember { SimpleDateFormat("yyyy-MM-dd") }
+    val outputFormat = remember { SimpleDateFormat("dd MMM yyyy") }
+
+    val parsedDate = remember(notice.dateOfNotice) { inputFormat.parse(notice.dateOfNotice) }
+    val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
 
     ElevatedCard(
         colors = CardDefaults.cardColors(Color.White),
@@ -93,7 +111,8 @@ fun NoticeCard(notice: Notice_List) {
 
                 Row(modifier = Modifier.padding(top = 2.dp)) {
                     Text(
-                        text = notice.dateOfNotice.format(dateFormatter),
+//                        text = notice.dateOfNotice.format(dateFormatter),
+                        text= formattedDate,
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
@@ -103,7 +122,8 @@ fun NoticeCard(notice: Notice_List) {
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = notice.timeOfNotice,
+//                        text = notice.timeOfNotice,
+                        text = formattedTime,
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
