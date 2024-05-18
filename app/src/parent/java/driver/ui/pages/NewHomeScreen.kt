@@ -199,9 +199,7 @@ fun BottomNavBar(
         )
 
     NavigationBar(
-
-        tonalElevation = 20.dp,
-        modifier = Modifier.height(60.dp),
+        modifier = Modifier.height(60.dp).shadow(4.dp),
         containerColor = Color.White,
     ) {
         bottomBar.forEachIndexed { index, bottomNavItem ->
@@ -306,8 +304,7 @@ fun MainScreen(
         },
         bottomBar = {
             Row(
-                modifier = Modifier
-                    .shadow(78.dp),
+                modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BottomNavBar(
