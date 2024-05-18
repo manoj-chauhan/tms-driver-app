@@ -43,18 +43,14 @@ import driver.cardColor
 import driver.headingColor
 import driver.models.ParentPastTrip
 import driver.models.ParentTrip
-
-
 import driver.placeColor
 import driver.subHeadingColor
-import driver.ui.viewmodels.EventsViewModel
 import driver.ui.viewmodels.parentTripAssigned
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 
 @Composable
-fun NewTripsDesign() {
-
+fun NewTripsDesign(onTripSelected: (assignment: ParentTrip) -> Unit, ) {
 
 
     val parentTripAssigned: parentTripAssigned = hiltViewModel()
@@ -91,7 +87,7 @@ fun NewTripsDesign() {
 
             Column(modifier = Modifier.padding(10.dp)) {
                 tripList?.forEach { trip ->
-                    CurrentTrip(trip, onTripSelected = {})
+                    CurrentTrip(trip, onTripSelected)
                 }
                 PastTripDesign()
             }
@@ -315,7 +311,7 @@ fun PastTripList(trip: ParentPastTrip, onPastTripSelected: () -> Unit) {
 }
 
 @Composable
-fun CurrentTrip(trip: ParentTrip, onTripSelected: () -> Unit) {
+fun CurrentTrip(trip: ParentTrip, onClick: (tripsToDriver: ParentTrip) -> Unit) {
     val message = Color(android.graphics.Color.parseColor("#939499"))
     val fontStyle: FontFamily = FontFamily.SansSerif
 
@@ -416,7 +412,7 @@ fun CurrentTrip(trip: ParentTrip, onTripSelected: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = cardColor),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onTripSelected() }
+            .clickable { onClick(trip) }
             .shadow(3.dp, RoundedCornerShape(12.dp)),
     ) {
         Column(

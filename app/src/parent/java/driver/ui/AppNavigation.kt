@@ -81,9 +81,26 @@ fun AppNavigationHost(
     }
 
     NavHost(navController = navController, startDestination = startScreen) {
-        composable("current-assignment-detail") {
+        composable("current-assignment-detail/{selectedAssignmentCode}/{passengerTripId}/{operatorId}",
+            arguments = listOf(
+            navArgument("selectedAssignmentCode"){
+                type = NavType.StringType
+            },
+            navArgument("passengerTripId"){
+                type = NavType.IntType
+            },
+            navArgument("operatorId"){
+                type = NavType.IntType
+            },
+        )) {
+            val selectedAssignmentCode = it.arguments?.getString("selectedAssignmentCode")
+            val passengerTripId = it.arguments!!.getInt("passengerTripId")
+            val operatorId = it.arguments!!.getInt("operatorId")
+
             val activity = LocalContext.current as? ComponentActivity
-            MapsActivityContent(navController, passengerTripId, selectedAssignmentCode, operatorId,activity = activity ?: return@composable)
+            if (selectedAssignmentCode != null) {
+                MapsActivityContent(navController, passengerTripId, selectedAssignmentCode, operatorId,activity = activity ?: return@composable)
+            }
         }
         composable("past-assignment-detail") {
             val activity = LocalContext.current as? ComponentActivity
@@ -200,17 +217,30 @@ fun AppNavigationHost(
             }
         }
 
-        composable("map-screen") {
+        composable("map-screen/{passengerTripId}/{tripCode}",
+            arguments = listOf(
+                navArgument("passengerTripId"){
+                    type = NavType.IntType
+                },
+                navArgument("tripCode"){
+                    type = NavType.StringType
+                },
+            ) ){
+            val selectedAssignmentCode = it.arguments?.getString("tripCode")
+            val passengerTripId = it.arguments!!.getInt("passengerTripId")
             val activity = LocalContext.current as? ComponentActivity
+            Log.e("Error", "AppNavigationHost: $passengerTripId $selectedAssignmentCode", )
 
-            GoogleMapView(
-                modifier = Modifier.fillMaxWidth(),
-                passengerTripId = passengerTripId,
-                tripCode = selectedAssignmentCode,
-                navController,
-                onMapLoaded = {},
-                activity = activity ?: return@composable
-            )
+            if (selectedAssignmentCode != null) {
+                GoogleMapView(
+                    modifier = Modifier.fillMaxWidth(),
+                    passengerTripId = passengerTripId,
+                    tripCode = selectedAssignmentCode,
+                    navController,
+                    onMapLoaded = {},
+                    activity = activity ?: return@composable
+                )
+            }
         }
 
         composable("past-trips-list") {
