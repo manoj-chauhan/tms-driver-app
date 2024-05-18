@@ -61,8 +61,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.drishto.driver.R
+import driver.models.Notice_List
 import driver.models.PostsFeed
-import driver.ui.components.ProfileDialog
+
 
 
 val provider = GoogleFont.Provider(
@@ -382,7 +383,9 @@ fun MainScreen(
 
                         3 -> {
                             item {
-                                NoticeListPage()
+                                NoticeListPage(navigation = navigationController, onReadClick = {}) {
+
+                                }
                             }
                         }
 
@@ -400,9 +403,5 @@ fun MainScreen(
         }
     }
 
-    if (profileDialog) {
-        ProfileDialog {
-            profileDialog = it
-        }
-    }
+
 }

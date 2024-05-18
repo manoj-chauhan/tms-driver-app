@@ -1,11 +1,14 @@
 package driver.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.NoticeManagement.NoticeManager
+import driver.models.Event
+import driver.models.Notice_List
 import driver.postUploadManagement.PostUploadManager
-import driver.ui.pages.Notice
+import driver.ui.pages.NoticeListPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,21 +27,36 @@ class NoticesViewModel @Inject constructor(
 
 ) : ViewModel() {
 
-    private val _notices: MutableStateFlow<List<Notice>?> = MutableStateFlow(null)
-    val notices: StateFlow<List<Notice>?> = _notices.asStateFlow()
+    private val _noticelist: MutableStateFlow<List<Notice_List>?> = MutableStateFlow(null)
+    val noticelist: StateFlow<List<Notice_List>?> = _noticelist.asStateFlow()
+
+    private val _noticeDetail: MutableStateFlow<Notice_List?> = MutableStateFlow(null)
+    val noticeDetail: StateFlow<Notice_List?> = _noticeDetail.asStateFlow()
 
 
-    fun fetchNotices() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-//                val fetchedNotices = AddNoti.getAllNotices()
-//                _notices.value = fetchedNotices
-            } catch (e: Exception) {
-
-                _notices.value = listOf()
+    fun getAllNotices() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val notices = noticeManager.getAllNotices()
+            _noticelist.update {
+                notices
             }
         }
     }
+
+    fun getNoticeById(noticeId: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val notice = noticeManager.getNoticeById(noticeId)
+                _noticeDetail.value = notice
+            } catch (e: Exception) {
+
+                Log.d("notice by id error", "getNoticeById: error in getting noticeByID")
+            }
+        }
+    }
+
+
+
 
     private val _uploadedPosts: MutableStateFlow<Pair<String, String>?> = MutableStateFlow(null)
     val postDetails: StateFlow<Pair<String, String>?> = _uploadedPosts.asStateFlow()

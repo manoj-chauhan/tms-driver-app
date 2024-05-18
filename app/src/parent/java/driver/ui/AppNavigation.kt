@@ -29,10 +29,12 @@ import driver.ui.components.AddNoticeEvent
 import driver.ui.components.CommentPost
 import driver.ui.components.EventDetail
 import driver.ui.components.addEventPage
+import driver.ui.components.pastTrips
 import driver.ui.pages.AccountsProfile
 import driver.ui.pages.AddInstitute
 import driver.ui.pages.AddProfileScreen
 import driver.ui.pages.GoogleMapView
+import driver.ui.pages.HomeScreen
 import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MainScreen
 import driver.ui.pages.MapsActivityContent
@@ -147,11 +149,11 @@ fun AppNavigationHost(
             })
         }
 
-        composable("add-Profile") {
+        composable("add-Profile"){
             AddProfileScreen(navController)
         }
 
-        composable("add-Event-Form") {
+        composable("add-Event-Form"){
             addEventPage(profileId)
         }
 
@@ -165,42 +167,50 @@ fun AppNavigationHost(
             EventDetail(eventId, navController)
         }
 
-        composable("school-profile") {
+        composable("notice-details/{noticeId}",arguments = listOf(
+            navArgument("eventId"){
+                type = NavType.StringType
+            }
+        )) {
+
+//            val noticeId = it.arguments!!.getString("eventId")
+        }
+
+        composable("school-profile"){
             schoolProfile()
         }
 
-        composable("notice_lists") {
+        composable("notice_lists"){
             SavedNoticesPage(
-                navController = navController
-            )
+            navController= navController)
 
         }
-        composable("add-Notice-Form") {
+        composable("add-Notice-Form"){
             AddNoticeEvent()
         }
 
-        composable("post_page") {
-            PostItem(profileId, navController = navController)
+        composable("post_page"){
+            PostItem(profileId,navController = navController)
         }
-
-        composable("user_profile") {
+        
+        composable("user_profile"){
             Profile(navController)
         }
 
-        composable("home-screen") {
-            HomeScreenNavigation(profileId, navController = navController) {
+        composable("home-screen"){
+            HomeScreenNavigation(profileId,navController = navController) {
                 postDetails = it
                 navController.navigate("add_comment")
                 Log.d("TAG", "AppNavigationHost: $postDetails")
             }
         }
 
-        composable("add-Institute") {
+        composable("add-Institute"){
             AddInstitute(navController)
         }
 
         composable("add_comment/{postId}", arguments = listOf(
-            navArgument("postId") {
+            navArgument("postId"){
                 type = NavType.StringType
             }
         )) {
@@ -212,7 +222,7 @@ fun AppNavigationHost(
 
         }
 
-        composable("newHomeScreen") {
+        composable("newHomeScreen"){
             MainScreen(
                 profileId,
                 navController,
@@ -238,8 +248,6 @@ fun AppNavigationHost(
             selectedAssignmentCode = it.arguments?.getString("tripCode").toString()
             passengerTripId = it.arguments!!.getInt("passengerTripId")
             val activity = LocalContext.current as? ComponentActivity
-            Log.e("Error", "AppNavigationHost: $passengerTripId $selectedAssignmentCode")
-
             if (selectedAssignmentCode != null) {
                 GoogleMapView(
                     modifier = Modifier.fillMaxWidth(),
