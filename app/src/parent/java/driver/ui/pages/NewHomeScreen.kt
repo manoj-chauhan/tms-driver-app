@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DirectionsBus
@@ -37,9 +38,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -79,22 +80,22 @@ fun TopBar(
     onSearchClick: () -> Unit,
     onNotificationClick: () -> Unit,
     onProfileClick: () -> Unit,
+    shadow: Int
 ) {
     val fontName = GoogleFont("Russo One")
 
     val fontFamily = FontFamily(
         Font(googleFont = fontName, fontProvider = provider)
     )
-    val first = Color(android.graphics.Color.parseColor("#1c1b1f"))
     val logo = Color(android.graphics.Color.parseColor("#ef2427"))
 
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
     ) {
         TopAppBar(
+            modifier = Modifier.shadow(shadow.dp),
             title = {
                 Row(
                     modifier = Modifier
@@ -141,7 +142,6 @@ fun TopBar(
                     }
                 }
             },
-            colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.White)
         )
     }
 }
@@ -253,6 +253,7 @@ fun BottomNavBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     profileId: String,
@@ -272,6 +273,13 @@ fun MainScreen(
     var operatorId by remember { mutableIntStateOf(0) }
     var passengerTripId by remember { mutableIntStateOf(0) }
 
+    val lazyListState = rememberLazyListState()
+    val shadow by remember {
+        derivedStateOf {
+            if (lazyListState.firstVisibleItemScrollOffset > 0) 2 else 0
+        }
+    }
+
     LaunchedEffect(currentBackStackEntry) {
         val currentRoute = currentBackStackEntry?.destination?.route
         selectedIndex = when (currentRoute) {
@@ -285,6 +293,17 @@ fun MainScreen(
     }
 
     Scaffold(
+        topBar = {
+            if (selectedIndex != 4)
+                TopBar(
+                    username = "Krish Chauhan",
+                    profileImageResId = R.drawable.boy,
+                    onSearchClick = { },
+                    onNotificationClick = { },
+                    onProfileClick = { profileDialog = true },
+                    shadow = shadow
+                )
+        },
         bottomBar = {
             Row(
                 modifier = Modifier
@@ -316,19 +335,13 @@ fun MainScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            if (selectedIndex != 4)
-                TopBar(
-                    username = "Krish Chauhan",
-                    profileImageResId = R.drawable.boy,
-                    onSearchClick = { },
-                    onNotificationClick = { },
-                    onProfileClick = { profileDialog = true },
-                )
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
                 LazyColumn(
+                    state = lazyListState,
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.White)
