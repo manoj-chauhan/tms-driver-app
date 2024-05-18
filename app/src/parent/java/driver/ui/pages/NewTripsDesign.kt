@@ -361,8 +361,8 @@ fun CurrentTrip(trip: ParentTrip, onTripSelected: () -> Unit) {
                 fontWeight = FontWeight.W500
             )
         )
-//        append(" ${trip.reaching}")
-        append(text=" D black, Swaroop Nagar Delhi, Delhi")
+        append(" ${trip.boardingPlaceName}")
+//        append(text=" D black, Swaroop Nagar Delhi, Delhi")
         pop()
 
     }.toAnnotatedString()
