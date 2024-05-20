@@ -1,5 +1,10 @@
 package driver.ui.pages
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,6 +52,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -61,9 +67,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.drishto.driver.R
-import driver.models.Notice_List
 import driver.models.PostsFeed
-
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 
 val provider = GoogleFont.Provider(
@@ -155,7 +160,8 @@ fun BottomNavBar(
     onEventsClick: () -> Unit,
     onHomeClick: () -> Unit,
     onNoticesClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    bottomBarVisible: Boolean
 ) {
     val bottomBar = listOf(
         NavigationItem(
@@ -199,8 +205,11 @@ fun BottomNavBar(
 
         )
 
+
     NavigationBar(
-        modifier = Modifier.height(60.dp).shadow(4.dp),
+        modifier = Modifier
+            .height(60.dp)
+            .shadow(4.dp),
         containerColor = Color.White,
     ) {
         bottomBar.forEachIndexed { index, bottomNavItem ->
@@ -279,6 +288,21 @@ fun MainScreen(
         }
     }
 
+    var bottomBarVisible by remember { mutableStateOf(true) }
+    var previousScrollOffset by remember { mutableStateOf(3) }
+
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.firstVisibleItemScrollOffset }
+            .distinctUntilChanged()
+            .collect { currentScrollOffset ->
+                if (currentScrollOffset > previousScrollOffset) {
+                    bottomBarVisible = false
+                } else if (currentScrollOffset < previousScrollOffset || currentScrollOffset == 3) {
+                    bottomBarVisible = true
+                }
+                previousScrollOffset = currentScrollOffset
+            }
+    }
     LaunchedEffect(currentBackStackEntry) {
         val currentRoute = currentBackStackEntry?.destination?.route
         selectedIndex = when (currentRoute) {
@@ -304,19 +328,29 @@ fun MainScreen(
                 )
         },
         bottomBar = {
-            Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically
+
+            AnimatedVisibility(
+                visible = bottomBarVisible,
+                enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
             ) {
-                BottomNavBar(
-                    selected = selectedIndex,
-                    onTabSelected = { selectedIndex = it },
-                    onTripsClick = onTripsClick,
-                    onEventsClick = onEventsClick,
-                    onHomeClick = onHomeClick,
-                    onNoticesClick = onNoticesClick,
-                    onSettingsClick = onSettingsClick
-                )
+                if (bottomBarVisible) {
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        BottomNavBar(
+                            selected = selectedIndex,
+                            onTabSelected = { selectedIndex = it },
+                            onTripsClick = onTripsClick,
+                            onEventsClick = onEventsClick,
+                            onHomeClick = onHomeClick,
+                            onNoticesClick = onNoticesClick,
+                            onSettingsClick = onSettingsClick,
+                            bottomBarVisible
+                        )
+                    }
+                }
             }
         },
         floatingActionButton = {
@@ -383,7 +417,9 @@ fun MainScreen(
 
                         3 -> {
                             item {
-                                NoticeListPage(navigation = navigationController, onReadClick = {}) {
+                                NoticeListPage(
+                                    navigation = navigationController,
+                                    onReadClick = {}) {
 
                                 }
                             }
