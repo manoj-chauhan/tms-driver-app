@@ -136,24 +136,16 @@ class PostActionNetRepository @Inject constructor(
     fun likePost(postId: String) {
         try {
             val url = context.resources.getString(R.string.url_likePost) + postId
-            var profileId = ""
-            getProfileId(context)?.let {
-                profileId = it
-            }
             getAccessToken(context)?.let {
-
-
                 val fuelManager = FuelManager()
                 val (_, response, result) = fuelManager.post(url)
                     .authentication().bearer(it)
-                    .header("Profile-Id",profileId)
                     .response()
 
                 Log.d("resp and res", "likePost: $response , $result")
 
 
                 if (response.statusCode == 200) {
-//                Toast.makeText(context, "Post Liked Successfully", Toast.LENGTH_SHORT).show()
                 } else {
                     val errorCode = response.statusCode
                     val errorResponse = response.data.toString(Charsets.UTF_8)
@@ -173,7 +165,6 @@ class PostActionNetRepository @Inject constructor(
                     ).show()
                 }
             }
-
         } catch (e: Exception) {
             Log.e("LikeNetRepository", "Error liking post", e)
             Toast.makeText(context, "An error occurred. Please try again.", Toast.LENGTH_SHORT)

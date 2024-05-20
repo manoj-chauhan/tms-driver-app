@@ -61,9 +61,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.drishto.driver.R
-import driver.models.Notice_List
+import driver.Destination
 import driver.models.PostsFeed
-
 
 
 val provider = GoogleFont.Provider(
@@ -353,13 +352,13 @@ fun MainScreen(
                                         selectedAssignmentCode = it.tripCode
                                         passengerTripId = it.passengerTripId
                                         operatorId = it.companyId
-                                        navigationController.navigate("current-assignment-detail/$selectedAssignmentCode/$passengerTripId/$operatorId")
+                                        navigationController.navigate(Destination.CurrentAssignmentDetail(selectedAssignmentCode, passengerTripId, operatorId))
                                     },
                                     onPastTripSelected = {
                                         selectedAssignmentCode = it.tripCode
                                         operatorId = 1
                                         passengerTripId = it.passengerTripId
-                                        navigationController.navigate("past-assignment-detail/$selectedAssignmentCode/$passengerTripId")
+                                        navigationController.navigate(Destination.PastAssignmentDetail(selectedAssignmentCode, passengerTripId))
                                     },
                                 )
                             }
@@ -368,7 +367,7 @@ fun MainScreen(
                         1 -> {
                             item {
                                 Eventpage(navigationController, onRegisterClick = {
-                                    navigationController.navigate("event-details/${it}")
+                                    navigationController.navigate(Destination.EventDetails(it))
                                 })
                             }
                         }
@@ -376,7 +375,7 @@ fun MainScreen(
                         2 -> {
                             item {
                                 PostsSection(profileId, navigationController, onCommentClick = {
-                                    navigationController.navigate("add_comment/${it.id}")
+                                    navigationController.navigate(Destination.AddComment(it.id))
                                 })
                             }
                         }
@@ -392,7 +391,7 @@ fun MainScreen(
                         4 -> {
                             item {
                                 SettingsPage {
-                                    navigationController.navigate("user_profile")
+                                    navigationController.navigate(Destination.UserProfile)
                                 }
                             }
                         }

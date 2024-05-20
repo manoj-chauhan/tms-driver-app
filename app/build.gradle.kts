@@ -1,11 +1,13 @@
 plugins {
     kotlin("kapt")
+    kotlin("plugin.serialization") version "1.9.23"
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("com.google.firebase.crashlytics")
+
 }
 
 android {
@@ -99,7 +101,7 @@ dependencies {
     val appCompatVersion = "1.6.1"
     val constraintLayoutVersion = "2.1.4"
     val activityVersion = "1.8.0"
-    val nav_version = "2.7.7"
+    val nav_version = "2.8.0-alpha08"
     val room_version = "2.6.0"
 
     implementation(firebaseBom)
@@ -136,6 +138,9 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-rxjava2")
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
     implementation ("io.coil-kt:coil-compose:2.2.0")
+
+    //navigation
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     androidTestImplementation(composeBom)
 
 

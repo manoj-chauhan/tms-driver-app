@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import driver.Destination
 import driver.ui.viewmodels.parentTripDetail
 import java.text.SimpleDateFormat
 
@@ -150,7 +151,7 @@ fun PastActivityContent(
                                 .align(Alignment.Bottom),
                             enabled = true,
                             onClick = {
-                                navController.navigate("map-screen/$passengerTripId/$tripCode")
+                                navController.navigate(Destination.MapScreen(passengerTripId, tripCode))
                             },
                             contentPadding = PaddingValues(),
                             colors = ButtonDefaults.buttonColors(

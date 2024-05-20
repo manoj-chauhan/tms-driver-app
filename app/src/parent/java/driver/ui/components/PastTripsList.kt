@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import driver.Destination
 import driver.models.ParentPastTrip
 import driver.ui.viewmodels.parentTripAssigned
 import java.text.SimpleDateFormat
@@ -129,7 +130,7 @@ fun pastTrips(
                                         ClickableText(
                                             text = text,
                                             onClick = { offset ->
-                                                navHostController.navigate("past-trips-list")
+                                                navHostController.navigate(Destination.PastTripsList)
                                             }
                                         )
                                     }

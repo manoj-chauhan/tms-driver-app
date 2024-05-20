@@ -1,5 +1,6 @@
 package driver.ui.pages
 
+//import driver.models.getDummyNotices
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -43,8 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import driver.models.Notice_List
-//import driver.models.getDummyNotices
+import driver.Destination
 import kotlinx.coroutines.launch
 
 enum class NoticeTabs(
@@ -104,7 +103,7 @@ fun SavedNoticesPage(navController: NavHostController) {
                         .height(25.dp),
                     enabled = true,
                     onClick = {
-                        navController.navigate("add-Notice-Form")
+                        navController.navigate(Destination.AddNoticeForm)
                     },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(

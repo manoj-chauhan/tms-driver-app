@@ -2,7 +2,6 @@ package driver.ui
 
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,27 +21,23 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.getAccessToken
-import com.drishto.driver.ui.pages.userProfileView
+import driver.Destination
 import driver.models.Event
 import driver.models.PostsFeed
 import driver.ui.components.AddNoticeEvent
 import driver.ui.components.CommentPost
 import driver.ui.components.EventDetail
 import driver.ui.components.addEventPage
-import driver.ui.components.pastTrips
 import driver.ui.pages.AccountsProfile
 import driver.ui.pages.AddInstitute
 import driver.ui.pages.AddProfileScreen
 import driver.ui.pages.GoogleMapView
-import driver.ui.pages.HomeScreen
-import driver.ui.pages.HomeScreenNavigation
 import driver.ui.pages.MainScreen
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PastTrip
 import driver.ui.pages.PostItem
 import driver.ui.pages.Profile
-import driver.ui.pages.SavedNoticesPage
 import driver.ui.pages.notificationScreen
 import driver.ui.pages.schoolProfile
 
@@ -53,7 +48,6 @@ import driver.ui.pages.schoolProfile
 fun AppNavigationHost(
     navController: NavHostController
 ) {
-
     val context = LocalContext.current
 
     var eventDetail by remember { mutableStateOf<Event?>(null) }
@@ -68,161 +62,103 @@ fun AppNavigationHost(
     var deBoardingPlaceId by remember { mutableStateOf("") }
 
 
-    var startScreen: String by remember {
+    var startScreen by remember {
         mutableStateOf(
-            if (getAccessToken(context) != null) "home" else "login"
+            if (getAccessToken(context) != null) Destination.HomeScreen else Destination.Login
         )
     }
 
-
-    if (startScreen == "login") {
+    if (startScreen == Destination.Login) {
         val myIntent = Intent(LocalContext.current, PhoneNumberActivity::class.java)
         myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         LocalContext.current.startActivity(myIntent)
     }
 
+
     NavHost(navController = navController, startDestination = startScreen) {
-        composable(
-            "current-assignment-detail/{selectedAssignmentCode}/{passengerTripId}/{operatorId}",
-            arguments = listOf(
-                navArgument("selectedAssignmentCode") {
-                    type = NavType.StringType
-                },
-                navArgument("passengerTripId") {
-                    type = NavType.IntType
-                },
-                navArgument("operatorId") {
-                    type = NavType.IntType
-                },
-            )
-        ) {
+        composable<Destination.CurrentAssignmentDetail> {
             selectedAssignmentCode = it.arguments?.getString("selectedAssignmentCode").toString()
             passengerTripId = it.arguments!!.getInt("passengerTripId")
             operatorId = it.arguments!!.getInt("operatorId")
-
             val activity = LocalContext.current as? ComponentActivity
-            if (selectedAssignmentCode != null) {
-                MapsActivityContent(
-                    navController,
-                    passengerTripId,
-                    selectedAssignmentCode,
-                    operatorId,
-                    activity = activity ?: return@composable
-                )
-            }
-        }
-        composable("past-assignment-detail/{selectedAssignmentCode}/{passengerTripId}",
-            arguments = listOf(
-                navArgument("selectedAssignmentCode") {
-                    type = NavType.StringType
-                },
-                navArgument("passengerTripId") {
-                    type = NavType.IntType
-                },
+
+            MapsActivityContent(
+                navController,
+                passengerTripId,
+                selectedAssignmentCode,
+                operatorId,
+                activity = activity ?: return@composable
             )
-        ) {
+
+        }
+        composable<Destination.PastAssignmentDetail> {
             selectedAssignmentCode = it.arguments!!.getString("selectedAssignmentCode").toString()
             passengerTripId = it.arguments!!.getInt("passengerTripId")
             val activity = LocalContext.current as? ComponentActivity
 
-            if (selectedAssignmentCode != null) {
-                PastActivityContent(
-                    navController,
-                    1,
-                    passengerTripId,
-                    selectedAssignmentCode,
-                    activity = activity ?: return@composable
-                )
-            }
-        }
-        composable("user-profile") {
-            userProfileView(navController)
-        }
-        composable("home") {
-            navController.navigate("profilesList")
+            PastActivityContent(
+                navController,
+                1,
+                passengerTripId,
+                selectedAssignmentCode,
+                activity = activity ?: return@composable
+            )
         }
 
-        composable("profilesList") {
+        composable<Destination.HomeScreen> {
+            navController.navigate(Destination.ProfilesList)
+        }
+
+        composable<Destination.ProfilesList> {
             AccountsProfile(navController, onProfileSelected = {
                 profileId = it
-                navController.navigate("newHomeScreen")
+                navController.navigate(Destination.NewHomeScreen)
             })
         }
 
-        composable("add-Profile"){
+        composable<Destination.AddProfile> {
             AddProfileScreen(navController)
         }
 
-        composable("add-Event-Form"){
+        composable("add-Event-Form") {
             addEventPage(profileId)
         }
 
-        composable("event-details/{eventId}", arguments = listOf(
-            navArgument("eventId") {
-                type = NavType.StringType
-            }
-        )) {
-
+        composable<Destination.EventDetails> {
             val eventId = it.arguments!!.getString("eventId")
             EventDetail(eventId, navController)
         }
 
-        composable("notice-details/{noticeId}",arguments = listOf(
-            navArgument("eventId"){
-                type = NavType.StringType
-            }
-        )) {
-
-//            val noticeId = it.arguments!!.getString("eventId")
-        }
-
-        composable("school-profile"){
+        composable<Destination.SchoolProfile> {
             schoolProfile()
         }
 
-        composable("notice_lists"){
-            SavedNoticesPage(
-            navController= navController)
-
-        }
-        composable("add-Notice-Form"){
+        composable<Destination.AddNoticeForm> {
             AddNoticeEvent()
         }
 
-        composable("post_page"){
-            PostItem(profileId,navController = navController)
+        composable("post_page") {
+            PostItem(profileId, navController = navController)
         }
-        
-        composable("user_profile"){
+
+        composable<Destination.UserProfile> {
             Profile(navController)
         }
 
-        composable("home-screen"){
-            HomeScreenNavigation(profileId,navController = navController) {
-                postDetails = it
-                navController.navigate("add_comment")
-                Log.d("TAG", "AppNavigationHost: $postDetails")
-            }
-        }
-
-        composable("add-Institute"){
+        composable("add-Institute") {
             AddInstitute(navController)
         }
 
-        composable("add_comment/{postId}", arguments = listOf(
-            navArgument("postId"){
-                type = NavType.StringType
-            }
-        )) {
+        composable<Destination.AddComment> {
             val postId = it.arguments!!.getString("postId")
             CommentPost(navController, postId)
         }
 
-        composable("login") {
+        composable<Destination.Login> {
 
         }
 
-        composable("newHomeScreen"){
+        composable<Destination.NewHomeScreen> {
             MainScreen(
                 profileId,
                 navController,
@@ -234,42 +170,29 @@ fun AppNavigationHost(
             }
         }
 
-        composable(
-            "map-screen/{passengerTripId}/{tripCode}",
-            arguments = listOf(
-                navArgument("passengerTripId") {
-                    type = NavType.IntType
-                },
-                navArgument("tripCode") {
-                    type = NavType.StringType
-                },
-            )
-        ) {
+        composable<Destination.MapScreen> {
             selectedAssignmentCode = it.arguments?.getString("tripCode").toString()
             passengerTripId = it.arguments!!.getInt("passengerTripId")
             val activity = LocalContext.current as? ComponentActivity
-            if (selectedAssignmentCode != null) {
-                GoogleMapView(
-                    modifier = Modifier.fillMaxWidth(),
-                    passengerTripId = passengerTripId,
-                    tripCode = selectedAssignmentCode,
-                    navController,
-                    onMapLoaded = {},
-                    activity = activity ?: return@composable
-                )
-            }
+            GoogleMapView(
+                modifier = Modifier.fillMaxWidth(),
+                passengerTripId = passengerTripId,
+                tripCode = selectedAssignmentCode,
+                navController,
+                onMapLoaded = {},
+                activity = activity ?: return@composable
+            )
         }
 
-        composable("past-trips-list") {
+        composable<Destination.PastTripsList> {
             PastTrip(onPastTripSelected = {
                 selectedAssignmentCode = it.tripCode
                 passengerTripId = it.passengerTripId
                 operatorId = 1
                 deBoardingPlaceId = "MPS"
                 boardingPlaceId = "WYC"
-                navController.navigate("past-assignment-detail/${it.tripCode}/${it.passengerTripId}")
+                navController.navigate(Destination.PastAssignmentDetail(selectedAssignmentCode, passengerTripId))
             }, "app", navController)
-
         }
 
         composable(

@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import driver.Destination
 import driver.buttonColor
 import driver.headingColor
 import driver.models.Event
@@ -151,7 +152,7 @@ fun EventCard(event: Event, onRegisterClick: (event: String) -> Unit, navigation
                         Spacer(modifier = Modifier.height(3.dp))
                         Text(
                             text = event.instituteName,
-                            modifier = Modifier.clickable {navigation.navigate("school-profile")} ,
+                            modifier = Modifier.clickable {navigation.navigate(Destination.SchoolProfile)} ,
 
                             style = TextStyle(
                                 fontSize = 14.sp,

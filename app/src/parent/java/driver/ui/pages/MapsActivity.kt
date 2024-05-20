@@ -72,6 +72,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
+import driver.Destination
 import driver.ui.viewmodels.parentTripDetail
 import java.text.SimpleDateFormat
 import kotlin.math.abs
@@ -189,7 +190,7 @@ fun MapsActivityContent(
                                     .align(Alignment.Bottom),
                                 enabled = true,
                                 onClick = {
-                                    navController.navigate("map-screen/$passengerTripId/$tripCode")
+                                    navController.navigate(Destination.MapScreen(passengerTripId, tripCode))
                                 },
                                 contentPadding = PaddingValues(),
                                 colors = ButtonDefaults.buttonColors(

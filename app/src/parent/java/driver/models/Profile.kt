@@ -11,5 +11,8 @@ data class AccountProfile (
      val anchor :  String,
      val address : String?,
      val createdAt : String?,
-     val acl : List<String>?
+     val acl : List<String>?,
+     val sentRequests: Int?,
+     val pendingRequests:Int?,
+     val connections:Int?
 )

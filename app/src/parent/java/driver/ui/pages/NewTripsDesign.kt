@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import driver.Destination
 import driver.arrivalTripColor
 import driver.cardColor
 import driver.headingColor
@@ -178,7 +179,7 @@ fun PastTrip(onPastTripSelected: (assignment: ParentPastTrip) -> Unit, screen: S
                                             ClickableText(
                                                 text = text,
                                                 onClick = { offset -> 
-                                                    navigationController.navigate("past-trips-list")
+                                                    navigationController.navigate(Destination.PastTripsList)
                                                 }
                                             )
                                         }
