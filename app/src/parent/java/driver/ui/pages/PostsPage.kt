@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.VideoView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -61,6 +62,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import driver.models.PostUpload
+import driver.primary
+import driver.secondary
+import driver.ui.viewmodels.AccountsProfileViewModel
 import driver.ui.viewmodels.PostsViewModel
 import java.io.ByteArrayOutputStream
 
@@ -68,8 +72,6 @@ import java.io.ByteArrayOutputStream
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostItem(profileId: String, navController: NavHostController) {
-    val primary = Color(0xFF92A3FD)
-    val secondary = Color(0XFF9DCEFF)
 
     var text by remember {
         mutableStateOf("")

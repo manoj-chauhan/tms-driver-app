@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.DirectionsBus
 import androidx.compose.material.icons.outlined.Event
@@ -199,7 +200,9 @@ fun BottomNavBar(
         )
 
     NavigationBar(
-        modifier = Modifier.height(60.dp).shadow(4.dp),
+        modifier = Modifier
+            .height(60.dp)
+            .shadow(4.dp),
         containerColor = Color.White,
     ) {
         bottomBar.forEachIndexed { index, bottomNavItem ->
@@ -320,8 +323,14 @@ fun MainScreen(
         },
         floatingActionButton = {
             if (selectedIndex != 0 && selectedIndex != 4) {
-                FloatingActionButton(onClick = { }) {
-                    Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
+                if(selectedIndex == 2){
+                    FloatingActionButton(onClick = { navigationController.navigate(Destination.PostPage) }) {
+                        Icon(Icons.Outlined.Add, contentDescription = "Add")
+                    }
+                }else {
+                    FloatingActionButton(onClick = { }) {
+                        Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
+                    }
                 }
             }
         },

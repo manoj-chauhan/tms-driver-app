@@ -137,7 +137,7 @@ fun AppNavigationHost(
             AddNoticeEvent()
         }
 
-        composable("post_page") {
+        composable<Destination.PostPage> {
             PostItem(profileId, navController = navController)
         }
 
