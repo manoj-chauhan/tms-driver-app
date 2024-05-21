@@ -172,6 +172,7 @@ fun ContentPage(
     post: PostsFeed,
     navigationController: NavHostController,
     onCommentClick: (postData: PostsFeed) -> Unit
+
 ) {
     val postActionViewModel: PostActionsViewModel = hiltViewModel()
     var likesCount by remember { mutableStateOf(post.likes ?: 0) }

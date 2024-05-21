@@ -48,6 +48,8 @@ sealed class Destination {
     @Serializable
     object AddNoticeForm : Destination()
 
+
+
     @Serializable
     object PostPage : Destination()
 
@@ -68,9 +70,25 @@ sealed class Destination {
 
     @Serializable
     data class AddComment(
-        val postId:String
-    ): Destination()
+        val postId: String
+    ) : Destination()
 
     @Serializable
     data class Notification(val userId: Int) : Destination()
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+

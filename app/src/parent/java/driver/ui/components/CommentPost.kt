@@ -161,7 +161,7 @@ fun CommentPost(navController: NavHostController, postId: String?) {
                             Spacer(modifier = Modifier.height(12.dp))
                             Column(modifier = Modifier) {
                                 if(postsFeed!=null) {
-                                    PostContent(postsFeed, postComments)
+                                    PostContent(postsFeed, postComments, navController)
                                 }
                             }
                         }
@@ -273,13 +273,28 @@ fun CommentPost(navController: NavHostController, postId: String?) {
 }
 
 @Composable
-fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
+fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?,
+                navController: NavHostController) {
     val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
 
     val postActionViewModel: PostActionsViewModel = hiltViewModel()
     Log.d("Post FEded", "PostContent: $postsFeed")
     var likesCount by remember { mutableIntStateOf(postsFeed?.likes ?: 0) }
     var isLiked by remember { mutableStateOf(postsFeed?.likedStatus) }
+
+    var showDialog = remember { mutableStateOf(false) }
+
+    val mediaUrls = postsFeed?.media?.map { it.mediaUrl } ?: emptyList()
+
+
+    if (showDialog.value) {
+        MediaViewerDialog(
+            shouldDisplay = true,
+            postId = postsFeed?.id,
+            mediaUrls = mediaUrls,
+            setShowDialog = { showDialog.value = it }
+        )
+    }
 
 
     Box(
@@ -320,6 +335,10 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
                                     .width(200.dp)
                                     .height(200.dp)
                                     .clip(CircleShape)
+                                    .clickable {
+
+                                        navController.navigate("mediaViewerDialog/${postsFeed?.id}")
+                                    }
                                     .border(
                                         width = 0.dp, Color.White, shape = CircleShape
                                     ),
@@ -370,6 +389,8 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
                     }
                     Row(
                         modifier = Modifier
+                            .clickable { showDialog.value=true }
+
                     ) {
                         if (images != null) {
                             ImageScrollWithTextOverlay(images = images)
