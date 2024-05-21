@@ -117,7 +117,7 @@ fun AppNavigationHost(
         }
 
         composable<Destination.AddProfile> {
-            AddProfileScreen(navController)
+            AddProfileScreen()
         }
 
         composable("add-Event-Form") {

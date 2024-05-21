@@ -39,23 +39,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.R
 import com.drishto.driver.network.clearSession
+import driver.Destination
 import driver.headingColor
 import driver.models.AccountProfile
 import driver.profileLightGray
 import driver.ui.viewmodels.AccountsProfileViewModel
 
 @Composable
-fun SettingsPage(onProfileSelected: () -> Unit) {
+fun SettingsPage(onProfileSelected: () -> Unit, navHostController: NavHostController) {
     val ap: AccountsProfileViewModel = hiltViewModel()
     ap.getProfileList()
     val profilesList by ap.profileList.collectAsStateWithLifecycle()
 
     Column(modifier = Modifier.padding(16.dp)) {
         if(profilesList!= null) {
-            UserProfilePage(
+            UserProfilePage(navHostController,
                 profilesList = profilesList ?: listOf(), onProfileSelected
             )
         }
@@ -63,7 +65,11 @@ fun SettingsPage(onProfileSelected: () -> Unit) {
 }
 
 @Composable
-fun UserProfilePage(profilesList: List<AccountProfile>, onProfileSelected: () -> Unit) {
+fun UserProfilePage(
+    navHostController: NavHostController,
+    profilesList: List<AccountProfile>,
+    onProfileSelected: () -> Unit
+) {
     val context = LocalContext.current
     var selectedProfileId by remember { mutableStateOf<String?>(null) }
     val fontFamily = FontFamily.SansSerif
@@ -166,7 +172,8 @@ fun UserProfilePage(profilesList: List<AccountProfile>, onProfileSelected: () ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(40.dp),
+                            .height(40.dp)
+                            .clickable { navHostController.navigate(Destination.AddProfile) },
 
 
                         verticalAlignment = Alignment.CenterVertically

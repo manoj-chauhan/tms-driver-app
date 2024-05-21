@@ -399,9 +399,9 @@ fun MainScreen(
 
                         4 -> {
                             item {
-                                SettingsPage {
+                                SettingsPage( onProfileSelected = {
                                     navigationController.navigate(Destination.UserProfile)
-                                }
+                                }, navigationController)
                             }
                         }
                     }
