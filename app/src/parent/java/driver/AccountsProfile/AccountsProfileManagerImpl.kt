@@ -15,6 +15,7 @@ class AccountsProfileManagerImpl @Inject constructor(
         name: String,
         role: String,
         anchor: String,
+        mediaId:String,
         standard: String,
         section: String,
         session: String,
@@ -23,7 +24,7 @@ class AccountsProfileManagerImpl @Inject constructor(
         childClass:String,
         schoolName: String
     ) {
-        return accountNetRepository.addProfile(role, name, anchor, standard, section, session, instituteId, description,childClass, schoolName)
+        return accountNetRepository.addProfile(role, name, anchor, mediaId,standard, section, session, instituteId, description,childClass, schoolName)
     }
 
 

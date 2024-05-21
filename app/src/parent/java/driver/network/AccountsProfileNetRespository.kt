@@ -79,7 +79,7 @@ class AccountsProfileNetRespository @Inject constructor(
 
     fun addProfile(
         type:String,
-        name: String, anchor: String, standard: String,
+        name: String, anchor: String, mediaId:String,standard: String,
         section: String,
         session: String,
         instituteId: String,
@@ -91,14 +91,14 @@ class AccountsProfileNetRespository @Inject constructor(
         try {
             val profile = when (type) {
                 "Student" -> {
-                    UserProfile(name, type, anchor,studentDetails = StudentDetails(childClass, section, session, "123445662342"))
+                    UserProfile(name, type, anchor,mediaId,studentDetails = StudentDetails(childClass, section, session, "123445662342"))
                 }
                 "Teacher" -> {
                     val institute = InstituteInfo("instituteId",session)
-                    UserProfile(name, type, anchor, parentDetails =  TeacherDetails(description, institute))
+                    UserProfile(name, type, anchor,mediaId, parentDetails =  TeacherDetails(description, institute))
                 }
                 "School" -> {
-                    UserProfile(name, type, anchor, schoolDetails = SchoolDetails(schoolName))
+                    UserProfile(name, type, anchor,mediaId, schoolDetails = SchoolDetails(schoolName))
                 }
                 else -> null
             }

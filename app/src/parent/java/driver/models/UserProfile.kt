@@ -7,6 +7,7 @@ data class UserProfile(
     val name: String,
     val type: String,
     val anchor: String,
+    val displayPicture: String,
     val studentDetails: StudentDetails? = null,
     val parentDetails: TeacherDetails?= null,
     val schoolDetails: SchoolDetails? = null

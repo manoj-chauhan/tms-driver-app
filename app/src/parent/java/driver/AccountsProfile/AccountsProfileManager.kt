@@ -10,6 +10,7 @@ interface AccountsProfileManager {
         name: String,
         role: String,
         anchor: String,
+        mediaId:String,
         standard: String,
         section: String,
         session: String,
