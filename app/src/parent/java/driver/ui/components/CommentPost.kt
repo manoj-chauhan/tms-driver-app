@@ -286,17 +286,6 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?,
 
     val mediaUrls = postsFeed?.media?.map { it.mediaUrl } ?: emptyList()
 
-
-    if (showDialog.value) {
-        MediaViewerDialog(
-            shouldDisplay = true,
-            postId = postsFeed?.id,
-            mediaUrls = mediaUrls,
-            setShowDialog = { showDialog.value = it }
-        )
-    }
-
-
     Box(
         modifier = Modifier.fillMaxSize(1f)
     ) {
@@ -511,6 +500,16 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?,
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+
+        if (showDialog.value) {
+            if (postsFeed != null) {
+                MediaViewerDialog(
+                    post = postsFeed,
+                    images = mediaUrls,
+                    setShowDialog = { showDialog.value = it }
+                )
+            }
+        }
     }
 }
 

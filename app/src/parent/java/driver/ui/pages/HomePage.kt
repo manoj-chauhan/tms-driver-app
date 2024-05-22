@@ -1,7 +1,6 @@
 package driver.ui.pages
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.updateTransition
@@ -62,6 +61,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -126,12 +126,22 @@ fun PostsSection(
 ) {
     val pf: PostsViewModel = hiltViewModel()
     val postsList by pf.postFeedsDetails.collectAsStateWithLifecycle()
-    pf.getPosts(profileId)
-
-    Log.d("TAG", "PostsSection: $postsList")
-    Column(modifier = Modifier.padding(10.dp)) {
-        postsList?.take(postsList!!.size)?.forEach { post ->
-            ContentPage(post, navigationController, onCommentClick)
+    LaunchedEffect(Unit){
+        pf.getPosts(profileId)
+    }
+    if(postsList == null){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LoadingDialog()
+        }
+    }else {
+        Column(modifier = Modifier.padding(10.dp)) {
+            postsList?.take(postsList!!.size)?.forEach { post ->
+                ContentPage(post, navigationController, onCommentClick)
+            }
         }
     }
 }
