@@ -76,7 +76,7 @@ class PostNetRepository @Inject constructor(
             val jsonAdapter: JsonAdapter<UploadPosts> = moshi.adapter(UploadPosts::class.java)
 
             getAccessToken(context)?.let {
-                val postUploadRequest = UploadPosts(it, media, message)
+                val postUploadRequest = UploadPosts(profileId, media, message,"School")
                 val requestBody = jsonAdapter.toJson(postUploadRequest)
 
 
@@ -86,7 +86,6 @@ class PostNetRepository @Inject constructor(
 
                 val (request1, response, result) = url.httpPost()
                     .authentication().bearer(it)
-                    .header("Profile-Id", profileId)
                     .jsonBody(requestBody)
                     .response()
 

@@ -138,7 +138,7 @@ fun AppNavigationHost(
         }
 
         composable<Destination.PostPage> {
-            AddPost(profileId, navController = navController)
+            AddPost(navController = navController)
         }
 
         composable<Destination.UserProfile> {

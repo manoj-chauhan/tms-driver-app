@@ -74,7 +74,7 @@ import java.io.ByteArrayOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddPost(profileId: String, navController: NavHostController) {
+fun AddPost(navController: NavHostController) {
 
     var text by remember {
         mutableStateOf("")
@@ -166,15 +166,11 @@ fun AddPost(profileId: String, navController: NavHostController) {
                     modifier = Modifier
                         .padding(8.dp),
                     onClick = {
-                        postUploadViewModel.addPost(mediaPosts.toList(), text, profileId)
+                        postUploadViewModel.addPost(mediaPosts.toList(), text, profileSelected)
                         navController.popBackStack()
                     },
                     contentPadding = PaddingValues(),
-                    enabled = if (!(selectedImageUri.isEmpty()) || text != "") {
-                        true
-                    } else {
-                        false
-                    },
+                    enabled = selectedImageUri.isNotEmpty() || text != "",
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
                 ) {
                     Box(
