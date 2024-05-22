@@ -323,11 +323,11 @@ fun MainScreen(
         },
         floatingActionButton = {
             if (selectedIndex != 0 && selectedIndex != 4) {
-                if(selectedIndex == 2){
+                if (selectedIndex == 2) {
                     FloatingActionButton(onClick = { navigationController.navigate(Destination.PostPage) }) {
                         Icon(Icons.Outlined.Add, contentDescription = "Add")
                     }
-                }else {
+                } else {
                     FloatingActionButton(onClick = { }) {
                         Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
                     }
@@ -361,13 +361,24 @@ fun MainScreen(
                                         selectedAssignmentCode = it.tripCode
                                         passengerTripId = it.passengerTripId
                                         operatorId = it.companyId
-                                        navigationController.navigate(Destination.CurrentAssignmentDetail(selectedAssignmentCode, passengerTripId, operatorId))
+                                        navigationController.navigate(
+                                            Destination.CurrentAssignmentDetail(
+                                                selectedAssignmentCode,
+                                                passengerTripId,
+                                                operatorId
+                                            )
+                                        )
                                     },
                                     onPastTripSelected = {
                                         selectedAssignmentCode = it.tripCode
                                         operatorId = 1
                                         passengerTripId = it.passengerTripId
-                                        navigationController.navigate(Destination.PastAssignmentDetail(selectedAssignmentCode, passengerTripId))
+                                        navigationController.navigate(
+                                            Destination.PastAssignmentDetail(
+                                                selectedAssignmentCode,
+                                                passengerTripId
+                                            )
+                                        )
                                     },
                                 )
                             }
@@ -383,15 +394,17 @@ fun MainScreen(
 
                         2 -> {
                             item {
-                                PostsSection(profileId, navigationController, onCommentClick = {
+                                PostsSection(navigationController) {
                                     navigationController.navigate(Destination.AddComment(it.id))
-                                })
+                                }
                             }
                         }
 
                         3 -> {
                             item {
-                                NoticeListPage(navigation = navigationController, onReadClick = {}) {
+                                NoticeListPage(
+                                    navigation = navigationController,
+                                    onReadClick = {}) {
 
                                 }
                             }
@@ -399,7 +412,7 @@ fun MainScreen(
 
                         4 -> {
                             item {
-                                SettingsPage( onProfileSelected = {
+                                SettingsPage(onProfileSelected = {
                                     navigationController.navigate(Destination.UserProfile)
                                 }, navigationController)
                             }

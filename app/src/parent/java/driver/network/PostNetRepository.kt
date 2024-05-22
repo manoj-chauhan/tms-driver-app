@@ -29,8 +29,8 @@ class PostNetRepository @Inject constructor(
 ) {
     fun getMediaID(image: ByteArray, mimeType: String): String {
         val url = context.resources.getString(R.string.url_get_mediaId)
-         return try {
-             getAccessToken(context)?.let {
+        return try {
+            getAccessToken(context)?.let {
 
                 val fuelManager = FuelManager()
                 val (_, response, result) = fuelManager.post(url)
@@ -64,7 +64,7 @@ class PostNetRepository @Inject constructor(
                     }
                 )
                 result.get()
-             }?: throw Exception("Access token is null")
+            } ?: throw Exception("Access token is null")
         } catch (e: Exception) {
             "Error Handling Post"
         }
@@ -76,7 +76,7 @@ class PostNetRepository @Inject constructor(
             val jsonAdapter: JsonAdapter<UploadPosts> = moshi.adapter(UploadPosts::class.java)
 
             getAccessToken(context)?.let {
-                val postUploadRequest = UploadPosts(profileId, media, message,"School")
+                val postUploadRequest = UploadPosts(profileId, media, message, "School")
                 val requestBody = jsonAdapter.toJson(postUploadRequest)
 
 
@@ -124,45 +124,44 @@ class PostNetRepository @Inject constructor(
         }
     }
 
-    fun getAllFeeds(context: Context, profileId: String): List<PostsFeed>? {
+    fun getAllFeeds(context: Context): List<PostsFeed>? {
         val postsFeeds = Types.newParameterizedType(List::class.java, PostsFeed::class.java)
         val adapter: JsonAdapter<List<PostsFeed>> = Moshi.Builder().build().adapter(postsFeeds)
 
         val postUrl = context.resources.getString(R.string.url_get_all_posts)
         return try {
             getAccessToken(context)?.let {
-            val (_, _, result) = postUrl.httpGet()
-                .authentication().bearer(it)
-                .responseObject(moshiDeserializerOf(adapter))
+                val (request, response, result) = postUrl.httpGet()
+                    .authentication().bearer(it)
+                    .responseObject(moshiDeserializerOf(adapter))
 
-            result.fold(
-                {
-                },
-                { error ->
-                    EventBus.getDefault().post("AUTH_FAILED")
-                    if (error.response.statusCode == 401) {
-                        errorManager.getErrorDescription(context)
-                    }
+                if (response.statusCode == 200) {
+                } else {
+                    result.fold(
+                        {
+                        },
+                        { error ->
+                            if (error.response.statusCode == 401) {
+                                errorManager.getErrorDescription(context)
+                            }
 
-                    val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
 
-                    if (error.response.statusCode == 403) {
-                        errorManager.getErrorDescription403(context, errorResponse)
-                    }
+                            if (error.response.statusCode == 403) {
+                                errorManager.getErrorDescription403(context, errorResponse)
+                            }
 
-                    if (error.response.statusCode == 404) {
-                        errorManager.getErrorDescription404(context, "No url found")
-                    }
+                            if (error.response.statusCode == 404) {
+                                errorManager.getErrorDescription404(context, "No url found")
+                            }
 
-                    if (error.response.statusCode == 500) {
-                        errorManager.getErrorDescription500(context, "Something Went Wrong")
-                    }
+                            if (error.response.statusCode == 500) {
+                                errorManager.getErrorDescription500(context, "Something Went Wrong")
+                            }
+                        }
+                    )
                 }
-            )
-
-            result.get()
-
-
+                result.get()
             }
 
         } catch (e: Exception) {
@@ -170,9 +169,10 @@ class PostNetRepository @Inject constructor(
         }
 
     }
+
     fun getPostDetail(context: Context, postId: String): PostsFeed? {
 
-        val postUrl = context.resources.getString(R.string.url_get_post_detail)+postId
+        val postUrl = context.resources.getString(R.string.url_get_post_detail) + postId
         return try {
             getAccessToken(context)?.let {
                 val (_, _, result) = postUrl.httpGet()
@@ -217,10 +217,11 @@ class PostNetRepository @Inject constructor(
         val commentsPost = Types.newParameterizedType(List::class.java, CommentPost::class.java)
         val adapter: JsonAdapter<List<CommentPost>> = Moshi.Builder().build().adapter(commentsPost)
 
-        val commentUrl = context.resources.getString(R.string.url_get_comments_posts)+postId+"/comments"
+        val commentUrl =
+            context.resources.getString(R.string.url_get_comments_posts) + postId + "/comments"
         var profile = ""
         getProfileId(context)?.let {
-            profile =  it
+            profile = it
         }
 
         return try {
