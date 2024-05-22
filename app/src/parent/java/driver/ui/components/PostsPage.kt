@@ -1,4 +1,4 @@
-package driver.ui.pages
+package driver.ui.components
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -35,6 +35,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
@@ -50,8 +51,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -71,7 +74,7 @@ import java.io.ByteArrayOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PostItem(profileId: String, navController: NavHostController) {
+fun AddPost(profileId: String, navController: NavHostController) {
 
     var text by remember {
         mutableStateOf("")
@@ -79,6 +82,18 @@ fun PostItem(profileId: String, navController: NavHostController) {
 
     var selectedImageUri by remember {
         mutableStateOf<List<Uri?>>(emptyList())
+    }
+
+    val ap: AccountsProfileViewModel = hiltViewModel()
+    val profilesList by ap.profileList.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        ap.getProfileList()
+    }
+
+    Log.d("Pfrofile", "AddPost: $profilesList")
+
+    var profileSelected by remember {
+        mutableStateOf("")
     }
 
     val context = LocalContext.current
@@ -151,10 +166,15 @@ fun PostItem(profileId: String, navController: NavHostController) {
                     modifier = Modifier
                         .padding(8.dp),
                     onClick = {
-                        postUploadViewModel.addPost(mediaPosts.toList(), text,profileId)
+                        postUploadViewModel.addPost(mediaPosts.toList(), text, profileId)
                         navController.popBackStack()
                     },
                     contentPadding = PaddingValues(),
+                    enabled = if (!(selectedImageUri.isEmpty()) || text != "") {
+                        true
+                    } else {
+                        false
+                    },
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
                 ) {
                     Box(
@@ -184,6 +204,36 @@ fun PostItem(profileId: String, navController: NavHostController) {
 
                 val colors = TextFieldDefaults.textFieldColors()
                 val interactionSource = remember { MutableInteractionSource() }
+                val size = profilesList?.size
+
+                if (size != null) {
+                    if (size > 1) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "Select Profile",
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.W600
+                                )
+                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                profilesList?.forEach { profile ->
+                                    RadioButton(
+                                        selected = profileSelected == profile.id,
+                                        onClick = { profileSelected = profile.id })
+                                    Text(text = profile.name)
+                                }
+                            }
+                        }
+                    } else {
+                        profileSelected = profilesList!![0].id
+                    }
+                }
+
 
                 BasicTextField(value = text,
                     onValueChange = { text = it },
@@ -248,57 +298,14 @@ fun PostItem(profileId: String, navController: NavHostController) {
                     }
                 }
 
-                val columns = 2
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(columns),
-                    verticalArrangement = Arrangement.spacedBy(3.dp),
-                    horizontalArrangement = Arrangement.spacedBy(3.dp),
-                    modifier = Modifier.aspectRatio(1f)
-                ) {
-                    val imageCount = selectedImageUri.size
-
-                    items(imageCount, key = { it }) { index ->
-                        val uri = selectedImageUri[index]
-                        if (uri != null) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1f)
-                            ) {
-                                if (uri.isImage() && index < 4) {
-                                    AsyncImage(
-                                        model = uri,
-                                        contentDescription = "Selected Image",
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                } else if (uri.isVideo()) {
-                                    VideoPlayer(uri = uri)
-                                }
-                            }
-                        }
-                        if (index == 3) {
-                            val value= imageCount - (index + 1)
-                            if(value>0) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .zIndex(1f)
-                                        .aspectRatio(1f)
-                                        .background(Color.Black.copy(alpha = 0.4f)),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = "+${imageCount - (index + 1)}",
-                                        color = Color.White,
-                                        fontSize = 18.sp,
-                                        modifier = Modifier
-                                    )
-                                }
-                            }
-                        }
-                    }
+                val imageCount = selectedImageUri.size
+                val columns = when (imageCount) {
+                    1 -> 1
+                    2 -> 2
+                    3 -> 2
+                    else -> 2
                 }
+                mediaShow(imageCount, columns, selectedImageUri)
             }
 
             if (selectedImageUri.isEmpty()) {
@@ -317,6 +324,61 @@ fun PostItem(profileId: String, navController: NavHostController) {
                             modifier = Modifier,
                             imageVector = Icons.Filled.Photo,
                             contentDescription = null
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun mediaShow(imageCount: Int, columns: Int, selectedImageUri: List<Uri?>) {
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(columns),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        items(imageCount, key = { it }) { index ->
+            val uri = selectedImageUri[index]
+            if (uri != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                ) {
+                    if (uri.isImage() && index < 4) {
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = "Selected Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .aspectRatio(1f)
+                        )
+                    } else if (uri.isVideo()) {
+                        VideoPlayer(uri = uri)
+                    }
+                }
+            }
+            if (index == 3) {
+                val value = imageCount - (index + 1)
+                if (value > 0) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .zIndex(1f)
+                            .aspectRatio(1f)
+                            .background(Color.Black.copy(alpha = 0.4f)),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "+${imageCount - (index + 1)}",
+                            color = Color.White,
+                            fontSize = 18.sp,
+                            modifier = Modifier
                         )
                     }
                 }

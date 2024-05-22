@@ -25,6 +25,7 @@ import driver.Destination
 import driver.models.Event
 import driver.models.PostsFeed
 import driver.ui.components.AddNoticeEvent
+import driver.ui.components.AddPost
 import driver.ui.components.CommentPost
 import driver.ui.components.EventDetail
 import driver.ui.components.addEventPage
@@ -36,7 +37,6 @@ import driver.ui.pages.MainScreen
 import driver.ui.pages.MapsActivityContent
 import driver.ui.pages.PastActivityContent
 import driver.ui.pages.PastTrip
-import driver.ui.pages.PostItem
 import driver.ui.pages.Profile
 import driver.ui.pages.notificationScreen
 import driver.ui.pages.schoolProfile
@@ -138,7 +138,7 @@ fun AppNavigationHost(
         }
 
         composable<Destination.PostPage> {
-            PostItem(profileId, navController = navController)
+            AddPost(profileId, navController = navController)
         }
 
         composable<Destination.UserProfile> {

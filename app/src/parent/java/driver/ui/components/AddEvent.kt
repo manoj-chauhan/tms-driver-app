@@ -61,7 +61,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import driver.models.ImagesInfo
-import driver.ui.pages.getByteArrayFromUri
 import driver.ui.pages.searchPlaces
 import driver.ui.viewmodels.EventsViewModel
 import driver.ui.viewmodels.PostsViewModel
