@@ -161,7 +161,7 @@ fun CommentPost(navController: NavHostController, postId: String?) {
                             Spacer(modifier = Modifier.height(12.dp))
                             Column(modifier = Modifier) {
                                 if(postsFeed!=null) {
-                                    PostContent(postsFeed, postComments)
+                                    PostContent(postsFeed, postComments, navController)
                                 }
                             }
                         }
@@ -273,7 +273,8 @@ fun CommentPost(navController: NavHostController, postId: String?) {
 }
 
 @Composable
-fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
+fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?,
+                navController: NavHostController) {
     val colortext= Color(android.graphics.Color.parseColor("#1c1b1f"))
 
     val postActionViewModel: PostActionsViewModel = hiltViewModel()
@@ -281,6 +282,9 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
     var likesCount by remember { mutableIntStateOf(postsFeed?.likes ?: 0) }
     var isLiked by remember { mutableStateOf(postsFeed?.likedStatus) }
 
+    var showDialog = remember { mutableStateOf(false) }
+
+    val mediaUrls = postsFeed?.media?.map { it.mediaUrl } ?: emptyList()
 
     Box(
         modifier = Modifier.fillMaxSize(1f)
@@ -320,6 +324,10 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
                                     .width(200.dp)
                                     .height(200.dp)
                                     .clip(CircleShape)
+                                    .clickable {
+
+                                        navController.navigate("mediaViewerDialog/${postsFeed?.id}")
+                                    }
                                     .border(
                                         width = 0.dp, Color.White, shape = CircleShape
                                     ),
@@ -370,6 +378,8 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
                     }
                     Row(
                         modifier = Modifier
+                            .clickable { showDialog.value=true }
+
                     ) {
                         if (images != null) {
                             ImageScrollWithTextOverlay(images = images)
@@ -490,6 +500,16 @@ fun PostContent(postsFeed: PostsFeed?, postComments: List<CommentPost>?) {
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+
+        if (showDialog.value) {
+            if (postsFeed != null) {
+                MediaViewerDialog(
+                    post = postsFeed,
+                    images = mediaUrls,
+                    setShowDialog = { showDialog.value = it }
+                )
+            }
+        }
     }
 }
 
