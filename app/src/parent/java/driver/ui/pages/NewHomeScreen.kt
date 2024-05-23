@@ -257,7 +257,6 @@ fun BottomNavBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    profileId: String,
     navigationController: NavHostController,
     onCommentClick: (postData: PostsFeed) -> Unit,
     onTripsClick: () -> Unit,
@@ -266,7 +265,8 @@ fun MainScreen(
     onNoticesClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    var selectedIndex by rememberSaveable { mutableStateOf(2) }
+
+    var selectedIndex by rememberSaveable { mutableIntStateOf(2) }
     var profileDialog by rememberSaveable { mutableStateOf(false) }
     val currentBackStackEntry by navigationController.currentBackStackEntryAsState()
 
@@ -301,7 +301,7 @@ fun MainScreen(
                     profileImageResId = R.drawable.boy,
                     onSearchClick = { },
                     onNotificationClick = { },
-                    onProfileClick = { profileDialog = true },
+                    onProfileClick = { profileDialog },
                     shadow = shadow
                 )
         },
@@ -341,7 +341,6 @@ fun MainScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -394,9 +393,9 @@ fun MainScreen(
 
                         2 -> {
                             item {
-                                PostsSection(navigationController) {
+                                PostsSection(navigationController, onCommentClick = {
                                     navigationController.navigate(Destination.AddComment(it.id))
-                                }
+                                })
                             }
                         }
 
@@ -423,6 +422,4 @@ fun MainScreen(
 
         }
     }
-
-
 }

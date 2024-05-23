@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-sealed class Destination {
+sealed class Destination{
     @Serializable
     data class CurrentAssignmentDetail(
         val selectedAssignmentCode: String,
@@ -31,7 +31,7 @@ sealed class Destination {
     object ProfilesList : Destination()
 
     @Serializable
-    object AddProfile : Destination()
+    object AddProfile
 
     @Serializable
     object AddEventForm : Destination()

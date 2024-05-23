@@ -1,6 +1,6 @@
 plugins {
     kotlin("kapt")
-    kotlin("plugin.serialization") version "1.9.23"
+    id("org.jetbrains.kotlin.plugin.serialization")
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
@@ -102,6 +102,7 @@ dependencies {
     val constraintLayoutVersion = "2.1.4"
     val activityVersion = "1.8.0"
     val nav_version = "2.8.0-alpha08"
+    val fragment_version = "2.8.0beta01"
     val room_version = "2.6.0"
 
     implementation(firebaseBom)
@@ -118,7 +119,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:$activityVersion")
 
     // Kotlin
-    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-fragment-ktx:$fragment_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
 
     // Feature module Support

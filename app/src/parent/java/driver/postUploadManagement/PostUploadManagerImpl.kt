@@ -3,6 +3,7 @@ package driver.postUploadManagement
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import driver.models.CommentPost
+import driver.models.PostFeedResult
 import driver.models.PostUpload
 import driver.models.PostsFeed
 import driver.network.PostNetRepository
@@ -18,7 +19,7 @@ class PostUploadManagerImpl @Inject constructor(
         return postNetRepository.uploadPosts(media, message, profileId)
     }
 
-    override fun getFeedPosts(): List<PostsFeed>? {
+    override fun getFeedPosts(): PostFeedResult {
         return postNetRepository.getAllFeeds(context)
     }
 

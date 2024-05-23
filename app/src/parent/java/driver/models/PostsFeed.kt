@@ -22,3 +22,9 @@ data class PostScope(
     val type: String,
     val targetClasses: List<String>?,
 )
+
+
+sealed class PostFeedResult {
+    data class Success(val posts: List<PostsFeed>) : PostFeedResult()
+    data class Error(val message: String) : PostFeedResult()
+}

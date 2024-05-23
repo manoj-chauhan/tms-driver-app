@@ -110,10 +110,7 @@ fun AppNavigationHost(
         }
 
         composable<Destination.ProfilesList> {
-            AccountsProfile(navController, onProfileSelected = {
-                profileId = it
-                navController.navigate(Destination.NewHomeScreen)
-            })
+            AccountsProfile(navController::navigate, navController)
         }
 
         composable<Destination.AddProfile> {
@@ -160,7 +157,6 @@ fun AppNavigationHost(
 
         composable<Destination.NewHomeScreen> {
             MainScreen(
-                profileId,
                 navController,
                 onCommentClick = {},
                 onTripsClick = { /*TODO*/ },

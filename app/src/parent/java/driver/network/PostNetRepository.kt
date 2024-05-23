@@ -17,6 +17,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
 import driver.models.CommentPost
+import driver.models.PostFeedResult
 import driver.models.PostUpload
 import driver.models.PostsFeed
 import driver.models.UploadPosts
@@ -124,50 +125,37 @@ class PostNetRepository @Inject constructor(
         }
     }
 
-    fun getAllFeeds(context: Context): List<PostsFeed>? {
+    fun getAllFeeds(context: Context): PostFeedResult {
         val postsFeeds = Types.newParameterizedType(List::class.java, PostsFeed::class.java)
         val adapter: JsonAdapter<List<PostsFeed>> = Moshi.Builder().build().adapter(postsFeeds)
 
         val postUrl = context.resources.getString(R.string.url_get_all_posts)
         return try {
             getAccessToken(context)?.let {
-                val (request, response, result) = postUrl.httpGet()
+                val (_, _, result) = postUrl.httpGet()
                     .authentication().bearer(it)
                     .responseObject(moshiDeserializerOf(adapter))
-
-                if (response.statusCode == 200) {
-                } else {
-                    result.fold(
-                        {
-                        },
-                        { error ->
-                            if (error.response.statusCode == 401) {
-                                errorManager.getErrorDescription(context)
-                            }
-
-                            val errorResponse = error.response.data.toString(Charsets.UTF_8)
-
-                            if (error.response.statusCode == 403) {
-                                errorManager.getErrorDescription403(context, errorResponse)
-                            }
-
-                            if (error.response.statusCode == 404) {
-                                errorManager.getErrorDescription404(context, "No url found")
-                            }
-
-                            if (error.response.statusCode == 500) {
-                                errorManager.getErrorDescription500(context, "Something Went Wrong")
-                            }
+                result.fold(
+                    {posts ->
+                        PostFeedResult.Success(posts)
+                    },
+                    { error ->
+                        EventBus.getDefault().post("AUTH_FAILED")
+                        val errorResponse = error.response.data.toString(Charsets.UTF_8)
+                        val errorMessage = when (error.response.statusCode) {
+                            401 -> errorManager.getErrorRouteDescription401(context, errorResponse)
+                            403 -> errorManager.getErrorRouteDescription403(context, errorResponse)
+                            404 -> errorManager.getErrorRouteDescription404(context, "No URL found")
+                            500 -> errorManager.getErrorRouteDescription500(context, "Something Went Wrong")
+                            else -> "Unknown error"
                         }
-                    )
-                }
-                result.get()
-            }
-
+                        PostFeedResult.Error(errorMessage)
+                    }
+                )
+            } ?: PostFeedResult.Error("Access token is null")
         } catch (e: Exception) {
-            null
+            PostFeedResult.Error("Exception occurred: ${e.message}")
         }
-
     }
 
     fun getPostDetail(context: Context, postId: String): PostsFeed? {

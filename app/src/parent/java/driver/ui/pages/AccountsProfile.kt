@@ -2,6 +2,7 @@ package driver.ui.pages
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -10,18 +11,27 @@ import driver.Destination
 import driver.ui.viewmodels.AccountsProfileViewModel
 
 @Composable
-fun AccountsProfile(navController: NavHostController,onProfileSelected: (profile: String) -> Unit) {
+fun AccountsProfile(navigate: (Destination) -> Unit,navHostController: NavHostController) {
     val ap: AccountsProfileViewModel = hiltViewModel()
-    ap.getProfileList()
-
+    LaunchedEffect (Unit){
+        ap.getProfileList()
+    }
     val profilesList by ap.profileList.collectAsStateWithLifecycle()
+
+    Log.d("AccountsProfile", "profilesList: $profilesList")
+
     if(profilesList != null) {
         if (profilesList?.size == 0) {
-            navController.navigate(Destination.AddProfile)
+            AddProfileScreen(navHostController)
         } else {
-            navController.navigate(Destination.NewHomeScreen)
+            MainScreen(
+                navHostController,
+                onCommentClick = {},
+                onTripsClick = { /*TODO*/ },
+                onEventsClick = { /*TODO*/ },
+                onHomeClick = { /*TODO*/ },
+                onNoticesClick = { /*TODO*/ }) {
+            }
         }
-    }else{
-        Log.d("TAG", "AccountsProfile: $profilesList")
     }
 }

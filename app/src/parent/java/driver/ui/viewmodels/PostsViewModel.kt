@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.models.CommentPost
+import driver.models.PostFeedResult
 import driver.models.PostUpload
 import driver.models.PostsFeed
 import driver.postUploadManagement.PostUploadManager
@@ -19,11 +20,12 @@ import javax.inject.Inject
 @HiltViewModel
 class PostsViewModel @Inject constructor(private val postsUploadManager: PostUploadManager) :
     ViewModel() {
-    private val _uploadedPosts: MutableStateFlow<List<Pair<String, String>>?> = MutableStateFlow(emptyList())
+    private val _uploadedPosts: MutableStateFlow<List<Pair<String, String>>?> =
+        MutableStateFlow(emptyList())
     val postDetails: StateFlow<List<Pair<String, String>>?> = _uploadedPosts.asStateFlow()
 
-    private val _postsFeed: MutableStateFlow<List<PostsFeed>?> = MutableStateFlow(emptyList())
-    val postFeedsDetails: StateFlow<List<PostsFeed>?> = _postsFeed.asStateFlow()
+    private val _postsFeed: MutableStateFlow<List<PostsFeed>?> = MutableStateFlow(null)
+    val posts: StateFlow<List<PostsFeed>?> = _postsFeed.asStateFlow()
 
     private val _postDetail: MutableStateFlow<PostsFeed?> = MutableStateFlow(null)
     val postDetail: StateFlow<PostsFeed?> = _postDetail.asStateFlow()
@@ -31,10 +33,13 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
     private val _postComments: MutableStateFlow<List<CommentPost>?> = MutableStateFlow(emptyList())
     val postComments: StateFlow<List<CommentPost>?> = _postComments.asStateFlow()
 
-    fun uploadPosts(image: ByteArray?, mimeType: String?){
+    private val _error = MutableStateFlow<String>("")
+    val error: StateFlow<String> get() = _error.asStateFlow()
+
+    fun uploadPosts(image: ByteArray?, mimeType: String?) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                if (image != null  && mimeType != null) {
+                if (image != null && mimeType != null) {
                     val postResponse = postsUploadManager.uploadPosts(image, mimeType)
                     _uploadedPosts.update { currentResponse ->
                         currentResponse?.plus(postResponse to mimeType)
@@ -62,13 +67,18 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
     fun getPosts() {
         viewModelScope.launch(Dispatchers.IO) {
             val postsList = postsUploadManager.getFeedPosts()
-            _postsFeed.update {
-                postsList
+            when (postsList) {
+                is PostFeedResult.Success -> {
+                    _postsFeed.update { postsList.posts }
+                }
+                is PostFeedResult.Error -> {
+                    _error.update {  (postsList.message)}
+                }
             }
         }
     }
 
-    fun getPostDetails(postId:String){
+    fun getPostDetails(postId: String) {
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 val postDetails = postsUploadManager.getPostDetail(postId)
@@ -76,7 +86,7 @@ class PostsViewModel @Inject constructor(private val postsUploadManager: PostUpl
                     postDetails
                 }
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
     }

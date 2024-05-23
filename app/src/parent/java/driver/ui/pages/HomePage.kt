@@ -37,7 +37,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -92,19 +91,16 @@ fun PostsSection(
     onCommentClick: (postData: PostsFeed) -> Unit
 ) {
     val pf: PostsViewModel = hiltViewModel()
-    LaunchedEffect(Unit){
-        pf.getPosts()
-    }
-    val postsList by pf.postFeedsDetails.collectAsStateWithLifecycle()
+    pf.getPosts()
+    val postsList by pf.posts.collectAsStateWithLifecycle()
 
-    Log.d("TAG", "PostsSection: $postsList")
-    if(postsList != null){
+    if (postsList != null) {
         Column(modifier = Modifier.padding(10.dp)) {
             postsList?.take(postsList!!.size)?.forEach { post ->
                 ContentPage(post, navigationController, onCommentClick)
             }
         }
-    }else {
+    } else {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -297,11 +293,12 @@ fun ContentPage(
             }
         }
     }
-    Spacer(modifier = Modifier
-        .fillMaxWidth()
-        .height(10.dp))
+    Spacer(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(10.dp)
+    )
 }
-
 
 
 @OptIn(ExperimentalFoundationApi::class)
