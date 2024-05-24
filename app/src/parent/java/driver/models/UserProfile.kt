@@ -8,9 +8,9 @@ data class UserProfile(
     val type: String,
     val anchor: String,
     val displayPicture: String,
-    val studentDetails: StudentDetails? = null,
-    val parentDetails: TeacherDetails?= null,
-    val schoolDetails: SchoolDetails? = null
+    val student: StudentDetails? = null,
+    val teacher: TeacherDetails?= null,
+    val institute: SchoolDetails? = null
 )
 
 @JsonClass(generateAdapter = true)
