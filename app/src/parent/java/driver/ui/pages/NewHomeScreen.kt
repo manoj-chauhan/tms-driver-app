@@ -271,7 +271,11 @@ fun MainScreen(
     onEventsClick: () -> Unit,
     onHomeClick: () -> Unit,
     onNoticesClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    onTripsFabClick: () -> Unit,
+    onEventsFabClick: () -> Unit,
+    onHomeFabClick: () -> Unit,
+    onNoticesFabClick: () -> Unit
 ) {
     var selectedIndex by rememberSaveable { mutableStateOf(2) }
     var profileDialog by rememberSaveable { mutableStateOf(false) }
@@ -354,12 +358,30 @@ fun MainScreen(
             }
         },
         floatingActionButton = {
-            if (selectedIndex != 0 && selectedIndex != 4) {
-                FloatingActionButton(onClick = { }) {
-                    Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
+            when (selectedIndex) {
+                0 -> {
+                    FloatingActionButton(onClick = onTripsFabClick) {
+                        Icon(Icons.Outlined.ModeEdit, contentDescription = "Add Trip")
+                    }
+                }
+                1 -> {
+                    FloatingActionButton(onClick = { navigationController.navigate("add-Event-Form") }) {
+                        Icon(Icons.Outlined.ModeEdit, contentDescription = "Add Event")
+                    }
+                }
+                2 -> {
+                    FloatingActionButton(onClick = onHomeFabClick) {
+                        Icon(Icons.Outlined.ModeEdit, contentDescription = "Add Post")
+                    }
+                }
+                3 -> {
+                    FloatingActionButton(onClick = onNoticesFabClick) {
+                        Icon(Icons.Outlined.ModeEdit, contentDescription = "add-Notice-Form")
+                    }
                 }
             }
         },
+
         floatingActionButtonPosition = FabPosition.End
     ) { padding ->
         Column(
@@ -401,9 +423,15 @@ fun MainScreen(
 
                         1 -> {
                             item {
-                                Eventpage(navigationController, onRegisterClick = {
-                                    navigationController.navigate("event-details/${it}")
-                                })
+                                Eventpage(
+                                    navigation = navigationController,
+                                    onRegisterClick = {
+                                        navigationController.navigate("event-details/${it}")
+                                    },
+                                    onAddEventClick = {
+                                        navigationController.navigate("add-event")
+                                    }
+                                )
                             }
                         }
 
@@ -419,6 +447,9 @@ fun MainScreen(
                             item {
                                 NoticeListPage(
                                     navigation = navigationController,
+                                    onNoticeClick = {
+                                        navigationController.navigate("notice-details/${it}")
+                                    },
                                     onReadClick = {}) {
 
                                 }

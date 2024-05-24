@@ -56,7 +56,6 @@ import driver.ui.viewmodels.NoticesViewModel
 import java.io.ByteArrayOutputStream
 import java.util.Calendar
 import java.util.Date
-
 @Composable
 fun AddNoticeEvent() {
 
@@ -69,8 +68,11 @@ fun AddNoticeEvent() {
     var selectedNoticeUri by remember { mutableStateOf<Uri?>(null) }
     var selectedTime by remember { mutableStateOf("") }
 
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed: Boolean by interactionSource.collectIsPressedAsState()
+    val dateInteractionSource = remember { MutableInteractionSource() }
+    val isDatePressed: Boolean by dateInteractionSource.collectIsPressedAsState()
+
+    val timeInteractionSource = remember { MutableInteractionSource() }
+    val isTimePressed: Boolean by timeInteractionSource.collectIsPressedAsState()
 
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
@@ -89,14 +91,11 @@ fun AddNoticeEvent() {
 
     val mContext = LocalContext.current
 
-
     val mYear: Int
     val mMonth: Int
     val mDay: Int
 
-
     val mCalendar = Calendar.getInstance()
-
 
     mYear = mCalendar.get(Calendar.YEAR)
     mMonth = mCalendar.get(Calendar.MONTH)
@@ -104,17 +103,7 @@ fun AddNoticeEvent() {
 
     mCalendar.time = Date()
 
-
     val mDate = remember { mutableStateOf("") }
-
-
-    val mDatePickerDialog = DatePickerDialog(
-        mContext,
-        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            mDate.value = "$mDayOfMonth/${mMonth+1}/$mYear"
-        }, mYear, mMonth, mDay
-    )
-
     val onTimeSetListener = TimePickerDialog.OnTimeSetListener { _, selectedHourOfDay, selectedMinute ->
         selectedTime = "$selectedHourOfDay:$selectedMinute"
     }
@@ -131,7 +120,6 @@ fun AddNoticeEvent() {
                 mediaId = noticeMedia!!.first,
                 caption = "Command 1"
             )
-
         }
     }
 
@@ -159,27 +147,6 @@ fun AddNoticeEvent() {
 
     val isDatePickerOpen = remember { mutableStateOf(false) }
     val isTimePickerOpen = remember { mutableStateOf(false) }
-
-
-    if (isDatePickerOpen.value) {
-        datePickerDialog.show()
-    }
-
-
-    if (isTimePickerOpen.value) {
-        val timePickerDialog = TimePickerDialog(
-            context,
-            onTimeSetListener,
-            mCalendar.get(Calendar.HOUR_OF_DAY),
-            mCalendar.get(Calendar.MINUTE),
-            false
-        )
-        timePickerDialog.show()
-    }
-
-
-
-
     val eventViewModel: EventsViewModel = hiltViewModel()
     val noticeCoverPhoto by eventViewModel.postDetails.collectAsStateWithLifecycle()
     var noticeImage = remember { mutableStateOf<ImagesInfo?>(null) }
@@ -195,7 +162,6 @@ fun AddNoticeEvent() {
                 mediaId = noticeCoverPhoto!!.first,
                 caption = "Command 1"
             )
-
         }
         Log.d("mediaPosts", "Notice photo: ${noticeImage.value}")
     }
@@ -253,10 +219,10 @@ fun AddNoticeEvent() {
                 trailingIcon = {
                     Icon(Icons.Default.DateRange, contentDescription = "Select Date")
                 },
-                interactionSource = interactionSource
+                interactionSource = dateInteractionSource
             )
 
-            if (isPressed) {
+            if (isDatePressed) {
                 datePickerDialog.show()
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -272,11 +238,10 @@ fun AddNoticeEvent() {
                 trailingIcon = {
                     Icon(Icons.Default.Schedule, contentDescription = "Select Time")
                 },
-                interactionSource = interactionSource
+                interactionSource = timeInteractionSource
             )
 
-            if (isPressed) {
-
+            if (isTimePressed) {
                 val timePickerDialog = TimePickerDialog(
                     context,
                     onTimeSetListener,
@@ -288,7 +253,6 @@ fun AddNoticeEvent() {
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
-
 
         item {
             Button(
@@ -312,7 +276,6 @@ fun AddNoticeEvent() {
         }
     }
 }
-
 
 @Composable
 fun DisplaySelectedImage(context: Context, uri: Uri) {

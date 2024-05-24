@@ -240,13 +240,19 @@ fun EventListPage(
 }
 
 @Composable
-fun Eventpage(navigation:NavHostController,onRegisterClick: (String) -> Unit) {
-
+fun Eventpage(
+    navigation: NavHostController,
+    onRegisterClick: (String) -> Unit,
+    onAddEventClick: () -> Unit
+) {
     val eventsViewModel: EventsViewModel = hiltViewModel()
     val events by eventsViewModel.eventList.collectAsStateWithLifecycle()
 
-
     eventsViewModel.getAllEvents()
 
-    events?.let { EventListPage(events = it, onRegisterClick = onRegisterClick,navigation) }
+    events?.let {
+        EventListPage(events = it, onRegisterClick = onRegisterClick, navigation = navigation)
+    }
 }
+
+

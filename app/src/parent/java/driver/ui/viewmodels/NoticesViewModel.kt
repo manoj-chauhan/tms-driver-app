@@ -2,13 +2,10 @@ package driver.ui.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.NoticeManagement.NoticeManager
-import driver.models.Event
 import driver.models.Notice_List
 import driver.postUploadManagement.PostUploadManager
-import driver.ui.pages.NoticeListPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,6 +78,7 @@ class NoticesViewModel @Inject constructor(
         noticeName: String,
         selectedDate: String,
         description: String,
+        selectedTime: String,
         ) {
 
         CoroutineScope(Dispatchers.IO).launch {

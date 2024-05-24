@@ -24,10 +24,13 @@ import com.drishto.driver.PhoneNumberActivity
 import com.drishto.driver.network.getAccessToken
 import com.drishto.driver.ui.pages.userProfileView
 import driver.models.Event
+import driver.models.Notice_List
 import driver.models.PostsFeed
 import driver.ui.components.AddNoticeEvent
 import driver.ui.components.CommentPost
 import driver.ui.components.EventDetail
+import driver.ui.components.NoticeDetailPage
+
 import driver.ui.components.addEventPage
 import driver.ui.components.pastTrips
 import driver.ui.pages.AccountsProfile
@@ -111,7 +114,8 @@ fun AppNavigationHost(
                 )
             }
         }
-        composable("past-assignment-detail/{selectedAssignmentCode}/{passengerTripId}",
+        composable(
+            "past-assignment-detail/{selectedAssignmentCode}/{passengerTripId}",
             arguments = listOf(
                 navArgument("selectedAssignmentCode") {
                     type = NavType.StringType
@@ -149,11 +153,11 @@ fun AppNavigationHost(
             })
         }
 
-        composable("add-Profile"){
+        composable("add-Profile") {
             AddProfileScreen(navController)
         }
 
-        composable("add-Event-Form"){
+        composable("add-Event-Form") {
             addEventPage(profileId)
         }
 
@@ -167,50 +171,54 @@ fun AppNavigationHost(
             EventDetail(eventId, navController)
         }
 
-        composable("notice-details/{noticeId}",arguments = listOf(
-            navArgument("eventId"){
+        composable("notice-details/{noticeId}", arguments = listOf(
+            navArgument("noticeId") {
                 type = NavType.StringType
             }
         )) {
 
-//            val noticeId = it.arguments!!.getString("eventId")
+            val noticeId = it.arguments!!.getString("noticeId")
+            NoticeDetailPage(noticeId, onReadClick = { /*TODO*/ }) {
+
+            }
         }
 
-        composable("school-profile"){
+        composable("school-profile") {
             schoolProfile()
         }
 
-        composable("notice_lists"){
+        composable("notice_lists") {
             SavedNoticesPage(
-            navController= navController)
+                navController = navController
+            )
 
         }
-        composable("add-Notice-Form"){
+        composable("add-Notice-Form") {
             AddNoticeEvent()
         }
 
-        composable("post_page"){
-            PostItem(profileId,navController = navController)
+        composable("post_page") {
+            PostItem(profileId, navController = navController)
         }
-        
-        composable("user_profile"){
+
+        composable("user_profile") {
             Profile(navController)
         }
 
-        composable("home-screen"){
-            HomeScreenNavigation(profileId,navController = navController) {
+        composable("home-screen") {
+            HomeScreenNavigation(profileId, navController = navController) {
                 postDetails = it
                 navController.navigate("add_comment")
                 Log.d("TAG", "AppNavigationHost: $postDetails")
             }
         }
 
-        composable("add-Institute"){
+        composable("add-Institute") {
             AddInstitute(navController)
         }
 
         composable("add_comment/{postId}", arguments = listOf(
-            navArgument("postId"){
+            navArgument("postId") {
                 type = NavType.StringType
             }
         )) {
@@ -218,21 +226,63 @@ fun AppNavigationHost(
             CommentPost(navController, postId)
         }
 
+//        composable("notice-detail-page") {
+//           NoticeDetailPage(notice = Notice_List(), onReadClick = { /*TODO*/ }) {
+//
+//           }
+//        }
+
         composable("login") {
 
         }
 
-        composable("newHomeScreen"){
-            MainScreen(
-                profileId,
-                navController,
-                onCommentClick = {},
+//        composable("newHomeScreen") {
+//            MainScreen(
+//                profileId,
+//                navController,
+//                onCommentClick = {},
+//                onTripsClick = { /*TODO*/ },
+//                onEventsClick = { /*TODO*/ },
+//                onHomeClick = { /*TODO*/ },
+//                onNoticesClick = { /*TODO*/ }
+//            ) {
+//            }
+//    }
+
+            composable("newHomeScreen") {
+                MainScreen(
+                    profileId = profileId,
+                    navController,
+                    onCommentClick = {},
                 onTripsClick = { /*TODO*/ },
                 onEventsClick = { /*TODO*/ },
                 onHomeClick = { /*TODO*/ },
-                onNoticesClick = { /*TODO*/ }) {
+                    onSettingsClick = {},
+                onNoticesClick = { /*TODO*/ },
+                    onTripsFabClick = {
+
+                        navController.navigate("add-trip")
+                    },
+                    onEventsFabClick = {
+
+                        navController.navigate("add-Event-Form")
+                    },
+                    onHomeFabClick = {
+
+                        navController.navigate("add-post")
+                    },
+                    onNoticesFabClick = {
+
+                        navController.navigate("add-Notice-Form")
+                    }
+                )
             }
-        }
+
+
+
+
+
+
 
         composable(
             "map-screen/{passengerTripId}/{tripCode}",
