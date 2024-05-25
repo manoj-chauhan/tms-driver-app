@@ -8,31 +8,14 @@ data class UserProfile(
     val type: String,
     val anchor: String,
     val displayPicture: String,
-    val student: StudentDetails? = null,
-    val teacher: TeacherDetails?= null,
-    val institute: SchoolDetails? = null
+    val address: Address
 )
 
 @JsonClass(generateAdapter = true)
-data class StudentDetails(
-    val standard: String,
-    val section: String,
-    val session: String,
-    val instituteId: String
+data class Address(
+    val city: String?,
+    val state: String?,
+    val address: String? = null,
+    val locations: GeoCordinates? = null
 )
 
-@JsonClass(generateAdapter = true)
-data class TeacherDetails(
-    val description: String,
-    val institute: InstituteInfo
-)
-@JsonClass(generateAdapter = true)
-data class InstituteInfo (
-    val currentInstitute: String,
-    val session:String
-)
-
-@JsonClass(generateAdapter = true)
-data class SchoolDetails(
-    val schoolName: String
-)

@@ -1,5 +1,6 @@
 package driver.AccountsProfile
 
+import com.google.android.gms.maps.model.LatLng
 import driver.models.AccountProfile
 
 interface AccountsProfileManager {
@@ -10,13 +11,10 @@ interface AccountsProfileManager {
         name: String,
         role: String,
         anchor: String,
-        mediaId:String,
-        standard: String,
-        section: String,
-        session: String,
-        instituteId: String,
-        description: String,
-        childClass:String,
-        schoolName: String
+        mediaId: String,
+        selectedPlace: String,
+        city: String,
+        state: String,
+        markerPosition: LatLng?
     )
 }

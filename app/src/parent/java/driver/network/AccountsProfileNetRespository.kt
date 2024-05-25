@@ -10,15 +10,14 @@ import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
+import com.google.android.gms.maps.model.LatLng
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
 import driver.models.AccountProfile
-import driver.models.InstituteInfo
-import driver.models.SchoolDetails
-import driver.models.StudentDetails
-import driver.models.TeacherDetails
+import driver.models.Address
+import driver.models.GeoCordinates
 import driver.models.UserProfile
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -78,27 +77,29 @@ class AccountsProfileNetRespository @Inject constructor(
     }
 
     fun addProfile(
-        type:String,
-        name: String, anchor: String, mediaId:String,standard: String,
-        section: String,
-        session: String,
-        instituteId: String,
-        description: String,
-        childClass:String,
-        schoolName: String
+        type: String,
+        name: String,
+        anchor: String,
+        mediaId: String,
+        selectedPlace: String,
+        city: String,
+        state: String,
+        markerPosition: LatLng?
     ) {
-
         try {
             val profile = when (type) {
                 "Student" -> {
-                    UserProfile(name, type, anchor,mediaId,student = StudentDetails(childClass, section, session, "123445662342"))
+                    val address = Address(city, state)
+                    UserProfile(name, type, anchor,mediaId,address)
                 }
                 "Teacher" -> {
-                    val institute = InstituteInfo("instituteId",session)
-                    UserProfile(name, type, anchor,mediaId, teacher =  TeacherDetails(description, institute))
+                    val address = Address(city, state)
+                    UserProfile(name, type, anchor,mediaId,address)
                 }
-                "School" -> {
-                    UserProfile(name, type, anchor,mediaId, institute = SchoolDetails(schoolName))
+                "Institute" -> {
+                    val geoCoordinates = markerPosition?.latitude?.let { GeoCordinates(it,  markerPosition.longitude) }
+                    val address = Address(selectedPlace, city, state,geoCoordinates )
+                    UserProfile(name, type, anchor,mediaId,address)
                 }
                 else -> null
             }
@@ -122,6 +123,8 @@ class AccountsProfileNetRespository @Inject constructor(
                         { _ ->
                         },
                         { error ->
+                            Log.e("error", "addProfile:$error, ${error.response}")
+
                             if (error.response.statusCode == 401) {
                                 errorManager.getErrorDescription(context)
                             }

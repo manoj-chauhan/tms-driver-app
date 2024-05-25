@@ -319,7 +319,7 @@ fun searchPlaces(
     context: Context,
     onSearchResult: (List<Place>) -> Unit
 ) {
-    val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG)
+    val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG,  Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS)
 
     val request = FindAutocompletePredictionsRequest.builder()
         .setQuery(query)
@@ -336,6 +336,7 @@ fun searchPlaces(
                     placesClient.fetchPlace(placeRequest)
                         .addOnSuccessListener { fetchPlaceResponse ->
                             places.add(fetchPlaceResponse.place)
+                            Log.d("Places", "searchPlaces: $placeRequest")
                         }
                         .addOnFailureListener { exception ->
                             Log.e("Autocomplete", "Place not found: ${exception.message}")

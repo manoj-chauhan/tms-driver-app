@@ -31,7 +31,7 @@ import driver.ui.components.EventDetail
 import driver.ui.components.addEventPage
 import driver.ui.pages.AccountsProfile
 import driver.ui.pages.AddInstitute
-import driver.ui.pages.AddProfileScreen
+import driver.ui.components.AddProfileScreen
 import driver.ui.pages.GoogleMapView
 import driver.ui.pages.MainScreen
 import driver.ui.pages.MapsActivityContent

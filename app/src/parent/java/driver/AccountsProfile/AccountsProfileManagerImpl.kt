@@ -1,5 +1,6 @@
 package driver.AccountsProfile
 
+import com.google.android.gms.maps.model.LatLng
 import driver.models.AccountProfile
 import driver.network.AccountsProfileNetRespository
 import javax.inject.Inject
@@ -15,16 +16,13 @@ class AccountsProfileManagerImpl @Inject constructor(
         name: String,
         role: String,
         anchor: String,
-        mediaId:String,
-        standard: String,
-        section: String,
-        session: String,
-        instituteId: String,
-        description: String,
-        childClass:String,
-        schoolName: String
+        mediaId: String,
+        selectedPlace: String,
+        city: String,
+        state: String,
+        markerPosition: LatLng?
     ) {
-        return accountNetRepository.addProfile(role, name, anchor, mediaId,standard, section, session, instituteId, description,childClass, schoolName)
+        return accountNetRepository.addProfile(role, name, anchor, mediaId, selectedPlace, city, state, markerPosition)
     }
 
 

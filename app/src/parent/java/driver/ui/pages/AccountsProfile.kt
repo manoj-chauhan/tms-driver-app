@@ -8,6 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import driver.Destination
+import driver.ui.components.AddProfileScreen
 import driver.ui.viewmodels.AccountsProfileViewModel
 
 @Composable

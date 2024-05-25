@@ -2,6 +2,7 @@ package driver.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import driver.AccountsProfile.AccountsProfileManager
 import driver.models.AccountProfile
@@ -41,19 +42,16 @@ class AccountsProfileViewModel @Inject constructor(
         name: String,
         role: String,
         anchor: String,
-        mediaId:String,
-        standard: String,
-        section: String,
-        session: String,
-        instituteId: String,
-        description: String,
-        childClass: String,
-        schoolName: String
+        mediaId: String,
+        selectedPlace: String,
+        city: String,
+        state: String,
+        markerPosition: LatLng?
     ) {
 
         try {
             CoroutineScope(Dispatchers.IO).launch {
-                accountsProfileManager.addProfile(name, role, anchor, mediaId,standard, section, session, instituteId, description, childClass, schoolName)
+                accountsProfileManager.addProfile(name, role, anchor, mediaId, selectedPlace, city, state, markerPosition)
             }
         } catch (e: Exception) {
             null

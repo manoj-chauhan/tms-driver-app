@@ -1,4 +1,4 @@
-package driver.ui.pages
+package driver.ui.components
 
 import android.graphics.Bitmap
 import android.net.Uri
@@ -28,15 +28,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Class
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.School
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -66,9 +62,14 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.PlacesClient
 import driver.Destination
 import driver.profileBackGround
 import driver.profileLightGray
+import driver.ui.pages.searchPlaces
 import driver.ui.viewmodels.AccountsProfileViewModel
 import java.io.ByteArrayOutputStream
 
@@ -81,31 +82,22 @@ fun AddProfileScreen(navController: NavHostController) {
     var name by remember {
         mutableStateOf("")
     }
-    var section by remember {
-        mutableStateOf("")
-    }
-    var childClass by remember {
-        mutableStateOf("")
-    }
-    var description by remember {
-        mutableStateOf("")
-    }
     var schoolName by remember {
         mutableStateOf("")
     }
-    var session by remember {
+    var city by remember {
         mutableStateOf("")
     }
 
-    val typeList = listOf("Student", "Teacher", "School")
+    var state by remember {
+        mutableStateOf("")
+    }
+
+    val typeList = listOf("Student", "Teacher", "Institute")
 
     var selectedType by remember {
         mutableStateOf("")
     }
-    var classExpander by remember {
-        mutableStateOf(false)
-    }
-    val classList = listOf("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII")
 
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
@@ -137,8 +129,6 @@ fun AddProfileScreen(navController: NavHostController) {
 
     var imageUploadCompleted by remember { mutableStateOf(false) }
 
-
-
     if (imageUri != null && !imageUploadCompleted) {
         Log.d("Hey", "imageUri: $imageUri")
         val stream = ByteArrayOutputStream()
@@ -149,6 +139,16 @@ fun AddProfileScreen(navController: NavHostController) {
         profileViewModel.uploadPhoto(byteArray, mimeType)
         imageUploadCompleted = true
     }
+
+    var searchText by remember { mutableStateOf("") }
+    var searchResults by remember { mutableStateOf(emptyList<Place>()) }
+    var selectedPlace by remember { mutableStateOf<String>("") }
+    var mapView by remember { mutableStateOf<Boolean>(false) }
+    Places.initialize(context, "AIzaSyANMz3n_soyBll2XNWR8inxnDeFb2ipdAc")
+    val placesClient: PlacesClient = Places.createClient(context)
+
+    var markerPosition by remember { mutableStateOf<LatLng?>(null) }
+
 
     Box(
         modifier = Modifier
@@ -215,7 +215,8 @@ fun AddProfileScreen(navController: NavHostController) {
                         AsyncImage(
                             model = uri,
                             contentDescription = "Selected Image",
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .width(150.dp)
                                 .height(150.dp)
                                 .clip(CircleShape)
@@ -303,158 +304,116 @@ fun AddProfileScreen(navController: NavHostController) {
 
                 when (selectedType) {
                     "Student" -> {
+                        TextField(
+                            value = city,
+                            onValueChange = { city = it },
+                            label = { Text("City") },
+                            placeholder = { Text("Enter City") },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(40.dp), verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Student Form",
-                                style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.W600
-                                )
                             )
-                        }
-                        ExposedDropdownMenuBox(
-                            expanded = classExpander, modifier = Modifier.fillMaxWidth(),
-                            onExpandedChange = { classExpander = it }
-                        ) {
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        TextField(
+                            value = state,
+                            onValueChange = { state = it },
+                            label = { Text("State") },
+                            placeholder = { Text("Enter State") },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
+
+                            )
+                    }
+
+                    "Teacher" -> {
+
+                        TextField(
+                            value = city,
+                            onValueChange = { city = it },
+                            label = { Text("City") },
+                            placeholder = { Text("Enter City") },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
+
+                            )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        TextField(
+                            value = state,
+                            onValueChange = { state = it },
+                            label = { Text("State") },
+                            placeholder = { Text("Enter State") },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
+
+                            )
+                    }
+
+                    "Institute" -> {
+                        Column() {
                             TextField(
-                                value = childClass,
-                                label = { Text(text = "Select Class ") },
-                                onValueChange = {},
-                                readOnly = true,
-                                trailingIcon = {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = classExpander)
+                                value = searchText,
+                                onValueChange = {
+                                    searchText = it
+                                    if (it.length > 3) {
+                                        searchPlaces(it, placesClient, context) { places ->
+                                            searchResults = places
+                                        }
+                                    } else {
+                                        searchResults = emptyList()
+                                    }
                                 },
-                                modifier = Modifier
-                                    .menuAnchor()
-                                    .fillMaxWidth(),
-                                leadingIcon = {
-                                    Icon(Icons.Outlined.School, contentDescription = "Add")
-                                },
+                                label = { Text("Enter the place") },
+                                placeholder = { Text("Enter the place ") },
+                                modifier = Modifier.fillMaxWidth(),
                                 colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
 
                                 )
 
-                            ExposedDropdownMenu(
-                                expanded = classExpander,
-                                onDismissRequest = {
-                                    classExpander = false
-                                },
-                                modifier = Modifier.background(Color.White)
-                            ) {
-                                classList.forEach { classType ->
+                            Column {
+                                searchResults.forEach { place ->
                                     DropdownMenuItem(
-                                        text = { Text(text = classType) },
+                                        text = { Text(text = place.address ?: "") },
                                         onClick = {
-                                            childClass = classType
-                                            classExpander = false
-                                        })
+                                            markerPosition = place.latLng
+                                            selectedPlace = place.name
+                                            mapView = true
+                                            searchText = place.name ?: ""
+                                            searchResults = emptyList()
+
+                                            Log.d("place", "AddProfileScreen: $selectedPlace")
+                                        }
+                                    )
                                 }
                             }
-                        }
 
-                        TextField(
-                            value = section,
-                            onValueChange = {
-                                section = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            label = { Text(text = "Section") },
-                            leadingIcon = {
-                                Icon(Icons.Outlined.Person, contentDescription = "Add")
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                            },
-                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
-                        )
+                            TextField(
+                                value = city,
+                                onValueChange = { city = it },
+                                label = { Text("City") },
+                                placeholder = { Text("Enter City") },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
 
-                        TextField(
-                            value = session,
-                            onValueChange = {
-                                session = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            label = { Text(text = "Session") },
-                            leadingIcon = {
-                                Icon(Icons.Outlined.Class, contentDescription = "Add")
-
-                            },
-                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
-                        )
-                    }
-
-                    "Teacher" -> {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(40.dp), verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Teacher Form",
-                                style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.W600
                                 )
-                            )
-                        }
-                        TextField(
-                            value = description,
-                            onValueChange = { description = it },
-                            modifier = Modifier.fillMaxWidth(),
-                            label = { Text(text = "Enter Description") },
-                            leadingIcon = {
-                                Icon(Icons.Outlined.Person, contentDescription = "Add")
-                            },
-                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
-                        )
 
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        TextField(
-                            value = session,
-                            onValueChange = {
-                                session = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            label = { Text(text = "Session") },
-                            leadingIcon = {
-                                Icon(Icons.Outlined.Class, contentDescription = "Add")
+                            TextField(
+                                value = state,
+                                onValueChange = { state = it },
+                                label = { Text("State") },
+                                placeholder = { Text("Enter State") },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
 
-                            },
-                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
-                        )
-                    }
-
-                    "School" -> {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(40.dp), verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "School Form",
-                                style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.W600
                                 )
-                            )
                         }
-                        TextField(
-                            value = schoolName,
-                            onValueChange = { schoolName = it },
-                            modifier = Modifier.fillMaxWidth(),
-                            label = { Text(text = "Enter School Name") },
-                            leadingIcon = {
-                                Icon(Icons.Outlined.Person, contentDescription = "Add")
-                            },
-                            colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
-
-                        )
                     }
                 }
 
@@ -471,11 +430,19 @@ fun AddProfileScreen(navController: NavHostController) {
                             .align(Alignment.Bottom),
                         enabled = true,
                         onClick = {
-                        mediaId?.let {
-                            profileViewModel.addProfile(name, selectedType, name,
-                                it, childClass, section, session, "", description, childClass, schoolName)
-                        }
-                        navController.navigate(Destination.NewHomeScreen)
+                            mediaId?.let {
+                                profileViewModel.addProfile(
+                                    name,
+                                    selectedType,
+                                    name,
+                                    it,
+                                    selectedPlace,
+                                    city,
+                                    state,
+                                    markerPosition
+                                )
+                            }
+                            navController.navigate(Destination.NewHomeScreen)
                         },
                         contentPadding = PaddingValues(),
                         colors = ButtonDefaults.buttonColors(
