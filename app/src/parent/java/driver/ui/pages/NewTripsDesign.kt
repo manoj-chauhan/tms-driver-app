@@ -70,40 +70,44 @@ fun NewTripsDesign(
 
 
     parentTripAssigned.fetchParentTrip(context)
+    if(tripList != null) {
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            if(tripList?.size!! > 0) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(13.dp, top = 20.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Current Trips ",
-                        style = TextStyle(
-                            color = headingColor,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.W500,
-                            fontFamily = FontFamily.SansSerif
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                if (tripList?.size!! > 0) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(13.dp, top = 20.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Current Trips ",
+                            style = TextStyle(
+                                color = headingColor,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.W500,
+                                fontFamily = FontFamily.SansSerif
+                            )
                         )
-                    )
+                    }
                 }
-            }
 
-            Column(modifier = Modifier.padding(10.dp)) {
-                tripList?.forEach { trip ->
-                    CurrentTrip(trip, onTripSelected)
+                Column(modifier = Modifier.padding(10.dp)) {
+                    tripList?.forEach { trip ->
+                        CurrentTrip(trip, onTripSelected)
+                    }
+                    PastTrip(onPastTripSelected, "home", navigationController)
                 }
-                PastTrip(onPastTripSelected, "home", navigationController)
             }
         }
+    }else{
+        LoadingDialog()
     }
 }
 
@@ -119,141 +123,145 @@ fun PastTrip(onPastTripSelected: (assignment: ParentPastTrip) -> Unit, screen: S
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            if (screen == "home") {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 13.dp)
-                ) {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        if(pastTripList?.size!! > 0 ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 3.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+        if(pastTripList!= null) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                if (screen == "home") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 13.dp)
+                    ) {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            if (pastTripList?.size!! > 0) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 3.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
 
-                                Text(
-                                    text = "Past Trips ",
-                                    style = TextStyle(
-                                        color = headingColor,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.W500
+                                    Text(
+                                        text = "Past Trips ",
+                                        style = TextStyle(
+                                            color = headingColor,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.W500
+                                        )
                                     )
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(10.dp))
-                        pastTripList?.let {
-                            if (screen == "home") {
-                                Column {
-                                    it.take(4).forEach { trip ->
-                                        PastTripList(trip, onPastTripSelected)
-                                    }
                                 }
-                                if (it.size >= 3) {
-                                    val text = remember {
-                                        buildAnnotatedString {
-                                            withStyle(
-                                                style = SpanStyle(
-                                                    color = subHeadingColor,
-                                                    fontSize = 12.sp,
-                                                    fontWeight = FontWeight.W400
-                                                )
-                                            ) {
-                                                append("SEE ALL")
-                                            }
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
+                            pastTripList?.let {
+                                if (screen == "home") {
+                                    Column {
+                                        it.take(4).forEach { trip ->
+                                            PastTripList(trip, onPastTripSelected)
                                         }
                                     }
-
-
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(13.dp)
-                                    ) {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.End
-                                        ) {
-
-                                            ClickableText(
-                                                text = text,
-                                                onClick = { offset -> 
-                                                    navigationController.navigate(Destination.PastTripsList)
+                                    if (it.size >= 3) {
+                                        val text = remember {
+                                            buildAnnotatedString {
+                                                withStyle(
+                                                    style = SpanStyle(
+                                                        color = subHeadingColor,
+                                                        fontSize = 12.sp,
+                                                        fontWeight = FontWeight.W400
+                                                    )
+                                                ) {
+                                                    append("SEE ALL")
                                                 }
-                                            )
+                                            }
+                                        }
+
+
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(13.dp)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.End
+                                            ) {
+
+                                                ClickableText(
+                                                    text = text,
+                                                    onClick = { offset ->
+                                                        navigationController.navigate(Destination.PastTripsList)
+                                                    }
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White)
-                ) {
+                } else {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(10.dp)
+                            .background(Color.White)
                     ) {
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 10.dp)
-                                    .height(30.dp) ,
-                                verticalAlignment = Alignment.Top
-                            ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(10.dp)
+                        ) {
+                            Column(modifier = Modifier.fillMaxSize()) {
                                 Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Start,
-                                    verticalAlignment = Alignment.CenterVertically
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 10.dp)
+                                        .height(30.dp),
+                                    verticalAlignment = Alignment.Top
                                 ) {
                                     Row(
-                                        modifier = Modifier.width(30.dp),
-                                        horizontalArrangement = Arrangement.Start
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Start,
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.ArrowBack,
-                                            contentDescription = "",
-                                            modifier = Modifier
-                                                .height(25.dp)
-                                                .clickable {
-                                                    navigationController.popBackStack()
-                                                },
-                                        )
-                                    }
-                                    Box(modifier = Modifier.fillMaxWidth(0.65f)) {
-                                        Text(
-                                            text = "Past Trips",
-                                            style = TextStyle(
-                                                color = Color.Black,
-                                                fontSize = 18.sp,
-                                                fontFamily = FontFamily.SansSerif,
-                                                fontWeight = FontWeight.W600
+                                        Row(
+                                            modifier = Modifier.width(30.dp),
+                                            horizontalArrangement = Arrangement.Start
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Outlined.ArrowBack,
+                                                contentDescription = "",
+                                                modifier = Modifier
+                                                    .height(25.dp)
+                                                    .clickable {
+                                                        navigationController.popBackStack()
+                                                    },
                                             )
-                                        )
+                                        }
+                                        Box(modifier = Modifier.fillMaxWidth(0.65f)) {
+                                            Text(
+                                                text = "Past Trips",
+                                                style = TextStyle(
+                                                    color = Color.Black,
+                                                    fontSize = 18.sp,
+                                                    fontFamily = FontFamily.SansSerif,
+                                                    fontWeight = FontWeight.W600
+                                                )
+                                            )
+                                        }
                                     }
                                 }
-                            }
 
-                            Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.height(10.dp))
 
-                            pastTripList?.forEach { trip ->
-                                PastTripList(trip, onPastTripSelected)
+                                pastTripList?.forEach { trip ->
+                                    PastTripList(trip, onPastTripSelected)
+                                }
                             }
                         }
                     }
                 }
             }
+        }else{
+            LoadingDialog()
         }
     }
 }
