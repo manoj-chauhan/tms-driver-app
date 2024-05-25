@@ -244,7 +244,7 @@ fun EventListPage(
 fun Eventpage(
     navigation: NavHostController,
     onRegisterClick: (String) -> Unit,
-    onAddEventClick: () -> Unit
+
 ) {
     val eventsViewModel: EventsViewModel = hiltViewModel()
     val events by eventsViewModel.eventList.collectAsStateWithLifecycle()

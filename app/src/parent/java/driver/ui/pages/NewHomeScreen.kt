@@ -403,9 +403,12 @@ fun MainScreen(
                             item {
                                 NoticeListPage(
                                     navigation = navigationController,
-                                    onReadClick = {}) {
+                                    onNoticeClick={navigationController.navigate(Destination.NoticeDetail(it))})
+//                                    onReadClick = {}
+//                                , onDownloadClick = {})
 
-                                }
+
+
                             }
                         }
 

@@ -181,8 +181,8 @@ fun NoticeCard(notice: Notice_List, onNoticeClick: (notice: String) -> Unit,  na
 fun NoticeListPage(
     navigation: NavHostController,
     onNoticeClick:(String)->Unit,
-    onReadClick: (Notice_List) -> Unit,
-    onDownloadClick: (String) -> Unit
+//    onReadClick: (Notice_List) -> Unit,
+//    onDownloadClick: (String) -> Unit
 ) {
     val noticesViewModel: NoticesViewModel = hiltViewModel()
     val notices by noticesViewModel.noticelist.collectAsStateWithLifecycle()
