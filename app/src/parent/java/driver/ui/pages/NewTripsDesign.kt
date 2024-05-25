@@ -77,22 +77,24 @@ fun NewTripsDesign(
             .background(Color.White)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(13.dp, top = 20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Current Trips ",
-                    style = TextStyle(
-                        color = headingColor,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.W500,
-                        fontFamily = FontFamily.SansSerif
+            if(tripList?.size!! > 0) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(13.dp, top = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Current Trips ",
+                        style = TextStyle(
+                            color = headingColor,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.W500,
+                            fontFamily = FontFamily.SansSerif
+                        )
                     )
-                )
+                }
             }
 
             Column(modifier = Modifier.padding(10.dp)) {
@@ -125,22 +127,24 @@ fun PastTrip(onPastTripSelected: (assignment: ParentPastTrip) -> Unit, screen: S
                         .padding(top = 13.dp)
                 ) {
                     Column(modifier = Modifier.fillMaxSize()) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 3.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                        if(pastTripList?.size!! > 0 ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 3.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
-                            Text(
-                                text = "Past Trips ",
-                                style = TextStyle(
-                                    color = headingColor,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.W500
+                                Text(
+                                    text = "Past Trips ",
+                                    style = TextStyle(
+                                        color = headingColor,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.W500
+                                    )
                                 )
-                            )
+                            }
                         }
                         Spacer(modifier = Modifier.height(10.dp))
                         pastTripList?.let {
@@ -197,13 +201,14 @@ fun PastTrip(onPastTripSelected: (assignment: ParentPastTrip) -> Unit, screen: S
                 ) {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize().padding(10.dp)
+                            .fillMaxSize()
+                            .padding(10.dp)
                     ) {
                         Column(modifier = Modifier.fillMaxSize()) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding( top = 10.dp)
+                                    .padding(top = 10.dp)
                                     .height(30.dp) ,
                                 verticalAlignment = Alignment.Top
                             ) {

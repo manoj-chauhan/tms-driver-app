@@ -266,7 +266,7 @@ fun AddPost(navController: NavHostController) {
 
                 BasicTextField(value = text,
                     onValueChange = { text = it },
-                    textStyle = TextStyle(fontSize = 20.sp),
+                    textStyle = TextStyle(fontSize = 14.sp),
                     modifier = Modifier
                         .indicatorLine(
                             enabled = true,
