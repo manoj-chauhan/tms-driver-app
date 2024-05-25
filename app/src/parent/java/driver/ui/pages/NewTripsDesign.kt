@@ -146,7 +146,7 @@ fun PastTrip(onPastTripSelected: (assignment: ParentPastTrip) -> Unit, screen: S
                         pastTripList?.let {
                             if (screen == "home") {
                                 Column {
-                                    it.take(4).forEach { trip ->
+                                    it.take(5).forEach { trip ->
                                         PastTripList(trip, onPastTripSelected)
                                     }
                                 }

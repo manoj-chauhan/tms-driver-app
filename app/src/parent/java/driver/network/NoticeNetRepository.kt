@@ -124,12 +124,6 @@ class   NoticeNetRepository @Inject constructor(
 
     }
 
-
-
-
-
-
-
     fun addNotice(
         name: String,
         description: String,
