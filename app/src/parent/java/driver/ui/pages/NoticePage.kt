@@ -2,6 +2,7 @@ package driver.ui.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,7 +48,7 @@ import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun NoticeCard(notice: Notice_List) {
+fun NoticeCard(notice: Notice_List, onNoticeClick: (notice: String) -> Unit,  navigation: NavHostController) {
     val fontFamily = FontFamily.SansSerif
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
 
@@ -66,10 +67,13 @@ fun NoticeCard(notice: Notice_List) {
     val parsedDate = remember(notice.dateOfNotice) { inputFormat.parse(notice.dateOfNotice) }
     val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
 
+
+
     ElevatedCard(
         colors = CardDefaults.cardColors(Color.White),
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onNoticeClick(notice.id)  }
             .shadow(3.dp, RoundedCornerShape(12.dp)),
     ) {
         Column(
@@ -176,8 +180,9 @@ fun NoticeCard(notice: Notice_List) {
 @Composable
 fun NoticeListPage(
     navigation: NavHostController,
-    onReadClick: (Notice_List) -> Unit,
-    onDownloadClick: (String) -> Unit
+    onNoticeClick:(String)->Unit,
+//    onReadClick: (Notice_List) -> Unit,
+//    onDownloadClick: (String) -> Unit
 ) {
     val noticesViewModel: NoticesViewModel = hiltViewModel()
     val notices by noticesViewModel.noticelist.collectAsStateWithLifecycle()
@@ -193,6 +198,8 @@ fun NoticeListPage(
             noticeList.forEach { notice ->
                 NoticeCard(
                     notice = notice,
+                    onNoticeClick = onNoticeClick,
+                    navigation=navigation
 //                    onReadClick = { onReadClick(notice) },
 //                    onDownloadClick = onDownloadClick
                 )

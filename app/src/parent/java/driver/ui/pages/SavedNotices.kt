@@ -103,7 +103,7 @@ fun SavedNoticesPage(navController: NavHostController) {
                         .height(25.dp),
                     enabled = true,
                     onClick = {
-                        navController.navigate(Destination.AddNoticeForm)
+//                        navController.navigate(Destination.AddNoticeForm)
                     },
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(

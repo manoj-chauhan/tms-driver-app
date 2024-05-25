@@ -19,6 +19,7 @@ import driver.models.Event
 import driver.models.EventRegistration
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
+import kotlin.math.log
 
 
 class EventNetRepository @Inject constructor(
@@ -100,6 +101,8 @@ class EventNetRepository @Inject constructor(
                         .response()
 
                     if (response.statusCode == 200) {
+
+                        Log.d("success", "addEvent: , $response")
 
 
 

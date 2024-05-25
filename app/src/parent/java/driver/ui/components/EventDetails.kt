@@ -197,9 +197,23 @@ fun EventDetail(eventId: String?, navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
+//                    if (eventDetail?.location != null) {
+//                        eventDetail?.location?.let { location ->
+//                            GoogleMap(event = location)
+//                        }
+//
+//                    }
+//                    if (eventDetail?.location != null) {
+//                        GoogleMap(event = eventDetail!!.location!!)
+//                    }
+
                     eventDetail?.location?.let { location ->
                         GoogleMap(event = location)
                     }
+
+
+
+
                 }
             }
         }
@@ -256,70 +270,63 @@ fun ImageWithBookmark(eventDetail: Event, onBackPressed: () -> Unit) {
         }
     }
 }
-
-
 @Composable
 fun GoogleMap(event: Location) {
-
     val mapUiSettings by remember { mutableStateOf(MapUiSettings(compassEnabled = false)) }
     val mapProperties by remember { mutableStateOf(MapProperties(mapType = MapType.NORMAL)) }
 
-
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
         Text(
             text = "Location",
-            style = TextStyle(fontSize = 14.sp, color = headingColor)
+            style = TextStyle(fontSize = 14.sp, color = Color.Black)
         )
 
-    }
-    Spacer(modifier = Modifier.height(8.dp))
-    Row(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
-            text = event.location,
+            text = "${event.address}, ${event.city}",
             style = TextStyle(fontSize = 16.sp, color = Color.Gray)
         )
 
-    }
-    Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
+        val marker = event.locations?.let { LatLng(it.latitude, it.longitude) }
+        val cameraPositionState = rememberCameraPositionState {
+            marker?.let {
+                position = CameraPosition.fromLatLngZoom(it, 20f)
+            }
+        }
 
-    val marker = LatLng(event.latitude, event.longitude)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(marker, 20f)
-
-    }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp)
-    ) {
-        GoogleMap(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(800.dp),
-            onMapLoaded = { },
-            uiSettings = mapUiSettings,
-            cameraPositionState = cameraPositionState,
-            properties = mapProperties,
-            onMapClick = {
-
-            }
+                .height(300.dp)
         ) {
-            if (marker != null) {
-                Marker(
-                    state = MarkerState(
-                        position = marker!!,
-                    ),
-                    draggable = false,
-                    title = event.location,
-
+            GoogleMap(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                onMapLoaded = {},
+                uiSettings = mapUiSettings,
+                cameraPositionState = cameraPositionState,
+                properties = mapProperties,
+                onMapClick = {}
+            ) {
+                marker?.let {
+                    Marker(
+                        state = MarkerState(position = it),
+                        draggable = false,
+                        title = event.address
                     )
+                }
             }
         }
     }
-
 }
-
 
 @Composable
 fun PhotoView(descriptionImages: List<Image>?) {

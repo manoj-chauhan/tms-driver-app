@@ -28,6 +28,7 @@ import driver.ui.components.AddNoticeEvent
 import driver.ui.components.AddPost
 import driver.ui.components.CommentPost
 import driver.ui.components.EventDetail
+import driver.ui.components.NoticeDetailPage
 import driver.ui.components.addEventPage
 import driver.ui.pages.AccountsProfile
 import driver.ui.pages.AddInstitute
@@ -56,6 +57,10 @@ fun AppNavigationHost(
     var passengerTripId by remember { mutableIntStateOf(0) }
     var profileId by remember { mutableStateOf("") }
     var postDetails by remember { mutableStateOf<PostsFeed?>(null) }
+
+    var noticeId by remember { mutableStateOf("") }
+
+
 
 
     var boardingPlaceId by remember { mutableStateOf("") }
@@ -117,8 +122,12 @@ fun AppNavigationHost(
             AddProfileScreen(navController)
         }
 
-        composable("add-Event-Form") {
+//        composable("add-Event-Form") {
+//            addEventPage(profileId)
+//        }
+        composable<Destination.AddEventForm> {
             addEventPage(profileId)
+
         }
 
         composable<Destination.EventDetails> {
@@ -137,6 +146,8 @@ fun AppNavigationHost(
         composable<Destination.PostPage> {
             AddPost(navController = navController)
         }
+
+
 
         composable<Destination.UserProfile> {
             Profile(navController)
@@ -199,6 +210,17 @@ fun AppNavigationHost(
             val idUser = backStackEntry.arguments?.getInt("userId") ?: 0
             notificationScreen(idUser, navController)
         }
+
+        composable<Destination.NoticeDetail>{
+            val arg = it.arguments
+            noticeId = it.arguments?.getString("noticeId").toString()
+            NoticeDetailPage(noticeId = noticeId, onReadClick = { /*TODO*/ }) {
+                
+            }
+        }
+
+
+
 
 
 

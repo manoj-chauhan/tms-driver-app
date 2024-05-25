@@ -1,6 +1,5 @@
 package driver.models
 import com.squareup.moshi.JsonClass
-
 @JsonClass(generateAdapter = true)
 data class Event(
     val id: String,
@@ -9,7 +8,7 @@ data class Event(
     val instituteDp: String,
     val title: String,
     val description: String,
-    val location: Location,
+    val location: Location?,
     val scope: Scope,
     val dateOfEvent: String?,
     val timeOfEvent: String?,
@@ -21,9 +20,10 @@ data class Event(
 
 @JsonClass(generateAdapter = true)
 data class Location(
-    val location: String,
-    val latitude: Double,
-    val longitude: Double
+    val address:String?,
+    val city :String?,
+    val state:String?,
+    val locations: GeoCordinates?
 )
 
 @JsonClass(generateAdapter = true)
