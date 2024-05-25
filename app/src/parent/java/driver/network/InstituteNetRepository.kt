@@ -34,7 +34,7 @@ class InstituteNetRepository @Inject constructor(
         longitude: String,
     ) {
         try {
-            val geoCordinates=GeoCordinates(latitude,longitude)
+            val geoCordinates=GeoCordinates(latitude.toDouble(),longitude.toDouble())
             val addressInfo=AddressInfo(address,city,state,geoCordinates)
             val addInstituteRequest = InstituteAddInfo(name,"","", contacts, description, addressInfo, facilities)
             Log.d("JSON", "addInstitute: $addInstituteRequest")
