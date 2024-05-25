@@ -74,6 +74,7 @@ import driver.actionColors
 import driver.headingColor
 import driver.models.PostsFeed
 import driver.subText
+import driver.ui.components.MediaViewerDialog
 import driver.ui.viewmodels.PostActionsViewModel
 import driver.ui.viewmodels.PostsViewModel
 
@@ -102,7 +103,7 @@ fun PostsSection(
                 ContentPage(post, navigationController, onCommentClick)
             }
         }
-    }else{
+    } else {
         Toast.makeText(LocalContext.current, error, Toast.LENGTH_SHORT).show()
     }
 }
@@ -117,6 +118,10 @@ fun ContentPage(
 ) {
     var likesCount by remember { mutableStateOf(post.likes ?: 0) }
     var isLiked by remember { mutableStateOf(post.likedStatus) }
+    var showDialog = remember { mutableStateOf(false) }
+    val images = post.media.map { it.mediaUrl }
+
+
 
     ElevatedCard(
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -180,17 +185,19 @@ fun ContentPage(
                 Text(
                     text = it,
                     style = TextStyle(fontSize = 14.sp),
-                    modifier = Modifier.padding(horizontal = 10.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .clickable { onCommentClick(post) }
                 )
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
 
-            val images = post.media.map { it.mediaUrl }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clickable { showDialog.value=true }
             ) {
                 ImageScrollWithTextOverlay(images = images)
             }
@@ -294,6 +301,13 @@ fun ContentPage(
             .fillMaxWidth()
             .height(10.dp)
     )
+    if (showDialog.value) {
+        MediaViewerDialog(
+            post = post,
+            images = images,
+            setShowDialog = { showDialog.value = it }
+        )
+    }
 }
 
 
