@@ -122,8 +122,12 @@ fun AppNavigationHost(
             AddProfileScreen(navController)
         }
 
-        composable("add-Event-Form") {
+//        composable("add-Event-Form") {
+//            addEventPage(profileId)
+//        }
+        composable<Destination.AddEventForm> {
             addEventPage(profileId)
+
         }
 
         composable<Destination.EventDetails> {
@@ -142,6 +146,8 @@ fun AppNavigationHost(
         composable<Destination.PostPage> {
             AddPost(navController = navController)
         }
+
+
 
         composable<Destination.UserProfile> {
             Profile(navController)
@@ -212,6 +218,9 @@ fun AppNavigationHost(
                 
             }
         }
+
+
+
 
 
 

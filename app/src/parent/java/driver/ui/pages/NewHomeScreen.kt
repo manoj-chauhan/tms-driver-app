@@ -327,12 +327,23 @@ fun MainScreen(
                     FloatingActionButton(onClick = { navigationController.navigate(Destination.PostPage) }) {
                         Icon(Icons.Outlined.Add, contentDescription = "Add")
                     }
-                } else {
-                    FloatingActionButton(onClick = { }) {
+                }
+                if (selectedIndex == 1) {
+                    FloatingActionButton(onClick = { navigationController.navigate(Destination.AddEventForm) }) {
                         Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
                     }
                 }
+
+                if (selectedIndex == 3) {
+                    FloatingActionButton(onClick = { navigationController.navigate(Destination.AddNoticeForm) }) {
+                        Icon(Icons.Outlined.ModeEdit, contentDescription = "Add")
+
+                    }
+                }
+
+
             }
+
         },
         floatingActionButtonPosition = FabPosition.End
     ) { padding ->
@@ -403,10 +414,15 @@ fun MainScreen(
                             item {
                                 NoticeListPage(
                                     navigation = navigationController,
-                                    onNoticeClick={navigationController.navigate(Destination.NoticeDetail(it))})
+                                    onNoticeClick = {
+                                        navigationController.navigate(
+                                            Destination.NoticeDetail(
+                                                it
+                                            )
+                                        )
+                                    })
 //                                    onReadClick = {}
 //                                , onDownloadClick = {})
-
 
 
                             }

@@ -51,6 +51,8 @@ sealed class Destination{
     @Serializable
     object PostPage : Destination()
 
+
+
     @Serializable
     object UserProfileScreen : Destination()
 
