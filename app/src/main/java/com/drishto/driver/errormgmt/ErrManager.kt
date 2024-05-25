@@ -19,5 +19,6 @@ interface ErrManager {
     fun getErrorRouteDescription404(context: Context, errorResponse: String):String
     fun getErrorRouteDescription500(context: Context, errorResponse: String):String
     fun getErrorRouteDescription403(context: Context, errorResponse: String):String
+    fun getErrorRouteDescription400(context: Context, errorResponse: String):String
 
 }

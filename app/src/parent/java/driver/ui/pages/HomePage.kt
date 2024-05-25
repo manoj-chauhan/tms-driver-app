@@ -1,7 +1,7 @@
 package driver.ui.pages
 
 import android.net.Uri
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.updateTransition
@@ -94,20 +94,16 @@ fun PostsSection(
     pf.getPosts()
     val postsList by pf.posts.collectAsStateWithLifecycle()
 
-    if (postsList != null) {
+    val error by pf.error.collectAsStateWithLifecycle()
+
+    if (error == "") {
         Column(modifier = Modifier.padding(10.dp)) {
             postsList?.take(postsList!!.size)?.forEach { post ->
                 ContentPage(post, navigationController, onCommentClick)
             }
         }
-    } else {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            LoadingDialog()
-        }
+    }else{
+        Toast.makeText(LocalContext.current, error, Toast.LENGTH_SHORT).show()
     }
 }
 

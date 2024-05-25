@@ -149,6 +149,8 @@ class PostNetRepository @Inject constructor(
                             403 -> errorManager.getErrorRouteDescription403(context, errorResponse)
                             404 -> errorManager.getErrorRouteDescription404(context, "No URL found")
                             500 -> errorManager.getErrorRouteDescription500(context, "Something Went Wrong")
+                            400 -> errorManager.getErrorRouteDescription400(context, errorResponse)
+
                             else -> "Unknown error"
                         }
                         PostFeedResult.Error(errorMessage)
