@@ -20,6 +20,7 @@ import driver.models.CommentPost
 import driver.models.PostFeedResult
 import driver.models.PostUpload
 import driver.models.PostsFeed
+import driver.models.Scope
 import driver.models.UploadPosts
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -77,7 +78,8 @@ class PostNetRepository @Inject constructor(
             val jsonAdapter: JsonAdapter<UploadPosts> = moshi.adapter(UploadPosts::class.java)
 
             getAccessToken(context)?.let {
-                val postUploadRequest = UploadPosts(profileId, media, message, "School")
+                val scope= Scope("Public")
+                val postUploadRequest = UploadPosts(profileId, media, message, scope)
                 val requestBody = jsonAdapter.toJson(postUploadRequest)
 
 

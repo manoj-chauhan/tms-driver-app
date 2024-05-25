@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,13 +31,17 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.icons.outlined.School
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
@@ -54,7 +59,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -80,12 +84,19 @@ fun AddPost(navController: NavHostController) {
         mutableStateOf("")
     }
 
+    var name by remember {
+        mutableStateOf("")
+    }
+
     var selectedImageUri by remember {
         mutableStateOf<List<Uri?>>(emptyList())
     }
 
     val ap: AccountsProfileViewModel = hiltViewModel()
     val profilesList by ap.profileList.collectAsStateWithLifecycle()
+
+    var expanded by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         ap.getProfileList()
     }
@@ -202,26 +213,47 @@ fun AddPost(navController: NavHostController) {
                 val interactionSource = remember { MutableInteractionSource() }
                 val size = profilesList?.size
 
-                if (size != null) {
-                    if (size > 1) {
+                if (profilesList != null) {
+                    if (profilesList!!.size > 1) {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                text = "Select Profile",
-                                style = TextStyle(
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.W600
-                                )
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Start
+                            ExposedDropdownMenuBox(
+                                expanded = expanded, modifier = Modifier.fillMaxWidth(),
+                                onExpandedChange = { expanded = it }
                             ) {
-                                profilesList?.forEach { profile ->
-                                    RadioButton(
-                                        selected = profileSelected == profile.id,
-                                        onClick = { profileSelected = profile.id })
-                                    Text(text = profile.name)
+                                TextField(
+                                    value = name,
+                                    label = { Text(text = "Select Profile ") },
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                                    },
+                                    modifier = Modifier
+                                        .menuAnchor()
+                                        .fillMaxWidth(),
+                                    leadingIcon = {
+                                        Icon(Icons.Outlined.School, contentDescription = "Add")
+                                    },
+                                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
+
+                                    )
+
+                                ExposedDropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = {
+                                        expanded = false
+                                    },
+                                    modifier = Modifier.background(Color.White)
+                                ) {
+                                    profilesList!!.forEach { profile ->
+                                        DropdownMenuItem(
+                                            text = { Text(text = profile.name) },
+                                            onClick = {
+                                                name = profile.name
+                                                profileSelected = profile.id
+                                                expanded = false
+                                            })
+                                    }
                                 }
                             }
                         }
@@ -230,6 +262,7 @@ fun AddPost(navController: NavHostController) {
                     }
                 }
 
+                Spacer(modifier = Modifier.height(12.dp))
 
                 BasicTextField(value = text,
                     onValueChange = { text = it },
@@ -243,7 +276,7 @@ fun AddPost(navController: NavHostController) {
                             focusedIndicatorLineThickness = 0.dp,
                             unfocusedIndicatorLineThickness = 0.dp
                         )
-//                        .height(140.dp)
+                        //                        .height(140.dp)
                         .fillMaxWidth(0.96f)
                         .background(Color.Transparent),
 
@@ -326,7 +359,6 @@ fun AddPost(navController: NavHostController) {
             }
         }
     }
-
 }
 
 @Composable

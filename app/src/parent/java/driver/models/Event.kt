@@ -29,7 +29,7 @@ data class Location(
 @JsonClass(generateAdapter = true)
 data class Scope(
     val type: String,
-    val targetClasses: List<String>?
+    val targetClasses: List<String>? = null
 )
 
 @JsonClass(generateAdapter = true)

@@ -14,6 +14,6 @@ data class UploadPosts(
     val createdBy: String,
     val media: List<PostUpload?>,
     val message:String,
-    val scope : String,
+    val scope : Scope,
 )
 
