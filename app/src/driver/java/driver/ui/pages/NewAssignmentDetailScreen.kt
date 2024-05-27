@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -69,6 +70,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import driver.ui.actionColors
 import driver.ui.generateButton
+import driver.ui.headingColor
 import driver.ui.placeColor
 import driver.ui.subHeadingColor
 
@@ -364,6 +366,7 @@ fun BottomSheet() {
                     )
                     Text(
                         text = "Samrish Technologies Pvt Ltd",
+                        color = actionColors,
                         fontSize = 12.sp,
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
@@ -383,6 +386,7 @@ fun BottomSheet() {
                     )
                     Text(
                         text = "Samrish Technologies Pvt Ltd",
+                        color = actionColors,
                         fontSize = 12.sp,
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
@@ -400,7 +404,7 @@ fun BottomSheet() {
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
                     modifier = Modifier
@@ -411,14 +415,22 @@ fun BottomSheet() {
                     Box(
                         modifier = Modifier
                             .weight(1f)
-
                             .padding(end = 8.dp)
-
                             .background(boxgray, shape = RoundedCornerShape(8.dp))
-
+                            .height(60.dp)
                     ) {
-                        Column(verticalArrangement = Arrangement.Center , modifier = Modifier.padding(5.dp)) {
-                            Text(text = "Total Distance Covered", fontSize = 12.sp, textAlign = TextAlign.Center)
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp)
+                        ) {
+                            Text(
+                                text = "Total Distance Covered",
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(text = "400 kms", color = Color.Gray)
                         }
@@ -428,29 +440,39 @@ fun BottomSheet() {
                             .weight(1f)
                             .padding(start = 8.dp)
                             .background(boxgray, shape = RoundedCornerShape(8.dp))
-
-
+                            .height(60.dp)
                     ) {
-                        Column(verticalArrangement = Arrangement.Center
-                        , modifier = Modifier.padding(5.dp)) {
-                            Text(text = "Total Travel Time", fontSize = 12.sp, textAlign = TextAlign.Center)
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp)
+                        ) {
+                            Text(
+                                text = "Total Travel Time",
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(text = "400 kms", color = Color.Gray)
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Next Location", fontWeight = FontWeight.SemiBold)
+//                    Text(text = "Next Location", fontWeight = FontWeight.SemiBold)
+                    Text(text = "Next Location", color = headingColor, fontSize = 14.sp)
                     Text(text = "Sect 4 Gurgaon (GGN)", color = actionColors)
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -466,13 +488,14 @@ fun BottomSheet() {
                     Text(text = "250 kms", fontSize = 12.sp , color = actionColors)
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Departed from Delhi at 02:00 am", fontWeight = FontWeight.SemiBold)
+//                    Text(text = "Departed from Delhi at 02:00 am", fontWeight = FontWeight.SemiBold)
+                    Text(text = "Departed from Delhi at 02:00 am", color = headingColor, fontSize = 14.sp)
 
                 }
                 Spacer(modifier = Modifier.height(5.dp))
