@@ -238,6 +238,7 @@ fun NewAssignmentDetailScreen(
 
                     Icon(
                         imageVector = Icons.Outlined.LocationOn,
+                        tint = Color.Gray,
                         contentDescription = "Search",
                         modifier=Modifier.size(50.dp)
 
@@ -555,6 +556,7 @@ fun BottomSheet() {
 
                 Text(
                     text = "You are operating two trips swipe to see others",
+                    fontWeight = FontWeight.SemiBold,
                     color = Color.Gray,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
