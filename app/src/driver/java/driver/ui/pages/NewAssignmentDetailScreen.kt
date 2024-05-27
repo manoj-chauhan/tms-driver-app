@@ -1,0 +1,558 @@
+package driver.ui.pages
+
+
+import android.content.Context
+import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.drishto.driver.LocationService
+import com.drishto.driver.R
+import com.drishto.driver.ui.viewmodels.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import driver.ui.actionColors
+import driver.ui.generateButton
+import driver.ui.placeColor
+import driver.ui.subHeadingColor
+
+import driver.ui.textColor
+import driver.ui.viewmodels.AssignmentDetailViewModel
+import driver.ui.viewmodels.PastAssignmentDetailViewModel
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+
+
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
+
+val fontName = GoogleFont("Russo One")
+
+val fontFamily = FontFamily(
+    Font(googleFont = fontName, fontProvider = provider)
+)
+val logo = Color(android.graphics.Color.parseColor("#ef2427"))
+
+@Composable
+fun Topbar() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "DRISHTO",
+                fontSize = 28.sp,
+                color = logo,
+                fontWeight = FontWeight.W700,
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Search,
+                contentDescription = "Search",
+                modifier = Modifier.size(32.dp)
+            )
+            Icon(
+                imageVector = Icons.Outlined.Notifications,
+                contentDescription = "Notification",
+                modifier = Modifier.size(32.dp)
+            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(32.dp)
+                    .background(color = Color(0xFF4ACEEB), shape = CircleShape)
+            ) {
+                Text(
+                    text = "SK",
+                    color = Color.Black,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+
+
+
+@Composable
+fun NewAssignmentDetailScreen(
+    navController: NavHostController,
+    selectedAssignment: String,
+    operatorId: Int,
+    tripId: Int,
+    tripCode: String,
+    activity: ComponentActivity,
+    vm: AssignmentDetailViewModel = hiltViewModel(),
+    pt: PastAssignmentDetailViewModel = hiltViewModel()
+) {
+    Log.d("Detail", "AssignmentDetailScreen: ")
+    val context = LocalContext.current
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val isConnected = runCatching {
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }.getOrDefault(false)
+
+    if (isConnected) {
+
+
+        val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
+        val pastAssignment by pt.pastassignmentDetail.collectAsStateWithLifecycle()
+
+        if (assignment?.isDataLoaded != true) {
+            vm.fetchAssignmentDetail(
+                context = context,
+                tripId = tripId,
+                tripCode = tripCode,
+                operatorId = operatorId
+            )
+        }
+
+        val isCheckInDialogVisible = remember { mutableStateOf(false); }
+        var isStartDialogVisible = remember { mutableStateOf(false); }
+        var permit by remember {
+            mutableStateOf(false)
+        }
+
+        val isDocumentSelected = remember { mutableStateOf(true); }
+        val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
+        val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
+
+        val arrivalTime = SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ss")
+        val outputArrivaltime = SimpleDateFormat("HH:mm")
+
+        val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
+        val isCheckInEnabled = assignment?.activeStatusDetail?.actions?.contains("CHECKIN")
+        val isDepartEnabled = assignment?.activeStatusDetail?.actions?.contains("DEPART")
+        val isCancelEnabled = assignment?.activeStatusDetail?.actions?.contains("CANCEL")
+        val isEndEnabled = assignment?.activeStatusDetail?.actions?.contains("END")
+
+        val coroutineScope = rememberCoroutineScope()
+        val vw: SwipeRefresh = viewModel()
+        val isLoading by vw.isLoading.collectAsStateWithLifecycle()
+        val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val locationEnabledState = rememberUpdatedState(isLocationEnabled)
+
+
+        val loc = LocationService::class.java
+        val service = isLocationServiceRunning(context, loc)
+
+        Log.d(
+            "This is the permit of dialog",
+            "AssignmentDetailScreen: ${locationEnabledState.value}, ${assignment?.tripDetail?.status}, ${service}"
+        )
+        if (assignment?.tripDetail?.status != "TRIP_CREATED") {
+            if (!service) {
+                permit = true
+            }
+        } else {
+            permit = false
+        }
+
+
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+
+
+            Topbar()
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center) {
+
+
+                    Icon(
+                        imageVector = Icons.Outlined.LocationOn,
+                        contentDescription = "Search",
+                        modifier=Modifier.size(50.dp)
+
+                    )
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "You are sharing your location",
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp,
+//                    color = textColor,
+//                    fontFamily = fontFamily,
+                    fontWeight = FontWeight.W300,
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Last Location Shared at 5 mins ago",
+                    textAlign = TextAlign.Center,
+                    fontSize = 12.sp,
+                    color = textColor,
+//                    fontFamily = fontFamily,
+
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+
+
+            }
+
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .height(50.dp)
+
+                        .width(300.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFD9F0BC)
+                    )
+
+                )
+                {
+                    Text(
+                        text = "Generate Assignment Code",
+                        textAlign = TextAlign.Center,
+                        color = Color(0xFF429D77),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier
+
+
+                    )
+
+                }
+
+            }
+
+            BottomSheet()
+
+        }
+    }
+
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheet() {
+
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(true) }
+
+    val boxgray= Color(0xFFE5E5E5)
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                showBottomSheet = false
+            },
+            containerColor = Color.White,
+
+            sheetState = sheetState,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White)
+                    .padding(horizontal = 14.dp)
+                    .padding(bottom = 14.dp)
+            ) {
+                Text(
+                    text = "Trip #456456",
+                    fontSize = 16.sp,
+
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "ETE-GGN-PNQ-RST-ADE-AED",
+                    fontSize = 12.sp,
+                    color= actionColors,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
+
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Created by",
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "Samrish Technologies Pvt Ltd",
+                        fontSize = 12.sp,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Operated by",
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+
+                    )
+                    Text(
+                        text = "Samrish Technologies Pvt Ltd",
+                        fontSize = 12.sp,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Running late due to bad weather",
+                    color = logo,
+                    modifier = Modifier
+
+                        .fillMaxWidth(),
+
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+
+                            .padding(end = 8.dp)
+
+                            .background(boxgray, shape = RoundedCornerShape(8.dp))
+
+                    ) {
+                        Column(verticalArrangement = Arrangement.Center , modifier = Modifier.padding(5.dp)) {
+                            Text(text = "Total Distance Covered", fontSize = 12.sp, textAlign = TextAlign.Center)
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(text = "400 kms", color = Color.Gray)
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 8.dp)
+                            .background(boxgray, shape = RoundedCornerShape(8.dp))
+
+
+                    ) {
+                        Column(verticalArrangement = Arrangement.Center
+                        , modifier = Modifier.padding(5.dp)) {
+                            Text(text = "Total Travel Time", fontSize = 12.sp, textAlign = TextAlign.Center)
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(text = "400 kms", color = Color.Gray)
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Next Location", fontWeight = FontWeight.SemiBold)
+                    Text(text = "Sect 4 Gurgaon (GGN)", color = actionColors)
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Estimated Time", fontSize = 12.sp , color = actionColors)
+                    Text(text = "3 hours 20 mins", fontSize = 12.sp , color = actionColors)
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Estimated Distance", fontSize = 12.sp , color = actionColors)
+                    Text(text = "250 kms", fontSize = 12.sp , color = actionColors)
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Departed from Delhi at 02:00 am", fontWeight = FontWeight.SemiBold)
+
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Standard Arrival Time at Next Location: 08:00pm", fontSize = 12.sp, color = actionColors)
+                    Text(text = "300 kms", fontSize = 12.sp , color = actionColors)
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Total Distance from last location", fontSize = 12.sp , color = actionColors)
+                    Text(text = "300 kms", fontSize = 12.sp , color = actionColors)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(
+                        onClick = {  },
+                        modifier = Modifier
+                            .width(120.dp)
+                            .padding(end = 8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFBCC8F0),
+
+                        )
+                    ) {
+                        Text(text = "Start", color = Color(0xFF101482))
+                    }
+                    Button(
+                        onClick = {  },
+                        modifier = Modifier
+                            .width(120.dp)
+                            .padding(start = 8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFD3D3D3)
+
+                        )
+                    ) {
+                        Text(text = "Cancel" , color = Color(0xFF6E6D6D))
+                    }
+                }
+
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "You are operating two trips swipe to see others",
+                    color = Color.Gray,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+
+
+        }
+    }
+}
+
+
+
+//
+//@Preview
+//@Composable
+//fun PreviewMainDetailScreen(){
+//    MainDetailScreen(navController = mockNavController(), tripId = 1, tripCode = "ABC123", activity = ComponentActivity(), vm = viewModel(), pt = viewModel())
+//
+//}
+
+
+

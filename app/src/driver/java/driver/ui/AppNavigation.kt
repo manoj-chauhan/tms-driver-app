@@ -31,6 +31,7 @@ import driver.ui.pages.ChildrenPlanDetail
 import driver.ui.pages.History
 import driver.ui.pages.HomeScreen
 import driver.ui.pages.MatrixLog
+import driver.ui.pages.NewAssignmentDetailScreen
 
 
 const val MY_ARG= "message"
@@ -88,14 +89,25 @@ fun AppNavigationHost(
         composable("current-assignment-detail") {
             val activity = LocalContext.current as? ComponentActivity
 
-            AssignmentDetailScreen(
+//            AssignmentDetailScreen(
+//                navController = navController,
+//                selectedAssignment = selectedAssignmentCode,
+//                operatorId = operatorId,
+//                tripId = tripId,
+//                tripCode = selectedAssignmentCode,
+//                activity = activity ?: return@composable
+//            )
+
+            NewAssignmentDetailScreen(
                 navController = navController,
                 selectedAssignment = selectedAssignmentCode,
                 operatorId = operatorId,
-                tripId = tripId,
+                tripId =tripId ,
                 tripCode = selectedAssignmentCode,
                 activity = activity ?: return@composable
             )
+
+
         }
 
         composable(
@@ -187,28 +199,28 @@ fun AppNavigationHost(
 
         }
 
-        composable("assignment", arguments = listOf(
-            navArgument(MY_ARG) { type = NavType.StringType } ,
-            navArgument("$trip_Id") { type = NavType.IntType },
-            navArgument("$operatorI") { type = NavType.IntType },
-            ),
-            deepLinks = listOf(navDeepLink {
-                uriPattern = "$MY_URI/$MY_ARG={$MY_ARG}/$trip_Id={$trip_Id}&$operatorI={$operatorI}"
-            })
-        ){
-            val activity = LocalContext.current as? ComponentActivity
-
-            val argument = it.arguments
-            if (argument != null) {
-                    val myArgValue = argument.getString(MY_ARG)
-                    val h = argument.getInt("$trip_Id")
-                    val o = argument.getInt("$operatorI")
-
-                    if (myArgValue != null) {
-                        DetailsScree(myArgValue, h,o, navController, activity = activity ?: return@composable)
-                    }
-            }
-        }
+//        composable("assignment", arguments = listOf(
+//            navArgument(MY_ARG) { type = NavType.StringType } ,
+//            navArgument("$trip_Id") { type = NavType.IntType },
+//            navArgument("$operatorI") { type = NavType.IntType },
+//            ),
+//            deepLinks = listOf(navDeepLink {
+//                uriPattern = "$MY_URI/$MY_ARG={$MY_ARG}/$trip_Id={$trip_Id}&$operatorI={$operatorI}"
+//            })
+//        ){
+//            val activity = LocalContext.current as? ComponentActivity
+//
+//            val argument = it.arguments
+//            if (argument != null) {
+//                    val myArgValue = argument.getString(MY_ARG)
+//                    val h = argument.getInt("$trip_Id")
+//                    val o = argument.getInt("$operatorI")
+//
+//                    if (myArgValue != null) {
+//                        DetailsScree(myArgValue, h,o, navController, activity = activity ?: return@composable)
+//                    }
+//            }
+//        }
     }
 }
 
@@ -222,5 +234,7 @@ fun DetailsScree(message: String,tripId:Int,operatorI:Int,navController: NavHost
         tripCode = message,
         activity
     )
+
+
 
 }
