@@ -230,69 +230,205 @@ fun NewAssignmentDetailScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
 
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-
-
-                        Icon(
-                            imageVector = Icons.Outlined.LocationOn,
-                            tint = Color.Gray,
-                            contentDescription = "location",
-                            modifier = Modifier.size(48.dp)
-
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "You are sharing your location",
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp,
-//                    color = textColor,
-//                    fontFamily = fontFamily,
-                        fontWeight = FontWeight.W300,
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Last Location Shared at 5 mins ago",
-                        textAlign = TextAlign.Center,
-                        fontSize = 10.sp,
-                        color = textColor,
-//                    fontFamily = fontFamily,
-
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
-
-
-                }
+//                Column(modifier = Modifier.fillMaxWidth()) {
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.Center
+//                    ) {
+//
+//
+//                        Icon(
+//                            imageVector = Icons.Outlined.LocationOn,
+//                            tint = Color.Gray,
+//                            contentDescription = "location",
+//                            modifier = Modifier.size(48.dp)
+//
+//                        )
+//                    }
+//                    Spacer(modifier = Modifier.height(5.dp))
+//                    Text(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        text = "You are sharing your location",
+//                        textAlign = TextAlign.Center,
+//                        fontSize = 16.sp,
+////                    color = textColor,
+////                    fontFamily = fontFamily,
+//                        fontWeight = FontWeight.W300,
+//                    )
+//                    Spacer(modifier = Modifier.height(5.dp))
+//                    Text(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        text = "Last Location Shared at 5 mins ago",
+//                        textAlign = TextAlign.Center,
+//                        fontSize = 10.sp,
+//                        color = textColor,
+////                    fontFamily = fontFamily,
+//
+//                    )
+//                    Spacer(modifier = Modifier.height(5.dp))
+//
+//
+//                }
 
 
                 Spacer(modifier = Modifier.height(30.dp))
                 currentAssignmentData?.let {
                     RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
 
-                    it.vehicles.let { vList ->
+
+                    var isAnyTripStarted = false;
+
+                    it.trips.forEach { trip ->
+                        if (!isAnyTripStarted) {
+                            if (trip.status != "TRIP_CREATED") {
+                                isAnyTripStarted = true;
+                            }
+                        }
+                    }
+                    if (it.trips.size == 0) {
+                        val location =
+                            Intent(context, LocationService::class.java)
+                        context.stopService(location)
+                    } else {
+                        if (isAnyTripStarted) {
+                            val loc = LocationService::class.java
+                            val service = isLocationServiceRunning(context, loc)
+                            if(service) {
 
 
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color(0xFFF7F7F7))
-                                .padding(6.dp)
+//                                    matList?.let { mList ->
+//                                        if (mList.isNotEmpty()) {
+//                                            val lastTime =
+//                                                mList.last().time
+//
+//                                            val parsedDate =
+//                                                inputFormat.parse(
+//                                                    lastTime.toString()
+//                                                )
+//                                            val formattedDate =
+//                                                outputFormat.format(
+//                                                    parsedDate
+//                                                )
+//                                            Row(
+//                                                modifier = Modifier.fillMaxWidth(),
+//                                                horizontalArrangement = Arrangement.Center
+//                                            ) {
+//                                                Text(text = "Last recorded location time ${formattedDate} ")
+//
+//                                            }
+//                                        } else {
+//                                            Column(modifier = Modifier.fillMaxWidth()) {
+//                                                Row(
+//                                                    modifier = Modifier.fillMaxWidth(),
+//                                                    horizontalArrangement = Arrangement.Center
+//                                                ) {
+//                                                    Text(text = "Last recorded location time - Not shared ")
+//                                                }
+//                                            }
+//                                        }
+//                                    }
 
-                        ) {
-                            currentAssignmentData?.let {
-                                RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-                                vList.take(vList.size)
-                                    .forEach { vehicleAssignment ->
-                                        AssignedVehicle(
-                                            vehicleAssignment
+
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+
+
+                                        Icon(
+                                            imageVector = Icons.Outlined.LocationOn,
+                                            tint = Color.Gray,
+                                            contentDescription = "location",
+                                            modifier = Modifier.size(48.dp)
+
                                         )
                                     }
+                                    Spacer(modifier = Modifier.height(5.dp))
+                                    matList?.let { mList ->
+                                        if (mList.isNotEmpty()) {
+                                            val lastTime =
+                                                mList.last().time
+
+                                            val parsedDate =
+                                                inputFormat.parse(
+                                                    lastTime.toString()
+                                                )
+                                            val formattedDate =
+                                                outputFormat.format(
+                                                    parsedDate
+                                                )
+
+
+                                            Text(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                text = "You are sharing your location",
+                                                textAlign = TextAlign.Center,
+                                                fontSize = 16.sp,
+
+                                                fontWeight = FontWeight.W300,
+                                            )
+                                            Spacer(modifier = Modifier.height(5.dp))
+                                            Text(
+                                                modifier = Modifier.fillMaxWidth(),
+
+                                                text="Last Location Shared at  ${formattedDate}",
+                                                textAlign = TextAlign.Center,
+                                                fontSize = 10.sp,
+                                                color = textColor,
+
+
+                                                )
+                                            Spacer(modifier = Modifier.height(5.dp))
+
+
+                                        }
+                                        else {
+                                            Column(modifier = Modifier.fillMaxWidth()) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(text = "Last recorded location time - Not shared ")
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }else{
+                                permit = true
+                            }
+                            if(service && !locationEnabledState.value)  {
+                                permit = true
+                            }
+                        }
+                        Column {
+                            if (it.trips != null) {
+                                if (it.trips.size > 0) {
+
+                                    it.vehicles.let { vList ->
+
+
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .background(Color(0xFFF7F7F7))
+                                                .padding(6.dp)
+
+                                        ) {
+                                            currentAssignmentData?.let {
+                                                RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+                                                vList.take(vList.size)
+                                                    .forEach { vehicleAssignment ->
+                                                        AssignedVehicle(
+                                                            vehicleAssignment
+                                                        )
+                                                    }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                             Spacer(modifier = Modifier.height(30.dp))
 
