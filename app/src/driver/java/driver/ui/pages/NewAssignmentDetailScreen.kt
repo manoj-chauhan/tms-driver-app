@@ -82,6 +82,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import driver.ui.actionColors
 import driver.ui.components.AssignedVehicle
+import driver.ui.components.GeneratedCodeDialog
 import driver.ui.generateButton
 import driver.ui.headingColor
 import driver.ui.placeColor
@@ -461,6 +462,15 @@ fun NewAssignmentDetailScreen(
 
                                     )
 
+                                }
+                                if (currentAssignmentData!!.isAssignmentCodeVisible) {
+                                    GeneratedCodeDialog(
+                                        currentAssignmentData?.assignmentCode
+                                            ?: "",
+                                        setShowDialog = {
+                                            vm.hideAssignmentCode(context)
+                                        }
+                                    )
                                 }
 
 
