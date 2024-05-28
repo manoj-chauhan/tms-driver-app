@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -231,46 +232,6 @@ fun NewAssignmentDetailScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
 
-//                Column(modifier = Modifier.fillMaxWidth()) {
-//                    Row(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.Center
-//                    ) {
-//
-//
-//                        Icon(
-//                            imageVector = Icons.Outlined.LocationOn,
-//                            tint = Color.Gray,
-//                            contentDescription = "location",
-//                            modifier = Modifier.size(48.dp)
-//
-//                        )
-//                    }
-//                    Spacer(modifier = Modifier.height(5.dp))
-//                    Text(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        text = "You are sharing your location",
-//                        textAlign = TextAlign.Center,
-//                        fontSize = 16.sp,
-////                    color = textColor,
-////                    fontFamily = fontFamily,
-//                        fontWeight = FontWeight.W300,
-//                    )
-//                    Spacer(modifier = Modifier.height(5.dp))
-//                    Text(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        text = "Last Location Shared at 5 mins ago",
-//                        textAlign = TextAlign.Center,
-//                        fontSize = 10.sp,
-//                        color = textColor,
-////                    fontFamily = fontFamily,
-//
-//                    )
-//                    Spacer(modifier = Modifier.height(5.dp))
-//
-//
-//                }
-
 
                 Spacer(modifier = Modifier.height(30.dp))
                 currentAssignmentData?.let {
@@ -295,40 +256,6 @@ fun NewAssignmentDetailScreen(
                             val loc = LocationService::class.java
                             val service = isLocationServiceRunning(context, loc)
                             if(service) {
-
-
-//                                    matList?.let { mList ->
-//                                        if (mList.isNotEmpty()) {
-//                                            val lastTime =
-//                                                mList.last().time
-//
-//                                            val parsedDate =
-//                                                inputFormat.parse(
-//                                                    lastTime.toString()
-//                                                )
-//                                            val formattedDate =
-//                                                outputFormat.format(
-//                                                    parsedDate
-//                                                )
-//                                            Row(
-//                                                modifier = Modifier.fillMaxWidth(),
-//                                                horizontalArrangement = Arrangement.Center
-//                                            ) {
-//                                                Text(text = "Last recorded location time ${formattedDate} ")
-//
-//                                            }
-//                                        } else {
-//                                            Column(modifier = Modifier.fillMaxWidth()) {
-//                                                Row(
-//                                                    modifier = Modifier.fillMaxWidth(),
-//                                                    horizontalArrangement = Arrangement.Center
-//                                                ) {
-//                                                    Text(text = "Last recorded location time - Not shared ")
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-
 
                                 Column(modifier = Modifier.fillMaxWidth()) {
                                     Row(
@@ -481,7 +408,9 @@ fun NewAssignmentDetailScreen(
                     }
 
                 }
-                BottomSheet()
+                BottomSheet(
+
+                )
             }
 
 
@@ -508,7 +437,7 @@ fun BottomSheet() {
                 showBottomSheet = false
             },
             containerColor = Color.White,
-
+            tonalElevation = BottomSheetDefaults.Elevation,
             sheetState = sheetState,
         ) {
             Column(
