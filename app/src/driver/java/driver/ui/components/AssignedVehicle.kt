@@ -1,17 +1,25 @@
 package driver.ui.components
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import driver.ui.actionColors
 import driver.ui.viewmodels.VehicleAssignment
 import java.text.SimpleDateFormat
 
@@ -22,47 +30,59 @@ fun AssignedVehicle(vehicleAssignment: VehicleAssignment) {
     val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
     val outputFormat = SimpleDateFormat("dd MMMM, yyyy HH:mm a")
 
+//    val tripTime = SimpleDateFormat("HH:mm:ss")
+//    val outputtripTime = SimpleDateFormat(" hh:mm a")
+//
+//    val parsedTime = remember(vehicleAssignment) {tripTime.parse(vehicleAssignment.timeOfNotice) }
+//    val formattedTime = remember(parsedTime) { outputtripTime.format(parsedTime) }
+
 
     val parsedDate = remember(vehicleAssignment.assignedAt) { inputFormat.parse(vehicleAssignment.assignedAt) }
     val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
+
+
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .background(Color(0xFFF7F7F7))
+        .padding(6.dp)
+
     ) {
 
-        Card(
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+        Row(modifier = Modifier) {
+            Text(
 
-        ) {
+                text = vehicleAssignment.vehicleNumber,
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = vehicleAssignment.vehicleNumber)
-                    Text(text = "${vehicleAssignment.brand} ${vehicleAssignment.model} (${vehicleAssignment.fuelType}) ${vehicleAssignment.vehicleSize}ft")
-                }
+            )
+            Spacer(modifier = Modifier.width(18.dp))
+            Text(
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Assigned by ${vehicleAssignment.assignerName}, ${vehicleAssignment.companyName}")
-                }
-                Row() {
-                    Text(text = "Assigned at ${formattedDate}")
-                }
-            }
+                text = "${vehicleAssignment.brand} ${vehicleAssignment.model}, ${vehicleAssignment.vehicleSize}ft",
+
+
+                fontSize = 12.sp,
+                color = actionColors
+
+            )
+
         }
+
+
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Assigned by ${vehicleAssignment.assignerName}, ${vehicleAssignment.companyName} at ${formattedDate}",
+
+            fontSize = 11.sp,
+            color = actionColors,
+        )
+
     }
+
+
+
 }

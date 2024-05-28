@@ -1,10 +1,14 @@
 package driver.ui.pages
 
 
+import android.Manifest
 import android.content.Context
+import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,10 +37,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -70,10 +76,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.drishto.driver.LocationService
 import com.drishto.driver.R
+import com.drishto.driver.models.DriverPlans
 import com.drishto.driver.ui.viewmodels.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import driver.ui.actionColors
+import driver.ui.components.AssignedVehicle
 import driver.ui.generateButton
 import driver.ui.headingColor
 import driver.ui.placeColor
@@ -81,7 +89,11 @@ import driver.ui.subHeadingColor
 
 import driver.ui.textColor
 import driver.ui.viewmodels.AssignmentDetailViewModel
+import driver.ui.viewmodels.HomeViewModel
+import driver.ui.viewmodels.MatrixLogViewModel
 import driver.ui.viewmodels.PastAssignmentDetailViewModel
+import driver.ui.viewmodels.TripsAssigned
+import driver.ui.viewmodels.VehicleAssignment
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
@@ -146,21 +158,22 @@ fun Topbar() {
 }
 
 
-
-
 @Composable
 fun NewAssignmentDetailScreen(
+
     navController: NavHostController,
-    selectedAssignment: String,
-    operatorId: Int,
-    tripId: Int,
-    tripCode: String,
-    activity: ComponentActivity,
-    vm: AssignmentDetailViewModel = hiltViewModel(),
-    pt: PastAssignmentDetailViewModel = hiltViewModel()
+    vm: HomeViewModel = hiltViewModel(),
+    mv: MatrixLogViewModel = hiltViewModel(),
+    onTripSelected: (assignment: TripsAssigned) -> Unit,
+    onAssignedPlansSelected: (plans: DriverPlans) -> Unit,
+    activity: ComponentActivity
 ) {
-    Log.d("Detail", "AssignmentDetailScreen: ")
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+    val matList by mv.matrixList.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
+
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val isConnected = runCatching {
@@ -168,66 +181,45 @@ fun NewAssignmentDetailScreen(
         activeNetworkInfo != null && activeNetworkInfo.isConnected
     }.getOrDefault(false)
 
-    if (isConnected) {
+    var locations by remember {
+        mutableStateOf(false)
+    }
+
+    var userProfile by remember {
+        mutableStateOf(false)
+    }
+
+    var history by remember {
+        mutableStateOf(false)
+    }
+
+    var permit by remember {
+        mutableStateOf(false)
+    }
+
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    val locationEnabledState = rememberUpdatedState(isLocationEnabled)
+
+    val vw: SwipeRefresh = viewModel()
+    val isLoading by vw.isLoading.collectAsStateWithLifecycle()
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
+    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+        if (isConnected) {
+
+            mv.loadMatrixLog(context = context)
+
+            val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
+            val outputFormat = SimpleDateFormat("HH:mm a")
+
+            val currentAssignmentData by vm.currentAssignment.collectAsStateWithLifecycle()
+            vm.fetchAssignmentDetail(context = context)
+
+            val driverPlanData by vm.driverPlan.collectAsStateWithLifecycle()
+            vm.driverPlanAssignment(context = context)
 
 
-        val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
-        val pastAssignment by pt.pastassignmentDetail.collectAsStateWithLifecycle()
-
-        if (assignment?.isDataLoaded != true) {
-            vm.fetchAssignmentDetail(
-                context = context,
-                tripId = tripId,
-                tripCode = tripCode,
-                operatorId = operatorId
-            )
-        }
-
-        val isCheckInDialogVisible = remember { mutableStateOf(false); }
-        var isStartDialogVisible = remember { mutableStateOf(false); }
-        var permit by remember {
-            mutableStateOf(false)
-        }
-
-        val isDocumentSelected = remember { mutableStateOf(true); }
-        val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
-        val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
-
-        val arrivalTime = SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ss")
-        val outputArrivaltime = SimpleDateFormat("HH:mm")
-
-        val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
-        val isCheckInEnabled = assignment?.activeStatusDetail?.actions?.contains("CHECKIN")
-        val isDepartEnabled = assignment?.activeStatusDetail?.actions?.contains("DEPART")
-        val isCancelEnabled = assignment?.activeStatusDetail?.actions?.contains("CANCEL")
-        val isEndEnabled = assignment?.activeStatusDetail?.actions?.contains("END")
-
-        val coroutineScope = rememberCoroutineScope()
-        val vw: SwipeRefresh = viewModel()
-        val isLoading by vw.isLoading.collectAsStateWithLifecycle()
-        val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
-
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        val locationEnabledState = rememberUpdatedState(isLocationEnabled)
-
-
-        val loc = LocationService::class.java
-        val service = isLocationServiceRunning(context, loc)
-
-        Log.d(
-            "This is the permit of dialog",
-            "AssignmentDetailScreen: ${locationEnabledState.value}, ${assignment?.tripDetail?.status}, ${service}"
-        )
-        if (assignment?.tripDetail?.status != "TRIP_CREATED") {
-            if (!service) {
-                permit = true
-            }
-        } else {
-            permit = false
-        }
-
-        Column(modifier = Modifier.padding(horizontal = 10.dp)) {
 
 
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -236,6 +228,7 @@ fun NewAssignmentDetailScreen(
                 Topbar()
 
                 Spacer(modifier = Modifier.height(8.dp))
+
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Row(
@@ -279,87 +272,79 @@ fun NewAssignmentDetailScreen(
 
 
                 Spacer(modifier = Modifier.height(30.dp))
+                currentAssignmentData?.let {
+                    RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+
+                    it.vehicles.let { vList ->
 
 
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color(0xFFF7F7F7))
-                    .padding(6.dp)
-
-                ) {
-
-                    Row(modifier = Modifier) {
-                        Text(
-
-                            text = "DL4CND45334",
-
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
-
-                            )
-                        Spacer(modifier = Modifier.width(18.dp))
-                        Text(
-
-                            text = "(TATA ACE 24ft)",
-
-
-                            fontSize = 12.sp,
-                            color = actionColors
-
-                        )
-
-                    }
-
-
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Assigned by Samrish Technologies Pvt Ltd at 3PM 23 Jun 2024",
-
-                        fontSize = 11.sp,
-                        color = actionColors,
-                    )
-
-                }
-                Spacer(modifier = Modifier.height(30.dp))
-
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .height(50.dp)
-                            .width(275.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFD9F0BC)
-                        )
-                    ) {
-                        Text(
-                            text = "Generate Assignment Code",
-                            textAlign = TextAlign.Center,
-                            color = Color(0xFF429D77),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
+                        Column(
                             modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color(0xFFF7F7F7))
+                                .padding(6.dp)
+
+                        ) {
+                            currentAssignmentData?.let {
+                                RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+                                vList.take(vList.size)
+                                    .forEach { vehicleAssignment ->
+                                        AssignedVehicle(
+                                            vehicleAssignment
+                                        )
+                                    }
+                            }
+                            Spacer(modifier = Modifier.height(30.dp))
 
 
-                        )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Button(
+                                    onClick = {
+                                        vm.generateAssignmentCode(
+                                            context
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .height(50.dp)
+                                        .width(275.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFFD9F0BC)
+                                    )
+                                ) {
+                                    Text(
+                                        text = "Generate Assignment Code",
+                                        textAlign = TextAlign.Center,
+                                        color = Color(0xFF429D77),
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        modifier = Modifier
 
+
+                                    )
+
+                                }
+
+
+                            }
+
+
+                        }
                     }
 
                 }
-
                 BottomSheet()
-
             }
+
+
+
         }
-
-
     }
 }
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -369,7 +354,7 @@ fun BottomSheet() {
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(true) }
 
-    val boxgray= Color(0xFFE5E5E5)
+    val boxgray = Color(0xFFE5E5E5)
 
     if (showBottomSheet) {
         ModalBottomSheet(
@@ -398,7 +383,7 @@ fun BottomSheet() {
                 Text(
                     text = "ETE-GGN-PNQ-RST-ADE-AED",
                     fontSize = 12.sp,
-                    color= actionColors,
+                    color = actionColors,
                     modifier = Modifier
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center
@@ -530,15 +515,15 @@ fun BottomSheet() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Estimated Time", fontSize = 12.sp , color = actionColors)
-                    Text(text = "3 hours 20 mins", fontSize = 12.sp , color = actionColors)
+                    Text(text = "Estimated Time", fontSize = 12.sp, color = actionColors)
+                    Text(text = "3 hours 20 mins", fontSize = 12.sp, color = actionColors)
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Estimated Distance", fontSize = 12.sp , color = actionColors)
-                    Text(text = "250 kms", fontSize = 12.sp , color = actionColors)
+                    Text(text = "Estimated Distance", fontSize = 12.sp, color = actionColors)
+                    Text(text = "250 kms", fontSize = 12.sp, color = actionColors)
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -548,7 +533,11 @@ fun BottomSheet() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 //                    Text(text = "Departed from Delhi at 02:00 am", fontWeight = FontWeight.SemiBold)
-                    Text(text = "Departed from Delhi at 02:00 am", color = headingColor, fontSize = 14.sp)
+                    Text(
+                        text = "Departed from Delhi at 02:00 am",
+                        color = headingColor,
+                        fontSize = 14.sp
+                    )
 
                 }
                 Spacer(modifier = Modifier.height(5.dp))
@@ -559,16 +548,24 @@ fun BottomSheet() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Standard Arrival Time at Next Location: 08:00pm", fontSize = 12.sp, color = actionColors)
-                    Text(text = "300 kms", fontSize = 12.sp , color = actionColors)
+                    Text(
+                        text = "Standard Arrival Time at Next Location: 08:00pm",
+                        fontSize = 12.sp,
+                        color = actionColors
+                    )
+                    Text(text = "300 kms", fontSize = 12.sp, color = actionColors)
                 }
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Total Distance from last location", fontSize = 12.sp , color = actionColors)
-                    Text(text = "300 kms", fontSize = 12.sp , color = actionColors)
+                    Text(
+                        text = "Total Distance from last location",
+                        fontSize = 12.sp,
+                        color = actionColors
+                    )
+                    Text(text = "300 kms", fontSize = 12.sp, color = actionColors)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -578,19 +575,19 @@ fun BottomSheet() {
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Button(
-                        onClick = {  },
+                        onClick = { },
                         modifier = Modifier
                             .width(120.dp)
                             .padding(end = 8.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFBCC8F0),
 
-                        )
+                            )
                     ) {
                         Text(text = "Start", color = Color(0xFF101482))
                     }
                     Button(
-                        onClick = {  },
+                        onClick = { },
                         modifier = Modifier
                             .width(120.dp)
                             .padding(start = 8.dp),
@@ -599,7 +596,7 @@ fun BottomSheet() {
 
                         )
                     ) {
-                        Text(text = "Cancel" , color = Color(0xFF6E6D6D))
+                        Text(text = "Cancel", color = Color(0xFF6E6D6D))
                     }
                 }
 
@@ -616,7 +613,6 @@ fun BottomSheet() {
 
                 Spacer(modifier = Modifier.height(500.dp))
             }
-
 
 
         }

@@ -99,13 +99,44 @@ fun AppNavigationHost(
 //            )
 
             NewAssignmentDetailScreen(
-                navController = navController,
-                selectedAssignment = selectedAssignmentCode,
-                operatorId = operatorId,
-                tripId =tripId ,
-                tripCode = selectedAssignmentCode,
-                activity = activity ?: return@composable
+            navController = navController,
+            onTripSelected = {
+                selectedAssignmentCode = it.tripCode
+                operatorId = it.operatorCompanyId
+                tripId = it.tripId
+                navController.navigate("current-assignment-detail")
+            },
+            onAssignedPlansSelected = {
+                operatorId = it.companyId
+                planCode = it.planCode
+                planId = it.id
+                navController.navigate("driver-plans-details")
+            },
+            activity = activity ?: return@composable
             )
+
+//            composable(
+//                "home"
+//            ) {
+//                val activity = LocalContext.current as? ComponentActivity
+//
+//                HomeScreen(
+//                    navController = navController,
+//                    onTripSelected = {
+//                        selectedAssignmentCode = it.tripCode
+//                        operatorId = it.operatorCompanyId
+//                        tripId = it.tripId
+//                        navController.navigate("current-assignment-detail")
+//                    },
+//                    onAssignedPlansSelected = {
+//                        operatorId = it.companyId
+//                        planCode = it.planCode
+//                        planId = it.id
+//                        navController.navigate("driver-plans-details")
+//                    },
+//                    activity = activity ?: return@composable
+//                )
+//            }
 
 
         }
