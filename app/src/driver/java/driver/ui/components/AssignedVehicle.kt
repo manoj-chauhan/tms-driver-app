@@ -97,19 +97,10 @@ fun AssignedVehicle(vehicleAssignment: VehicleAssignment) {
     val parsedDate = remember(vehicleAssignment.assignedAt) { inputFormat.parse(vehicleAssignment.assignedAt) }
     val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
 
-    val lightPeach = Color(0XFFFFF4EA)
-    val darkPeach = Color(0XFFFEE1DC)
-
-    val gradientBrush = Brush.verticalGradient(
-        colors = listOf(lightPeach, darkPeach),
-        startY = 0f,
-        endY = 500f
-    )
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(gradientBrush)
+            .background(Color.Transparent)
             .padding(16.dp)
     ) {
         Text(

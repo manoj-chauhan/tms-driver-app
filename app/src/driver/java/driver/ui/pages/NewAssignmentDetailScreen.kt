@@ -248,226 +248,225 @@ fun NewAssignmentDetailScreen(
     val isLoading by vw.isLoading.collectAsStateWithLifecycle()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
-    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
-        if (isConnected) {
+    val lightPeach = Color(0XFFFFF4EA)
+    val darkPeach = Color(0XFFFEE1DC)
 
-            mv.loadMatrixLog(context = context)
-
-            val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
-            val outputFormat = SimpleDateFormat("HH:mm a")
-
-            val currentAssignmentData by vm.currentAssignment.collectAsStateWithLifecycle()
-            vm.fetchAssignmentDetail(context = context)
-
-            val driverPlanData by vm.driverPlan.collectAsStateWithLifecycle()
-            vm.driverPlanAssignment(context = context)
-
-            val lightPeach = Color(0XFFFFF4EA)
-            val darkPeach = Color(0XFFFEE1DC)
-
-            val gradientBrush = Brush.verticalGradient(
-                colors = listOf(lightPeach, darkPeach),
-                startY = 0f,
-                endY = 500f
-            )
+    val gradientBrush = Brush.verticalGradient(
+        colors = listOf(lightPeach, darkPeach),
+        startY = 0f,
+        endY = 1000f
+    )
+    Column(modifier = Modifier.fillMaxSize().background(gradientBrush)) {
 
 
+        Column(modifier = Modifier.padding(horizontal = 10.dp).background(Color.Transparent)) {
+            if (isConnected) {
+
+                mv.loadMatrixLog(context = context)
+
+                val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
+                val outputFormat = SimpleDateFormat("HH:mm a")
+
+                val currentAssignmentData by vm.currentAssignment.collectAsStateWithLifecycle()
+                vm.fetchAssignmentDetail(context = context)
+
+                val driverPlanData by vm.driverPlan.collectAsStateWithLifecycle()
+                vm.driverPlanAssignment(context = context)
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+
+                ) {
 
 
+                    Topbar()
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(gradientBrush)
-            ) {
-
-
-                Topbar()
-
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
 
 
-                Spacer(modifier = Modifier.height(30.dp))
-                currentAssignmentData?.let {
-                    RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+                    Spacer(modifier = Modifier.height(30.dp))
+                    currentAssignmentData?.let {
+                        RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
 
 
-                    var isAnyTripStarted = false;
+                        var isAnyTripStarted = false;
 
-                    it.trips.forEach { trip ->
-                        if (!isAnyTripStarted) {
-                            if (trip.status != "TRIP_CREATED") {
-                                isAnyTripStarted = true;
+                        it.trips.forEach { trip ->
+                            if (!isAnyTripStarted) {
+                                if (trip.status != "TRIP_CREATED") {
+                                    isAnyTripStarted = true;
+                                }
                             }
                         }
-                    }
-                    if (it.trips.size == 0) {
-                        val location =
-                            Intent(context, LocationService::class.java)
-                        context.stopService(location)
-                    } else {
-                        if (isAnyTripStarted) {
-                            val loc = LocationService::class.java
-                            val service = isLocationServiceRunning(context, loc)
-                            if (service) {
+                        if (it.trips.size == 0) {
+                            val location =
+                                Intent(context, LocationService::class.java)
+                            context.stopService(location)
+                        } else {
+                            if (isAnyTripStarted) {
+                                val loc = LocationService::class.java
+                                val service = isLocationServiceRunning(context, loc)
+                                if (service) {
 
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-
-
-                                        Icon(
-                                            imageVector = Icons.Outlined.LocationOn,
-                                            tint = Color.Gray,
-                                            contentDescription = "location",
-                                            modifier = Modifier.size(48.dp)
-
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(5.dp))
-                                    matList?.let { mList ->
-                                        if (mList.isNotEmpty()) {
-                                            val lastTime =
-                                                mList.last().time
-
-                                            val parsedDate =
-                                                inputFormat.parse(
-                                                    lastTime.toString()
-                                                )
-                                            val formattedDate =
-                                                outputFormat.format(
-                                                    parsedDate
-                                                )
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
 
 
-                                            Text(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                text = "You are sharing your location",
-                                                textAlign = TextAlign.Center,
-                                                fontSize = 16.sp,
+                                            Icon(
+                                                imageVector = Icons.Outlined.LocationOn,
+                                                tint = Color.Gray,
+                                                contentDescription = "location",
+                                                modifier = Modifier.size(48.dp)
 
-                                                fontWeight = FontWeight.W300,
                                             )
-                                            Spacer(modifier = Modifier.height(5.dp))
-                                            Text(
-                                                modifier = Modifier.fillMaxWidth(),
+                                        }
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                        matList?.let { mList ->
+                                            if (mList.isNotEmpty()) {
+                                                val lastTime =
+                                                    mList.last().time
 
-                                                text = "Last Location Shared at  ${formattedDate}",
-                                                textAlign = TextAlign.Center,
-                                                fontSize = 10.sp,
-                                                color = textColor,
+                                                val parsedDate =
+                                                    inputFormat.parse(
+                                                        lastTime.toString()
+                                                    )
+                                                val formattedDate =
+                                                    outputFormat.format(
+                                                        parsedDate
+                                                    )
 
 
-                                                )
-                                            Spacer(modifier = Modifier.height(5.dp))
-
-
-                                        } else {
-                                            Column(modifier = Modifier.fillMaxWidth()) {
-                                                Row(
+                                                Text(
                                                     modifier = Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.Center
-                                                ) {
-                                                    Text(text = "Last recorded location time - Not shared ")
+                                                    text = "You are sharing your location",
+                                                    textAlign = TextAlign.Center,
+                                                    fontSize = 16.sp,
+
+                                                    fontWeight = FontWeight.W300,
+                                                )
+                                                Spacer(modifier = Modifier.height(5.dp))
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+
+                                                    text = "Last Location Shared at  ${formattedDate}",
+                                                    textAlign = TextAlign.Center,
+                                                    fontSize = 10.sp,
+                                                    color = textColor,
+
+
+                                                    )
+                                                Spacer(modifier = Modifier.height(5.dp))
+
+
+                                            } else {
+                                                Column(modifier = Modifier.fillMaxWidth()) {
+                                                    Row(
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        horizontalArrangement = Arrangement.Center
+                                                    ) {
+                                                        Text(text = "Last recorded location time - Not shared ")
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                } else {
+                                    permit = true
+                                }
+                                if (service && !locationEnabledState.value) {
+                                    permit = true
+                                }
+                            }
+                            Column {
+                                if (it.trips != null) {
+                                    if (it.trips.size > 0) {
+
+                                        it.vehicles.let { vList ->
+
+
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .background(Color.Transparent)
+                                                    .padding(6.dp)
+
+                                            ) {
+                                                currentAssignmentData?.let {
+                                                    RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+                                                    vList.take(vList.size)
+                                                        .forEach { vehicleAssignment ->
+                                                            AssignedVehicle(
+                                                                vehicleAssignment
+                                                            )
+                                                        }
                                                 }
                                             }
                                         }
                                     }
                                 }
-
-                            } else {
-                                permit = true
-                            }
-                            if (service && !locationEnabledState.value) {
-                                permit = true
-                            }
-                        }
-                        Column {
-                            if (it.trips != null) {
-                                if (it.trips.size > 0) {
-
-                                    it.vehicles.let { vList ->
+                                Spacer(modifier = Modifier.height(30.dp))
 
 
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(Color(0xFFF7F7F7))
-                                                .padding(6.dp)
-
-                                        ) {
-                                            currentAssignmentData?.let {
-                                                RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-                                                vList.take(vList.size)
-                                                    .forEach { vehicleAssignment ->
-                                                        AssignedVehicle(
-                                                            vehicleAssignment
-                                                        )
-                                                    }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(30.dp))
-
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Button(
-                                    onClick = {
-                                        vm.generateAssignmentCode(
-                                            context
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .height(50.dp)
-                                        .width(275.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFFD9F0BC)
-                                    )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
                                 ) {
-                                    Text(
-                                        text = "Generate Assignment Code",
-                                        textAlign = TextAlign.Center,
-                                        color = Color(0xFF429D77),
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.SemiBold,
+                                    Button(
+                                        onClick = {
+                                            vm.generateAssignmentCode(
+                                                context
+                                            )
+                                        },
                                         modifier = Modifier
+                                            .height(50.dp)
+                                            .width(275.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFD9F0BC)
+                                        )
+                                    ) {
+                                        Text(
+                                            text = "Generate Assignment Code",
+                                            textAlign = TextAlign.Center,
+                                            color = Color(0xFF429D77),
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier
 
 
-                                    )
+                                        )
 
-                                }
-                                if (currentAssignmentData!!.isAssignmentCodeVisible) {
-                                    GeneratedCodeDialog(
-                                        currentAssignmentData?.assignmentCode
-                                            ?: "",
-                                        setShowDialog = {
-                                            vm.hideAssignmentCode(context)
-                                        }
-                                    )
+                                    }
+                                    if (currentAssignmentData!!.isAssignmentCodeVisible) {
+                                        GeneratedCodeDialog(
+                                            currentAssignmentData?.assignmentCode
+                                                ?: "",
+                                            setShowDialog = {
+                                                vm.hideAssignmentCode(context)
+                                            }
+                                        )
+                                    }
+
+
                                 }
 
 
                             }
-
-
                         }
+
                     }
+                    BottomSheet(
 
+                    )
                 }
-                BottomSheet(
 
-                )
+
             }
-
-
         }
     }
 }
