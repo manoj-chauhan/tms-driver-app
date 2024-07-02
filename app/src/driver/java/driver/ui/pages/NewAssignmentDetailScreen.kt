@@ -14,12 +14,14 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,9 +37,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.LocationOff
 import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
@@ -81,6 +86,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.Transparent
@@ -120,6 +126,7 @@ import driver.ui.generateButton
 import driver.ui.headingColor
 import driver.ui.placeColor
 import driver.ui.subHeadingColor
+import driver.ui.subText
 
 import driver.ui.textColor
 import driver.ui.viewmodels.AssignmentDetailViewModel
@@ -349,9 +356,9 @@ fun NewAssignmentDetailScreen(
                                                             imageVector = Icons.Outlined.LocationOn,
                                                             tint = Color.Green,
                                                             contentDescription = "location",
-                                                            modifier = Modifier.size(24.dp)
+                                                            modifier = Modifier.size(20.dp)
                                                         )
-                                                        Spacer(modifier = Modifier.width(3.dp))
+                                                        Spacer(modifier = Modifier.width(6.dp))
 
                                                         Text(
                                                             color = headingColor,
@@ -487,23 +494,44 @@ fun BottomSheet() {
                     .padding(horizontal = 14.dp)
                     .padding(bottom = 14.dp)
             ) {
-                Text(
-                    text = "Trip #456456",
-                    fontSize = 16.sp,
-
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "ETE-GGN-PNQ-RST-ADE-AED",
-                    fontSize = 12.sp,
-                    color = actionColors,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Trip #456456",
+                            fontSize = 16.sp,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "ETE-GGN-PNQ-RST-ADE-AED",
+                            fontSize = 12.sp,
+                            color = actionColors,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start
+                        )
+                    }
+                    Box(
+                        modifier = Modifier.size(40.dp)
+                            .padding(8.dp)
 
-                )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.MoreVert,
+                            tint = Color.Black,
+                            contentDescription = "Menu",
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -526,6 +554,7 @@ fun BottomSheet() {
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -544,8 +573,11 @@ fun BottomSheet() {
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
-
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
                 Spacer(modifier = Modifier.height(20.dp))
+
+
 
                 Text(
                     text = "Running late due to bad weather",
@@ -557,7 +589,8 @@ fun BottomSheet() {
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
 
                 Row(
                     modifier = Modifier
@@ -569,7 +602,7 @@ fun BottomSheet() {
                         modifier = Modifier
                             .weight(1f)
                             .padding(end = 8.dp)
-                            .background(boxgray, shape = RoundedCornerShape(8.dp))
+                            .background(color = Color(0XFFDCE1FE), shape = RoundedCornerShape(8.dp))
                             .height(60.dp)
                     ) {
                         Column(
@@ -582,17 +615,18 @@ fun BottomSheet() {
                             Text(
                                 text = "Total Distance Covered",
                                 fontSize = 12.sp,
+                                color = Color.Gray,
                                 textAlign = TextAlign.Center
                             )
                             Spacer(modifier = Modifier.height(2.dp))
-                            Text(text = "400 kms", color = Color.Gray)
+                            Text(text = "_ _", color = Black)
                         }
                     }
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .padding(start = 8.dp)
-                            .background(boxgray, shape = RoundedCornerShape(8.dp))
+                            .background(color = Color(0XFFDCE1FE), shape = RoundedCornerShape(8.dp))
                             .height(60.dp)
                     ) {
                         Column(
@@ -604,17 +638,20 @@ fun BottomSheet() {
                         ) {
                             Text(
                                 text = "Total Travel Time",
+                                color = Color.Gray,
                                 fontSize = 12.sp,
                                 textAlign = TextAlign.Center
                             )
                             Spacer(modifier = Modifier.height(2.dp))
-                            Text(text = "400 kms", color = Color.Gray)
+                            Text(text = "_ _", color = Black)
                         }
                     }
                 }
 
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -684,6 +721,8 @@ fun BottomSheet() {
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -694,29 +733,37 @@ fun BottomSheet() {
                         modifier = Modifier
                             .width(120.dp)
                             .padding(end = 8.dp),
+
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFBCC8F0),
+                            containerColor = Color(0xFFEBF4FA),
 
                             )
                     ) {
-                        Text(text = "Start", color = Color(0xFF101482))
+                        Text(text = "Start", color = Color.Blue)
                     }
                     Button(
                         onClick = { },
+
                         modifier = Modifier
                             .width(120.dp)
                             .padding(start = 8.dp),
+
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFD3D3D3)
+                            containerColor = Color(0xFFE8EAED)
+
 
                         )
                     ) {
-                        Text(text = "Cancel", color = Color(0xFF6E6D6D))
+                        Text(text = "Cancel", color = Color.Gray)
                     }
                 }
 
 
                 Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
+                Spacer(modifier = Modifier.height(16.dp))
+
+
 
                 Text(
                     text = "You are operating two trips swipe to see others",
