@@ -40,6 +40,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOff
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MoreVert
@@ -170,7 +171,7 @@ fun Topbar() {
 
                 tint = Color.Black,
                 modifier = Modifier
-                    .size(32.dp)
+                    .size(30.dp)
                     .clip(CircleShape)
                     .background(Color.LightGray)
             )
@@ -181,7 +182,7 @@ fun Topbar() {
 
 
             Button(modifier = Modifier
-                .width(250.dp)
+                .width(260.dp)
                 .height(40.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0XFFF9E7E6)), onClick = { }) {
 
@@ -204,7 +205,7 @@ fun Topbar() {
             Icon(
                 imageVector = Icons.Outlined.Notifications,
                 contentDescription = "Notifications",
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(30.dp)
             )
 
 
@@ -517,7 +518,8 @@ fun BottomSheet() {
                         )
                     }
                     Box(
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier
+                            .size(40.dp)
                             .padding(8.dp)
 
                     ) {
@@ -578,16 +580,31 @@ fun BottomSheet() {
                 Spacer(modifier = Modifier.height(20.dp))
 
 
-
-                Text(
-                    text = "Running late due to bad weather",
-                    color = logo,
+                Box(
                     modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .background(Color(0XFFEBF4FA)) 
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
 
-                        .fillMaxWidth(),
 
-                    textAlign = TextAlign.Center
-                )
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            tint = Color.Blue,
+                            contentDescription = "information",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .padding(start = 10.dp)
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+
+                        Text(text = "Trip is not started yet.", color = Color.Blue)
+                    }
+                    
+                }
+
+
 
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
@@ -821,16 +838,19 @@ fun TabViewContent() {
 fun ScheduleContent() {
 
     Text("Schedule content")
+    Spacer(modifier = Modifier.height(500.dp))
 }
 
 @Composable
 fun TripHistoryContent() {
 
     Text("Trip history content")
+    Spacer(modifier = Modifier.height(500.dp))
 }
 
 @Composable
 fun DocumentsContent() {
 
     Text("Documents content")
+    Spacer(modifier = Modifier.height(500.dp))
 }
