@@ -36,6 +36,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.LocationOff
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
@@ -57,6 +58,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -76,6 +82,7 @@ import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.LightGray
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
@@ -200,10 +207,8 @@ fun Topbar() {
 
 }
 
-
 @Composable
 fun NewAssignmentDetailScreen(
-
     navController: NavHostController,
     vm: HomeViewModel = hiltViewModel(),
     mv: MatrixLogViewModel = hiltViewModel(),
@@ -256,10 +261,14 @@ fun NewAssignmentDetailScreen(
         startY = 0f,
         endY = 1000f
     )
-    Column(modifier = Modifier.fillMaxSize().background(gradientBrush)) {
 
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(gradientBrush)) {
 
-        Column(modifier = Modifier.padding(horizontal = 10.dp).background(Color.Transparent)) {
+        Column(modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .background(Color.Transparent)) {
             if (isConnected) {
 
                 mv.loadMatrixLog(context = context)
@@ -276,20 +285,16 @@ fun NewAssignmentDetailScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-
                 ) {
-
 
                     Topbar()
 
-                    Spacer(modifier = Modifier.height(8.dp))
 
 
 
-                    Spacer(modifier = Modifier.height(30.dp))
+
                     currentAssignmentData?.let {
                         RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-
 
                         var isAnyTripStarted = false;
 
@@ -300,7 +305,8 @@ fun NewAssignmentDetailScreen(
                                 }
                             }
                         }
-                        if (it.trips.size == 0) {
+
+                        if (it.trips.isEmpty()) {
                             val location =
                                 Intent(context, LocationService::class.java)
                             context.stopService(location)
@@ -310,71 +316,87 @@ fun NewAssignmentDetailScreen(
                                 val service = isLocationServiceRunning(context, loc)
                                 if (service) {
 
-                                    Column(modifier = Modifier.fillMaxWidth()) {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-
-
-                                            Icon(
-                                                imageVector = Icons.Outlined.LocationOn,
-                                                tint = Color.Gray,
-                                                contentDescription = "location",
-                                                modifier = Modifier.size(48.dp)
-
-                                            )
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(Color.Transparent)
+                                            .padding(6.dp)
+                                    ) {
+                                        currentAssignmentData?.let {
+                                            RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+                                            it.vehicles.take(it.vehicles.size).forEach { vehicleAssignment ->
+                                                AssignedVehicle(vehicleAssignment)
+                                            }
                                         }
-                                        Spacer(modifier = Modifier.height(5.dp))
+                                    }
+
+
+
+
                                         matList?.let { mList ->
                                             if (mList.isNotEmpty()) {
-                                                val lastTime =
-                                                    mList.last().time
+                                                val lastTime = mList.last().time
 
-                                                val parsedDate =
-                                                    inputFormat.parse(
-                                                        lastTime.toString()
+                                                val parsedDate = inputFormat.parse(lastTime.toString())
+                                                val formattedDate = outputFormat.format(parsedDate)
+
+                                                Column(modifier=Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
+                                                    Row(
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        horizontalArrangement = Arrangement.Absolute.Center
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Outlined.LocationOn,
+                                                            tint = Color.Green,
+                                                            contentDescription = "location",
+                                                            modifier = Modifier.size(24.dp)
+                                                        )
+                                                        Spacer(modifier = Modifier.width(3.dp))
+
+                                                        Text(
+                                                            color = headingColor,
+                                                            text = "You are sharing your location....",
+                                                            fontFamily= FontFamily.SansSerif,
+                                                            fontSize = 14.sp,
+                                                            fontWeight = FontWeight.W500,
+                                                        )
+                                                    }
+
+                                                    Text(
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        text = "Last Location Shared at  ${formattedDate}",
+                                                        textAlign = TextAlign.Center,
+                                                        fontSize = 10.sp,
+                                                        color = textColor,
                                                     )
-                                                val formattedDate =
-                                                    outputFormat.format(
-                                                        parsedDate
-                                                    )
+                                                    Spacer(modifier = Modifier.height(5.dp))
+
+                                                }
 
 
-                                                Text(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    text = "You are sharing your location",
-                                                    textAlign = TextAlign.Center,
-                                                    fontSize = 16.sp,
 
-                                                    fontWeight = FontWeight.W300,
-                                                )
-                                                Spacer(modifier = Modifier.height(5.dp))
-                                                Text(
-                                                    modifier = Modifier.fillMaxWidth(),
-
-                                                    text = "Last Location Shared at  ${formattedDate}",
-                                                    textAlign = TextAlign.Center,
-                                                    fontSize = 10.sp,
-                                                    color = textColor,
-
-
-                                                    )
-                                                Spacer(modifier = Modifier.height(5.dp))
 
 
                                             } else {
-                                                Column(modifier = Modifier.fillMaxWidth()) {
+                                                Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
+
                                                     Row(
                                                         modifier = Modifier.fillMaxWidth(),
-                                                        horizontalArrangement = Arrangement.Center
+                                                        horizontalArrangement = Arrangement.SpaceBetween
                                                     ) {
+                                                        Icon(
+                                                            imageVector = Icons.Outlined.LocationOff,
+                                                            tint = Color.Green,
+                                                            contentDescription = "location",
+                                                            modifier = Modifier.size(24.dp)
+                                                        )
+                                                        Spacer(modifier = Modifier.width(5.dp))
                                                         Text(text = "Last recorded location time - Not shared ")
                                                     }
                                                 }
                                             }
                                         }
-                                    }
+
 
                                 } else {
                                     permit = true
@@ -383,93 +405,54 @@ fun NewAssignmentDetailScreen(
                                     permit = true
                                 }
                             }
-                            Column {
-                                if (it.trips != null) {
-                                    if (it.trips.size > 0) {
-
-                                        it.vehicles.let { vList ->
-
-
-                                            Column(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .background(Color.Transparent)
-                                                    .padding(6.dp)
-
-                                            ) {
-                                                currentAssignmentData?.let {
-                                                    RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-                                                    vList.take(vList.size)
-                                                        .forEach { vehicleAssignment ->
-                                                            AssignedVehicle(
-                                                                vehicleAssignment
-                                                            )
-                                                        }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                Spacer(modifier = Modifier.height(30.dp))
-
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Button(
-                                        onClick = {
-                                            vm.generateAssignmentCode(
-                                                context
-                                            )
-                                        },
-                                        modifier = Modifier
-                                            .height(50.dp)
-                                            .width(275.dp),
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = Color(0xFFD9F0BC)
-                                        )
-                                    ) {
-                                        Text(
-                                            text = "Generate Assignment Code",
-                                            textAlign = TextAlign.Center,
-                                            color = Color(0xFF429D77),
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold,
-                                            modifier = Modifier
-
-
-                                        )
-
-                                    }
-                                    if (currentAssignmentData!!.isAssignmentCodeVisible) {
-                                        GeneratedCodeDialog(
-                                            currentAssignmentData?.assignmentCode
-                                                ?: "",
-                                            setShowDialog = {
-                                                vm.hideAssignmentCode(context)
-                                            }
-                                        )
-                                    }
-
-
-                                }
-
-
-                            }
                         }
 
+                        Column {
+                            Spacer(modifier = Modifier.height(30.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Button(
+                                    onClick = {
+                                        vm.generateAssignmentCode(context)
+                                    },
+                                    modifier = Modifier
+                                        .height(50.dp)
+                                        .width(275.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFFD9F0BC)
+                                    )
+                                ) {
+                                    Text(
+                                        text = "Generate Assignment Code",
+                                        textAlign = TextAlign.Center,
+                                        color = Color(0xFF429D77),
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        modifier = Modifier
+                                    )
+                                }
+                                if (currentAssignmentData!!.isAssignmentCodeVisible) {
+                                    GeneratedCodeDialog(
+                                        currentAssignmentData?.assignmentCode ?: "",
+                                        setShowDialog = {
+                                            vm.hideAssignmentCode(context)
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     }
-                    BottomSheet(
-
-                    )
+                    BottomSheet()
                 }
-
-
             }
         }
     }
 }
+
+
 
 
 
@@ -742,11 +725,65 @@ fun BottomSheet() {
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
+                
+                Spacer(modifier = Modifier.height(20.dp))
+                
 
-                Spacer(modifier = Modifier.height(500.dp))
+
+
+            }
+
+            Column(modifier = Modifier.fillMaxWidth()) {
+                TabViewContent()
             }
 
 
         }
     }
+}
+
+@Composable
+fun TabViewContent() {
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    val tabs = listOf("Schedule", "Trip History", "Documents")
+
+    Column {
+        TabRow(selectedTabIndex = selectedTabIndex,indicator = { tabPositions ->
+            SecondaryIndicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                color = Color(0XFFD9454E)
+            )
+        }, containerColor = Transparent) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTabIndex == index, selectedContentColor =Color(0XFFD9454E), unselectedContentColor = Color.Black,
+                    onClick = { selectedTabIndex = index },
+                    text = { Text(title) }
+                )
+            }
+        }
+        when (selectedTabIndex) {
+            0 -> ScheduleContent()
+            1 -> TripHistoryContent()
+            2 -> DocumentsContent()
+        }
+    }
+}
+
+@Composable
+fun ScheduleContent() {
+
+    Text("Schedule content")
+}
+
+@Composable
+fun TripHistoryContent() {
+
+    Text("Trip history content")
+}
+
+@Composable
+fun DocumentsContent() {
+
+    Text("Documents content")
 }

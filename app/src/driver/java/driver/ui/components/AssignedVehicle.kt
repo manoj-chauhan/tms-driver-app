@@ -22,72 +22,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import driver.ui.actionColors
+import driver.ui.headingColor
+import driver.ui.subText
 import driver.ui.viewmodels.VehicleAssignment
 import java.text.SimpleDateFormat
 
 
-//@Composable
-//fun AssignedVehicle(vehicleAssignment: VehicleAssignment) {
-//
-//    val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
-//    val outputFormat = SimpleDateFormat("dd MMMM, yyyy HH:mm a")
-//
-////    val tripTime = SimpleDateFormat("HH:mm:ss")
-////    val outputtripTime = SimpleDateFormat(" hh:mm a")
-////
-////    val parsedTime = remember(vehicleAssignment) {tripTime.parse(vehicleAssignment.timeOfNotice) }
-////    val formattedTime = remember(parsedTime) { outputtripTime.format(parsedTime) }
-//
-//
-//    val parsedDate = remember(vehicleAssignment.assignedAt) { inputFormat.parse(vehicleAssignment.assignedAt) }
-//    val formattedDate = remember(parsedDate) { outputFormat.format(parsedDate) }
-//
-//
-//
-//    Column(modifier = Modifier
-//        .fillMaxWidth()
-//        .background(Color(0xFFF7F7F7))
-//        .padding(6.dp)
-//
-//    ) {
-//
-//        Row(modifier = Modifier) {
-//            Text(
-//
-//                text = vehicleAssignment.vehicleNumber,
-//
-//                fontSize = 16.sp,
-//                fontWeight = FontWeight.SemiBold
-//
-//            )
-//            Spacer(modifier = Modifier.width(18.dp))
-//            Text(
-//
-//                text = "${vehicleAssignment.brand} ${vehicleAssignment.model}, ${vehicleAssignment.vehicleSize}ft",
-//
-//
-//                fontSize = 12.sp,
-//                color = actionColors
-//
-//            )
-//
-//        }
-//
-//
-//        Spacer(modifier = Modifier.height(5.dp))
-//        Text(
-//            modifier = Modifier.fillMaxWidth(),
-//            text = "Assigned by ${vehicleAssignment.assignerName}, ${vehicleAssignment.companyName} at ${formattedDate}",
-//
-//            fontSize = 11.sp,
-//            color = actionColors,
-//        )
-//
-//    }
-//
-//
-//
-//}
 
 @Composable
 fun AssignedVehicle(vehicleAssignment: VehicleAssignment) {
@@ -106,29 +46,31 @@ fun AssignedVehicle(vehicleAssignment: VehicleAssignment) {
         Text(
             text = vehicleAssignment.vehicleNumber,
             fontSize = 20.sp,
+            color = headingColor,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "${vehicleAssignment.brand} ${vehicleAssignment.model}, ${vehicleAssignment.vehicleSize}ft",
-            fontSize = 14.sp,
-            color = Color.Gray,
+            text = "${vehicleAssignment.brand} ${vehicleAssignment.model}, (${vehicleAssignment.vehicleSize}ft)",
+            fontSize = 11.sp,
+            color = subText,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Assigned by ${vehicleAssignment.assignerName}, ${vehicleAssignment.companyName}",
-            fontSize = 12.sp,
-            color = Color.Gray,
+            fontSize = 11.sp,
+            color = actionColors,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
         Text(
             text = "at ${formattedDate}",
-            fontSize = 12.sp,
-            color = Color.Gray,
+            fontSize = 11.sp,
+            color = actionColors,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
