@@ -987,4 +987,271 @@ fun BottomSheet() {
     }
 }
 
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun BottomSheet() {
+//    val sheetState = rememberBottomSheetScaffoldState()
+//    val coroutineScope = rememberCoroutineScope()
+//
+//    BottomSheetScaffold(
+//        sheetState = sheetState,
+//        sheetContent = {
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .background(Color.White)
+//                    .padding(horizontal = 16.dp, vertical = 16.dp)
+//            ) {
+//                Column(
+//                    modifier = Modifier.fillMaxWidth()
+//                ) {
+//                    Text(
+//                        text = "Trip #456456",
+//                        fontSize = 16.sp,
+//                        modifier = Modifier.fillMaxWidth(),
+//                        textAlign = TextAlign.Center
+//                    )
+//                    Spacer(modifier = Modifier.height(8.dp))
+//                    Text(
+//                        text = "ETE-GGN-PNQ-RST-ADE-AED",
+//                        fontSize = 12.sp,
+//                        color = Color.Gray,
+//                        modifier = Modifier.fillMaxWidth(),
+//                        textAlign = TextAlign.Center
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(16.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Created by",
+//                            modifier = Modifier.align(Alignment.CenterVertically),
+//                            fontSize = 12.sp,
+//                            fontWeight = FontWeight.SemiBold
+//                        )
+//                        Text(
+//                            text = "Samrish Technologies Pvt Ltd",
+//                            color = Color.Gray,
+//                            fontSize = 12.sp,
+//                            modifier = Modifier.align(Alignment.CenterVertically)
+//                        )
+//                    }
+//                    Spacer(modifier = Modifier.height(8.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Operated by",
+//                            modifier = Modifier.align(Alignment.CenterVertically),
+//                            fontSize = 12.sp,
+//                            fontWeight = FontWeight.SemiBold
+//                        )
+//                        Text(
+//                            text = "Samrish Technologies Pvt Ltd",
+//                            color = Color.Gray,
+//                            fontSize = 12.sp,
+//                            modifier = Modifier.align(Alignment.CenterVertically)
+//                        )
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(20.dp))
+//
+//                    Text(
+//                        text = "Running late due to bad weather",
+//                        color = Color.Red,
+//                        modifier = Modifier.fillMaxWidth(),
+//                        textAlign = TextAlign.Center
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(20.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Box(
+//                            modifier = Modifier
+//                                .weight(1f)
+//                                .padding(end = 8.dp)
+//                                .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
+//                                .height(60.dp)
+//                        ) {
+//                            Column(
+//                                verticalArrangement = Arrangement.Center,
+//                                horizontalAlignment = Alignment.CenterHorizontally,
+//                                modifier = Modifier
+//                                    .fillMaxSize()
+//                                    .padding(8.dp)
+//                            ) {
+//                                Text(
+//                                    text = "Total Distance Covered",
+//                                    fontSize = 12.sp,
+//                                    textAlign = TextAlign.Center,
+//                                    color = Color.Gray
+//                                )
+//                                Spacer(modifier = Modifier.height(2.dp))
+//                                Text(
+//                                    text = "400 kms",
+//                                    color = Color.Gray
+//                                )
+//                            }
+//                        }
+//                        Box(
+//                            modifier = Modifier
+//                                .weight(1f)
+//                                .padding(start = 8.dp)
+//                                .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
+//                                .height(60.dp)
+//                        ) {
+//                            Column(
+//                                verticalArrangement = Arrangement.Center,
+//                                horizontalAlignment = Alignment.CenterHorizontally,
+//                                modifier = Modifier
+//                                    .fillMaxSize()
+//                                    .padding(8.dp)
+//                            ) {
+//                                Text(
+//                                    text = "Total Travel Time",
+//                                    fontSize = 12.sp,
+//                                    textAlign = TextAlign.Center,
+//                                    color = Color.Gray
+//                                )
+//                                Spacer(modifier = Modifier.height(2.dp))
+//                                Text(
+//                                    text = "400 kms",
+//                                    color = Color.Gray
+//                                )
+//                            }
+//                        }
+//                    }
+//
+//
+//                    Spacer(modifier = Modifier.height(20.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Next Location",
+//                            color = Color.Black,
+//                            fontSize = 14.sp
+//                        )
+//                        Text(
+//                            text = "Sect 4 Gurgaon (GGN)",
+//                            color = Color.Gray,
+//                            fontSize = 14.sp
+//                        )
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(20.dp))
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Estimated Time",
+//                            fontSize = 12.sp,
+//                            color = Color.Gray
+//                        )
+//                        Text(
+//                            text = "3 hours 20 mins",
+//                            fontSize = 12.sp,
+//                            color = Color.Gray
+//                        )
+//                    }
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Estimated Distance",
+//                            fontSize = 12.sp,
+//                            color = Color.Gray
+//                        )
+//                        Text(
+//                            text = "250 kms",
+//                            fontSize = 12.sp,
+//                            color = Color.Gray
+//                        )
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(20.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Departed from Delhi at 02:00 am",
+//                            fontSize = 14.sp,
+//                            color = Color.Black
+//                        )
+//                    }
+//                    Spacer(modifier = Modifier.height(5.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Standard Arrival Time at Next Location: 08:00pm",
+//                            fontSize = 12.sp,
+//                            color = Color.Gray
+//                        )
+//                        Text(
+//                            text = "300 kms",
+//                            fontSize = 12.sp,
+//                            color = Color.Gray
+//                        )
+//                    }
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Total Distance from last location",
+//                            fontSize = 12.sp,
+//                            color = Color.Gray
+//                        )
+//                        Text(
+//                            text = "300 kms",
+//                            fontSize = 12.sp,
+//                            color = Color.Gray
+//                        )
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(16.dp))
+//
+//                    Text(
+//                        text = "You are operating two trips swipe to see others",
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = Color.Gray,
+//                        modifier = Modifier.fillMaxWidth(),
+//                        textAlign = TextAlign.Center
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(500.dp))
+//                }
+//            }
+//        },
+//        scaffoldState = rememberBottomSheetScaffoldState(),
+//        sheetPeekHeight = 200.dp,
+//        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+//        sheetBackgroundColor = Color.White,
+//        sheetElevation = 16.dp,
+//        sheetContentColor = Color.Black,
+//        sheetContentAlpha = ContentAlpha.high
+//    ) {
+//        // No content needed here for the main content
+//    }
+//}
+
+
 
