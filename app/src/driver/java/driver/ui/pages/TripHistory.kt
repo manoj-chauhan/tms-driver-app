@@ -61,28 +61,10 @@ fun History(navController: NavHostController,tripCode: String,operatorId:Int,act
                 ),
                 shape = RoundedCornerShape(35.dp, 35.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .padding(
-                            PaddingValues(
-                                start = 25.dp, top = 30.dp, end = 12.dp, bottom = 20.dp
-                            )
-                        )
-                ) {
-
-                    Text(
-                        text = "Trip History", style = TextStyle(
-                            color = Color.Black, fontSize = 23.sp, fontWeight = FontWeight.Bold
-                        )
-                    )
-
-                }
 
                 currentAssignmentData?.let { historyList ->
                     val lazyListState = rememberLazyListState()
-                    LazyColumn(state = lazyListState){
+                    LazyColumn(state = lazyListState, modifier = Modifier.height(500.dp)){
                         items(historyList) { history ->
                             HistoryList(history)
                         }

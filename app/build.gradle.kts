@@ -212,6 +212,9 @@ dependencies {
     //fonts
     implementation ("androidx.compose.ui:ui-text-google-fonts:1.6.7")
 
+    //flexible bottom sheet
+    implementation("com.github.skydoves:flexible-bottomsheet-material3:0.1.3")
+
 
 
 
