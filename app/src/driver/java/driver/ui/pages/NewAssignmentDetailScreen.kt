@@ -280,9 +280,7 @@ fun NewAssignmentDetailScreen(
     val darkPeach = Color(0XFFFEE1DC)
 
     val gradientBrush = Brush.verticalGradient(
-        colors = listOf(lightPeach, darkPeach),
-        startY = 0f,
-        endY = 1000f
+        colors = listOf(lightPeach, darkPeach), startY = 0f, endY = 1000f
     )
 
     Column(
@@ -310,8 +308,7 @@ fun NewAssignmentDetailScreen(
                 vm.driverPlanAssignment(context = context)
 
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
 
                     Topbar()
@@ -334,8 +331,7 @@ fun NewAssignmentDetailScreen(
                         }
 
                         if (it.trips.isEmpty()) {
-                            val location =
-                                Intent(context, LocationService::class.java)
+                            val location = Intent(context, LocationService::class.java)
                             context.stopService(location)
                         } else {
                             if (isAnyTripStarted) {
@@ -466,23 +462,19 @@ fun NewAssignmentDetailScreen(
                                     )
                                 }
                                 if (currentAssignmentData!!.isAssignmentCodeVisible) {
-                                    GeneratedCodeDialog(
-                                        currentAssignmentData?.assignmentCode ?: "",
+                                    GeneratedCodeDialog(currentAssignmentData?.assignmentCode ?: "",
                                         setShowDialog = {
                                             vm.hideAssignmentCode(context)
-                                        }
-                                    )
+                                        })
                                 }
                             }
                         }
                     }
                     currentAssignmentData?.let {
                         Column {
-                            it.trips.take(it.trips.size)
-                                .forEach { trip ->
+                            it.trips.take(it.trips.size).forEach { trip ->
                                     BottomSheet(
-                                        trip,
-                                        onTripSelected
+                                        trip, onTripSelected
                                     )
                                 }
 
@@ -510,16 +502,25 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
     if (showBottomSheet) {
         FlexibleBottomSheet(
             onDismissRequest = {
-                showBottomSheet = false
+
+
+
+
+                showBottomSheet = true
             },
+
 
             sheetState = rememberFlexibleBottomSheetState(
                 allowNestedScroll = true,
+                isModal = false,
                 flexibleSheetSize = FlexibleSheetSize(
+
                     fullyExpanded = 1f,
                     intermediatelyExpanded = 0.77f,
                     slightlyExpanded = 0.24f,
+
                 ),
+
 
                 skipSlightlyExpanded = false,
             ),
@@ -689,8 +690,7 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                                 .weight(1f)
                                 .padding(end = 8.dp)
                                 .background(
-                                    color = Color(0XFFDCE1FE),
-                                    shape = RoundedCornerShape(8.dp)
+                                    color = Color(0XFFDCE1FE), shape = RoundedCornerShape(8.dp)
                                 )
                                 .height(60.dp)
                         ) {
@@ -716,8 +716,7 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                                 .weight(1f)
                                 .padding(start = 8.dp)
                                 .background(
-                                    color = Color(0XFFDCE1FE),
-                                    shape = RoundedCornerShape(8.dp)
+                                    color = Color(0XFFDCE1FE), shape = RoundedCornerShape(8.dp)
                                 )
                                 .height(60.dp)
                         ) {
@@ -763,14 +762,10 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Estimated Time",
-                            fontSize = 12.sp,
-                            color = actionColors
+                            text = "Estimated Time", fontSize = 12.sp, color = actionColors
                         )
                         Text(
-                            text = "3 hours 20 mins",
-                            fontSize = 12.sp,
-                            color = actionColors
+                            text = "3 hours 20 mins", fontSize = 12.sp, color = actionColors
                         )
                     }
                     Row(
@@ -778,9 +773,7 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Estimated Distance",
-                            fontSize = 12.sp,
-                            color = actionColors
+                            text = "Estimated Distance", fontSize = 12.sp, color = actionColors
                         )
                         Text(text = "250 kms", fontSize = 12.sp, color = actionColors)
                     }
@@ -836,8 +829,7 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Button(
-                            onClick = { },
-                            modifier = Modifier
+                            onClick = { }, modifier = Modifier
                                 .width(120.dp)
                                 .padding(end = 8.dp),
 
@@ -886,8 +878,7 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                 }
 
                 item {
-                    Column(modifier = Modifier.fillMaxWidth())
-                    {
+                    Column(modifier = Modifier.fillMaxWidth()) {
                         val navController = rememberNavController()
                         val activity = LocalContext.current as? ComponentActivity
                         if (activity != null) {
@@ -934,23 +925,19 @@ fun TabViewContent(
 
     Column {
         TabRow(
-            selectedTabIndex = selectedTabIndex,
-            indicator = { tabPositions ->
+            selectedTabIndex = selectedTabIndex, indicator = { tabPositions ->
                 SecondaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
                     color = Color(0XFFD9454E)
                 )
-            },
-            containerColor = Transparent
+            }, containerColor = Transparent
         ) {
             tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTabIndex == index,
+                Tab(selected = selectedTabIndex == index,
                     selectedContentColor = Color(0XFFD9454E),
                     unselectedContentColor = Color.Black,
                     onClick = { selectedTabIndex = index },
-                    text = { Text(title) }
-                )
+                    text = { Text(title) })
             }
         }
         pastAssignment?.let { assignmentDetail ->
@@ -960,7 +947,8 @@ fun TabViewContent(
                     History(
                         navController = navController,
                         it.tripDetail.tripCode,
-                        it.tripDetail.operatorId, activity
+                        it.tripDetail.operatorId,
+                        activity
                     )
                 }
 
