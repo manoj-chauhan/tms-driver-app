@@ -127,6 +127,9 @@ import com.drishto.driver.LocationService
 import com.drishto.driver.R
 import com.drishto.driver.models.DriverPlans
 import com.drishto.driver.models.History
+import com.drishto.driver.models.Schedule
+import com.drishto.driver.models.ScheduleLocation
+import com.drishto.driver.ui.operatorI
 import com.drishto.driver.ui.viewmodels.HistoryViewModel
 import com.drishto.driver.ui.viewmodels.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -138,6 +141,7 @@ import driver.ui.actionColors
 import driver.ui.components.AssignedVehicle
 import driver.ui.components.DocumentsDialog
 import driver.ui.components.GeneratedCodeDialog
+import driver.ui.components.LocationList
 import driver.ui.generateButton
 import driver.ui.headingColor
 import driver.ui.placeColor
@@ -942,7 +946,15 @@ fun TabViewContent(
         }
         pastAssignment?.let { assignmentDetail ->
             when (selectedTabIndex) {
-                0 -> ScheduleContent()
+                0 -> TempScheduleContent()
+//                    ScheduleContent(
+//                    navController = navController,
+//                    selectedAssignment = message,
+//                    operatorId = operatorI,
+//                    tripId = tripId,
+//                    tripCode = message,
+//                    activity
+//                )
                 1 -> pastAssignment?.let {
                     History(
                         navController = navController,
@@ -964,13 +976,134 @@ fun TabViewContent(
     }
 }
 
-
 @Composable
-fun ScheduleContent() {
-
-    Text("Schedule content")
-    Spacer(modifier = Modifier.height(500.dp))
+fun TempScheduleContent(){
+    Column {
+        Text(text = "schedule")
+        Spacer(modifier = Modifier.height(500.dp))
+    }
 }
+
+
+    @Composable
+    fun ScheduleContent(
+        navController: NavHostController,
+
+        selectedAssignment: String,
+        operatorId: Int,
+        tripId: Int,
+        tripCode: String,
+        activity: ComponentActivity,
+        vm: AssignmentDetailViewModel = hiltViewModel(),
+        pt: PastAssignmentDetailViewModel = hiltViewModel()
+    ) {
+
+        val context = LocalContext.current
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val isConnected = runCatching {
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            activeNetworkInfo != null && activeNetworkInfo.isConnected
+        }.getOrDefault(false)
+
+        if (isConnected) {
+
+
+            val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
+            val pastAssignment by pt.pastassignmentDetail.collectAsStateWithLifecycle()
+
+            if (assignment?.isDataLoaded != true) {
+                vm.fetchAssignmentDetail(
+                    context = context,
+                    tripId = tripId,
+                    tripCode = tripCode,
+                    operatorId = operatorId
+                )
+            }
+
+            val isCheckInDialogVisible = remember { mutableStateOf(false); }
+            var isStartDialogVisible = remember { mutableStateOf(false); }
+            var permit by remember {
+                mutableStateOf(false)
+            }
+
+            val isDocumentSelected = remember { mutableStateOf(true); }
+            val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
+            val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
+
+            val arrivalTime = SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ss")
+            val outputArrivaltime = SimpleDateFormat("HH:mm")
+
+            val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
+            val isCheckInEnabled = assignment?.activeStatusDetail?.actions?.contains("CHECKIN")
+            val isDepartEnabled = assignment?.activeStatusDetail?.actions?.contains("DEPART")
+            val isCancelEnabled = assignment?.activeStatusDetail?.actions?.contains("CANCEL")
+            val isEndEnabled = assignment?.activeStatusDetail?.actions?.contains("END")
+
+            val coroutineScope = rememberCoroutineScope()
+            val vw: SwipeRefresh = viewModel()
+            val isLoading by vw.isLoading.collectAsStateWithLifecycle()
+            val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
+            val locationManager =
+                context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+            val locationEnabledState = rememberUpdatedState(isLocationEnabled)
+
+
+            val loc = LocationService::class.java
+            val service = isLocationServiceRunning(context, loc)
+
+            Log.d(
+                "This is the permit of dialog",
+                "AssignmentDetailScreen: ${locationEnabledState.value}, ${assignment?.tripDetail?.status}, ${service}"
+            )
+            if (assignment?.tripDetail?.status != "TRIP_CREATED") {
+                if (!service) {
+                    permit = true
+                }
+            } else {
+                permit = false
+            }
+
+            Column {
+                assignment?.let { it ->
+
+                    assignment?.loc?.let { it1 ->
+                        it1.locations.forEach { location ->
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                LocationList(location)
+                            }
+                        }
+                    }
+                }
+            }
+
+
+        }
+        else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(48.dp)
+                )
+                Toast.makeText(
+                    context,
+                    "Please connect to a network and restart application",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+
+    }
+
 
 
 

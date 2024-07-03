@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
@@ -20,183 +21,281 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drishto.driver.models.ScheduleLocation
 import java.text.SimpleDateFormat
-
+import java.util.Locale
 
 @Composable
-    fun LocationList( scheduleLocation: ScheduleLocation) {
+fun LocationList(scheduleLocation: ScheduleLocation) {
+    val inputFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-        val inputFormat = SimpleDateFormat("dd-MM-yyyy HH:mm")
-        val outputFormat = SimpleDateFormat("HH:mm")
-    val scheduledArrivalTime =
-        remember(scheduleLocation.scheduledArrivalTime) { inputFormat.parse(scheduleLocation.scheduledArrivalTime) }
-    val formatSchedule = remember(scheduledArrivalTime) { outputFormat.format(scheduledArrivalTime) }
-
-    val scheduledDepartureTime =
-        remember(scheduleLocation.scheduledDepartureTime) { inputFormat.parse(scheduleLocation.scheduledDepartureTime) }
-    val formatDeparture = remember(scheduledDepartureTime) { outputFormat.format(scheduledDepartureTime) }
-
-
-    val actualArrivalTime = scheduleLocation?.actualArrivalTime?.let {
-        inputFormat.parse(it)
+    val scheduledArrivalTime = remember(scheduleLocation.scheduledArrivalTime) {
+        inputFormat.parse(scheduleLocation.scheduledArrivalTime)
+    }
+    val formattedScheduledArrival = remember(scheduledArrivalTime) {
+        outputFormat.format(scheduledArrivalTime)
     }
 
-    val formatArrivalTime = actualArrivalTime?.let {
+    val scheduledDepartureTime = remember(scheduleLocation.scheduledDepartureTime) {
+        inputFormat.parse(scheduleLocation.scheduledDepartureTime)
+    }
+    val formattedScheduledDeparture = remember(scheduledDepartureTime) {
+        outputFormat.format(scheduledDepartureTime)
+    }
+
+    val actualArrivalTime = scheduleLocation.actualArrivalTime?.let {
+        inputFormat.parse(it)
+    }
+    val formattedActualArrival = actualArrivalTime?.let {
         outputFormat.format(it)
     } ?: "--"
 
-    val actualDepartureTime = scheduleLocation?.actualDepartureTime?.let {
+    val actualDepartureTime = scheduleLocation.actualDepartureTime?.let {
         inputFormat.parse(it)
     }
+    val formattedActualDeparture = actualDepartureTime?.let {
+        outputFormat.format(it)
+    } ?: "--"
 
-    val formatActualDeparture = actualDepartureTime?.let { outputFormat.format(it) } ?: "--"
+    Column(modifier = Modifier.padding(16.dp)) {
 
-    Spacer(modifier = Modifier.padding(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TableHeader("Stops")
+            TableHeader("Arrival Time")
+            TableHeader("Departure Time")
+            TableHeader("Distance")
+        }
 
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+        Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(
-                            text = "${scheduleLocation.placeCode} - ", style = TextStyle(
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp)
-                    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TableContent(scheduleLocation.placeName)
+            TableContent(formattedScheduledArrival)
+            TableContent(formattedScheduledDeparture)
+            TableContent(scheduleLocation.estDistance.toString())
+        }
 
-                        Text(
-                            text = "${scheduleLocation.placeName}", style = TextStyle(
-                                color = Color.Gray,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
+        Spacer(modifier = Modifier.height(4.dp))
 
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(modifier = Modifier.width(50.dp)) {
-                        Text(
-                            text = "  ", style = TextStyle(
-                                color = Color.Gray,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-                    Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-
-                        Text(
-                            text = "Arrival", style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-                    Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-
-                        Text(
-                            text = "Departure", style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(modifier = Modifier.width(50.dp)) {
-
-                        Text(
-                            text = "Planned", style = TextStyle(
-                                color = Color.Gray,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-
-                    Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-                        Text(
-                            text = formatSchedule, style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-
-                    Box(modifier = Modifier.width(100.dp), Alignment.Center) {
-                        Text(
-                            text = formatDeparture, style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(modifier = Modifier.width(50.dp)) {
-
-                        Text(
-                            text = "Actual", style = TextStyle(
-                                color = Color.Gray,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-                    Box(modifier = Modifier.width(100.dp), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = formatArrivalTime ,
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-                    Box(modifier = Modifier.width(100.dp), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = formatActualDeparture,
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-                }
-            }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TableContent("Actual")
+            TableContent(formattedActualArrival)
+            TableContent(formattedActualDeparture)
+            TableContent("")
+        }
     }
+}
+
+@Composable
+fun TableHeader(text: String) {
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Text(
+            text = text,
+            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+        )
+    }
+}
+
+@Composable
+fun TableContent(text: String) {
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Text(
+            text = text,
+            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Color.Black)
+        )
+    }
+}
+
+
+
+
+//@Composable
+//    fun LocationList( scheduleLocation: ScheduleLocation) {
+//
+//        val inputFormat = SimpleDateFormat("dd-MM-yyyy HH:mm")
+//        val outputFormat = SimpleDateFormat("HH:mm")
+//    val scheduledArrivalTime =
+//        remember(scheduleLocation.scheduledArrivalTime) { inputFormat.parse(scheduleLocation.scheduledArrivalTime) }
+//    val formatSchedule = remember(scheduledArrivalTime) { outputFormat.format(scheduledArrivalTime) }
+//
+//    val scheduledDepartureTime =
+//        remember(scheduleLocation.scheduledDepartureTime) { inputFormat.parse(scheduleLocation.scheduledDepartureTime) }
+//    val formatDeparture = remember(scheduledDepartureTime) { outputFormat.format(scheduledDepartureTime) }
+//
+//
+//    val actualArrivalTime = scheduleLocation?.actualArrivalTime?.let {
+//        inputFormat.parse(it)
+//    }
+//
+//    val formatArrivalTime = actualArrivalTime?.let {
+//        outputFormat.format(it)
+//    } ?: "--"
+//
+//    val actualDepartureTime = scheduleLocation?.actualDepartureTime?.let {
+//        inputFormat.parse(it)
+//    }
+//
+//    val formatActualDeparture = actualDepartureTime?.let { outputFormat.format(it) } ?: "--"
+//
+//    Spacer(modifier = Modifier.padding(8.dp))
+//
+//            Column(modifier = Modifier.fillMaxWidth()) {
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 8.dp, end = 8.dp),
+//                    horizontalArrangement = Arrangement.SpaceBetween
+//                ) {
+//
+//                        Text(
+//                            text = "${scheduleLocation.placeCode} - ", style = TextStyle(
+//                                fontSize = 13.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(start = 8.dp)
+//                    ) {
+//
+//                        Text(
+//                            text = "${scheduleLocation.placeName}", style = TextStyle(
+//                                color = Color.Gray,
+//                                fontSize = 13.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//                    }
+//
+//                }
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 8.dp, end = 8.dp),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Box(modifier = Modifier.width(50.dp)) {
+//                        Text(
+//                            text = "  ", style = TextStyle(
+//                                color = Color.Gray,
+//                                fontSize = 13.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//                    }
+//                    Box(modifier = Modifier.width(100.dp), Alignment.Center) {
+//
+//                        Text(
+//                            text = "Arrival", style = TextStyle(
+//                                color = Color.Black,
+//                                fontSize = 12.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//                    }
+//                    Box(modifier = Modifier.width(100.dp), Alignment.Center) {
+//
+//                        Text(
+//                            text = "Departure", style = TextStyle(
+//                                color = Color.Black,
+//                                fontSize = 12.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//                    }
+//
+//                }
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 8.dp, end = 8.dp),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Box(modifier = Modifier.width(50.dp)) {
+//
+//                        Text(
+//                            text = "Planned", style = TextStyle(
+//                                color = Color.Gray,
+//                                fontSize = 12.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//                    }
+//
+//                    Box(modifier = Modifier.width(100.dp), Alignment.Center) {
+//                        Text(
+//                            text = formatSchedule, style = TextStyle(
+//                                color = Color.Black,
+//                                fontSize = 12.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//                    }
+//
+//                    Box(modifier = Modifier.width(100.dp), Alignment.Center) {
+//                        Text(
+//                            text = formatDeparture, style = TextStyle(
+//                                color = Color.Black,
+//                                fontSize = 12.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//                    }
+//
+//                }
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 8.dp, end = 8.dp),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Box(modifier = Modifier.width(50.dp)) {
+//
+//                        Text(
+//                            text = "Actual", style = TextStyle(
+//                                color = Color.Gray,
+//                                fontSize = 12.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//                    }
+//                    Box(modifier = Modifier.width(100.dp), contentAlignment = Alignment.Center) {
+//                        Text(
+//                            text = formatArrivalTime ,
+//                            style = TextStyle(
+//                                color = Color.Black,
+//                                fontSize = 12.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//                    }
+//                    Box(modifier = Modifier.width(100.dp), contentAlignment = Alignment.Center) {
+//                        Text(
+//                            text = formatActualDeparture,
+//                            style = TextStyle(
+//                                color = Color.Black,
+//                                fontSize = 12.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        )
+//                    }
+//                }
+//            }
+//    }
