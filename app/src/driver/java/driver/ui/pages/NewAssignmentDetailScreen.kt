@@ -142,6 +142,7 @@ import driver.ui.components.AssignedVehicle
 import driver.ui.components.DocumentsDialog
 import driver.ui.components.GeneratedCodeDialog
 import driver.ui.components.LocationList
+import driver.ui.components.TripInfoNewDesign
 import driver.ui.generateButton
 import driver.ui.headingColor
 import driver.ui.placeColor
@@ -506,10 +507,6 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
     if (showBottomSheet) {
         FlexibleBottomSheet(
             onDismissRequest = {
-
-
-
-
                 showBottomSheet = true
             },
 
@@ -680,6 +677,7 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                     Spacer(modifier = Modifier.height(16.dp))
                     HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
                 }
+
 
                 item {
 
@@ -880,6 +878,20 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
 
                     Spacer(modifier = Modifier.height(20.dp))
                 }
+                
+//                item {
+//                    val navController = rememberNavController()
+//                    val activity = LocalContext.current as? ComponentActivity
+//                    if (activity != null) {
+//                        TripInfoNewDesign(
+//                            selectedAssignment = selectedAssignment,
+//                            operatorId = operatorId,
+//                            tripId = tripId,
+//                            tripCode = tripCode,
+//                            activity = activity
+//                        )
+//                    }
+//                }
 
                 item {
                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -946,7 +958,8 @@ fun TabViewContent(
         }
         pastAssignment?.let { assignmentDetail ->
             when (selectedTabIndex) {
-                0 -> TempScheduleContent()
+                0 ->
+                    TempScheduleContent()
 //                    ScheduleContent(
 //                    navController = navController,
 //                    selectedAssignment = message,
