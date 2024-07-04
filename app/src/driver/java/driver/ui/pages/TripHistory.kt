@@ -56,16 +56,8 @@ fun History(navController: NavHostController,tripCode: String,operatorId:Int,act
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Column {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxSize(1f),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White,
-                ),
-                shape = RoundedCornerShape(35.dp, 35.dp)
-            ) {
+        Column(modifier=Modifier.height(500.dp)) {
+
 
                 currentAssignmentData?.let { historyList ->
                     val lazyListState = rememberLazyListState()
@@ -75,7 +67,7 @@ fun History(navController: NavHostController,tripCode: String,operatorId:Int,act
                         }
                     }
                 }
-            }
+
         }
 
     }
@@ -102,46 +94,50 @@ fun HistoryList(history: TripHistory){
 
     ElevatedCard(
         modifier = Modifier
-            .fillMaxWidth()
-            .shadow(3.dp, RoundedCornerShape(12.dp))
-            .padding(8.dp),
+            .fillMaxWidth(),
+
+
+
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+        ),
 
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 20.dp)
+                .padding(horizontal = 5.dp)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 25.dp, vertical = 8.dp)
+                    .padding(horizontal = 5.dp,)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = ".${displayState}",
+                        text = "${displayState}",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         style = TextStyle(
-                            color = subHeadingColor,
-                            fontSize = 14.sp,
+                            color = Color.Black,
+                            fontSize = 12.sp,
 
                         ),
-                        modifier = Modifier.width(150.dp)
+                        modifier = Modifier.width(150.dp).padding(start=14.dp)
                     )
                     Text(
                         text = formattedDate,
                         style = TextStyle(
                             color = Color.Gray,
-                            fontSize = 12.sp,
+                            fontSize = 10.sp,
                         )
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(1.dp))
+
 
             Box(
                 modifier = Modifier

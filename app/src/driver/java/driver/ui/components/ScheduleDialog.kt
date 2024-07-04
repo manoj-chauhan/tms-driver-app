@@ -60,7 +60,9 @@ fun LocationList(scheduleLocation: ScheduleLocation) {
         outputFormat.format(it)
     } ?: "--"
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .height(500.dp)) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -74,12 +76,7 @@ fun LocationList(scheduleLocation: ScheduleLocation) {
             TableHeader("Distance")
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-
-
-
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -87,7 +84,7 @@ fun LocationList(scheduleLocation: ScheduleLocation) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             TableIconContent(icon = Icons.Default.CheckCircleOutline, contentDescription = "Check")
-            TableContent("Actual")
+            TableContent("")
             TableContent(formattedActualArrival)
             TableContent(formattedActualDeparture)
             TableContent(scheduleLocation.estDistance.toString())
@@ -97,7 +94,7 @@ fun LocationList(scheduleLocation: ScheduleLocation) {
 
 @Composable
 fun TableHeader(text: String) {
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+    Box( contentAlignment = Alignment.Center) {
         Text(
             text = text,
             style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
@@ -106,7 +103,7 @@ fun TableHeader(text: String) {
 }
 @Composable
 fun TableIconContent(icon: ImageVector, contentDescription: String) {
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+    Box( contentAlignment = Alignment.Center) {
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
@@ -117,7 +114,7 @@ fun TableIconContent(icon: ImageVector, contentDescription: String) {
 
 @Composable
 fun TableContent(text: String) {
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+    Box( contentAlignment = Alignment.Center) {
         Text(
             text = text,
             style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Color.Black)

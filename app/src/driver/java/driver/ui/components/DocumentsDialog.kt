@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -17,7 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -64,13 +69,18 @@ fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>) {
 @Composable
 fun DocumentsList(operatorId: Int, context: Context, document: Documents, vm: DocumentDownloadViewModel = viewModel(),){
 
-    Column {
-        Card(
+    Column(modifier=Modifier.height(500.dp)) {
+        ElevatedCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
-                .clip(RoundedCornerShape(8.dp))
-        ) {
+
+
+                .padding(8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            ),
+
+            ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,7 +90,7 @@ fun DocumentsList(operatorId: Int, context: Context, document: Documents, vm: Do
                 Icon(
                     imageVector = Icons.Default.Description,
                     contentDescription = "Document Icon",
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(20.dp)
                 )
 
                 Column(

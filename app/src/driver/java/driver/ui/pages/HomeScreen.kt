@@ -501,11 +501,11 @@ fun HomeScreen(
         locations = false
     }
 
-    if (permit) {
-        TripLocationPermission (
-            setShowDialog = { permit = it }
-        )
-    }
+//    if (permit) {
+//        TripLocationPermission (
+//            setShowDialog = { permit = it }
+//        )
+//    }
 
     if (userProfile) {
         navController.navigate("user-profile")
