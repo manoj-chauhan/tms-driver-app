@@ -87,6 +87,9 @@ fun TripInfoNewDesign(
                 operatorId = operatorId
             )
         }
+        else{
+            Log.d("data not loaded", "data not loaded")
+        }
 
         val isCheckInDialogVisible = remember { mutableStateOf(false); }
         var isStartDialogVisible = remember { mutableStateOf(false); }
@@ -357,6 +360,12 @@ fun TripInfoNewDesign(
 
                 }
             }
+            else{
+                Log.d("trip status problem", "trip status problem")
+            }
         }
+    }
+    else{
+        Log.d("not connected", "not connected ")
     }
 }
