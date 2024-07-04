@@ -126,7 +126,7 @@ fun HistoryList(history: TripHistory){
                             fontSize = 12.sp,
 
                         ),
-                        modifier = Modifier.width(150.dp).padding(start=14.dp)
+                        modifier = Modifier.width(150.dp).padding(start=16.dp)
                     )
                     Text(
                         text = formattedDate,

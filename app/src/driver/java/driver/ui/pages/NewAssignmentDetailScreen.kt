@@ -339,104 +339,104 @@ fun NewAssignmentDetailScreen(
                             val location = Intent(context, LocationService::class.java)
                             context.stopService(location)
                         } else {
-//                            if (isAnyTripStarted) {
-////                                val loc = LocationService::class.java
-////                                val service = isLocationServiceRunning(context, loc)
-//                                if (service) {
-//
-//                                    Column(
-//                                        modifier = Modifier
-//                                            .fillMaxWidth()
-//                                            .background(Color.Transparent)
-//                                            .padding(6.dp)
-//                                    ) {
-//                                        currentAssignmentData?.let {
-//                                            RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-//                                            it.vehicles.take(it.vehicles.size)
-//                                                .forEach { vehicleAssignment ->
-//                                                    AssignedVehicle(vehicleAssignment)
-//                                                }
-//                                        }
-//                                    }
-//
-//
-//
-//
-//                                    matList?.let { mList ->
-//                                        if (mList.isNotEmpty()) {
-//                                            val lastTime = mList.last().time
-//
-//                                            val parsedDate = inputFormat.parse(lastTime.toString())
-//                                            val formattedDate = outputFormat.format(parsedDate)
-//
-//                                            Column(
-//                                                modifier = Modifier.fillMaxWidth(),
-//                                                verticalArrangement = Arrangement.Center
-//                                            ) {
-//                                                Row(
-//                                                    modifier = Modifier.fillMaxWidth(),
-//                                                    horizontalArrangement = Arrangement.Absolute.Center
-//                                                ) {
-//                                                    Icon(
-//                                                        imageVector = Icons.Outlined.LocationOn,
-//                                                        tint = Color.Green,
-//                                                        contentDescription = "location",
-//                                                        modifier = Modifier.size(20.dp)
-//                                                    )
-//                                                    Spacer(modifier = Modifier.width(6.dp))
-//
-//                                                    Text(
-//                                                        color = headingColor,
-//                                                        text = "You are sharing your location....",
-//                                                        fontFamily = FontFamily.SansSerif,
-//                                                        fontSize = 14.sp,
-//                                                        fontWeight = FontWeight.W500,
-//                                                    )
-//                                                }
-//
-//                                                Text(
-//                                                    modifier = Modifier.fillMaxWidth(),
-//                                                    text = "Last Location Shared at  ${formattedDate}",
-//                                                    textAlign = TextAlign.Center,
-//                                                    fontSize = 10.sp,
-//                                                    color = textColor,
-//                                                )
-//                                                Spacer(modifier = Modifier.height(5.dp))
-//
-//                                            }
-//
-//
-//                                        } else {
-//                                            Column(
-//                                                modifier = Modifier.fillMaxWidth(),
-//                                                verticalArrangement = Arrangement.Center
-//                                            ) {
-//
-//                                                Row(
-//                                                    modifier = Modifier.fillMaxWidth(),
-//                                                    horizontalArrangement = Arrangement.SpaceBetween
-//                                                ) {
-//                                                    Icon(
-//                                                        imageVector = Icons.Outlined.LocationOff,
-//                                                        tint = Color.Green,
-//                                                        contentDescription = "location",
-//                                                        modifier = Modifier.size(24.dp)
-//                                                    )
-//                                                    Spacer(modifier = Modifier.width(5.dp))
-//                                                    Text(text = "Last recorded location time - Not shared ")
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//
-//
-//                                } else {
-//                                    permit = true
-//                                }
-//                                if (service && !locationEnabledState.value) {
-//                                    permit = true
-//                                }
-//                            }
+                            if (isAnyTripStarted) {
+                                 val loc = LocationService::class.java
+                                 val service = isLocationServiceRunning(context, loc)
+                                if (service) {
+
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(Color.Transparent)
+                                            .padding(6.dp)
+                                    ) {
+                                        currentAssignmentData?.let {
+                                            RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+                                            it.vehicles.take(it.vehicles.size)
+                                                .forEach { vehicleAssignment ->
+                                                    AssignedVehicle(vehicleAssignment)
+                                                }
+                                        }
+                                    }
+
+
+
+
+                                    matList?.let { mList ->
+                                        if (mList.isNotEmpty()) {
+                                            val lastTime = mList.last().time
+
+                                            val parsedDate = inputFormat.parse(lastTime.toString())
+                                            val formattedDate = outputFormat.format(parsedDate)
+
+                                            Column(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                verticalArrangement = Arrangement.Center
+                                            ) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.Absolute.Center
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Outlined.LocationOn,
+                                                        tint = Color.Green,
+                                                        contentDescription = "location",
+                                                        modifier = Modifier.size(20.dp)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(6.dp))
+
+                                                    Text(
+                                                        color = headingColor,
+                                                        text = "You are sharing your location....",
+                                                        fontFamily = FontFamily.SansSerif,
+                                                        fontSize = 14.sp,
+                                                        fontWeight = FontWeight.W500,
+                                                    )
+                                                }
+
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = "Last Location Shared at  ${formattedDate}",
+                                                    textAlign = TextAlign.Center,
+                                                    fontSize = 10.sp,
+                                                    color = textColor,
+                                                )
+                                                Spacer(modifier = Modifier.height(5.dp))
+
+                                            }
+
+
+                                        } else {
+                                            Column(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                verticalArrangement = Arrangement.Center
+                                            ) {
+
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Outlined.LocationOff,
+                                                        tint = Color.Green,
+                                                        contentDescription = "location",
+                                                        modifier = Modifier.size(24.dp)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(5.dp))
+                                                    Text(text = "Last recorded location time - Not shared ")
+                                                }
+                                            }
+                                        }
+                                    }
+
+
+                                } else {
+                                    permit = true
+                                }
+                                if (service && !locationEnabledState.value) {
+                                    permit = true
+                                }
+                            }
                         }
 
                         Column {
@@ -475,16 +475,19 @@ fun NewAssignmentDetailScreen(
                             }
                         }
                     }
-                    currentAssignmentData?.let {
-                        Column {
-                            it.trips.take(it.trips.size).forEach { trip ->
+
+
+                        currentAssignmentData?.let {
+                            Column {
+                                it.trips.take(it.trips.size).forEach { trip ->
                                     BottomSheet(
                                         trip, onTripSelected
                                     )
                                 }
 
+                            }
                         }
-                    }
+
 
                 }
             }
@@ -680,16 +683,20 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
 
                 
                 item {
-                    val navController = rememberNavController()
-                    val activity = LocalContext.current as? ComponentActivity
-                    if (activity != null) {
-                        TripInfoNewDesign(
+                    Column(modifier=Modifier.fillMaxWidth()) {
 
-                            operatorId = trip.operatorCompanyId,
-                            tripId = trip.tripId,
-                            tripCode = trip.tripCode,
-                            activity = activity
-                        )
+
+                        val navController = rememberNavController()
+                        val activity = LocalContext.current as? ComponentActivity
+                        if (activity != null) {
+                            TripInfoNewDesign(
+
+                                operatorId = trip.operatorCompanyId,
+                                tripId = trip.tripId,
+                                tripCode = trip.tripCode,
+                                activity = activity
+                            )
+                        }
                     }
                 }
 
@@ -705,6 +712,9 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                                 tripCode = trip.tripCode,
                                 activity = activity
                             )
+                        }
+                        else {
+                            Log.d("BottomSheet", "Activity is null")
                         }
                     }
                 }

@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -84,7 +85,7 @@ fun DocumentsList(operatorId: Int, context: Context, document: Documents, vm: Do
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    ,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -100,17 +101,21 @@ fun DocumentsList(operatorId: Int, context: Context, document: Documents, vm: Do
                 ) {
                     Text(
                         text = document.name,
-                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = TextStyle(fontSize = 14.sp, )
                     )
                     Text(
                         text = document.createdAt ,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         style = TextStyle(fontSize = 12.sp, color = Color.Gray)
                     )
                 }
 
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(20.dp)
                         .clickable {
                             vm.downloadDocument(
                                 context = context,
