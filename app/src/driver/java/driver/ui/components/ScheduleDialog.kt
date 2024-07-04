@@ -9,12 +9,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircleOutline
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -63,6 +67,7 @@ fun LocationList(scheduleLocation: ScheduleLocation) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            TableHeader("")
             TableHeader("Stops")
             TableHeader("Arrival Time")
             TableHeader("Departure Time")
@@ -72,16 +77,7 @@ fun LocationList(scheduleLocation: ScheduleLocation) {
         Spacer(modifier = Modifier.height(8.dp))
 
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TableContent(scheduleLocation.placeName)
-            TableContent(formattedScheduledArrival)
-            TableContent(formattedScheduledDeparture)
-            TableContent(scheduleLocation.estDistance.toString())
-        }
+
 
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -90,10 +86,11 @@ fun LocationList(scheduleLocation: ScheduleLocation) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            TableIconContent(icon = Icons.Default.CheckCircleOutline, contentDescription = "Check")
             TableContent("Actual")
             TableContent(formattedActualArrival)
             TableContent(formattedActualDeparture)
-            TableContent("")
+            TableContent(scheduleLocation.estDistance.toString())
         }
     }
 }
@@ -104,6 +101,16 @@ fun TableHeader(text: String) {
         Text(
             text = text,
             style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+        )
+    }
+}
+@Composable
+fun TableIconContent(icon: ImageVector, contentDescription: String) {
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = Color.Gray
         )
     }
 }

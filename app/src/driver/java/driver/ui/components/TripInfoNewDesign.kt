@@ -55,7 +55,7 @@ import java.text.SimpleDateFormat
 @Composable
 fun TripInfoNewDesign(
 
-    selectedAssignment: String,
+
     operatorId: Int,
     tripId: Int,
     tripCode: String,

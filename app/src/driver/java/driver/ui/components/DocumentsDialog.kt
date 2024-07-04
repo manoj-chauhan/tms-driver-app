@@ -63,24 +63,8 @@ fun DocumentsDialog(operatorId:Int,document: MutableList<Documents>) {
 
 @Composable
 fun DocumentsList(operatorId: Int, context: Context, document: Documents, vm: DocumentDownloadViewModel = viewModel(),){
-//    Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
-//        Column(modifier = Modifier.width(200.dp)) {
-//            Box(modifier = Modifier.fillMaxWidth()){
-//                Text(text = document.type, style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold))
-//            }
-//            Box(modifier = Modifier.fillMaxWidth()){
-//                Text(text = document.name, style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Light, color = Color.Gray))
-//            }
-//        }
-//
-//        Box(modifier = Modifier.width(30.dp)){
-//            Icon(imageVector = Icons.Filled.Download, contentDescription = null, Modifier.clickable { vm.downloadDocument(context = context, name = document.name, operatorId = operatorId) })
-//        }
-//    }
 
     Column {
-
-
         Card(
             modifier = Modifier
                 .fillMaxWidth()

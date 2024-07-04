@@ -679,219 +679,219 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                 }
 
 
-                item {
-
-                    Row(
-                        modifier = Modifier
-                            .padding(top = 20.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 8.dp)
-                                .background(
-                                    color = Color(0XFFDCE1FE), shape = RoundedCornerShape(8.dp)
-                                )
-                                .height(60.dp)
-                        ) {
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(8.dp)
-                            ) {
-                                Text(
-                                    text = "Total Distance Covered",
-                                    fontSize = 12.sp,
-                                    color = Color.Gray,
-                                    textAlign = TextAlign.Center
-                                )
-                                Spacer(modifier = Modifier.height(2.dp))
-                                Text(text = "_ _", color = Black)
-                            }
-                        }
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 8.dp)
-                                .background(
-                                    color = Color(0XFFDCE1FE), shape = RoundedCornerShape(8.dp)
-                                )
-                                .height(60.dp)
-                        ) {
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(8.dp)
-                            ) {
-                                Text(
-                                    text = "Total Travel Time",
-                                    color = Color.Gray,
-                                    fontSize = 12.sp,
-                                    textAlign = TextAlign.Center
-                                )
-                                Spacer(modifier = Modifier.height(2.dp))
-                                Text(text = "_ _", color = Black)
-                            }
-                        }
-                    }
-
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-
-                item {
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-//                    Text(text = "Next Location", fontWeight = FontWeight.SemiBold)
-                        Text(text = "Next Location", color = headingColor, fontSize = 14.sp)
-                        Text(text = "Sect 4 Gurgaon (GGN)", color = actionColors)
-                    }
-
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Estimated Time", fontSize = 12.sp, color = actionColors
-                        )
-                        Text(
-                            text = "3 hours 20 mins", fontSize = 12.sp, color = actionColors
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Estimated Distance", fontSize = 12.sp, color = actionColors
-                        )
-                        Text(text = "250 kms", fontSize = 12.sp, color = actionColors)
-                    }
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-//                    Text(text = "Departed from Delhi at 02:00 am", fontWeight = FontWeight.SemiBold)
-                        Text(
-                            text = "Departed from Delhi at 02:00 am",
-                            color = headingColor,
-                            fontSize = 14.sp
-                        )
-
-                    }
-                    Spacer(modifier = Modifier.height(5.dp))
-
-
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Standard Arrival Time at Next Location: 08:00pm",
-                            fontSize = 12.sp,
-                            color = actionColors
-                        )
-                        Text(text = "300 kms", fontSize = 12.sp, color = actionColors)
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Total Distance from last location",
-                            fontSize = 12.sp,
-                            color = actionColors
-                        )
-                        Text(text = "300 kms", fontSize = 12.sp, color = actionColors)
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Button(
-                            onClick = { }, modifier = Modifier
-                                .width(120.dp)
-                                .padding(end = 8.dp),
-
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFEBF4FA),
-
-                                )
-                        ) {
-                            Text(text = "Start", color = Color.Blue)
-                        }
-                        Button(
-                            onClick = { },
-
-                            modifier = Modifier
-                                .width(120.dp)
-                                .padding(start = 8.dp),
-
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFE8EAED)
-
-
-                            )
-                        ) {
-                            Text(text = "Cancel", color = Color.Gray)
-                        }
-                    }
-
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-
-                item {
-
-
-                    Text(
-                        text = "You are operating two trips swipe to see others",
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.Gray,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-                
 //                item {
-//                    val navController = rememberNavController()
-//                    val activity = LocalContext.current as? ComponentActivity
-//                    if (activity != null) {
-//                        TripInfoNewDesign(
-//                            selectedAssignment = selectedAssignment,
-//                            operatorId = operatorId,
-//                            tripId = tripId,
-//                            tripCode = tripCode,
-//                            activity = activity
+//
+//                    Row(
+//                        modifier = Modifier
+//                            .padding(top = 20.dp)
+//                            .fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Box(
+//                            modifier = Modifier
+//                                .weight(1f)
+//                                .padding(end = 8.dp)
+//                                .background(
+//                                    color = Color(0XFFDCE1FE), shape = RoundedCornerShape(8.dp)
+//                                )
+//                                .height(60.dp)
+//                        ) {
+//                            Column(
+//                                verticalArrangement = Arrangement.Center,
+//                                horizontalAlignment = Alignment.CenterHorizontally,
+//                                modifier = Modifier
+//                                    .fillMaxSize()
+//                                    .padding(8.dp)
+//                            ) {
+//                                Text(
+//                                    text = "Total Distance Covered",
+//                                    fontSize = 12.sp,
+//                                    color = Color.Gray,
+//                                    textAlign = TextAlign.Center
+//                                )
+//                                Spacer(modifier = Modifier.height(2.dp))
+//                                Text(text = "_ _", color = Black)
+//                            }
+//                        }
+//                        Box(
+//                            modifier = Modifier
+//                                .weight(1f)
+//                                .padding(start = 8.dp)
+//                                .background(
+//                                    color = Color(0XFFDCE1FE), shape = RoundedCornerShape(8.dp)
+//                                )
+//                                .height(60.dp)
+//                        ) {
+//                            Column(
+//                                verticalArrangement = Arrangement.Center,
+//                                horizontalAlignment = Alignment.CenterHorizontally,
+//                                modifier = Modifier
+//                                    .fillMaxSize()
+//                                    .padding(8.dp)
+//                            ) {
+//                                Text(
+//                                    text = "Total Travel Time",
+//                                    color = Color.Gray,
+//                                    fontSize = 12.sp,
+//                                    textAlign = TextAlign.Center
+//                                )
+//                                Spacer(modifier = Modifier.height(2.dp))
+//                                Text(text = "_ _", color = Black)
+//                            }
+//                        }
+//                    }
+//
+//
+//                    Spacer(modifier = Modifier.height(16.dp))
+//                    HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
+//                    Spacer(modifier = Modifier.height(16.dp))
+//                }
+//
+//                item {
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+////                    Text(text = "Next Location", fontWeight = FontWeight.SemiBold)
+//                        Text(text = "Next Location", color = headingColor, fontSize = 14.sp)
+//                        Text(text = "Sect 4 Gurgaon (GGN)", color = actionColors)
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(20.dp))
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Estimated Time", fontSize = 12.sp, color = actionColors
+//                        )
+//                        Text(
+//                            text = "3 hours 20 mins", fontSize = 12.sp, color = actionColors
 //                        )
 //                    }
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Estimated Distance", fontSize = 12.sp, color = actionColors
+//                        )
+//                        Text(text = "250 kms", fontSize = 12.sp, color = actionColors)
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(20.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+////                    Text(text = "Departed from Delhi at 02:00 am", fontWeight = FontWeight.SemiBold)
+//                        Text(
+//                            text = "Departed from Delhi at 02:00 am",
+//                            color = headingColor,
+//                            fontSize = 14.sp
+//                        )
+//
+//                    }
+//                    Spacer(modifier = Modifier.height(5.dp))
+//
+//
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Standard Arrival Time at Next Location: 08:00pm",
+//                            fontSize = 12.sp,
+//                            color = actionColors
+//                        )
+//                        Text(text = "300 kms", fontSize = 12.sp, color = actionColors)
+//                    }
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Text(
+//                            text = "Total Distance from last location",
+//                            fontSize = 12.sp,
+//                            color = actionColors
+//                        )
+//                        Text(text = "300 kms", fontSize = 12.sp, color = actionColors)
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(16.dp))
+//                    HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
+//                    Spacer(modifier = Modifier.height(16.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceEvenly
+//                    ) {
+//                        Button(
+//                            onClick = { }, modifier = Modifier
+//                                .width(120.dp)
+//                                .padding(end = 8.dp),
+//
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = Color(0xFFEBF4FA),
+//
+//                                )
+//                        ) {
+//                            Text(text = "Start", color = Color.Blue)
+//                        }
+//                        Button(
+//                            onClick = { },
+//
+//                            modifier = Modifier
+//                                .width(120.dp)
+//                                .padding(start = 8.dp),
+//
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = Color(0xFFE8EAED)
+//
+//
+//                            )
+//                        ) {
+//                            Text(text = "Cancel", color = Color.Gray)
+//                        }
+//                    }
+//
+//
+//                    Spacer(modifier = Modifier.height(16.dp))
+//                    HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
+//                    Spacer(modifier = Modifier.height(16.dp))
 //                }
+//
+//                item {
+//
+//
+//                    Text(
+//                        text = "You are operating two trips swipe to see others",
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = Color.Gray,
+//                        modifier = Modifier.fillMaxWidth(),
+//                        textAlign = TextAlign.Center
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(20.dp))
+//                }
+                
+                item {
+                    val navController = rememberNavController()
+                    val activity = LocalContext.current as? ComponentActivity
+                    if (activity != null) {
+                        TripInfoNewDesign(
+
+                            operatorId = trip.operatorCompanyId,
+                            tripId = trip.tripId,
+                            tripCode = trip.tripCode,
+                            activity = activity
+                        )
+                    }
+                }
 
                 item {
                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -959,15 +959,15 @@ fun TabViewContent(
         pastAssignment?.let { assignmentDetail ->
             when (selectedTabIndex) {
                 0 ->
-                    TempScheduleContent()
-//                    ScheduleContent(
-//                    navController = navController,
-//                    selectedAssignment = message,
-//                    operatorId = operatorI,
-//                    tripId = tripId,
-//                    tripCode = message,
-//                    activity
-//                )
+//                    TempScheduleContent()
+                    ScheduleContent(
+                    navController = navController,
+
+                    operatorId = operatorI,
+                    tripId = tripId,
+                    tripCode = tripCode,
+                    activity
+                )
                 1 -> pastAssignment?.let {
                     History(
                         navController = navController,
@@ -989,20 +989,14 @@ fun TabViewContent(
     }
 }
 
-@Composable
-fun TempScheduleContent(){
-    Column {
-        Text(text = "schedule")
-        Spacer(modifier = Modifier.height(500.dp))
-    }
-}
+
 
 
     @Composable
     fun ScheduleContent(
         navController: NavHostController,
 
-        selectedAssignment: String,
+
         operatorId: Int,
         tripId: Int,
         tripCode: String,

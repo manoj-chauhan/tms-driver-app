@@ -19,11 +19,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -37,6 +39,7 @@ import androidx.navigation.NavHostController
 import com.drishto.driver.ui.viewmodels.TripHistory
 import com.drishto.driver.ui.viewmodels.TripHistoryViewModel
 import driver.ui.actionColors
+import driver.ui.subHeadingColor
 import java.text.SimpleDateFormat
 
 @Composable
@@ -95,62 +98,72 @@ fun HistoryList(history: TripHistory){
         else -> history.state
     }
 
-    Column(
+    Spacer(modifier = Modifier.height(3.dp))
+
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 20.dp)
+            .shadow(3.dp, RoundedCornerShape(12.dp))
+            .padding(8.dp),
+
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 25.dp)
+                .padding(bottom = 20.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 25.dp, vertical = 8.dp)
             ) {
-                Text(
-                    text = displayState,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.width(150.dp)
-                )
-                Text(
-                    text = formattedDate,
-                    style = TextStyle(
-                        color = actionColors,
-                        fontSize = 12.sp,
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = ".${displayState}",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = TextStyle(
+                            color = subHeadingColor,
+                            fontSize = 14.sp,
 
+                        ),
+                        modifier = Modifier.width(150.dp)
                     )
-                )
+                    Text(
+                        text = formattedDate,
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 12.sp,
+                        )
+                    )
+                }
             }
-        }
-        Spacer(modifier = Modifier.height(1.dp))
+            Spacer(modifier = Modifier.height(1.dp))
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 25.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 25.dp, vertical = 8.dp)
             ) {
-                Text(
-                    text = history.description,
-                    style = TextStyle(
-                        color = Color.Gray,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Normal
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = history.description,
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Normal
+                        )
                     )
-                )
+                }
             }
         }
     }
+    Spacer(modifier = Modifier.height(3.dp))
 
 }
