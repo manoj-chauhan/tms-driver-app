@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.drishto.driver.ui.viewmodels.TripHistory
 import com.drishto.driver.ui.viewmodels.TripHistoryViewModel
+import driver.ui.actionColors
 import java.text.SimpleDateFormat
 
 @Composable
@@ -86,60 +88,64 @@ fun HistoryList(history: TripHistory){
         remember(history.time) { time.parse(history.time) }
     val formattedDate = remember(parsedDate) { outputtime.format(parsedDate) }
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(bottom = 20.dp)) {
+    val displayState = when (history.state) {
+        "DRIVER_ASSIGNED" -> "Driver Assigned"
+        "VEHICLE_ASSIGNED" -> "Vehicle Assigned"
+        "TRIP_STARTED" -> "Trip Started"
+        else -> history.state
+    }
 
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 20.dp)
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    PaddingValues(
-                        start = 25.dp, end = 12.dp
-                    )
-                )
+                .padding(horizontal = 25.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = history.state,
+                    text = displayState,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .width(150.dp)
-                )
-                Text(
-                    text = formattedDate, style = TextStyle(
-                        color = Color.Gray,
+                    style = TextStyle(
+                        color = Color.Black,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.width(150.dp)
+                )
+                Text(
+                    text = formattedDate,
+                    style = TextStyle(
+                        color = actionColors,
+                        fontSize = 12.sp,
+
                     )
                 )
             }
-
-
         }
+        Spacer(modifier = Modifier.height(1.dp))
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    PaddingValues(
-                        start = 25.dp, end = 12.dp
-                    )
-                )
+                .padding(horizontal = 25.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.Start
             ) {
                 Text(
                     text = history.description,
                     style = TextStyle(
                         color = Color.Gray,
-                        fontSize = 14.sp,
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.Normal
                     )
                 )
