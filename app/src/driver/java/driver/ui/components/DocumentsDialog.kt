@@ -74,6 +74,7 @@ fun DocumentsList(operatorId: Int, context: Context, document: Documents, vm: Do
         ElevatedCard(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(50.dp)
 
 
                 .padding(8.dp),

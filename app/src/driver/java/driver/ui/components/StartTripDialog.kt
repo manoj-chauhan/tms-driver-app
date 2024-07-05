@@ -118,13 +118,7 @@ fun StartTripDialog(tripId:Int,operatorId: Int, tripCode:String,setShowDialog: (
                 }
             }
 
-//            if(locationEnabled){
-//                Log.e("Location not shared", "StartTripDialog: ")
-//                LocationDisabledDialog()
-//            }
-//            if(locationEnabledState.value){
-//                setShowDialog(false)
-//            }
+
         }
     }
 }

@@ -139,9 +139,11 @@ import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
 import driver.ui.actionColors
 import driver.ui.components.AssignedVehicle
+import driver.ui.components.CallCheckInDialog
 import driver.ui.components.DocumentsDialog
 import driver.ui.components.GeneratedCodeDialog
 import driver.ui.components.LocationList
+import driver.ui.components.StartTripDialog
 import driver.ui.components.TripInfoNewDesign
 import driver.ui.generateButton
 import driver.ui.headingColor
@@ -340,8 +342,8 @@ fun NewAssignmentDetailScreen(
                             context.stopService(location)
                         } else {
                             if (isAnyTripStarted) {
-                                 val loc = LocationService::class.java
-                                 val service = isLocationServiceRunning(context, loc)
+                                val loc = LocationService::class.java
+                                val service = isLocationServiceRunning(context, loc)
                                 if (service) {
 
                                     Column(
@@ -477,16 +479,16 @@ fun NewAssignmentDetailScreen(
                     }
 
 
-                        currentAssignmentData?.let {
-                            Column {
-                                it.trips.take(it.trips.size).forEach { trip ->
-                                    BottomSheet(
-                                        trip, onTripSelected
-                                    )
-                                }
-
+                    currentAssignmentData?.let {
+                        Column {
+                            it.trips.take(it.trips.size).forEach { trip ->
+                                BottomSheet(
+                                    trip, onTripSelected,navController
+                                )
                             }
+
                         }
+                    }
 
 
                 }
@@ -498,14 +500,38 @@ fun NewAssignmentDetailScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> Unit) {
+fun BottomSheet(
+    trip: TripsAssigned,
+    onClick: (tripsToDriver: TripsAssigned) -> Unit,
+    navController: NavHostController,
+    vm: AssignmentDetailViewModel = hiltViewModel(),
+    pt: PastAssignmentDetailViewModel = hiltViewModel(),
+
+
+) {
 
 
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(true) }
 
+    var isStartDialogVisible = remember { mutableStateOf(false); }
+
 
     val boxgray = Color(0xFFE5E5E5)
+
+    val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
+    val pastAssignment by pt.pastassignmentDetail.collectAsStateWithLifecycle()
+
+    val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
+    val isCheckInEnabled = assignment?.activeStatusDetail?.actions?.contains("CHECKIN")
+    val isDepartEnabled = assignment?.activeStatusDetail?.actions?.contains("DEPART")
+    val isCancelEnabled = assignment?.activeStatusDetail?.actions?.contains("CANCEL")
+    val isEndEnabled = assignment?.activeStatusDetail?.actions?.contains("END")
+
+    val isCheckInDialogVisible = remember { mutableStateOf(false); }
+
+    val context = LocalContext.current
+
 
     if (showBottomSheet) {
         FlexibleBottomSheet(
@@ -523,7 +549,7 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                     intermediatelyExpanded = 0.77f,
                     slightlyExpanded = 0.24f,
 
-                ),
+                    ),
 
 
                 skipSlightlyExpanded = false,
@@ -648,6 +674,7 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                     HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
                     Spacer(modifier = Modifier.height(20.dp))
                 }
+
                 item {
 
 
@@ -681,9 +708,10 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                     HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
                 }
 
-                
                 item {
-                    Column(modifier=Modifier.fillMaxWidth()) {
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+
 
 
                         val navController = rememberNavController()
@@ -700,6 +728,233 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                     }
                 }
 
+
+                item {
+                    assignment?.let { it ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            if (trip.status == "TRIP_STARTED") {
+
+                                Button(
+                                    onClick = {
+                                        vm.startTrip(
+                                            context,
+                                            trip.tripId,
+                                            trip.tripCode,
+                                            trip.operatorCompanyId
+                                        )
+                                        isStartDialogVisible.value = true
+                                    },
+                                    modifier = Modifier
+                                        .width(120.dp)
+                                        .padding(end = 8.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFFEBF4FA),
+                                    )
+                                ) {
+                                    Text(text = "Start", color = Color.Blue)
+                                }
+
+                                Button(
+                                    onClick = {
+                                        isCheckInDialogVisible.value = true
+                                    },
+                                    modifier = Modifier.width(120.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFFEBF4FA),
+                                    )
+                                ) {
+                                    Text(text = "Check-In", color = Color.Blue)
+                                }
+                            } else {
+
+                                Button(
+                                    onClick = {
+                                        vm.startTrip(
+                                            context,
+                                            trip.tripId,
+                                            trip.tripCode,
+                                            trip.operatorCompanyId
+                                        )
+                                        isStartDialogVisible.value = true
+                                    },
+                                    modifier = Modifier
+                                        .width(120.dp)
+                                        .padding(end = 8.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFFEBF4FA),
+                                    )
+                                ) {
+                                    Text(text = "Start", color = Color.Blue)
+                                }
+                            }
+
+
+                        }
+
+//                    if (isStartDialogVisible.value) {
+//                        StartTripDialog(
+//                            tripId = trip.tripId,
+//                            operatorId = trip.operatorCompanyId,
+//                            tripCode = trip.tripCode,
+//                            setShowDialog = {
+//                                isStartDialogVisible.value = it
+//
+//                                isCheckInEnabled = it
+//                            }
+//                        )
+//                    }
+                        if (isStartDialogVisible.value) {
+                            StartTripDialog(
+                                tripId = trip.tripId,
+                                operatorId = trip.operatorCompanyId,
+                                tripCode = trip.tripCode,
+                                setShowDialog = {
+                                    isStartDialogVisible.value = it
+                                }
+                            )
+                        }
+
+//                    if (isCheckInDialogVisible.value) {
+//                        CallCheckInDialog(
+//                            tripId = trip.tripId,
+//                            operatorId = trip.operatorCompanyId,
+//                            tripCode = trip.tripCode,
+//                            context = context,
+//
+//
+//                            setShowDialog = {
+//                                isCheckInDialogVisible.value = it
+//                            }
+//                        )
+//                    }
+                        if (isCheckInDialogVisible.value) {
+                            assignment?.loc?.let { it1 ->
+                                CallCheckInDialog(context,
+                                    tripId = trip.tripId,
+                                    tripCode = trip.tripCode,
+                                    operatorId = trip.operatorCompanyId,
+                                    it1,
+                                    setShowDialog = {
+                                        Log.i("Dialog", "Dialog dismissed")
+                                        isCheckInDialogVisible.value = it
+                                    }
+                                )
+
+                            }
+                        }
+                        if (it.tripDetail.status != "TRIP_ENDED") {
+                            assignment?.activeStatusDetail?.actions.let {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight()
+                                        .padding(
+                                            start = 25.dp,
+                                            top = 30.dp,
+                                            end = 12.dp,
+                                            bottom = 30.dp
+                                        ),
+                                    contentAlignment = Alignment.BottomStart
+
+                                )
+                                {
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+                                        if (isStartEnabled == true) {
+                                            Button(colors = ButtonDefaults.buttonColors(
+                                                Color.Red
+                                            ),
+                                                onClick = {
+                                                            vm.startTrip(
+                                                                context,
+                                                                tripId=trip.tripId,
+                                                                tripCode=trip.tripCode,
+                                                                operatorId=trip.operatorCompanyId
+                                                            )
+                                                    isStartDialogVisible.value = true
+                                                },
+                                                content = {
+                                                    Text(text = "Start")
+                                                }
+                                            )
+                                        }
+
+                                        if (isCancelEnabled == true) {
+                                            Button(
+                                                onClick = {
+                                                    vm.cancelTrip(
+                                                        context,
+                                                        tripId = trip.tripId,
+                                                        tripCode=trip.tripCode,
+                                                        operatorId=trip.operatorCompanyId,
+                                                        navController
+                                                    )
+
+                                                },
+                                                content = {
+                                                    Text(text = "Cancel")
+                                                }
+                                            )
+                                        }
+                                        if (isEndEnabled == true) {
+                                            Button(
+                                                onClick = {
+                                                    vm.endTrip(
+                                                        context,
+                                                        tripId=trip.tripId,
+                                                        tripCode=trip.tripCode,
+                                                        operatorId=trip.operatorCompanyId,
+                                                        navController
+                                                    )
+
+                                                },
+                                                content = {
+                                                    Text(text = "End")
+                                                }
+                                            )
+                                        }
+                                        if (isCheckInEnabled == true) {
+                                            Button(
+                                                onClick = {
+                                                    isCheckInDialogVisible.value = true
+                                                },
+                                                content = {
+                                                    Text(text = "Check-In")
+                                                }
+                                            )
+                                        }
+                                        if (isDepartEnabled == true) {
+                                            Button(
+                                                onClick = {
+                                                    vm.departTrip(
+                                                        context,
+                                                        tripId=trip.tripId,
+                                                        tripCode=trip.tripCode,
+                                                        operatorId=trip.operatorCompanyId
+                                                    )
+                                                },
+                                                content = {
+                                                    Text(text = "Depart")
+                                                }
+                                            )
+
+                                        }
+                                    }
+
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+
                 item {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         val navController = rememberNavController()
@@ -712,8 +967,7 @@ fun BottomSheet(trip: TripsAssigned, onClick: (tripsToDriver: TripsAssigned) -> 
                                 tripCode = trip.tripCode,
                                 activity = activity
                             )
-                        }
-                        else {
+                        } else {
                             Log.d("BottomSheet", "Activity is null")
                         }
                     }
@@ -771,13 +1025,14 @@ fun TabViewContent(
                 0 ->
 //                    TempScheduleContent()
                     ScheduleContent(
-                    navController = navController,
+                        navController = navController,
 
-                    operatorId = operatorI,
-                    tripId = tripId,
-                    tripCode = tripCode,
-                    activity
-                )
+                        operatorId = operatorId,
+                        tripId = tripId,
+                        tripCode = tripCode,
+                        activity
+                    )
+
                 1 -> pastAssignment?.let {
                     History(
                         navController = navController,
@@ -800,126 +1055,123 @@ fun TabViewContent(
 }
 
 
+@Composable
+fun ScheduleContent(
+    navController: NavHostController,
 
 
-    @Composable
-    fun ScheduleContent(
-        navController: NavHostController,
+    operatorId: Int,
+    tripId: Int,
+    tripCode: String,
+    activity: ComponentActivity,
+    vm: AssignmentDetailViewModel = hiltViewModel(),
+    pt: PastAssignmentDetailViewModel = hiltViewModel()
+) {
+
+    val context = LocalContext.current
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val isConnected = runCatching {
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }.getOrDefault(false)
+
+    if (isConnected) {
 
 
-        operatorId: Int,
-        tripId: Int,
-        tripCode: String,
-        activity: ComponentActivity,
-        vm: AssignmentDetailViewModel = hiltViewModel(),
-        pt: PastAssignmentDetailViewModel = hiltViewModel()
-    ) {
+        val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
+        val pastAssignment by pt.pastassignmentDetail.collectAsStateWithLifecycle()
 
-        val context = LocalContext.current
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val isConnected = runCatching {
-            val activeNetworkInfo = connectivityManager.activeNetworkInfo
-            activeNetworkInfo != null && activeNetworkInfo.isConnected
-        }.getOrDefault(false)
-
-        if (isConnected) {
-
-
-            val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
-            val pastAssignment by pt.pastassignmentDetail.collectAsStateWithLifecycle()
-
-            if (assignment?.isDataLoaded != true) {
-                vm.fetchAssignmentDetail(
-                    context = context,
-                    tripId = tripId,
-                    tripCode = tripCode,
-                    operatorId = operatorId
-                )
-            }
-
-            val isCheckInDialogVisible = remember { mutableStateOf(false); }
-            var isStartDialogVisible = remember { mutableStateOf(false); }
-            var permit by remember {
-                mutableStateOf(false)
-            }
-
-            val isDocumentSelected = remember { mutableStateOf(true); }
-            val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
-            val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
-
-            val arrivalTime = SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ss")
-            val outputArrivaltime = SimpleDateFormat("HH:mm")
-
-            val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
-            val isCheckInEnabled = assignment?.activeStatusDetail?.actions?.contains("CHECKIN")
-            val isDepartEnabled = assignment?.activeStatusDetail?.actions?.contains("DEPART")
-            val isCancelEnabled = assignment?.activeStatusDetail?.actions?.contains("CANCEL")
-            val isEndEnabled = assignment?.activeStatusDetail?.actions?.contains("END")
-
-            val coroutineScope = rememberCoroutineScope()
-            val vw: SwipeRefresh = viewModel()
-            val isLoading by vw.isLoading.collectAsStateWithLifecycle()
-            val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
-
-            val locationManager =
-                context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-            val locationEnabledState = rememberUpdatedState(isLocationEnabled)
-
-
-            val loc = LocationService::class.java
-            val service = isLocationServiceRunning(context, loc)
-
-            Log.d(
-                "This is the permit of dialog",
-                "AssignmentDetailScreen: ${locationEnabledState.value}, ${assignment?.tripDetail?.status}, ${service}"
+        if (assignment?.isDataLoaded != true) {
+            vm.fetchAssignmentDetail(
+                context = context,
+                tripId = tripId,
+                tripCode = tripCode,
+                operatorId = operatorId
             )
-            if (assignment?.tripDetail?.status != "TRIP_CREATED") {
-                if (!service) {
-                    permit = true
-                }
-            } else {
-                permit = false
+        }
+
+        val isCheckInDialogVisible = remember { mutableStateOf(false); }
+        var isStartDialogVisible = remember { mutableStateOf(false); }
+        var permit by remember {
+            mutableStateOf(false)
+        }
+
+        val isDocumentSelected = remember { mutableStateOf(true); }
+        val inputFormat = SimpleDateFormat("yyyy-dd-MM'T'HH:mm")
+        val outputFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm")
+
+        val arrivalTime = SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ss")
+        val outputArrivaltime = SimpleDateFormat("HH:mm")
+
+        val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
+        val isCheckInEnabled = assignment?.activeStatusDetail?.actions?.contains("CHECKIN")
+        val isDepartEnabled = assignment?.activeStatusDetail?.actions?.contains("DEPART")
+        val isCancelEnabled = assignment?.activeStatusDetail?.actions?.contains("CANCEL")
+        val isEndEnabled = assignment?.activeStatusDetail?.actions?.contains("END")
+
+        val coroutineScope = rememberCoroutineScope()
+        val vw: SwipeRefresh = viewModel()
+        val isLoading by vw.isLoading.collectAsStateWithLifecycle()
+        val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
+        val locationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val locationEnabledState = rememberUpdatedState(isLocationEnabled)
+
+
+        val loc = LocationService::class.java
+        val service = isLocationServiceRunning(context, loc)
+
+        Log.d(
+            "This is the permit of dialog",
+            "AssignmentDetailScreen: ${locationEnabledState.value}, ${assignment?.tripDetail?.status}, ${service}"
+        )
+        if (assignment?.tripDetail?.status != "TRIP_CREATED") {
+            if (!service) {
+                permit = true
             }
+        } else {
+            permit = false
+        }
 
-            Column(modifier = Modifier.height(500.dp)) {
-                assignment?.let { it ->
+        Column(modifier = Modifier.height(500.dp)) {
+            assignment?.let { it ->
 
-                    assignment?.loc?.let { it1 ->
-                        it1.locations.forEach { location ->
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                LocationList(location)
-                            }
+                assignment?.loc?.let { it1 ->
+                    it1.locations.forEach { location ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            LocationList(location)
                         }
                     }
                 }
             }
-
-
-        }
-        else {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(48.dp)
-                )
-                Toast.makeText(
-                    context,
-                    "Please connect to a network and restart application",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
         }
 
 
+    } else {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(48.dp)
+            )
+            Toast.makeText(
+                context,
+                "Please connect to a network and restart application",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
+
+
+}
 
 
 
