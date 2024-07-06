@@ -113,6 +113,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.fontscaling.MathUtils.lerp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -483,7 +484,7 @@ fun NewAssignmentDetailScreen(
                         Column {
                             it.trips.take(it.trips.size).forEach { trip ->
                                 BottomSheet(
-                                    trip, onTripSelected,navController
+                                    trip, onTripSelected, navController
                                 )
                             }
 
@@ -508,7 +509,7 @@ fun BottomSheet(
     pt: PastAssignmentDetailViewModel = hiltViewModel(),
 
 
-) {
+    ) {
 
 
     val scope = rememberCoroutineScope()
@@ -519,8 +520,22 @@ fun BottomSheet(
 
     val boxgray = Color(0xFFE5E5E5)
 
+    val context= LocalContext.current
+
     val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
-    val pastAssignment by pt.pastassignmentDetail.collectAsStateWithLifecycle()
+
+
+    if (assignment?.isDataLoaded != true) {
+        vm.fetchAssignmentDetail(
+            context = context,
+            tripId = trip.tripId,
+            tripCode = trip.tripCode,
+            operatorId = trip.operatorCompanyId
+        )
+    } else {
+        Log.d("data not loaded", "data not loaded")
+    }
+
 
     val isStartEnabled = assignment?.activeStatusDetail?.actions?.contains("START")
     val isCheckInEnabled = assignment?.activeStatusDetail?.actions?.contains("CHECKIN")
@@ -530,7 +545,9 @@ fun BottomSheet(
 
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
 
-    val context = LocalContext.current
+
+
+
 
 
     if (showBottomSheet) {
@@ -697,7 +714,7 @@ fun BottomSheet(
                             )
                             Spacer(modifier = Modifier.width(5.dp))
 
-                            Text(text = trip.status, color = Color.Blue)
+                            assignment?.tripDetail?.let { Text(text = it.status, color = Color.Blue) }
                         }
 
                     }
@@ -711,7 +728,6 @@ fun BottomSheet(
                 item {
 
                     Column(modifier = Modifier.fillMaxWidth()) {
-
 
 
                         val navController = rememberNavController()
@@ -730,229 +746,124 @@ fun BottomSheet(
 
 
                 item {
-                    assignment?.let { it ->
+                    val actions = assignment?.activeStatusDetail?.actions
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(
+                                start = 25.dp,
+                                top = 30.dp,
+                                end = 12.dp,
+                                bottom = 30.dp
+                            ),
+                        contentAlignment = Alignment.BottomStart
+                    ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
+                            horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            if (trip.status == "TRIP_STARTED") {
+                            when {
 
-                                Button(
-                                    onClick = {
-                                        vm.startTrip(
-                                            context,
-                                            trip.tripId,
-                                            trip.tripCode,
-                                            trip.operatorCompanyId
-                                        )
-                                        isStartDialogVisible.value = true
-                                    },
-                                    modifier = Modifier
-                                        .width(120.dp)
-                                        .padding(end = 8.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFFEBF4FA),
+                                actions?.contains("START") == true -> {
+                                    Button(
+                                        colors = ButtonDefaults.buttonColors(Color.Red),
+
+                                        onClick = {
+                                            vm.startTrip(
+                                                context,
+                                                tripId = trip.tripId,
+                                                tripCode = trip.tripCode,
+                                                operatorId = trip.operatorCompanyId
+                                            )
+                                            isStartDialogVisible.value = true
+                                        },
+
+                                        content = {
+                                            Text(text = "Start")
+                                        }
                                     )
-                                ) {
-                                    Text(text = "Start", color = Color.Blue)
+
                                 }
 
-                                Button(
-                                    onClick = {
-                                        isCheckInDialogVisible.value = true
-                                    },
-                                    modifier = Modifier.width(120.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFFEBF4FA),
-                                    )
-                                ) {
-                                    Text(text = "Check-In", color = Color.Blue)
-                                }
-                            } else {
+                                actions?.contains("CHECKIN") == true -> {
 
-                                Button(
-                                    onClick = {
-                                        vm.startTrip(
-                                            context,
-                                            trip.tripId,
-                                            trip.tripCode,
-                                            trip.operatorCompanyId
-                                        )
-                                        isStartDialogVisible.value = true
-                                    },
-                                    modifier = Modifier
-                                        .width(120.dp)
-                                        .padding(end = 8.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFFEBF4FA),
+                                    Button(
+                                        onClick = {
+                                            isCheckInDialogVisible.value = true
+                                        },
+                                        content = {
+                                            Text(text = "Check-In")
+                                        }
                                     )
-                                ) {
-                                    Text(text = "Start", color = Color.Blue)
+
+                                    Button(
+                                        onClick = {
+
+                                        },
+                                        content = {
+                                            Text(text = "Report Problem")
+                                        }
+                                    )
                                 }
+
+                                actions?.contains("DEPART") == true -> {
+                                    Button(
+                                        onClick = {
+                                            vm.departTrip(
+                                                context,
+                                                tripId = trip.tripId,
+                                                tripCode = trip.tripCode,
+                                                operatorId = trip.operatorCompanyId
+                                            )
+                                        },
+                                        content = {
+                                            Text(text = "Depart")
+                                        }
+                                    )
+                                    Button(
+                                        onClick = {
+
+                                        },
+                                        content = {
+                                            Text(text = "Report Problem")
+                                        }
+                                    )
+                                }
+
+
                             }
 
-
-                        }
-
-//                    if (isStartDialogVisible.value) {
-//                        StartTripDialog(
-//                            tripId = trip.tripId,
-//                            operatorId = trip.operatorCompanyId,
-//                            tripCode = trip.tripCode,
-//                            setShowDialog = {
-//                                isStartDialogVisible.value = it
-//
-//                                isCheckInEnabled = it
-//                            }
-//                        )
-//                    }
-                        if (isStartDialogVisible.value) {
-                            StartTripDialog(
-                                tripId = trip.tripId,
-                                operatorId = trip.operatorCompanyId,
-                                tripCode = trip.tripCode,
-                                setShowDialog = {
-                                    isStartDialogVisible.value = it
-                                }
-                            )
-                        }
-
-//                    if (isCheckInDialogVisible.value) {
-//                        CallCheckInDialog(
-//                            tripId = trip.tripId,
-//                            operatorId = trip.operatorCompanyId,
-//                            tripCode = trip.tripCode,
-//                            context = context,
-//
-//
-//                            setShowDialog = {
-//                                isCheckInDialogVisible.value = it
-//                            }
-//                        )
-//                    }
-                        if (isCheckInDialogVisible.value) {
-                            assignment?.loc?.let { it1 ->
-                                CallCheckInDialog(context,
+                            if (isStartDialogVisible.value) {
+                                StartTripDialog(
                                     tripId = trip.tripId,
-                                    tripCode = trip.tripCode,
                                     operatorId = trip.operatorCompanyId,
-                                    it1,
+                                    tripCode = trip.tripCode,
                                     setShowDialog = {
-                                        Log.i("Dialog", "Dialog dismissed")
-                                        isCheckInDialogVisible.value = it
+                                        isStartDialogVisible.value = it
                                     }
                                 )
-
                             }
-                        }
-                        if (it.tripDetail.status != "TRIP_ENDED") {
-                            assignment?.activeStatusDetail?.actions.let {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .fillMaxHeight()
-                                        .padding(
-                                            start = 25.dp,
-                                            top = 30.dp,
-                                            end = 12.dp,
-                                            bottom = 30.dp
-                                        ),
-                                    contentAlignment = Alignment.BottomStart
 
-                                )
-                                {
-
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceEvenly
-                                    ) {
-                                        if (isStartEnabled == true) {
-                                            Button(colors = ButtonDefaults.buttonColors(
-                                                Color.Red
-                                            ),
-                                                onClick = {
-                                                            vm.startTrip(
-                                                                context,
-                                                                tripId=trip.tripId,
-                                                                tripCode=trip.tripCode,
-                                                                operatorId=trip.operatorCompanyId
-                                                            )
-                                                    isStartDialogVisible.value = true
-                                                },
-                                                content = {
-                                                    Text(text = "Start")
-                                                }
-                                            )
+                            if (isCheckInDialogVisible.value) {
+                                assignment?.loc?.let { it1 ->
+                                    CallCheckInDialog(context,
+                                        tripId = trip.tripId,
+                                        tripCode = trip.tripCode,
+                                        operatorId = trip.operatorCompanyId,
+                                        it1,
+                                        setShowDialog = {
+                                            Log.i("Dialog", "Dialog dismissed")
+                                            isCheckInDialogVisible.value = it
                                         }
-
-                                        if (isCancelEnabled == true) {
-                                            Button(
-                                                onClick = {
-                                                    vm.cancelTrip(
-                                                        context,
-                                                        tripId = trip.tripId,
-                                                        tripCode=trip.tripCode,
-                                                        operatorId=trip.operatorCompanyId,
-                                                        navController
-                                                    )
-
-                                                },
-                                                content = {
-                                                    Text(text = "Cancel")
-                                                }
-                                            )
-                                        }
-                                        if (isEndEnabled == true) {
-                                            Button(
-                                                onClick = {
-                                                    vm.endTrip(
-                                                        context,
-                                                        tripId=trip.tripId,
-                                                        tripCode=trip.tripCode,
-                                                        operatorId=trip.operatorCompanyId,
-                                                        navController
-                                                    )
-
-                                                },
-                                                content = {
-                                                    Text(text = "End")
-                                                }
-                                            )
-                                        }
-                                        if (isCheckInEnabled == true) {
-                                            Button(
-                                                onClick = {
-                                                    isCheckInDialogVisible.value = true
-                                                },
-                                                content = {
-                                                    Text(text = "Check-In")
-                                                }
-                                            )
-                                        }
-                                        if (isDepartEnabled == true) {
-                                            Button(
-                                                onClick = {
-                                                    vm.departTrip(
-                                                        context,
-                                                        tripId=trip.tripId,
-                                                        tripCode=trip.tripCode,
-                                                        operatorId=trip.operatorCompanyId
-                                                    )
-                                                },
-                                                content = {
-                                                    Text(text = "Depart")
-                                                }
-                                            )
-
-                                        }
-                                    }
+                                    )
 
                                 }
-
                             }
                         }
-
                     }
+
                 }
 
                 item {

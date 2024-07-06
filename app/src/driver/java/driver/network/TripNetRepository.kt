@@ -437,6 +437,7 @@ class TripNetRepository @Inject constructor(
 
                 if (response.statusCode == 200) {
                     // The request was successful, handle the response here
+                    Log.d("check in api", "working")
                 } else {
                     result.fold(
                         { _ ->
