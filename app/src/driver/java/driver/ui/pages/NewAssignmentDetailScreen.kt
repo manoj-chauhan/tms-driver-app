@@ -233,27 +233,36 @@ fun Topbar() {
     }
 }
 
-@Composable
-fun MapScreen() {
-    val atasehir = LatLng(40.9971, 29.1007)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(atasehir, 15f)
-    }
-
-    var uiSettings by remember {
-        mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
-    }
-    var properties by remember {
-        mutableStateOf(MapProperties(mapType = MapType.SATELLITE))
-    }
-
-    GoogleMap(
-        modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraPositionState,
-        properties = properties,
-        uiSettings = uiSettings
-    )
-}
+//@Composable
+//fun MapScreen() {
+//    val atasehir = LatLng(40.9971, 29.1007)
+//    val cameraPositionState = rememberCameraPositionState {
+//        position = CameraPosition.fromLatLngZoom(atasehir, 15f)
+//    }
+//
+//    var uiSettings by remember {
+//        mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
+//    }
+//    var properties by remember {
+//        mutableStateOf(MapProperties(mapType = MapType.TERRAIN))
+//    }
+//    Dialog(onDismissRequest = {
+//
+//    },
+//        ) {
+//        Column(modifier=Modifier.height(400.dp)
+//            .width(400.dp)) {
+//
+//
+//            GoogleMap(
+//                modifier = Modifier.fillMaxSize(),
+//                cameraPositionState = cameraPositionState,
+//                properties = properties,
+//                uiSettings = uiSettings
+//            )
+//        }
+//    }
+//}
 
 
 
@@ -603,13 +612,13 @@ fun BottomSheet(
             ) {
 
 
-                if (showMap) {
-                    item{
-                        MapScreen()
-
-                    }
-
-                } else {
+//                if (showMap) {
+//                    item{
+////                        MapScreen()
+//
+//                    }
+//
+//                } else {
                     item {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -656,7 +665,7 @@ fun BottomSheet(
                                 Icon(
                                     imageVector = Icons.Outlined.Map,
                                     tint = Color.Black,
-                                    contentDescription = "Menu",
+                                    contentDescription = "Map",
                                     modifier = Modifier.size(28.dp)
                                 )
                             }
@@ -665,7 +674,7 @@ fun BottomSheet(
                         Spacer(modifier = Modifier.height(16.dp))
                         HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
                     }
-                }
+
                 item {
 
                     Spacer(modifier = Modifier.height(16.dp))
