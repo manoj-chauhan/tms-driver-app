@@ -310,43 +310,6 @@ fun TripInfoNewDesign(
                     HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Button(
-                            onClick = { }, modifier = Modifier
-                                .width(120.dp)
-                                .padding(end = 8.dp),
-
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFEBF4FA),
-
-                                )
-                        ) {
-                            Text(text = "Start", color = Color.Blue)
-                        }
-                        Button(
-                            onClick = { },
-
-                            modifier = Modifier
-                                .width(120.dp)
-                                .padding(start = 8.dp),
-
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFE8EAED)
-
-
-                            )
-                        ) {
-                            Text(text = "Cancel", color = Color.Gray)
-                        }
-                    }
-
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
                         text = "You are operating two trips swipe to see others",

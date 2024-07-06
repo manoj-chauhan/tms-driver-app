@@ -520,7 +520,7 @@ fun BottomSheet(
 
     val boxgray = Color(0xFFE5E5E5)
 
-    val context= LocalContext.current
+    val context = LocalContext.current
 
     val assignment by vm.assignmentDetail.collectAsStateWithLifecycle()
 
@@ -714,7 +714,12 @@ fun BottomSheet(
                             )
                             Spacer(modifier = Modifier.width(5.dp))
 
-                            assignment?.tripDetail?.let { Text(text = it.status, color = Color.Blue) }
+                            assignment?.tripDetail?.let {
+                                Text(
+                                    text = it.status,
+                                    color = Color.Blue
+                                )
+                            }
                         }
 
                     }
@@ -768,7 +773,9 @@ fun BottomSheet(
 
                                 actions?.contains("START") == true -> {
                                     Button(
-                                        colors = ButtonDefaults.buttonColors(Color.Red),
+                                        modifier = Modifier
+                                            .width(120.dp)
+                                            .padding(end = 8.dp),
 
                                         onClick = {
                                             vm.startTrip(
@@ -777,8 +784,14 @@ fun BottomSheet(
                                                 tripCode = trip.tripCode,
                                                 operatorId = trip.operatorCompanyId
                                             )
+
                                             isStartDialogVisible.value = true
                                         },
+
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFEBF4FA)
+                                        ),
+
 
                                         content = {
                                             Text(text = "Start")
