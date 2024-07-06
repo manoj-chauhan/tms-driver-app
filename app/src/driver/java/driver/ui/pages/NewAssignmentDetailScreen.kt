@@ -45,6 +45,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOff
 import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
@@ -134,7 +135,14 @@ import com.drishto.driver.ui.operatorI
 import com.drishto.driver.ui.viewmodels.HistoryViewModel
 import com.drishto.driver.ui.viewmodels.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.rememberCameraPositionState
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
@@ -176,54 +184,45 @@ val fontFamily = FontFamily(
     Font(googleFont = fontName, fontProvider = provider)
 )
 val logo = Color(android.graphics.Color.parseColor("#ef2427"))
-
 @Composable
 fun Topbar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Transparent)
+            .background(Color.Transparent)
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(contentAlignment = Alignment.Center) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.clickable(onClick = {})
+        ) {
             Icon(
                 imageVector = Icons.Outlined.Person,
                 contentDescription = "profile",
-
                 tint = Color.Black,
                 modifier = Modifier
                     .size(30.dp)
                     .clip(CircleShape)
                     .background(Color.LightGray)
             )
-
         }
 
-
-
-
-        Button(modifier = Modifier
-            .width(260.dp)
-            .height(40.dp),
+        Button(
+            modifier = Modifier
+                .width(260.dp)
+                .height(40.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0XFFF9E7E6)),
-            onClick = { }) {
-
-
+            onClick = { }
+        ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-
                 text = "Home",
-
-
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 color = Color(0XFF5c3939),
-
-
-                )
-
+            )
         }
 
         Icon(
@@ -231,12 +230,32 @@ fun Topbar() {
             contentDescription = "Notifications",
             modifier = Modifier.size(30.dp)
         )
+    }
+}
 
-
+@Composable
+fun MapScreen() {
+    val atasehir = LatLng(40.9971, 29.1007)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(atasehir, 15f)
     }
 
+    var uiSettings by remember {
+        mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
+    }
+    var properties by remember {
+        mutableStateOf(MapProperties(mapType = MapType.SATELLITE))
+    }
 
+    GoogleMap(
+        modifier = Modifier.fillMaxSize(),
+        cameraPositionState = cameraPositionState,
+        properties = properties,
+        uiSettings = uiSettings
+    )
 }
+
+
 
 @Composable
 fun NewAssignmentDetailScreen(
@@ -284,8 +303,8 @@ fun NewAssignmentDetailScreen(
     val isLoading by vw.isLoading.collectAsStateWithLifecycle()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
-    val lightPeach = Color(0XFFFFF4EA)
-    val darkPeach = Color(0XFFFEE1DC)
+    val lightPeach = Color(0XFFFDF2F2)
+    val darkPeach = Color(0XFFFDCFCA)
 
     val gradientBrush = Brush.verticalGradient(
         colors = listOf(lightPeach, darkPeach), startY = 0f, endY = 1000f
@@ -320,10 +339,6 @@ fun NewAssignmentDetailScreen(
                 ) {
 
                     Topbar()
-
-
-
-
 
                     currentAssignmentData?.let {
                         RequestPermission(permission = Manifest.permission.ACCESS_FINE_LOCATION)
@@ -545,9 +560,7 @@ fun BottomSheet(
 
     val isCheckInDialogVisible = remember { mutableStateOf(false); }
 
-
-
-
+    var showMap by remember { mutableStateOf(false) }
 
 
     if (showBottomSheet) {
@@ -588,62 +601,70 @@ fun BottomSheet(
                     .padding(horizontal = 14.dp)
                     .padding(bottom = 14.dp)
             ) {
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Row {
-                                Text(
-                                    text = "Trip Code: ",
-                                    color = headingColor,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
 
-                                Text(
-                                    text = trip.tripCode,
-                                    fontSize = 16.sp,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    fontWeight = FontWeight.SemiBold,
-                                    textAlign = TextAlign.Start
-                                )
 
-                            }
+                if (showMap) {
+                    item{
+                        MapScreen()
 
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = trip.tripName,
-                                fontSize = 12.sp,
-                                color = actionColors,
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Start
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .padding(8.dp)
-
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.MoreVert,
-                                tint = Color.Black,
-                                contentDescription = "Menu",
-                                modifier = Modifier.size(28.dp)
-                            )
-                        }
                     }
 
+                } else {
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Row {
+                                    Text(
+                                        text = "Trip Code: ",
+                                        color = headingColor,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
 
+                                    Text(
+                                        text = trip.tripCode,
+                                        fontSize = 16.sp,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        fontWeight = FontWeight.SemiBold,
+                                        textAlign = TextAlign.Start
+                                    )
 
+                                }
 
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = trip.tripName,
+                                    fontSize = 12.sp,
+                                    color = actionColors,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Start
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .padding(8.dp)
+                                    .clickable {
+                                        showMap = true
+                                    }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Map,
+                                    tint = Color.Black,
+                                    contentDescription = "Menu",
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
+                        }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
+                    }
                 }
                 item {
 
@@ -794,7 +815,7 @@ fun BottomSheet(
 
 
                                         content = {
-                                            Text(text = "Start")
+                                            Text(text = "Start", color=Color(0XFF4659FF))
                                         }
                                     )
 
@@ -803,20 +824,35 @@ fun BottomSheet(
                                 actions?.contains("CHECKIN") == true -> {
 
                                     Button(
+                                        modifier= Modifier
+                                            .width(120.dp)
+                                            .padding(end = 8.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFF2FDE6)
+                                        ),
+
+
                                         onClick = {
                                             isCheckInDialogVisible.value = true
                                         },
                                         content = {
-                                            Text(text = "Check-In")
+                                            Text(text = "Check-In", color = Color(0XFF49C800))
                                         }
                                     )
 
                                     Button(
+                                        modifier= Modifier
+                                            .width(120.dp)
+                                            .padding(end = 8.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFFDF7EB)
+                                        ),
+
                                         onClick = {
 
                                         },
                                         content = {
-                                            Text(text = "Report Problem")
+                                            Text(text = "Report Problem", color=Color(0XFFCD3A00))
                                         }
                                     )
                                 }
@@ -836,11 +872,18 @@ fun BottomSheet(
                                         }
                                     )
                                     Button(
+                                        modifier= Modifier
+                                            .width(120.dp)
+                                            .padding(end = 8.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFFDF7EB)
+                                        ),
+
                                         onClick = {
 
                                         },
                                         content = {
-                                            Text(text = "Report Problem")
+                                            Text(text = "Report Problem", color=Color(0XFFCD3A00))
                                         }
                                     )
                                 }
