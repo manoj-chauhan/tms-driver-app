@@ -80,11 +80,11 @@ fun AppNavigationHost(
         )
     }
 
-    if (startScreen == "login") {
-        val myIntent = Intent(LocalContext.current, PhoneNumberActivity::class.java)
-        myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        LocalContext.current.startActivity(myIntent)
-    }
+//    if (startScreen == "login") {
+//        val myIntent = Intent(LocalContext.current, PhoneNumberActivity::class.java)
+//        myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+//        LocalContext.current.startActivity(myIntent)
+//    }
 
     NavHost(navController = navController, startDestination = startScreen) {
         composable("current-assignment-detail") {
@@ -98,6 +98,8 @@ fun AppNavigationHost(
 //                tripCode = selectedAssignmentCode,
 //                activity = activity ?: return@composable
 //            )
+
+
 
             NewAssignmentDetailScreen(
             navController = navController,

@@ -74,7 +74,7 @@ class FCMService : FirebaseMessagingService() {
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = "$MY_URI/$MY_ARG=${tripCode}/$trip_Id=${tripId}&$operatorI=${operatorId}".toUri()
             Log.d("TAG", "showNotification: ${data} ")
-            setClass(applicationContext, driver.OTPActivity::class.java)
+            setClass(applicationContext, MainActivity::class.java)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 

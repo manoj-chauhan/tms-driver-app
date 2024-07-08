@@ -77,7 +77,7 @@ import com.drishto.driver.network.clearSession
 import com.drishto.driver.ui.viewmodels.ChildrenListViewModel
 import com.drishto.driver.ui.viewmodels.CompanyPositions
 import com.drishto.driver.ui.viewmodels.UserProfileViewModel
-import driver.SetPasswordActivity
+import com.drishto.driver.SetPasswordActivity
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Field
 import java.time.LocalDate

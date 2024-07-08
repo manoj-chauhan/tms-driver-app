@@ -38,58 +38,58 @@ class MainActivity : ComponentActivity() {
 
         Log.d("TAG", "onStart: ")
         super.onCreate(savedInstanceState)
-        var batteryOptimizationDialogShown by mutableStateOf(false)
-
-        setTitle(R.string.app_name)
+//        var batteryOptimizationDialogShown by mutableStateOf(false)
+//
+//        setTitle(R.string.app_name)
         setContent {
-            Log.d("TAG", "onCreate: Drishto is running  ")
+//            Log.d("TAG", "onCreate: Drishto is running  ")
             DrishtoApp()
-//            LocationPermissionCheck()
-            var showBatteryOptimizationDialog by remember { mutableStateOf(true) }
-
-
-            val isBatteryOptimizationEnabled = isBatteryOptimizationEnabled(applicationContext)
-            Log.d("Battery", "onCreate: $isBatteryOptimizationEnabled ")
-            if (!isBatteryOptimizationEnabled && showBatteryOptimizationDialog) {
-                AlertDialog(onDismissRequest = { showBatteryOptimizationDialog = true },
-                    title = { Text("Battery Optimization") },
-                    text = {
-                        Text(
-                            "Battery optimization is currently enabled for this app. " + "To ensure proper functionality, please disable battery optimization."
-                        )
-                    },
-                    confirmButton = {
-                        Button(onClick = {
-                            showBatteryOptimizationDialog = false
-                            openBatteryOptimizationSettings(applicationContext)
-                        }) {
-                            Text("Go to Settings")
-                        }
-                    },
-                    dismissButton = {
-                        null
-                    }
-
-                )
+////            LocationPermissionCheck()
+//            var showBatteryOptimizationDialog by remember { mutableStateOf(true) }
+//
+//
+//            val isBatteryOptimizationEnabled = isBatteryOptimizationEnabled(applicationContext)
+//            Log.d("Battery", "onCreate: $isBatteryOptimizationEnabled ")
+//            if (!isBatteryOptimizationEnabled && showBatteryOptimizationDialog) {
+//                AlertDialog(onDismissRequest = { showBatteryOptimizationDialog = true },
+//                    title = { Text("Battery Optimization") },
+//                    text = {
+//                        Text(
+//                            "Battery optimization is currently enabled for this app. " + "To ensure proper functionality, please disable battery optimization."
+//                        )
+//                    },
+//                    confirmButton = {
+//                        Button(onClick = {
+//                            showBatteryOptimizationDialog = false
+//                            openBatteryOptimizationSettings(applicationContext)
+//                        }) {
+//                            Text("Go to Settings")
+//                        }
+//                    },
+//                    dismissButton = {
+//                        null
+//                    }
+//
+//                )
             }
-
-
-            val permissionState =
-                rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-
-            LaunchedEffect(key1 = true) {
-                Log.d("TAG", "onCreate: Laungh")
-                permissionState.launchPermissionRequest()
-            }
-            if (permissionState.status.isGranted) {
-            } else {
-                Column() {
-                    if (permissionState.status.shouldShowRationale) {
-                    } else {
-                    }
-                }
-            }
-        }
+//
+//
+//            val permissionState =
+//                rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+//
+//            LaunchedEffect(key1 = true) {
+//                Log.d("TAG", "onCreate: Laungh")
+//                permissionState.launchPermissionRequest()
+//            }
+//            if (permissionState.status.isGranted) {
+//            } else {
+//                Column() {
+//                    if (permissionState.status.shouldShowRationale) {
+//                    } else {
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun isBatteryOptimizationEnabled(context: Context): Boolean {

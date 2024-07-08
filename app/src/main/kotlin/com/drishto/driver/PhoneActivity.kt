@@ -1,4 +1,4 @@
-package driver
+package com.drishto.driver
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
