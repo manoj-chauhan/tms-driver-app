@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Drishto Driver</string>
     <string name="hide_password">Hide Password</string>
     <string name="hide_passworda">Show Password</string>
-<!--    <string name="default_web_client_id">YOUR_CLIENT_ID</string>-->
-<!--    <string name="show_password">Show Password</string>-->
 </resources>
+<!--/-->

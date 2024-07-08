@@ -15,12 +15,11 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.drishto"
+        applicationId = "com.drishto.driver"
         minSdk = 26
         targetSdk = 34
         versionCode = 19
         versionName = "1.0-alpha"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -38,36 +37,6 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-
-    flavorDimensions +="drishto"
-    productFlavors {
-        create("driver") {
-            applicationId ="com.drishto.driver"
-            dimension = "drishto"
-            buildConfigField("boolean", "ENABLE_CUSTOM_BUILD_CONFIG", "true")
-            buildConfigField ("String", "BUILD_VARIANT", "\" driver \"")
-
-        }
-        create("parent") {
-            applicationId ="com.drishto"
-            dimension = "drishto"
-            buildConfigField("boolean", "ENABLE_CUSTOM_BUILD_CONFIG", "true")
-            buildConfigField ("String", "BUILD_VARIANT", "\" parent \"")
-
-        }
-    }
-
-    sourceSets {
-        getByName("driver") {
-            res.srcDirs("src/dri/res")
-            java.srcDirs("src/dri/java")
-        }
-        getByName("parent") {
-            res.srcDirs("src/parent/res")
-            java.srcDirs("src/parent/java")
-        }
-    }
-
 
     compileOptions {
         sourceCompatibility =JavaVersion.VERSION_1_8
