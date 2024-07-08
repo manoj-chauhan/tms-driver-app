@@ -565,23 +565,23 @@ fun AssignmentDetailScreen(
                                                             }
                                                         )
                                                     }
-                                                    if (isEndEnabled == true) {
-                                                        Button(
-                                                            onClick = {
-                                                                vm.endTrip(
-                                                                    context,
-                                                                    tripId,
-                                                                    tripCode,
-                                                                    operatorId,
-                                                                    navController
-                                                                )
-
-                                                            },
-                                                            content = {
-                                                                Text(text = "End")
-                                                            }
-                                                        )
-                                                    }
+//                                                    if (isEndEnabled == true) {
+//                                                        Button(
+//                                                            onClick = {
+//                                                                vm.endTrip(
+//                                                                    context,
+//                                                                    tripId,
+//                                                                    tripCode,
+//                                                                    operatorId,
+//                                                                    navController
+//                                                                )
+//
+//                                                            },
+//                                                            content = {
+//                                                                Text(text = "End")
+//                                                            }
+//                                                        )
+//                                                    }
                                                     if (isCheckInEnabled == true) {
                                                         Button(
                                                             onClick = {

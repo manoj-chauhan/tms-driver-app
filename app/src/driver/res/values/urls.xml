@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [<!ENTITY baseUrl "https://api.test.drishto.com">]>
+<!DOCTYPE resources [<!ENTITY baseUrl "https://api.drishto.com">]>
 <resources>
     <string name="url_trips_list">&baseUrl;/tms/trips/assigned-to-driver</string>
     <string name="url_old_assignments_list">&baseUrl;/tms/drivers</string>
